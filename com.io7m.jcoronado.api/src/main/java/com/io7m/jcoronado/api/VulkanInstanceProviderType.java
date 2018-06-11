@@ -25,6 +25,18 @@ import java.util.Map;
 public interface VulkanInstanceProviderType
 {
   /**
+   * @return The name of the (software) provider
+   */
+
+  String providerName();
+
+  /**
+   * @return The version of the (software) provider
+   */
+
+  String providerVersion();
+
+  /**
    * @return The available instance extensions
    *
    * @throws VulkanException On errors

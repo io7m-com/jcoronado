@@ -74,6 +74,8 @@ public final class Demo
     final VulkanInstanceProviderType instances =
       VulkanLWJGLInstanceProvider.create();
 
+    LOG.debug("instance provider: {} {}", instances.providerName(), instances.providerVersion());
+
     final Map<String, VulkanExtensionProperties> available_extensions =
       instances.extensions();
     final Map<String, VulkanLayerProperties> available_layers =

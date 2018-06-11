@@ -70,6 +70,20 @@ public final class VulkanLWJGLInstanceProvider implements
   }
 
   @Override
+  public String providerName()
+  {
+    return "com.io7m.jcoronado.lwjgl";
+  }
+
+  @Override
+  public String providerVersion()
+  {
+    final Package pack = this.getClass().getPackage();
+    final String version = pack.getImplementationVersion();
+    return version == null ? "0.0.0" : version;
+  }
+
+  @Override
   public Map<String, VulkanExtensionProperties> extensions()
     throws VulkanException
   {
