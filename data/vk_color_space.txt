@@ -1,0 +1,1 @@
+VK_COLOR_SPACE_SRGB_NONLINEAR_KHR : 0 : The presentation engine supports the sRGB colorspace.

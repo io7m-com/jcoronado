@@ -34,6 +34,8 @@ import com.io7m.jcoronado.api.VulkanQueueType;
 import com.io7m.jcoronado.api.VulkanUncheckedException;
 import com.io7m.jcoronado.api.VulkanVersions;
 import com.io7m.jcoronado.extensions.api.VulkanExtKHRSurfaceType;
+import com.io7m.jcoronado.extensions.api.VulkanSurfaceCapabilitiesKHR;
+import com.io7m.jcoronado.extensions.api.VulkanSurfaceFormatKHR;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLInstanceProvider;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.glfw.GLFW;
@@ -157,6 +159,23 @@ public final class Demo
                  .orElseThrow(() -> new IllegalStateException("No suitable device found"))) {
 
           LOG.debug("physical device: {}", physical_device);
+
+          /*
+           * Show the preferred formats, and the capabilities of the surface.
+           */
+
+          final List<VulkanSurfaceFormatKHR> formats =
+            khr_surface_ext.surfaceFormats(physical_device, surface);
+
+          formats.forEach(format -> LOG.debug(
+            "preferred surface format: {} {}",
+            format.format(),
+            format.colorSpace()));
+
+          final VulkanSurfaceCapabilitiesKHR capabilities =
+            khr_surface_ext.surfaceCapabilities(physical_device, surface);
+
+          LOG.debug("surface capabilities: {}", capabilities);
 
           /*
            * We know that the selected physical device has a graphics queue family, and a queue

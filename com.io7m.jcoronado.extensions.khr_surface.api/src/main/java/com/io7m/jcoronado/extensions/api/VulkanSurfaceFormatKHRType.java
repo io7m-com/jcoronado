@@ -14,35 +14,31 @@
  * IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-package com.io7m.jcoronado.api;
+package com.io7m.jcoronado.extensions.api;
 
-import java.util.Objects;
+import com.io7m.immutables.styles.ImmutablesStyleType;
+import com.io7m.jcoronado.api.VulkanFormat;
+import org.immutables.value.Value;
 
 /**
- * An exception type used to temporarily wrap exceptions in an unchecked wrapper (for use in streams
- * and the like).
+ * @see "VkSurfaceFormatKHR"
  */
 
-public final class VulkanUncheckedException extends RuntimeException
+@ImmutablesStyleType
+@Value.Immutable
+public interface VulkanSurfaceFormatKHRType
 {
-  private final VulkanException cause;
-
   /**
-   * Construct an exception.
-   *
-   * @param in_cause The cause
+   * @return A format that is compatible with the specified surface.
    */
 
-  public VulkanUncheckedException(
-    final VulkanException in_cause)
-  {
-    super(Objects.requireNonNull(in_cause, "cause"));
-    this.cause = in_cause;
-  }
+  @Value.Parameter
+  VulkanFormat format();
 
-  @Override
-  public synchronized VulkanException getCause()
-  {
-    return this.cause;
-  }
+  /**
+   * @return A presentation color space that is compatible with the surface.
+   */
+
+  @Value.Parameter
+  VulkanColorSpaceKHR colorSpace();
 }

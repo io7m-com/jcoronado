@@ -16,33 +16,15 @@
 
 package com.io7m.jcoronado.api;
 
-import java.util.Objects;
-
 /**
- * An exception type used to temporarily wrap exceptions in an unchecked wrapper (for use in streams
- * and the like).
+ * The type of enums with integer values.
  */
 
-public final class VulkanUncheckedException extends RuntimeException
+public interface VulkanEnumIntegerType
 {
-  private final VulkanException cause;
-
   /**
-   * Construct an exception.
-   *
-   * @param in_cause The cause
+   * @return The integer value of the constant
    */
 
-  public VulkanUncheckedException(
-    final VulkanException in_cause)
-  {
-    super(Objects.requireNonNull(in_cause, "cause"));
-    this.cause = in_cause;
-  }
-
-  @Override
-  public synchronized VulkanException getCause()
-  {
-    return this.cause;
-  }
+  int value();
 }

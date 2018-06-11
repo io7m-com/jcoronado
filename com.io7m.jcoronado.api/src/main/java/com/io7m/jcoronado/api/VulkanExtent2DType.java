@@ -14,35 +14,33 @@
  * IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+
 package com.io7m.jcoronado.api;
 
-import java.util.Objects;
+import com.io7m.immutables.styles.ImmutablesStyleType;
+import org.immutables.value.Value;
 
 /**
- * An exception type used to temporarily wrap exceptions in an unchecked wrapper (for use in streams
- * and the like).
+ * Structure specifying a two-dimensional extent.
+ *
+ * @see "VkExtent2D"
  */
 
-public final class VulkanUncheckedException extends RuntimeException
+@ImmutablesStyleType
+@Value.Immutable
+public interface VulkanExtent2DType
 {
-  private final VulkanException cause;
-
   /**
-   * Construct an exception.
-   *
-   * @param in_cause The cause
+   * @return The width of the extent
    */
 
-  public VulkanUncheckedException(
-    final VulkanException in_cause)
-  {
-    super(Objects.requireNonNull(in_cause, "cause"));
-    this.cause = in_cause;
-  }
+  @Value.Parameter
+  int width();
 
-  @Override
-  public synchronized VulkanException getCause()
-  {
-    return this.cause;
-  }
+  /**
+   * @return The height of the extent
+   */
+
+  @Value.Parameter
+  int height();
 }

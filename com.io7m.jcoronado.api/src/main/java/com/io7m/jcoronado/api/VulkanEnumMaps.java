@@ -16,33 +16,40 @@
 
 package com.io7m.jcoronado.api;
 
-import java.util.Objects;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
- * An exception type used to temporarily wrap exceptions in an unchecked wrapper (for use in streams
- * and the like).
+ * Functions over enum ←→ integer maps.
  */
 
-public final class VulkanUncheckedException extends RuntimeException
+public final class VulkanEnumMaps
 {
-  private final VulkanException cause;
-
-  /**
-   * Construct an exception.
-   *
-   * @param in_cause The cause
-   */
-
-  public VulkanUncheckedException(
-    final VulkanException in_cause)
+  private VulkanEnumMaps()
   {
-    super(Objects.requireNonNull(in_cause, "cause"));
-    this.cause = in_cause;
+
   }
 
-  @Override
-  public synchronized VulkanException getCause()
+  /**
+   * Produce an efficient map of integers to enum constants.
+   *
+   * @param values The list of enum values
+   * @param <T>    The precise type of enum
+   *
+   * @return The resulting map
+   */
+
+  public static <T extends Enum<T> & VulkanEnumIntegerType> Map<Integer, T> map(
+    final T[] values)
   {
-    return this.cause;
+    final HashMap<Integer, T> m = new HashMap<>(values.length);
+    for (final T value : values) {
+      final int vv = value.value();
+      if (m.containsKey(Integer.valueOf(vv))) {
+        throw new IllegalStateException("Duplicate integer value: " + vv);
+      }
+      m.put(Integer.valueOf(vv), value);
+    }
+    return m;
   }
 }

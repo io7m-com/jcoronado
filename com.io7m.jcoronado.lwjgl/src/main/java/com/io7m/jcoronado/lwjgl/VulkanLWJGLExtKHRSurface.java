@@ -18,17 +18,32 @@ package com.io7m.jcoronado.lwjgl;
 
 import com.io7m.jcoronado.api.VulkanChecks;
 import com.io7m.jcoronado.api.VulkanException;
+import com.io7m.jcoronado.api.VulkanExtent2D;
+import com.io7m.jcoronado.api.VulkanFormat;
+import com.io7m.jcoronado.api.VulkanImageUsageFlag;
 import com.io7m.jcoronado.api.VulkanInstanceType;
 import com.io7m.jcoronado.api.VulkanPhysicalDeviceType;
 import com.io7m.jcoronado.api.VulkanQueueFamilyProperties;
+import com.io7m.jcoronado.extensions.api.VulkanColorSpaceKHR;
+import com.io7m.jcoronado.extensions.api.VulkanCompositeAlphaFlagKHR;
 import com.io7m.jcoronado.extensions.api.VulkanExtKHRSurfaceType;
+import com.io7m.jcoronado.extensions.api.VulkanSurfaceCapabilitiesKHR;
+import com.io7m.jcoronado.extensions.api.VulkanSurfaceFormatKHR;
+import com.io7m.jcoronado.extensions.api.VulkanSurfaceTransformFlagKHR;
 import org.lwjgl.glfw.GLFWVulkan;
+import org.lwjgl.system.MemoryStack;
 import org.lwjgl.vulkan.KHRSurface;
+import org.lwjgl.vulkan.VkExtent2D;
+import org.lwjgl.vulkan.VkSurfaceCapabilitiesKHR;
+import org.lwjgl.vulkan.VkSurfaceFormatKHR;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 /**
  * Access to the {@code VK_KHR_surface} extension.
@@ -36,11 +51,14 @@ import java.util.List;
 
 public final class VulkanLWJGLExtKHRSurface implements VulkanExtKHRSurfaceType
 {
-  private static final Logger LOG = LoggerFactory.getLogger(VulkanLWJGLExtKHRSurface.class);
+  private static final Logger LOG =
+    LoggerFactory.getLogger(VulkanLWJGLExtKHRSurface.class);
+
+  private final MemoryStack stack_initial;
 
   VulkanLWJGLExtKHRSurface()
   {
-
+    this.stack_initial = MemoryStack.create();
   }
 
   @Override
@@ -116,6 +134,157 @@ public final class VulkanLWJGLExtKHRSurface implements VulkanExtKHRSurfaceType
     }
 
     return results;
+  }
+
+  @Override
+  public List<VulkanSurfaceFormatKHR> surfaceFormats(
+    final VulkanPhysicalDeviceType in_device,
+    final VulkanKHRSurfaceType in_surface)
+    throws VulkanException
+  {
+    final VulkanLWJGLPhysicalDevice device =
+      VulkanLWJGLClassChecks.check(in_device, VulkanLWJGLPhysicalDevice.class);
+    final VulkanLWJGLExtKHRSurfaceValue surface =
+      VulkanLWJGLClassChecks.check(in_surface, VulkanLWJGLExtKHRSurfaceValue.class);
+
+    device.checkNotClosed();
+
+    final List<VulkanSurfaceFormatKHR> results;
+    try (MemoryStack stack = this.stack_initial.push()) {
+      final int[] count = new int[1];
+
+      VulkanChecks.checkReturnCode(
+        KHRSurface.vkGetPhysicalDeviceSurfaceFormatsKHR(
+          device.device(),
+          surface.pointer,
+          count,
+          null),
+        "vkGetPhysicalDeviceSurfaceFormatsKHR");
+
+      final int format_count = count[0];
+      if (format_count == 0) {
+        return List.of();
+      }
+
+      final VkSurfaceFormatKHR.Buffer formats =
+        VkSurfaceFormatKHR.mallocStack(format_count, stack);
+
+      VulkanChecks.checkReturnCode(
+        KHRSurface.vkGetPhysicalDeviceSurfaceFormatsKHR(
+          device.device(),
+          surface.pointer,
+          count,
+          formats),
+        "vkGetPhysicalDeviceSurfaceFormatsKHR");
+
+      results = new ArrayList<>(format_count);
+      for (int index = 0; index < format_count; ++index) {
+        formats.position(index);
+
+        final Optional<VulkanFormat> format =
+          VulkanFormat.fromInteger(formats.format());
+        final Optional<VulkanColorSpaceKHR> space =
+          VulkanColorSpaceKHR.fromInteger(formats.colorSpace());
+
+        if (format.isPresent() && space.isPresent()) {
+          results.add(VulkanSurfaceFormatKHR.of(format.get(), space.get()));
+        }
+      }
+    }
+
+    return results;
+  }
+
+  @Override
+  public VulkanSurfaceCapabilitiesKHR surfaceCapabilities(
+    final VulkanPhysicalDeviceType in_device,
+    final VulkanKHRSurfaceType in_surface)
+    throws VulkanException
+  {
+    final VulkanLWJGLPhysicalDevice device =
+      VulkanLWJGLClassChecks.check(in_device, VulkanLWJGLPhysicalDevice.class);
+    final VulkanLWJGLExtKHRSurfaceValue surface =
+      VulkanLWJGLClassChecks.check(in_surface, VulkanLWJGLExtKHRSurfaceValue.class);
+
+    device.checkNotClosed();
+
+    try (MemoryStack stack = this.stack_initial.push()) {
+
+      final VkSurfaceCapabilitiesKHR capabilities =
+        VkSurfaceCapabilitiesKHR.mallocStack(stack);
+
+      VulkanChecks.checkReturnCode(
+        KHRSurface.vkGetPhysicalDeviceSurfaceCapabilitiesKHR(
+          device.device(),
+          surface.pointer,
+          capabilities),
+        "vkGetPhysicalDeviceSurfaceCapabilitiesKHR");
+
+      return VulkanSurfaceCapabilitiesKHR.of(
+        capabilities.minImageCount(),
+        capabilities.maxImageCount(),
+        parseExtent(capabilities.currentExtent()),
+        parseExtent(capabilities.minImageExtent()),
+        parseExtent(capabilities.maxImageExtent()),
+        capabilities.maxImageArrayLayers(),
+        parseTransform(capabilities.supportedTransforms()),
+        parseTransform(capabilities.currentTransform()),
+        parseCompositeAlpha(capabilities.supportedCompositeAlpha()),
+        parseUsageFlags(capabilities.supportedUsageFlags()));
+    }
+  }
+
+  private static Set<VulkanCompositeAlphaFlagKHR> parseCompositeAlpha(
+    final int value)
+  {
+    final EnumSet<VulkanCompositeAlphaFlagKHR> results =
+      EnumSet.noneOf(VulkanCompositeAlphaFlagKHR.class);
+
+    for (final VulkanCompositeAlphaFlagKHR flag : VulkanCompositeAlphaFlagKHR.values()) {
+      final int fv = flag.value();
+      if ((value & fv) == fv) {
+        results.add(flag);
+      }
+    }
+
+    return results;
+  }
+
+  private static Set<VulkanImageUsageFlag> parseUsageFlags(
+    final int value)
+  {
+    final EnumSet<VulkanImageUsageFlag> results =
+      EnumSet.noneOf(VulkanImageUsageFlag.class);
+
+    for (final VulkanImageUsageFlag flag : VulkanImageUsageFlag.values()) {
+      final int fv = flag.value();
+      if ((value & fv) == fv) {
+        results.add(flag);
+      }
+    }
+
+    return results;
+  }
+
+  private static Set<VulkanSurfaceTransformFlagKHR> parseTransform(
+    final int value)
+  {
+    final EnumSet<VulkanSurfaceTransformFlagKHR> results =
+      EnumSet.noneOf(VulkanSurfaceTransformFlagKHR.class);
+
+    for (final VulkanSurfaceTransformFlagKHR flag : VulkanSurfaceTransformFlagKHR.values()) {
+      final int fv = flag.value();
+      if ((value & fv) == fv) {
+        results.add(flag);
+      }
+    }
+
+    return results;
+  }
+
+  private static VulkanExtent2D parseExtent(final VkExtent2D extent)
+  {
+    return VulkanExtent2D.of(extent.width(), extent.height());
   }
 
   private static final class VulkanLWJGLExtKHRSurfaceValue

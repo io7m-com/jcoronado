@@ -73,6 +73,40 @@ public interface VulkanExtKHRSurfaceType extends VulkanExtensionType
     throws VulkanException;
 
   /**
+   * Determine the preferred formats for {@code surface}.
+   *
+   * @param device  The physical device
+   * @param surface The surface
+   *
+   * @return The preferred formats for the given surface
+   *
+   * @throws VulkanException On errors
+   * @see "vkGetPhysicalDeviceSurfaceFormatsKHR"
+   */
+
+  List<VulkanSurfaceFormatKHR> surfaceFormats(
+    VulkanPhysicalDeviceType device,
+    VulkanKHRSurfaceType surface)
+    throws VulkanException;
+
+  /**
+   * Determine the capabilities of {@code surface}.
+   *
+   * @param device  The physical device
+   * @param surface The surface
+   *
+   * @return The capabilities of the given surface
+   *
+   * @throws VulkanException On errors
+   * @see "vkGetPhysicalDeviceSurfaceCapabilitiesKHR"
+   */
+
+  VulkanSurfaceCapabilitiesKHR surfaceCapabilities(
+    VulkanPhysicalDeviceType device,
+    VulkanKHRSurfaceType surface)
+    throws VulkanException;
+
+  /**
    * An abstraction over a native platform surface or window object.
    */
 
