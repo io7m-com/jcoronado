@@ -118,9 +118,7 @@ public final class VulkanLWJGLInstanceProvider implements
           instance_extensions),
         "vkEnumerateInstanceExtensionProperties");
 
-      final HashMap<String, VulkanExtensionProperties> available_extensions =
-        new HashMap<>(size);
-
+      final HashMap<String, VulkanExtensionProperties> available_extensions = new HashMap<>(size);
       for (int index = 0; index < size; ++index) {
         instance_extensions.position(index);
         final VulkanExtensionProperties extension =
@@ -231,8 +229,7 @@ public final class VulkanLWJGLInstanceProvider implements
       LOG.trace("instance_info: {}", instance_info);
 
       final PointerBuffer instance_ptr = stack.mallocPointer(1);
-      final int err =
-        VK10.vkCreateInstance(instance_info, null, instance_ptr);
+      final int err = VK10.vkCreateInstance(instance_info, null, instance_ptr);
       checkReturnCode(err, "vkCreateInstance");
 
       final VkInstance instance =
