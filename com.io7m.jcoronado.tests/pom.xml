@@ -70,18 +70,6 @@
         <groupId>org.jacoco</groupId>
         <artifactId>jacoco-maven-plugin</artifactId>
       </plugin>
-
-      <!-- Ignore dependencies that bytecode analysis gets wrong. -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-dependency-plugin</artifactId>
-        <configuration>
-          <failOnWarning>true</failOnWarning>
-          <ignoredUnusedDeclaredDependencies>
-            <ignoredUnusedDeclaredDependency>junit:junit:*</ignoredUnusedDeclaredDependency>
-          </ignoredUnusedDeclaredDependencies>
-        </configuration>
-      </plugin>
     </plugins>
   </build>
 
