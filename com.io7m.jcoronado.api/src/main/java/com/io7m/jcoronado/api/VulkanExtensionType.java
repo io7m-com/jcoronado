@@ -16,28 +16,15 @@
 
 package com.io7m.jcoronado.api;
 
-import com.io7m.immutables.styles.ImmutablesStyleType;
-import org.immutables.value.Value;
-
 /**
- * The maximum viewport dimensions in the X (width) and Y (height) dimensions, respectively.
+ * An extension.
  */
 
-@ImmutablesStyleType
-@Value.Immutable
-public interface VulkanViewportDimensionsType
+public interface VulkanExtensionType
 {
   /**
-   * @return The maximum value in the X dimension
+   * @return The name of the extension (such as "VK_KHR_Surface")
    */
 
-  @Value.Parameter
-  int maximumX();
-
-  /**
-   * @return The maximum value in the Y dimension
-   */
-
-  @Value.Parameter
-  int maximumY();
+  String name();
 }

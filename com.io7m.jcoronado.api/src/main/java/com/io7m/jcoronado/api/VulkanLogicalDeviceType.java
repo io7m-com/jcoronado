@@ -17,6 +17,7 @@
 package com.io7m.jcoronado.api;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * A reference to a logical Vulkan device.
@@ -40,4 +41,27 @@ public interface VulkanLogicalDeviceType extends VulkanObjectType
 
   List<VulkanQueueType> queues()
     throws VulkanException;
+
+  /**
+   * Find the queue with the given queue family and index.
+   *
+   * @param queue_family The queue family
+   * @param queue_index  The queue index
+   *
+   * @return The matching queue, if any
+   *
+   * @throws VulkanException On errors
+   */
+
+  default Optional<VulkanQueueType> queue(
+    final int queue_family,
+    final int queue_index)
+    throws VulkanException
+  {
+    return this.queues()
+      .stream()
+      .filter(queue -> queue.queueFamilyProperties().queueFamilyIndex() == queue_family
+        && queue.queueIndex() == queue_index)
+      .findFirst();
+  }
 }

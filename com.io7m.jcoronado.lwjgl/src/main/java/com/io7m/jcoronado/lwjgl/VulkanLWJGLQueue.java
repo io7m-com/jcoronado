@@ -33,11 +33,13 @@ final class VulkanLWJGLQueue
   private final VulkanLWJGLLogicalDevice device;
   private final VkQueue queue;
   private final VulkanQueueFamilyProperties properties;
+  private final int queue_index;
 
   VulkanLWJGLQueue(
     final VulkanLWJGLLogicalDevice in_device,
     final VkQueue in_queue,
-    final VulkanQueueFamilyProperties in_properties)
+    final VulkanQueueFamilyProperties in_properties,
+    final int in_queue_index)
   {
     this.device =
       Objects.requireNonNull(in_device, "device");
@@ -45,6 +47,20 @@ final class VulkanLWJGLQueue
       Objects.requireNonNull(in_queue, "queue");
     this.properties =
       Objects.requireNonNull(in_properties, "properties");
+    this.queue_index =
+      in_queue_index;
+  }
+
+  @Override
+  public String toString()
+  {
+    return new StringBuilder(64)
+      .append("[VulkanLWJGLQueue family ")
+      .append(this.properties.queueFamilyIndex())
+      .append(" index ")
+      .append(this.queue_index)
+      .append(']')
+      .toString();
   }
 
   @Override
@@ -63,5 +79,11 @@ final class VulkanLWJGLQueue
   public VulkanQueueFamilyProperties queueFamilyProperties()
   {
     return this.properties;
+  }
+
+  @Override
+  public int queueIndex()
+  {
+    return this.queue_index;
   }
 }

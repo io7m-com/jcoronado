@@ -20,12 +20,10 @@ import com.io7m.immutables.styles.ImmutablesStyleType;
 import org.immutables.value.Value;
 
 /**
- * the maximum size of a local compute workgroup, per dimension. These three
- * values represent the maximum local workgroup size in the X, Y, and Z
- * dimensions, respectively. The x, y, and z sizes specified by the
- * LocalSize execution mode and by the object decorated by the WorkgroupSize
- * decoration in shader modules must be less than or equal to the corresponding
- * limit.
+ * the maximum size of a local compute workgroup, per dimension. These three values represent the
+ * maximum local workgroup size in the X, Y, and Z dimensions, respectively. The x, y, and z sizes
+ * specified by the LocalSize execution mode and by the object decorated by the WorkgroupSize
+ * decoration in shader modules must be less than or equal to the corresponding limit.
  *
  * @see "VkPhysicalDeviceLimits"
  */

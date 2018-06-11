@@ -25,6 +25,7 @@
     <module>com.io7m.jcoronado.api</module>
     <module>com.io7m.jcoronado.tests</module>
     <module>com.io7m.jcoronado.lwjgl</module>
+    <module>com.io7m.jcoronado.extensions.khr_surface.api</module>
   </modules>
 
   <properties>

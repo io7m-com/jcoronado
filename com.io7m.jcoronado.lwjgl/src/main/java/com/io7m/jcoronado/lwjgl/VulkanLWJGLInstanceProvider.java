@@ -19,6 +19,7 @@ package com.io7m.jcoronado.lwjgl;
 import com.io7m.jcoronado.api.VulkanApplicationInfo;
 import com.io7m.jcoronado.api.VulkanException;
 import com.io7m.jcoronado.api.VulkanExtensionProperties;
+import com.io7m.jcoronado.api.VulkanExtensionType;
 import com.io7m.jcoronado.api.VulkanInstanceCreateInfo;
 import com.io7m.jcoronado.api.VulkanInstanceProviderType;
 import com.io7m.jcoronado.api.VulkanInstanceType;
@@ -53,11 +54,14 @@ public final class VulkanLWJGLInstanceProvider implements
     LoggerFactory.getLogger(VulkanLWJGLInstanceProvider.class);
 
   private final MemoryStack initial_stack;
+  private final VulkanLWJGLExtensionsRegistry extensions;
 
   private VulkanLWJGLInstanceProvider(
-    final MemoryStack in_stack)
+    final MemoryStack in_stack,
+    final VulkanLWJGLExtensionsRegistry in_extensions)
   {
     this.initial_stack = Objects.requireNonNull(in_stack, "stack");
+    this.extensions = Objects.requireNonNull(in_extensions, "extensions");
   }
 
   /**
@@ -66,7 +70,9 @@ public final class VulkanLWJGLInstanceProvider implements
 
   public static VulkanInstanceProviderType create()
   {
-    return new VulkanLWJGLInstanceProvider(MemoryStack.create());
+    return new VulkanLWJGLInstanceProvider(
+      MemoryStack.create(),
+      new VulkanLWJGLExtensionsRegistry());
   }
 
   @Override
@@ -112,7 +118,7 @@ public final class VulkanLWJGLInstanceProvider implements
           instance_extensions),
         "vkEnumerateInstanceExtensionProperties");
 
-      final HashMap<String, VulkanExtensionProperties> extensions =
+      final HashMap<String, VulkanExtensionProperties> available_extensions =
         new HashMap<>(size);
 
       for (int index = 0; index < size; ++index) {
@@ -121,10 +127,10 @@ public final class VulkanLWJGLInstanceProvider implements
           VulkanExtensionProperties.of(
             instance_extensions.extensionNameString(),
             instance_extensions.specVersion());
-        extensions.put(extension.name(), extension);
+        available_extensions.put(extension.name(), extension);
       }
 
-      return extensions;
+      return available_extensions;
     }
   }
 
@@ -179,16 +185,20 @@ public final class VulkanLWJGLInstanceProvider implements
   {
     Objects.requireNonNull(info, "info");
 
-    LOG.debug("creating instance");
+    final Set<String> enabled_layers = info.enabledLayers();
+    final Set<String> enabled_extensions = info.enabledExtensions();
+
+    if (LOG.isDebugEnabled()) {
+      LOG.debug("creating instance");
+      enabled_layers.forEach(layer -> LOG.debug("enabling layer: {}", layer));
+      enabled_extensions.forEach(extension -> LOG.debug("enabling extension: {}", extension));
+    }
 
     try (MemoryStack stack = this.initial_stack.push()) {
-      final Set<String> enable_layers = info.enabledLayers();
-      final Set<String> enable_extensions = info.enabledExtensions();
-
       final PointerBuffer enable_layers_ptr =
-        VulkanStrings.stringsToPointerBuffer(stack, enable_layers);
+        VulkanStrings.stringsToPointerBuffer(stack, enabled_layers);
       final PointerBuffer enable_extensions_ptr =
-        VulkanStrings.stringsToPointerBuffer(stack, enable_extensions);
+        VulkanStrings.stringsToPointerBuffer(stack, enabled_extensions);
 
       final VulkanApplicationInfo app_info =
         info.applicationInfo();
@@ -229,7 +239,17 @@ public final class VulkanLWJGLInstanceProvider implements
         new VkInstance(instance_ptr.get(), instance_info);
 
       LOG.debug("created instance: {}", instance);
-      return new VulkanLWJGLInstance(instance);
+
+      final Map<String, VulkanExtensionType> available = this.extensions.extensions();
+      final Map<String, VulkanExtensionType> enabled = new HashMap<>(available.size());
+      for (final String name : enabled_extensions) {
+        final VulkanExtensionType extension = available.get(name);
+        if (extension != null) {
+          enabled.put(name, extension);
+        }
+      }
+
+      return new VulkanLWJGLInstance(instance, enabled);
     }
   }
 }

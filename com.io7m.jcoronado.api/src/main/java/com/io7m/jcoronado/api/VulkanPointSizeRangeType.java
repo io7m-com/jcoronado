@@ -20,9 +20,8 @@ import com.io7m.immutables.styles.ImmutablesStyleType;
 import org.immutables.value.Value;
 
 /**
- * The inclusive range of supported sizes for points. Values written to
- * variables decorated with the PointSize built-in decoration are clamped to
- * this range.
+ * The inclusive range of supported sizes for points. Values written to variables decorated with the
+ * PointSize built-in decoration are clamped to this range.
  */
 
 @ImmutablesStyleType

@@ -39,8 +39,8 @@ public interface VulkanPhysicalDeviceMemoryPropertiesType
   List<VulkanMemoryHeap> heaps();
 
   /**
-   * @return The memory types that can be used to access memory allocated
-   * from the heaps specified by {@link #heaps()}
+   * @return The memory types that can be used to access memory allocated from the heaps specified
+   * by {@link #heaps()}
    */
 
   @Value.Parameter

@@ -51,16 +51,16 @@ public interface VulkanQueueFamilyPropertiesType
   Set<VulkanQueueFamilyPropertyFlag> queueFlags();
 
   /**
-   * @return The unsigned integer count of meaningful bits in the timestamps
-   * written via vkCmdWriteTimestamp.
+   * @return The unsigned integer count of meaningful bits in the timestamps written via
+   * vkCmdWriteTimestamp.
    */
 
   @Value.Parameter
   int timestampValidBits();
 
   /**
-   * @return The minimum granularity supported for image transfer operations
-   * on the queues in this queue family.
+   * @return The minimum granularity supported for image transfer operations on the queues in this
+   * queue family.
    */
 
   @Value.Parameter

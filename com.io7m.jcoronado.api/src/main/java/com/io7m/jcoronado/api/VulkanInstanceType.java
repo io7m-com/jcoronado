@@ -17,6 +17,9 @@
 package com.io7m.jcoronado.api;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 
 /**
  * An initialized instance.
@@ -34,4 +37,46 @@ public interface VulkanInstanceType extends VulkanObjectType
 
   List<VulkanPhysicalDeviceType> physicalDevices()
     throws VulkanException;
+
+  /**
+   * @return The enabled extensions for the instance
+   *
+   * @throws VulkanException On errors
+   */
+
+  Map<String, VulkanExtensionType> enabledExtensions()
+    throws VulkanException;
+
+  /**
+   * Find and cast an extension with a given name to the correct API type.
+   *
+   * @param name  The extension name
+   * @param clazz The intended extension type
+   * @param <T>   The precise type
+   *
+   * @return The extension with the correct type, or nothing if the extension either did not exist
+   * or did not have the right type
+   *
+   * @throws VulkanException On errors
+   */
+
+  @SuppressWarnings("unchecked")
+  default <T extends VulkanExtensionType> Optional<T> findEnabledExtension(
+    final String name,
+    final Class<T> clazz)
+    throws VulkanException
+  {
+    Objects.requireNonNull(name, "name");
+    Objects.requireNonNull(clazz, "clazz");
+
+    final Map<String, VulkanExtensionType> map = this.enabledExtensions();
+    return Optional.ofNullable(map.get(name))
+      .flatMap(ext -> {
+        final Class<? extends VulkanExtensionType> extension_class = ext.getClass();
+        if (clazz.isAssignableFrom(extension_class)) {
+          return Optional.of((T) ext);
+        }
+        return Optional.empty();
+      });
+  }
 }

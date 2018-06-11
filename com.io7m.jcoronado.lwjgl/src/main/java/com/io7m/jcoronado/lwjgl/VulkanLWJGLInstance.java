@@ -20,6 +20,7 @@ import com.io7m.jcoronado.api.VulkanChecks;
 import com.io7m.jcoronado.api.VulkanComputeWorkGroupCount;
 import com.io7m.jcoronado.api.VulkanComputeWorkGroupSize;
 import com.io7m.jcoronado.api.VulkanException;
+import com.io7m.jcoronado.api.VulkanExtensionType;
 import com.io7m.jcoronado.api.VulkanExtent3D;
 import com.io7m.jcoronado.api.VulkanInstanceType;
 import com.io7m.jcoronado.api.VulkanLineWidthRange;
@@ -59,8 +60,10 @@ import org.slf4j.LoggerFactory;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
@@ -71,12 +74,17 @@ final class VulkanLWJGLInstance
 
   private final VkInstance instance;
   private final MemoryStack initial_stack;
+  private final Map<String, VulkanExtensionType> extensions_read;
 
   VulkanLWJGLInstance(
-    final VkInstance in_instance)
+    final VkInstance in_instance,
+    final Map<String, VulkanExtensionType> in_extensions)
   {
     this.instance = Objects.requireNonNull(in_instance, "instance");
     this.initial_stack = MemoryStack.create();
+    this.extensions_read =
+      Collections.unmodifiableMap(
+        Objects.requireNonNull(in_extensions, "in_extensions"));
   }
 
   private static List<VulkanQueueFamilyProperties> parsePhysicalDeviceQueueFamilies(
@@ -573,6 +581,12 @@ final class VulkanLWJGLInstance
     return devices;
   }
 
+  @Override
+  public Map<String, VulkanExtensionType> enabledExtensions()
+  {
+    return this.extensions_read;
+  }
+
   private VulkanLWJGLPhysicalDevice parsePhysicalDevice(
     final MemoryStack stack,
     final VkPhysicalDevice vk_device,
@@ -604,5 +618,10 @@ final class VulkanLWJGLInstance
       features,
       memory,
       queue_families);
+  }
+
+  VkInstance instance()
+  {
+    return this.instance;
   }
 }

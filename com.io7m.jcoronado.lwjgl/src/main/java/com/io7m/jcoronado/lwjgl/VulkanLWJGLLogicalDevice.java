@@ -95,7 +95,7 @@ final class VulkanLWJGLLogicalDevice
             queue_buffer);
 
           final VkQueue queue = new VkQueue(queue_buffer.get(0), this.device);
-          this.queues.add(new VulkanLWJGLQueue(this, queue, family));
+          this.queues.add(new VulkanLWJGLQueue(this, queue, family, queue_index));
         }
       }
     }

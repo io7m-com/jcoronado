@@ -20,11 +20,10 @@ import com.io7m.immutables.styles.ImmutablesStyleType;
 import org.immutables.value.Value;
 
 /**
- * the maximum number of local workgroups that can be dispatched by a single
- * dispatch command. These three values represent the maximum number of local
- * workgroups for the X, Y, and Z dimensions, respectively. The workgroup count
- * parameters to the dispatch commands must be less than or equal to the
- * corresponding limit.
+ * the maximum number of local workgroups that can be dispatched by a single dispatch command. These
+ * three values represent the maximum number of local workgroups for the X, Y, and Z dimensions,
+ * respectively. The workgroup count parameters to the dispatch commands must be less than or equal
+ * to the corresponding limit.
  *
  * @see "VkPhysicalDeviceLimits"
  */

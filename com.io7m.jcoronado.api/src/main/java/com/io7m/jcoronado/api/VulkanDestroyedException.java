@@ -19,8 +19,7 @@ package com.io7m.jcoronado.api;
 import java.util.Objects;
 
 /**
- * An exception raised by attempting to call a method on an object that has
- * been closed/destroyed.
+ * An exception raised by attempting to call a method on an object that has been closed/destroyed.
  */
 
 public final class VulkanDestroyedException extends VulkanException

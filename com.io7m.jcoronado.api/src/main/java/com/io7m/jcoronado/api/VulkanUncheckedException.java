@@ -16,28 +16,33 @@
 
 package com.io7m.jcoronado.api;
 
-import com.io7m.immutables.styles.ImmutablesStyleType;
-import org.immutables.value.Value;
+import java.util.Objects;
 
 /**
- * The maximum viewport dimensions in the X (width) and Y (height) dimensions, respectively.
+ * An exception type used to temporarily wrap exceptions in an unchecked wrapper (for use in
+ * streams and the like).
  */
 
-@ImmutablesStyleType
-@Value.Immutable
-public interface VulkanViewportDimensionsType
+public final class VulkanUncheckedException extends RuntimeException
 {
-  /**
-   * @return The maximum value in the X dimension
-   */
-
-  @Value.Parameter
-  int maximumX();
+  private final VulkanException cause;
 
   /**
-   * @return The maximum value in the Y dimension
+   * Construct an exception.
+   *
+   * @param in_cause The cause
    */
 
-  @Value.Parameter
-  int maximumY();
+  public VulkanUncheckedException(
+    final VulkanException in_cause)
+  {
+    super(Objects.requireNonNull(in_cause, "cause"));
+    this.cause = in_cause;
+  }
+
+  @Override
+  public synchronized VulkanException getCause()
+  {
+    return this.cause;
+  }
 }

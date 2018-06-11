@@ -29,4 +29,10 @@ public interface VulkanQueueType
    */
 
   VulkanQueueFamilyProperties queueFamilyProperties();
+
+  /**
+   * @return The index of the queue within the queue family to which it belongs
+   */
+
+  int queueIndex();
 }

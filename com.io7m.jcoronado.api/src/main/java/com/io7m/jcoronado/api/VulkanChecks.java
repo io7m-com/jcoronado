@@ -50,14 +50,15 @@ public final class VulkanChecks
         code,
         function,
         new StringBuilder(64)
-          .append("Vulkan function ")
+          .append("Function ")
           .append(function)
           .append(" returned 0x")
           .append(Integer.toUnsignedString(code, 16))
           .append(" (")
-          .append(VulkanErrorCodes.errorName(code)
-                    .orElse("Unrecognized error code"))
-          .append(")")
+          .append(Integer.toString(code))
+          .append(") (")
+          .append(VulkanErrorCodes.errorName(code).orElse("Unrecognized error code"))
+          .append(')')
           .toString());
     }
   }

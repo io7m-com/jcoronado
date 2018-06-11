@@ -90,8 +90,7 @@ public interface VulkanPhysicalDevicePropertiesType
     VK_PHYSICAL_DEVICE_TYPE_INTEGRATED_GPU(1),
 
     /**
-     * The device is typically a separate processor connected to the host via
-     * an interlink.
+     * The device is typically a separate processor connected to the host via an interlink.
      */
 
     VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU(2),

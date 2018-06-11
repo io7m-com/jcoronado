@@ -57,7 +57,7 @@ public final class VulkanErrorCodes
       for (final String name : properties.stringPropertyNames()) {
         final String value = properties.getProperty(name);
         final int ivalue = Integer.parseInt(value);
-        codes.put(Integer.valueOf(ivalue), value);
+        codes.put(Integer.valueOf(ivalue), name);
       }
       return codes;
     }

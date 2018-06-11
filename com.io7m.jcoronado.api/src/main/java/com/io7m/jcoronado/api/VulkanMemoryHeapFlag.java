@@ -29,10 +29,9 @@ public enum VulkanMemoryHeapFlag
   VK_MEMORY_HEAP_DEVICE_LOCAL_BIT(0x00000001),
 
   /**
-   * Specifies that in a logical device representing more than one physical
-   * device, there is a per-physical device instance of the heap memory. By
-   * default, an allocation from such a heap will be replicated to each
-   * physical device’s instance of the heap.
+   * Specifies that in a logical device representing more than one physical device, there is a
+   * per-physical device instance of the heap memory. By default, an allocation from such a heap
+   * will be replicated to each physical device’s instance of the heap.
    */
 
   VK_MEMORY_HEAP_MULTI_INSTANCE_BIT(0x00000002);

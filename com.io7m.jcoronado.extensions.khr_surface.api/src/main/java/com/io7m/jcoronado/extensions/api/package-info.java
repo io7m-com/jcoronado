@@ -14,30 +14,8 @@
  * IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-package com.io7m.jcoronado.api;
-
-import com.io7m.immutables.styles.ImmutablesStyleType;
-import org.immutables.value.Value;
-
 /**
- * The maximum viewport dimensions in the X (width) and Y (height) dimensions, respectively.
+ * Type-safe Vulkan frontend (Extensions API)
  */
 
-@ImmutablesStyleType
-@Value.Immutable
-public interface VulkanViewportDimensionsType
-{
-  /**
-   * @return The maximum value in the X dimension
-   */
-
-  @Value.Parameter
-  int maximumX();
-
-  /**
-   * @return The maximum value in the Y dimension
-   */
-
-  @Value.Parameter
-  int maximumY();
-}
+package com.io7m.jcoronado.extensions.api;

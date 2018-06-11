@@ -114,7 +114,7 @@ final class VulkanLWJGLPhysicalDevice
   }
 
   /**
-   * This method was not hand-written. See: com.io7m.jcoronado.tests.GenerateFeaturesToVkFeatures.
+   * This method was not hand-written. See: features-set2.sh
    */
 
   private static void packPhysicalDeviceFeatures(
@@ -142,8 +142,8 @@ final class VulkanLWJGLPhysicalDevice
       .occlusionQueryPrecise(features.occlusionQueryPrecise())
       .pipelineStatisticsQuery(features.pipelineStatisticsQuery())
       .robustBufferAccess(features.robustBufferAccess())
-      .sampleRateShading(features.sampleRateShading())
       .samplerAnisotropy(features.samplerAnisotropy())
+      .sampleRateShading(features.sampleRateShading())
       .shaderClipDistance(features.shaderClipDistance())
       .shaderCullDistance(features.shaderCullDistance())
       .shaderFloat64(features.shaderFloat64())
@@ -208,6 +208,11 @@ final class VulkanLWJGLPhysicalDevice
     }
     vk_queue_buffer.position(0);
     return vk_queue_buffer;
+  }
+
+  VkPhysicalDevice device()
+  {
+    return this.device;
   }
 
   @Override

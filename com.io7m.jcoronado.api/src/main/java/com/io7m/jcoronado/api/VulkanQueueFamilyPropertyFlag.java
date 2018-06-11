@@ -49,8 +49,7 @@ public enum VulkanQueueFamilyPropertyFlag
   VK_QUEUE_SPARSE_BINDING_BIT(0x00000008),
 
   /**
-   * Queues in this queue family support the
-   * VK_DEVICE_QUEUE_CREATE_PROTECTED_BIT bit.
+   * Queues in this queue family support the VK_DEVICE_QUEUE_CREATE_PROTECTED_BIT bit.
    */
 
   VK_QUEUE_PROTECTED_BIT(0x00000010);
