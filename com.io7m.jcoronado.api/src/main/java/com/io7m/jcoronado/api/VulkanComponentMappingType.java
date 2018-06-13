@@ -16,13 +16,44 @@
 
 package com.io7m.jcoronado.api;
 
+import com.io7m.immutables.styles.ImmutablesStyleType;
+import org.immutables.value.Value;
+
 /**
- * The type of Vulkan images.
+ * A structure specifying a color component mapping.
  *
- * @see "VkImage"
+ * @see "VkComponentMapping"
  */
 
-public interface VulkanImageType extends VulkanObjectType
+@ImmutablesStyleType
+@Value.Immutable
+public interface VulkanComponentMappingType
 {
+  /**
+   * @return The component value placed in the R component of the output vector.
+   */
 
+  @Value.Parameter
+  VulkanComponentSwizzle r();
+
+  /**
+   * @return The component value placed in the G component of the output vector.
+   */
+
+  @Value.Parameter
+  VulkanComponentSwizzle g();
+
+  /**
+   * @return The component value placed in the G component of the output vector.
+   */
+
+  @Value.Parameter
+  VulkanComponentSwizzle b();
+
+  /**
+   * @return The component value placed in the A component of the output vector.
+   */
+
+  @Value.Parameter
+  VulkanComponentSwizzle a();
 }

@@ -17,12 +17,66 @@
 package com.io7m.jcoronado.api;
 
 /**
- * The type of Vulkan images.
+ * The type of image view.
  *
- * @see "VkImage"
+ * @see "VkImageViewType"
  */
 
-public interface VulkanImageType extends VulkanObjectType
+public enum VulkanImageViewKind implements VulkanEnumIntegerType
 {
+  /**
+   * A 1D image
+   */
 
+  VK_IMAGE_VIEW_TYPE_1D(0),
+
+  /**
+   * A 2D image
+   */
+
+  VK_IMAGE_VIEW_TYPE_2D(1),
+
+  /**
+   * A 3D image
+   */
+
+  VK_IMAGE_VIEW_TYPE_3D(2),
+
+  /**
+   * A cube map
+   */
+
+  VK_IMAGE_VIEW_TYPE_CUBE(3),
+
+  /**
+   * A 1D array image
+   */
+
+  VK_IMAGE_VIEW_TYPE_1D_ARRAY(4),
+
+  /**
+   * A 2D array image
+   */
+
+  VK_IMAGE_VIEW_TYPE_2D_ARRAY(5),
+
+  /**
+   * A cube map array image
+   */
+
+  VK_IMAGE_VIEW_TYPE_CUBE_ARRAY(6);
+
+  private final int value;
+
+  VulkanImageViewKind(
+    final int i)
+  {
+    this.value = i;
+  }
+
+  @Override
+  public int value()
+  {
+    return this.value;
+  }
 }

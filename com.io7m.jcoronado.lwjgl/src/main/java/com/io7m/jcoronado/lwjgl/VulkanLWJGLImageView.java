@@ -16,53 +16,28 @@
 
 package com.io7m.jcoronado.lwjgl;
 
-import com.io7m.jcoronado.api.VulkanImageType;
+import com.io7m.jcoronado.api.VulkanImageViewType;
+import org.lwjgl.vulkan.VK10;
+import org.lwjgl.vulkan.VkDevice;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Objects;
 
-final class VulkanLWJGLImage extends VulkanLWJGLObject implements VulkanImageType
+final class VulkanLWJGLImageView extends VulkanLWJGLObject implements VulkanImageViewType
 {
-  private static final Logger LOG = LoggerFactory.getLogger(VulkanLWJGLImage.class);
+  private static final Logger LOG = LoggerFactory.getLogger(VulkanLWJGLImageView.class);
 
   private final long handle;
+  private final VkDevice device;
 
-  VulkanLWJGLImage(
-    final Ownership ownership,
+  VulkanLWJGLImageView(
+    final VkDevice in_device,
     final long in_handle)
   {
-    super(ownership);
+    super(Ownership.USER_OWNED);
+    this.device = Objects.requireNonNull(in_device, "device");
     this.handle = in_handle;
-  }
-
-  @Override
-  public boolean equals(final Object o)
-  {
-    if (this == o) {
-      return true;
-    }
-    if (o == null || !Objects.equals(this.getClass(), o.getClass())) {
-      return false;
-    }
-    final VulkanLWJGLImage that = (VulkanLWJGLImage) o;
-    return this.handle == that.handle;
-  }
-
-  @Override
-  public int hashCode()
-  {
-    return Objects.hash(Long.valueOf(this.handle));
-  }
-
-  @Override
-  public String toString()
-  {
-    return new StringBuilder(32)
-      .append("[VulkanLWJGLImage 0x")
-      .append(Long.toUnsignedString(this.handle, 16))
-      .append("]")
-      .toString();
   }
 
   @Override
@@ -74,11 +49,7 @@ final class VulkanLWJGLImage extends VulkanLWJGLObject implements VulkanImageTyp
   @Override
   protected void closeActual()
   {
-
-  }
-
-  long handle()
-  {
-    return this.handle;
+    LOG.debug("destroying image view: 0x{}", Long.toUnsignedString(this.handle, 16));
+    VK10.vkDestroyImageView(this.device, this.handle, null);
   }
 }

@@ -17,13 +17,21 @@
 package com.io7m.jcoronado.examples;
 
 import com.io7m.jcoronado.api.VulkanApplicationInfo;
+import com.io7m.jcoronado.api.VulkanComponentMapping;
+import com.io7m.jcoronado.api.VulkanComponentSwizzle;
 import com.io7m.jcoronado.api.VulkanException;
 import com.io7m.jcoronado.api.VulkanExtensionProperties;
 import com.io7m.jcoronado.api.VulkanExtensions;
 import com.io7m.jcoronado.api.VulkanExtent2D;
 import com.io7m.jcoronado.api.VulkanFormat;
+import com.io7m.jcoronado.api.VulkanImageAspectFlag;
+import com.io7m.jcoronado.api.VulkanImageSubresourceRange;
 import com.io7m.jcoronado.api.VulkanImageType;
 import com.io7m.jcoronado.api.VulkanImageUsageFlag;
+import com.io7m.jcoronado.api.VulkanImageViewCreateFlag;
+import com.io7m.jcoronado.api.VulkanImageViewCreateInfo;
+import com.io7m.jcoronado.api.VulkanImageViewKind;
+import com.io7m.jcoronado.api.VulkanImageViewType;
 import com.io7m.jcoronado.api.VulkanInstanceCreateInfo;
 import com.io7m.jcoronado.api.VulkanInstanceProviderType;
 import com.io7m.jcoronado.api.VulkanInstanceType;
@@ -60,6 +68,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static com.io7m.jcoronado.api.VulkanQueueFamilyPropertyFlag.VK_QUEUE_GRAPHICS_BIT;
 
@@ -259,16 +268,58 @@ public final class HelloVulkan
                      graphics_queue,
                      presentation_queue)) {
 
-              {
-                final List<VulkanImageType> images = swap_chain.images();
-                images.forEach(image -> LOG.debug("image: {}", image));
-              }
+              final List<VulkanImageType> images = swap_chain.images();
+              final List<VulkanImageViewType> views =
+                images.stream()
+                  .map(image -> createImageViewForImage(surface_format, device, image))
+                  .collect(Collectors.toList());
+
+              views.forEach(view -> {
+                try {
+                  view.close();
+                } catch (final VulkanException e) {
+                  throw new VulkanUncheckedException(e);
+                }
+              });
             }
           }
         }
       }
+    } catch (final VulkanUncheckedException e) {
+      throw e.getCause();
     } finally {
       GLFW_ERROR_CALLBACK.close();
+    }
+  }
+
+  private static VulkanImageViewType createImageViewForImage(
+    final VulkanSurfaceFormatKHR surface_format,
+    final VulkanLogicalDeviceType device,
+    final VulkanImageType image)
+  {
+    try {
+      final VulkanImageSubresourceRange range =
+        VulkanImageSubresourceRange.of(
+          Set.of(VulkanImageAspectFlag.VK_IMAGE_ASPECT_COLOR_BIT),
+          0,
+          1,
+          0,
+          1);
+
+      final Set<VulkanImageViewCreateFlag> flags = Set.of();
+      return device.createImageView(VulkanImageViewCreateInfo.of(
+        flags,
+        image,
+        VulkanImageViewKind.VK_IMAGE_VIEW_TYPE_2D,
+        surface_format.format(),
+        VulkanComponentMapping.of(
+          VulkanComponentSwizzle.VK_COMPONENT_SWIZZLE_IDENTITY,
+          VulkanComponentSwizzle.VK_COMPONENT_SWIZZLE_IDENTITY,
+          VulkanComponentSwizzle.VK_COMPONENT_SWIZZLE_IDENTITY,
+          VulkanComponentSwizzle.VK_COMPONENT_SWIZZLE_IDENTITY),
+        range));
+    } catch (final VulkanException e) {
+      throw new VulkanUncheckedException(e);
     }
   }
 

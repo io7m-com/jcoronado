@@ -77,6 +77,20 @@ public interface VulkanLogicalDeviceType extends VulkanObjectType
     throws VulkanException;
 
   /**
+   * Create an image view.
+   *
+   * @param info The image view creation info
+   *
+   * @return An image view
+   *
+   * @throws VulkanException On errors
+   */
+
+  VulkanImageViewType createImageView(
+    VulkanImageViewCreateInfo info)
+    throws VulkanException;
+
+  /**
    * Find and cast an extension with a given name to the correct API type.
    *
    * @param name  The extension name

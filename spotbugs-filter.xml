@@ -3,13 +3,14 @@
 
   <Match>
     <Or>
-      <Class name="~com\.io7m\.jcoronado\..+\$InitShim"/>
-      <Class name="~com\.io7m\.jcoronado\..+\$Builder"/>
       <Class name="com.io7m.jcoronado.api.VulkanApplicationInfo"/>
+      <Class name="com.io7m.jcoronado.api.VulkanComponentMapping"/>
       <Class name="com.io7m.jcoronado.api.VulkanComputeWorkGroupCount"/>
       <Class name="com.io7m.jcoronado.api.VulkanComputeWorkGroupSize"/>
       <Class name="com.io7m.jcoronado.api.VulkanExtensionProperties"/>
       <Class name="com.io7m.jcoronado.api.VulkanExtent3D"/>
+      <Class name="com.io7m.jcoronado.api.VulkanImageSubresourceRange"/>
+      <Class name="com.io7m.jcoronado.api.VulkanImageViewCreateInfo"/>
       <Class name="com.io7m.jcoronado.api.VulkanInstanceCreateInfo"/>
       <Class name="com.io7m.jcoronado.api.VulkanLayerProperties"/>
       <Class name="com.io7m.jcoronado.api.VulkanLineWidthRange"/>
@@ -26,9 +27,11 @@
       <Class name="com.io7m.jcoronado.api.VulkanVersion"/>
       <Class name="com.io7m.jcoronado.api.VulkanViewportBoundsRange"/>
       <Class name="com.io7m.jcoronado.api.VulkanViewportDimensions"/>
-      <Class name="com.io7m.jcoronado.extensions.api.VulkanSurfaceFormatKHR"/>
+      <Class name="~com\.io7m\.jcoronado\..+\$Builder"/>
       <Class name="com.io7m.jcoronado.extensions.api.VulkanSurfaceCapabilitiesKHR"/>
+      <Class name="com.io7m.jcoronado.extensions.api.VulkanSurfaceFormatKHR"/>
       <Class name="com.io7m.jcoronado.extensions.api.VulkanSwapChainCreateInfo"/>
+      <Class name="~com\.io7m\.jcoronado\..+\$InitShim"/>
     </Or>
   </Match>
 

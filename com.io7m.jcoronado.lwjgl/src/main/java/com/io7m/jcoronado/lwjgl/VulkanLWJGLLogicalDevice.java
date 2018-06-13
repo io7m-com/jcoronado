@@ -16,8 +16,16 @@
 
 package com.io7m.jcoronado.lwjgl;
 
+import com.io7m.jcoronado.api.VulkanChecks;
+import com.io7m.jcoronado.api.VulkanComponentMapping;
+import com.io7m.jcoronado.api.VulkanDestroyedException;
+import com.io7m.jcoronado.api.VulkanEnumMaps;
 import com.io7m.jcoronado.api.VulkanException;
 import com.io7m.jcoronado.api.VulkanExtensionType;
+import com.io7m.jcoronado.api.VulkanImageSubresourceRange;
+import com.io7m.jcoronado.api.VulkanImageViewCreateFlag;
+import com.io7m.jcoronado.api.VulkanImageViewCreateInfo;
+import com.io7m.jcoronado.api.VulkanImageViewType;
 import com.io7m.jcoronado.api.VulkanLogicalDeviceCreateInfo;
 import com.io7m.jcoronado.api.VulkanLogicalDeviceQueueCreateInfo;
 import com.io7m.jcoronado.api.VulkanLogicalDeviceType;
@@ -27,7 +35,10 @@ import com.io7m.jcoronado.api.VulkanQueueType;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.vulkan.VK10;
+import org.lwjgl.vulkan.VkComponentMapping;
 import org.lwjgl.vulkan.VkDevice;
+import org.lwjgl.vulkan.VkImageSubresourceRange;
+import org.lwjgl.vulkan.VkImageViewCreateInfo;
 import org.lwjgl.vulkan.VkQueue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,6 +48,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 final class VulkanLWJGLLogicalDevice
   extends VulkanLWJGLObject implements VulkanLogicalDeviceType
@@ -53,7 +65,6 @@ final class VulkanLWJGLLogicalDevice
   private final Map<String, VulkanExtensionType> extensions_enabled_read_only;
 
   VulkanLWJGLLogicalDevice(
-    final VulkanLWJGLExtensionsRegistry in_extensions_registry,
     final Map<String, VulkanExtensionType> in_extensions_enabled,
     final VulkanLWJGLPhysicalDevice in_physical_device,
     final VkDevice in_device,
@@ -79,6 +90,36 @@ final class VulkanLWJGLLogicalDevice
       MemoryStack.create();
 
     this.initializeQueues();
+  }
+
+  private static VkImageSubresourceRange packSubresourceRange(
+    final MemoryStack stack,
+    final VulkanImageSubresourceRange range)
+  {
+    return VkImageSubresourceRange.mallocStack(stack)
+      .aspectMask(VulkanEnumMaps.packValues(range.flags()))
+      .baseArrayLayer(range.baseArrayLayer())
+      .baseMipLevel(range.baseMipLevel())
+      .layerCount(range.layerCount())
+      .levelCount(range.levelCount());
+  }
+
+  private static int packFlags(
+    final Set<VulkanImageViewCreateFlag> flags)
+  {
+    return VulkanEnumMaps.packValues(flags);
+  }
+
+  private static VkComponentMapping packComponentMapping(
+    final MemoryStack stack,
+    final VulkanComponentMapping components)
+  {
+    return VkComponentMapping.mallocStack(stack)
+      .set(
+        components.r().value(),
+        components.g().value(),
+        components.b().value(),
+        components.a().value());
   }
 
   VkDevice device()
@@ -130,14 +171,50 @@ final class VulkanLWJGLLogicalDevice
 
   @Override
   public List<VulkanQueueType> queues()
+    throws VulkanDestroyedException
   {
+    this.checkNotClosed();
     return this.queues_read;
   }
 
   @Override
   public Map<String, VulkanExtensionType> enabledExtensions()
+    throws VulkanDestroyedException
   {
+    this.checkNotClosed();
     return this.extensions_enabled_read_only;
+  }
+
+  @Override
+  public VulkanImageViewType createImageView(
+    final VulkanImageViewCreateInfo info)
+    throws VulkanException
+  {
+    Objects.requireNonNull(info, "info");
+
+    this.checkNotClosed();
+
+    final VulkanLWJGLImage image =
+      VulkanLWJGLClassChecks.check(info.image(), VulkanLWJGLImage.class);
+
+    try (MemoryStack stack = this.stack_initial.push()) {
+      final VkImageViewCreateInfo create_info =
+        VkImageViewCreateInfo.mallocStack(stack)
+          .sType(VK10.VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO)
+          .components(packComponentMapping(stack, info.components()))
+          .flags(packFlags(info.flags()))
+          .format(info.format().value())
+          .image(image.handle())
+          .subresourceRange(packSubresourceRange(stack, info.subresourceRange()))
+          .viewType(info.viewType().value());
+
+      final long[] view = new long[1];
+      VulkanChecks.checkReturnCode(
+        VK10.vkCreateImageView(this.device, create_info, null, view),
+        "vkCreateImageView");
+
+      return new VulkanLWJGLImageView(this.device, view[0]);
+    }
   }
 
   @Override

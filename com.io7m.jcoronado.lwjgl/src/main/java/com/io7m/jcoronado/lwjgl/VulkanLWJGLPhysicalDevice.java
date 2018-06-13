@@ -430,7 +430,6 @@ final class VulkanLWJGLPhysicalDevice
         registry.ofNames(enabled_extensions);
 
       return new VulkanLWJGLLogicalDevice(
-        registry,
         enabled,
         this,
         vk_logical_device,
