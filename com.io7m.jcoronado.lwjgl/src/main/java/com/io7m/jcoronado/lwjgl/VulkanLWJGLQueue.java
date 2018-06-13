@@ -24,6 +24,8 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Objects;
 
+import static com.io7m.jcoronado.lwjgl.VulkanLWJGLObject.Ownership.VULKAN_OWNED;
+
 final class VulkanLWJGLQueue
   extends VulkanLWJGLObject implements VulkanQueueType
 {
@@ -41,6 +43,8 @@ final class VulkanLWJGLQueue
     final VulkanQueueFamilyProperties in_properties,
     final int in_queue_index)
   {
+    super(VULKAN_OWNED);
+
     this.device =
       Objects.requireNonNull(in_device, "device");
     this.queue =

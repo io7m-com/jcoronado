@@ -17,28 +17,41 @@
 package com.io7m.jcoronado.lwjgl;
 
 import com.io7m.jcoronado.api.VulkanDestroyedException;
-import com.io7m.jcoronado.api.VulkanException;
 import com.io7m.jcoronado.api.VulkanObjectType;
 import org.slf4j.Logger;
 
+import java.util.Objects;
+
 abstract class VulkanLWJGLObject implements VulkanObjectType
 {
+  private final Ownership ownership;
   private boolean closed;
 
-  VulkanLWJGLObject()
+  VulkanLWJGLObject(
+    final Ownership in_ownership)
   {
     this.closed = false;
+    this.ownership = Objects.requireNonNull(in_ownership, "ownership");
   }
 
   protected abstract Logger logger();
 
   @Override
   public final void close()
-    throws VulkanException
   {
     if (!this.closed) {
       try {
-        this.closeActual();
+        switch (this.ownership) {
+          case USER_OWNED:
+            this.closeActual();
+            break;
+          case VULKAN_OWNED:
+            // XXX: Vulkan will free the object itself, but should the user be told that
+            //      they did something wrong by trying to close it themselves?
+            break;
+        }
+
+
       } finally {
         this.closed = true;
       }
@@ -54,4 +67,24 @@ abstract class VulkanLWJGLObject implements VulkanObjectType
   }
 
   protected abstract void closeActual();
+
+  /**
+   * The ownership status of the object.
+   */
+
+  enum Ownership
+  {
+
+    /**
+     * The user owns the object and is responsible for destroying it.
+     */
+
+    USER_OWNED,
+
+    /**
+     * Vulkan owns the object and the user is not responsible for destroying it.
+     */
+
+    VULKAN_OWNED
+  }
 }

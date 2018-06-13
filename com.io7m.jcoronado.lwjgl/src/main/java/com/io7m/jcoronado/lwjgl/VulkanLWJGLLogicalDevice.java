@@ -60,6 +60,8 @@ final class VulkanLWJGLLogicalDevice
     final VulkanLogicalDeviceCreateInfo in_creation)
     throws VulkanException
   {
+    super(Ownership.USER_OWNED);
+
     this.extensions_enabled_read_only =
       Collections.unmodifiableMap(
         Objects.requireNonNull(in_extensions_enabled, "in_extensions"));

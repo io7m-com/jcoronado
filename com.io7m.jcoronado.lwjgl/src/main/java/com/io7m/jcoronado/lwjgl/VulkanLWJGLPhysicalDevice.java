@@ -79,6 +79,8 @@ final class VulkanLWJGLPhysicalDevice
     final VulkanPhysicalDeviceMemoryProperties in_memory,
     final List<VulkanQueueFamilyProperties> in_queue_families)
   {
+    super(Ownership.USER_OWNED);
+
     this.instance =
       Objects.requireNonNull(in_instance, "instance");
     this.device =

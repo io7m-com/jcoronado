@@ -77,16 +77,13 @@ final class VulkanLWJGLInstance
   private final Map<String, VulkanExtensionType> extensions_enabled_read_only;
   private final VulkanLWJGLExtensionsRegistry extension_registry;
 
-  VulkanLWJGLExtensionsRegistry extensionRegistry()
-  {
-    return this.extension_registry;
-  }
-
   VulkanLWJGLInstance(
     final VkInstance in_instance,
     final VulkanLWJGLExtensionsRegistry in_extension_registry,
     final Map<String, VulkanExtensionType> in_extensions_enabled)
   {
+    super(Ownership.USER_OWNED);
+
     this.instance =
       Objects.requireNonNull(in_instance, "instance");
     this.extension_registry =
@@ -521,6 +518,11 @@ final class VulkanLWJGLInstance
     return VulkanLineWidthRange.of(
       buffer.get(0),
       buffer.get(1));
+  }
+
+  VulkanLWJGLExtensionsRegistry extensionRegistry()
+  {
+    return this.extension_registry;
   }
 
   @Override

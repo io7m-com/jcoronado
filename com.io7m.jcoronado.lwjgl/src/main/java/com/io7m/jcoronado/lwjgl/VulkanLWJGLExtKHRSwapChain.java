@@ -20,6 +20,7 @@ import com.io7m.jcoronado.api.VulkanChecks;
 import com.io7m.jcoronado.api.VulkanEnumMaps;
 import com.io7m.jcoronado.api.VulkanException;
 import com.io7m.jcoronado.api.VulkanExtent2D;
+import com.io7m.jcoronado.api.VulkanImageType;
 import com.io7m.jcoronado.api.VulkanIncompatibleClassException;
 import com.io7m.jcoronado.api.VulkanLogicalDeviceType;
 import com.io7m.jcoronado.api.VulkanUncheckedException;
@@ -37,6 +38,11 @@ import java.nio.IntBuffer;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.LongStream;
+
+import static com.io7m.jcoronado.lwjgl.VulkanLWJGLObject.Ownership.USER_OWNED;
+import static com.io7m.jcoronado.lwjgl.VulkanLWJGLObject.Ownership.VULKAN_OWNED;
 
 /**
  * Access to the {@code VK_KHR_swapchain} extension.
@@ -54,6 +60,37 @@ public final class VulkanLWJGLExtKHRSwapChain implements VulkanExtKHRSwapChainTy
     this.stack_initial = MemoryStack.create();
   }
 
+  private static IntBuffer packQueueIndices(
+    final MemoryStack stack,
+    final List<Integer> integers)
+  {
+    final IntBuffer buffer = stack.mallocInt(integers.size());
+    for (int index = 0; index < integers.size(); ++index) {
+      buffer.put(index, integers.get(index).intValue());
+    }
+    return buffer;
+  }
+
+  private static long mapOldSwapChain(
+    final Optional<VulkanKHRSwapChainType> swap_chain)
+  {
+    return swap_chain.map(chain -> {
+      try {
+        return Long.valueOf(
+          VulkanLWJGLClassChecks.check(chain, VulkanLWJGLKHRSwapChain.class).chain());
+      } catch (VulkanIncompatibleClassException e) {
+        throw new VulkanUncheckedException(e);
+      }
+    }).orElse(Long.valueOf(0L)).longValue();
+  }
+
+  private static VkExtent2D packExtent(
+    final MemoryStack stack,
+    final VulkanExtent2D e)
+  {
+    return VkExtent2D.mallocStack(stack).set(e.width(), e.height());
+  }
+
   @Override
   public String toString()
   {
@@ -66,40 +103,29 @@ public final class VulkanLWJGLExtKHRSwapChain implements VulkanExtKHRSwapChainTy
       .toString();
   }
 
-  private static final class VulkanLWJGLKHRSwapChain
-    extends VulkanLWJGLObject implements VulkanKHRSwapChainType
+  private List<VulkanImageType> images(
+    final VulkanLWJGLKHRSwapChain chain)
+    throws VulkanException
   {
-    private final long chain;
-    private final VkDevice device;
+    final int[] count = new int[1];
 
-    VulkanLWJGLKHRSwapChain(
-      final VkDevice in_device,
-      final long in_chain)
-    {
-      this.chain = in_chain;
-      this.device = Objects.requireNonNull(in_device, "Device");
+    VulkanChecks.checkReturnCode(
+      KHRSwapchain.vkGetSwapchainImagesKHR(chain.device, chain.chain, count, null),
+      "vkGetSwapchainImagesKHR");
+
+    final int image_count = count[0];
+    if (image_count == 0) {
+      return List.of();
     }
 
-    long chain()
-    {
-      return this.chain;
-    }
+    final long[] images = new long[image_count];
+    VulkanChecks.checkReturnCode(
+      KHRSwapchain.vkGetSwapchainImagesKHR(chain.device, chain.chain, count, images),
+      "vkGetSwapchainImagesKHR");
 
-    @Override
-    protected Logger logger()
-    {
-      return LOG;
-    }
-
-    @Override
-    protected void closeActual()
-    {
-      if (LOG.isDebugEnabled()) {
-        LOG.debug("destroying swapchain: {}", Long.toUnsignedString(this.chain, 16));
-      }
-
-      KHRSwapchain.vkDestroySwapchainKHR(this.device, this.chain, null);
-    }
+    return LongStream.of(images)
+      .mapToObj(image -> new VulkanLWJGLImage(VULKAN_OWNED, image))
+      .collect(Collectors.toList());
   }
 
   @Override
@@ -147,38 +173,56 @@ public final class VulkanLWJGLExtKHRSwapChain implements VulkanExtKHRSwapChainTy
       if (LOG.isDebugEnabled()) {
         LOG.debug("created swapchain: {}", Long.toUnsignedString(swapchain_address, 16));
       }
-      return new VulkanLWJGLKHRSwapChain(device.device(), swapchain_address);
+      return new VulkanLWJGLKHRSwapChain(this, device.device(), swapchain_address);
     }
   }
 
-  private static IntBuffer packQueueIndices(
-    final MemoryStack stack,
-    final List<Integer> integers)
+  private static final class VulkanLWJGLKHRSwapChain
+    extends VulkanLWJGLObject implements VulkanKHRSwapChainType
   {
-    final IntBuffer buffer = stack.mallocInt(integers.size());
-    for (int index = 0; index < integers.size(); ++index) {
-      buffer.put(index, integers.get(index).intValue());
-    }
-    return buffer;
-  }
+    private final long chain;
+    private final VkDevice device;
+    private final VulkanLWJGLExtKHRSwapChain extension;
 
-  private static long mapOldSwapChain(
-    final Optional<VulkanKHRSwapChainType> swap_chain)
-  {
-    return swap_chain.map(chain -> {
-      try {
-        return Long.valueOf(
-          VulkanLWJGLClassChecks.check(chain, VulkanLWJGLKHRSwapChain.class).chain());
-      } catch (VulkanIncompatibleClassException e) {
-        throw new VulkanUncheckedException(e);
+    VulkanLWJGLKHRSwapChain(
+      final VulkanLWJGLExtKHRSwapChain in_extension,
+      final VkDevice in_device,
+      final long in_chain)
+    {
+      super(USER_OWNED);
+
+      this.extension = Objects.requireNonNull(in_extension, "Extension");
+      this.chain = in_chain;
+      this.device = Objects.requireNonNull(in_device, "Device");
+    }
+
+    long chain()
+    {
+      return this.chain;
+    }
+
+    @Override
+    protected Logger logger()
+    {
+      return LOG;
+    }
+
+    @Override
+    protected void closeActual()
+    {
+      if (LOG.isDebugEnabled()) {
+        LOG.debug("destroying swapchain: {}", Long.toUnsignedString(this.chain, 16));
       }
-    }).orElse(Long.valueOf(0L)).longValue();
-  }
 
-  private static VkExtent2D packExtent(
-    final MemoryStack stack,
-    final VulkanExtent2D e)
-  {
-    return VkExtent2D.mallocStack(stack).set(e.width(), e.height());
+      KHRSwapchain.vkDestroySwapchainKHR(this.device, this.chain, null);
+    }
+
+    @Override
+    public List<VulkanImageType> images()
+      throws VulkanException
+    {
+      this.checkNotClosed();
+      return this.extension.images(this);
+    }
   }
 }

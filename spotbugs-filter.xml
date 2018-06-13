@@ -61,6 +61,13 @@
   </Match>
 
   <Match>
+    <And>
+      <Class name="com.io7m.jcoronado.lwjgl.VulkanLWJGLExtKHRSwapChain"/>
+      <Bug pattern="FCCD_FIND_CLASS_CIRCULAR_DEPENDENCY"/>
+    </And>
+  </Match>
+
+  <Match>
     <Or>
       <Bug pattern="CE_CLASS_ENVY"/>
       <Bug pattern="CRLF_INJECTION_LOGS"/>

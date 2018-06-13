@@ -14,7 +14,7 @@
  * IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-package com.io7m.jcoronado.tests;
+package com.io7m.jcoronado.examples;
 
 import com.io7m.jcoronado.api.VulkanApplicationInfo;
 import com.io7m.jcoronado.api.VulkanException;
@@ -22,6 +22,7 @@ import com.io7m.jcoronado.api.VulkanExtensionProperties;
 import com.io7m.jcoronado.api.VulkanExtensions;
 import com.io7m.jcoronado.api.VulkanExtent2D;
 import com.io7m.jcoronado.api.VulkanFormat;
+import com.io7m.jcoronado.api.VulkanImageType;
 import com.io7m.jcoronado.api.VulkanImageUsageFlag;
 import com.io7m.jcoronado.api.VulkanInstanceCreateInfo;
 import com.io7m.jcoronado.api.VulkanInstanceProviderType;
@@ -62,14 +63,14 @@ import java.util.Set;
 
 import static com.io7m.jcoronado.api.VulkanQueueFamilyPropertyFlag.VK_QUEUE_GRAPHICS_BIT;
 
-public final class Demo
+public final class HelloVulkan
 {
-  private static final Logger LOG = LoggerFactory.getLogger(Demo.class);
+  private static final Logger LOG = LoggerFactory.getLogger(HelloVulkan.class);
 
   private static final GLFWErrorCallback GLFW_ERROR_CALLBACK =
     GLFWErrorCallback.createPrint();
 
-  private Demo()
+  private HelloVulkan()
   {
 
   }
@@ -105,10 +106,10 @@ public final class Demo
       final Set<String> required_extensions =
         requiredGLFWExtensions();
 
-      available_extensions.forEach(Demo::showAvailableExtension);
-      available_layers.forEach(Demo::showAvailableLayer);
-      required_extensions.forEach(Demo::showRequiredExtension);
-      required_layers.forEach(Demo::showRequiredLayer);
+      available_extensions.forEach(HelloVulkan::showAvailableExtension);
+      available_layers.forEach(HelloVulkan::showAvailableLayer);
+      required_extensions.forEach(HelloVulkan::showRequiredExtension);
+      required_layers.forEach(HelloVulkan::showRequiredLayer);
 
       /*
        * Filter the available extensions and layers based on the requirements expressed above.
@@ -165,8 +166,7 @@ public final class Demo
         final List<VulkanPhysicalDeviceType> physical_devices = instance.physicalDevices();
 
         try (final VulkanPhysicalDeviceType physical_device =
-               pickPhysicalDevice(khr_surface_ext, surface, physical_devices)
-                 .orElseThrow(() -> new IllegalStateException("No suitable device found"))) {
+               pickPhysicalDeviceOrAbort(khr_surface_ext, surface, physical_devices)) {
 
           LOG.debug("physical device: {}", physical_device);
 
@@ -248,40 +248,21 @@ public final class Demo
             LOG.debug("graphics queue: {}", graphics_queue);
             LOG.debug("presentation queue: {}", presentation_queue);
 
-            final VulkanExtKHRSwapChainType khr_swapchain_ext =
-              device.findEnabledExtension("VK_KHR_swapchain", VulkanExtKHRSwapChainType.class)
-                .orElseThrow(() -> new IllegalStateException("Missing VK_KHR_swapchain extension"));
-
-            final int minimum_image_count =
-              pickMinimumImageCount(surface_caps);
-
-            final List<Integer> queue_indices = new ArrayList<>();
-            final VulkanSharingMode image_sharing_mode =
-              pickImageSharingMode(graphics_queue, presentation_queue, queue_indices);
-            final Set<VulkanImageUsageFlag> image_usage_flags =
-              Set.of(VulkanImageUsageFlag.VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT);
-            final Set<VulkanCompositeAlphaFlagKHR> surface_alpha_flags =
-              Set.of(VulkanCompositeAlphaFlagKHR.VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR);
-
-            final VulkanSwapChainCreateInfo swap_chain_create_info =
-              VulkanSwapChainCreateInfo.of(
-                surface,
-                minimum_image_count,
-                surface_format.format(),
-                surface_format.colorSpace(),
-                surface_extent,
-                1,
-                image_usage_flags,
-                image_sharing_mode,
-                queue_indices,
-                surface_caps.currentTransform(),
-                surface_alpha_flags,
-                surface_present,
-                true,
-                Optional.empty());
-
             try (VulkanExtKHRSwapChainType.VulkanKHRSwapChainType swap_chain =
-                   khr_swapchain_ext.swapChainCreate(device, swap_chain_create_info)) {
+                   createSwapChain(
+                     surface,
+                     surface_format,
+                     surface_present,
+                     surface_caps,
+                     surface_extent,
+                     device,
+                     graphics_queue,
+                     presentation_queue)) {
+
+              {
+                final List<VulkanImageType> images = swap_chain.images();
+                images.forEach(image -> LOG.debug("image: {}", image));
+              }
             }
           }
         }
@@ -289,6 +270,71 @@ public final class Demo
     } finally {
       GLFW_ERROR_CALLBACK.close();
     }
+  }
+
+  private static VulkanExtKHRSwapChainType.VulkanKHRSwapChainType createSwapChain(
+    final VulkanExtKHRSurfaceType.VulkanKHRSurfaceType surface,
+    final VulkanSurfaceFormatKHR surface_format,
+    final VulkanPresentModeKHR surface_present,
+    final VulkanSurfaceCapabilitiesKHR surface_caps,
+    final VulkanExtent2D surface_extent,
+    final VulkanLogicalDeviceType device,
+    final VulkanQueueType graphics_queue,
+    final VulkanQueueType presentation_queue)
+    throws VulkanException
+  {
+    final VulkanExtKHRSwapChainType khr_swapchain_ext =
+      getSwapChainExtension(device);
+
+    final int minimum_image_count =
+      pickMinimumImageCount(surface_caps);
+    final List<Integer> queue_indices = new ArrayList<>();
+    final VulkanSharingMode image_sharing_mode =
+      pickImageSharingMode(graphics_queue, presentation_queue, queue_indices);
+    final Set<VulkanImageUsageFlag> image_usage_flags =
+      Set.of(VulkanImageUsageFlag.VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT);
+    final Set<VulkanCompositeAlphaFlagKHR> surface_alpha_flags =
+      Set.of(VulkanCompositeAlphaFlagKHR.VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR);
+
+    LOG.debug("swap chain image count: {}", Integer.valueOf(minimum_image_count));
+    LOG.debug("swap chain image mode: {}", image_sharing_mode);
+
+    final VulkanSwapChainCreateInfo swap_chain_create_info =
+      VulkanSwapChainCreateInfo.of(
+        surface,
+        minimum_image_count,
+        surface_format.format(),
+        surface_format.colorSpace(),
+        surface_extent,
+        1,
+        image_usage_flags,
+        image_sharing_mode,
+        queue_indices,
+        surface_caps.currentTransform(),
+        surface_alpha_flags,
+        surface_present,
+        true,
+        Optional.empty());
+
+    return khr_swapchain_ext.swapChainCreate(device, swap_chain_create_info);
+  }
+
+  private static VulkanPhysicalDeviceType pickPhysicalDeviceOrAbort(
+    final VulkanExtKHRSurfaceType khr_surface_ext,
+    final VulkanExtKHRSurfaceType.VulkanKHRSurfaceType surface,
+    final List<VulkanPhysicalDeviceType> physical_devices)
+    throws VulkanException
+  {
+    return pickPhysicalDevice(khr_surface_ext, surface, physical_devices)
+      .orElseThrow(() -> new IllegalStateException("No suitable device found"));
+  }
+
+  private static VulkanExtKHRSwapChainType getSwapChainExtension(
+    final VulkanLogicalDeviceType device)
+    throws VulkanException
+  {
+    return device.findEnabledExtension("VK_KHR_swapchain", VulkanExtKHRSwapChainType.class)
+      .orElseThrow(() -> new IllegalStateException("Missing VK_KHR_swapchain extension"));
   }
 
   private static VulkanSharingMode pickImageSharingMode(
@@ -442,8 +488,8 @@ public final class Demo
 
     try {
       return devices.stream()
-        .filter(Demo::physicalDeviceHasSwapChainExtension)
-        .filter(Demo::physicalDeviceHasGraphicsQueue)
+        .filter(HelloVulkan::physicalDeviceHasSwapChainExtension)
+        .filter(HelloVulkan::physicalDeviceHasGraphicsQueue)
         .filter(device -> physicalDeviceHasPresentationQueue(khr_surface_ext, surface, device))
         .findFirst();
     } catch (final VulkanUncheckedException e) {

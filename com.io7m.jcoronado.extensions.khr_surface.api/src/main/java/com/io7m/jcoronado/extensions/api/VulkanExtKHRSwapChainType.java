@@ -18,8 +18,11 @@ package com.io7m.jcoronado.extensions.api;
 
 import com.io7m.jcoronado.api.VulkanException;
 import com.io7m.jcoronado.api.VulkanExtensionType;
+import com.io7m.jcoronado.api.VulkanImageType;
 import com.io7m.jcoronado.api.VulkanLogicalDeviceType;
 import com.io7m.jcoronado.api.VulkanObjectType;
+
+import java.util.List;
 
 /**
  * @see "VK_KHR_swapchain"
@@ -36,8 +39,8 @@ public interface VulkanExtKHRSwapChainType extends VulkanExtensionType
   /**
    * Create a new swap chain.
    *
-   * @param device  The physical device
-   * @param info The creation info
+   * @param device The physical device
+   * @param info   The creation info
    *
    * @return The capabilities of the given surface
    *
@@ -56,6 +59,13 @@ public interface VulkanExtKHRSwapChainType extends VulkanExtensionType
 
   interface VulkanKHRSwapChainType extends VulkanObjectType
   {
+    /**
+     * @return The list of images associated with the swap chain
+     *
+     * @throws VulkanException On errors
+     */
 
+    List<VulkanImageType> images()
+      throws VulkanException;
   }
 }

@@ -62,6 +62,59 @@ public final class VulkanLWJGLExtKHRSurface implements VulkanExtKHRSurfaceType
     this.stack_initial = MemoryStack.create();
   }
 
+  private static Set<VulkanCompositeAlphaFlagKHR> parseCompositeAlpha(
+    final int value)
+  {
+    final EnumSet<VulkanCompositeAlphaFlagKHR> results =
+      EnumSet.noneOf(VulkanCompositeAlphaFlagKHR.class);
+
+    for (final VulkanCompositeAlphaFlagKHR flag : VulkanCompositeAlphaFlagKHR.values()) {
+      final int fv = flag.value();
+      if ((value & fv) == fv) {
+        results.add(flag);
+      }
+    }
+
+    return results;
+  }
+
+  private static Set<VulkanImageUsageFlag> parseUsageFlags(
+    final int value)
+  {
+    final EnumSet<VulkanImageUsageFlag> results =
+      EnumSet.noneOf(VulkanImageUsageFlag.class);
+
+    for (final VulkanImageUsageFlag flag : VulkanImageUsageFlag.values()) {
+      final int fv = flag.value();
+      if ((value & fv) == fv) {
+        results.add(flag);
+      }
+    }
+
+    return results;
+  }
+
+  private static Set<VulkanSurfaceTransformFlagKHR> parseTransform(
+    final int value)
+  {
+    final EnumSet<VulkanSurfaceTransformFlagKHR> results =
+      EnumSet.noneOf(VulkanSurfaceTransformFlagKHR.class);
+
+    for (final VulkanSurfaceTransformFlagKHR flag : VulkanSurfaceTransformFlagKHR.values()) {
+      final int fv = flag.value();
+      if ((value & fv) == fv) {
+        results.add(flag);
+      }
+    }
+
+    return results;
+  }
+
+  private static VulkanExtent2D parseExtent(final VkExtent2D extent)
+  {
+    return VulkanExtent2D.of(extent.width(), extent.height());
+  }
+
   @Override
   public String toString()
   {
@@ -277,59 +330,6 @@ public final class VulkanLWJGLExtKHRSurface implements VulkanExtKHRSurfaceType
     }
 
     return results;
-  }
-
-  private static Set<VulkanCompositeAlphaFlagKHR> parseCompositeAlpha(
-    final int value)
-  {
-    final EnumSet<VulkanCompositeAlphaFlagKHR> results =
-      EnumSet.noneOf(VulkanCompositeAlphaFlagKHR.class);
-
-    for (final VulkanCompositeAlphaFlagKHR flag : VulkanCompositeAlphaFlagKHR.values()) {
-      final int fv = flag.value();
-      if ((value & fv) == fv) {
-        results.add(flag);
-      }
-    }
-
-    return results;
-  }
-
-  private static Set<VulkanImageUsageFlag> parseUsageFlags(
-    final int value)
-  {
-    final EnumSet<VulkanImageUsageFlag> results =
-      EnumSet.noneOf(VulkanImageUsageFlag.class);
-
-    for (final VulkanImageUsageFlag flag : VulkanImageUsageFlag.values()) {
-      final int fv = flag.value();
-      if ((value & fv) == fv) {
-        results.add(flag);
-      }
-    }
-
-    return results;
-  }
-
-  private static Set<VulkanSurfaceTransformFlagKHR> parseTransform(
-    final int value)
-  {
-    final EnumSet<VulkanSurfaceTransformFlagKHR> results =
-      EnumSet.noneOf(VulkanSurfaceTransformFlagKHR.class);
-
-    for (final VulkanSurfaceTransformFlagKHR flag : VulkanSurfaceTransformFlagKHR.values()) {
-      final int fv = flag.value();
-      if ((value & fv) == fv) {
-        results.add(flag);
-      }
-    }
-
-    return results;
-  }
-
-  private static VulkanExtent2D parseExtent(final VkExtent2D extent)
-  {
-    return VulkanExtent2D.of(extent.width(), extent.height());
   }
 
   static final class VulkanLWJGLExtKHRSurfaceValue
