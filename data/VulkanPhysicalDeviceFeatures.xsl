@@ -13,7 +13,7 @@
     <xsl:apply-templates select="@* | node()" />
   </xsl:template>
 
-  <xsl:template match="/registry/enums[@name='VkPresentModeKHR']">
+  <xsl:template match="/registry/types/type[@name='VkPhysicalDeviceFeatures']">
     <xsl:text disable-output-escaping="yes"><![CDATA[
 /*
  * Copyright © 2018 Mark Raynsford <code@io7m.com> http://io7m.com
@@ -31,42 +31,40 @@
  * IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-package com.io7m.jcoronado.extensions.api;
+package com.io7m.jcoronado.api;
 
-public enum VulkanPresentModeKHR
+import com.io7m.immutables.styles.ImmutablesStyleType;
+import org.immutables.value.Value;
+
+@ImmutablesStyleType
+@Value.Immutable
+public interface VulkanPhysicalDeviceFeatures
 {
 ]]></xsl:text>
-    <xsl:apply-templates select="enum" mode="java"/>
+    <xsl:apply-templates select="member" mode="java"/>
     <xsl:text disable-output-escaping="yes"><![CDATA[
-  ;
-
-  private final int value;
-
-  VulkanPresentModeKHR(
-    final int i)
-  {
-    this.value = i;
-  }
-
-  /**
-   * @return The integer value of the constant
-   */
-
-  public int value()
-  {
-    return this.value;
-  }
 }
 ]]></xsl:text>
   </xsl:template>
 
-  <xsl:template match="enum" mode="java">
-    <xsl:value-of select="concat('  /** ', @comment, ' */')"/>
+  <xsl:template match="member" mode="java">
     <xsl:text>&#xa;</xsl:text>
+    <xsl:value-of select="concat('/** @return ', comment, ' */')"/>
     <xsl:text>&#xa;</xsl:text>
-    <xsl:value-of select="concat('  ', @name, '(', @value, ')', ',')"/>
-    <xsl:text>&#xa;</xsl:text>
-    <xsl:text>&#xa;</xsl:text>
+    <xsl:text>
+  @Value.Parameter
+</xsl:text>
+    <xsl:text>  </xsl:text>
+    <xsl:apply-templates select="type" mode="struct-field"/>
+    <xsl:text> </xsl:text>
+    <xsl:value-of select="name"/>
+    <xsl:text>();&#xa;</xsl:text>
+  </xsl:template>
+
+  <xsl:template match="type" mode="struct-field">
+    <xsl:if test="compare(text(), 'VkBool32') = 0">
+      <xsl:text>boolean</xsl:text>
+    </xsl:if>
   </xsl:template>
 
 </xsl:stylesheet>

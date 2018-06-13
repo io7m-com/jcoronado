@@ -23,16 +23,13 @@ package com.io7m.jcoronado.api;
  * currently reserved for future use."
  */
 
-public enum VulkanLogicalDeviceCreateFlag
+public enum VulkanLogicalDeviceCreateFlag implements VulkanEnumIntegerType
 {
   // CHECKSTYLE:OFF
   ;
   // CHECKSTYLE:ON
 
-  /**
-   * @return The integer value of the flag.
-   */
-
+  @Override
   public int value()
   {
     return 0;

@@ -20,59 +20,24 @@ package com.io7m.jcoronado.api;
  * @see "VkImageUsageFlags"
  */
 
-public enum VulkanImageUsageFlag implements VulkanEnumIntegerType
+public enum VulkanSharingMode implements VulkanEnumIntegerType
 {
   /**
-   * Can be used as a source of transfer operations
+   * An image is owned by one queue family at a time and ownership must be explicitly transfered
+   * before using it in another queue family.
    */
 
-  VK_IMAGE_USAGE_TRANSFER_SRC_BIT(1),
+  VK_SHARING_MODE_EXCLUSIVE(0),
 
   /**
-   * Can be used as a destination of transfer operations
+   * Images can be used across multiple queue families without explicit ownership transfers.
    */
 
-  VK_IMAGE_USAGE_TRANSFER_DST_BIT(2),
-
-  /**
-   * Can be sampled from (SAMPLED_IMAGE and COMBINED_IMAGE_SAMPLER descriptor types)
-   */
-
-  VK_IMAGE_USAGE_SAMPLED_BIT(4),
-
-  /**
-   * Can be used as storage image (STORAGE_IMAGE descriptor type)
-   */
-
-  VK_IMAGE_USAGE_STORAGE_BIT(8),
-
-  /**
-   * Can be used as framebuffer color attachment
-   */
-
-  VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT(16),
-
-  /**
-   * Can be used as framebuffer depth/stencil attachment
-   */
-
-  VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT(32),
-
-  /**
-   * Image data not needed outside of rendering
-   */
-
-  VK_IMAGE_USAGE_TRANSIENT_ATTACHMENT_BIT(64),
-
-  /**
-   * Can be used as framebuffer input attachment
-   */
-
-  VK_IMAGE_USAGE_INPUT_ATTACHMENT_BIT(128);
+  VK_SHARING_MODE_CONCURRENT(1);
 
   private final int value;
 
-  VulkanImageUsageFlag(
+  VulkanSharingMode(
     final int i)
   {
     this.value = i;

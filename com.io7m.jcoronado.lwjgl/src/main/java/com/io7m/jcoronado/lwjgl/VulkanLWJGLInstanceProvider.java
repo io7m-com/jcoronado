@@ -75,6 +75,15 @@ public final class VulkanLWJGLInstanceProvider implements
       new VulkanLWJGLExtensionsRegistry());
   }
 
+  /**
+   * @return The extension registry for this provider
+   */
+
+  VulkanLWJGLExtensionsRegistry extensionRegistry()
+  {
+    return this.extensions;
+  }
+
   @Override
   public String providerName()
   {
@@ -237,16 +246,10 @@ public final class VulkanLWJGLInstanceProvider implements
 
       LOG.debug("created instance: {}", instance);
 
-      final Map<String, VulkanExtensionType> available = this.extensions.extensions();
-      final Map<String, VulkanExtensionType> enabled = new HashMap<>(available.size());
-      for (final String name : enabled_extensions) {
-        final VulkanExtensionType extension = available.get(name);
-        if (extension != null) {
-          enabled.put(name, extension);
-        }
-      }
+      final Map<String, VulkanExtensionType> enabled =
+        this.extensions.ofNames(info.enabledExtensions());
 
-      return new VulkanLWJGLInstance(instance, enabled);
+      return new VulkanLWJGLInstance(instance, this.extensions, enabled);
     }
   }
 }

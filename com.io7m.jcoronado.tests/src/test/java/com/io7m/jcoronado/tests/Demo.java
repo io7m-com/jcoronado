@@ -20,6 +20,9 @@ import com.io7m.jcoronado.api.VulkanApplicationInfo;
 import com.io7m.jcoronado.api.VulkanException;
 import com.io7m.jcoronado.api.VulkanExtensionProperties;
 import com.io7m.jcoronado.api.VulkanExtensions;
+import com.io7m.jcoronado.api.VulkanExtent2D;
+import com.io7m.jcoronado.api.VulkanFormat;
+import com.io7m.jcoronado.api.VulkanImageUsageFlag;
 import com.io7m.jcoronado.api.VulkanInstanceCreateInfo;
 import com.io7m.jcoronado.api.VulkanInstanceProviderType;
 import com.io7m.jcoronado.api.VulkanInstanceType;
@@ -31,11 +34,17 @@ import com.io7m.jcoronado.api.VulkanLogicalDeviceType;
 import com.io7m.jcoronado.api.VulkanPhysicalDeviceType;
 import com.io7m.jcoronado.api.VulkanQueueFamilyProperties;
 import com.io7m.jcoronado.api.VulkanQueueType;
+import com.io7m.jcoronado.api.VulkanSharingMode;
 import com.io7m.jcoronado.api.VulkanUncheckedException;
 import com.io7m.jcoronado.api.VulkanVersions;
+import com.io7m.jcoronado.extensions.api.VulkanColorSpaceKHR;
+import com.io7m.jcoronado.extensions.api.VulkanCompositeAlphaFlagKHR;
 import com.io7m.jcoronado.extensions.api.VulkanExtKHRSurfaceType;
+import com.io7m.jcoronado.extensions.api.VulkanExtKHRSwapChainType;
+import com.io7m.jcoronado.extensions.api.VulkanPresentModeKHR;
 import com.io7m.jcoronado.extensions.api.VulkanSurfaceCapabilitiesKHR;
 import com.io7m.jcoronado.extensions.api.VulkanSurfaceFormatKHR;
+import com.io7m.jcoronado.extensions.api.VulkanSwapChainCreateInfo;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLInstanceProvider;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.glfw.GLFW;
@@ -44,6 +53,7 @@ import org.lwjgl.glfw.GLFWVulkan;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -161,21 +171,22 @@ public final class Demo
           LOG.debug("physical device: {}", physical_device);
 
           /*
-           * Show the preferred formats, and the capabilities of the surface.
+           * Determine the format, presentation mode, and size of the surface that will be
+           * used for rendering.
            */
 
-          final List<VulkanSurfaceFormatKHR> formats =
-            khr_surface_ext.surfaceFormats(physical_device, surface);
-
-          formats.forEach(format -> LOG.debug(
-            "preferred surface format: {} {}",
-            format.format(),
-            format.colorSpace()));
-
-          final VulkanSurfaceCapabilitiesKHR capabilities =
+          final VulkanSurfaceFormatKHR surface_format =
+            pickSurfaceFormat(physical_device, khr_surface_ext, surface);
+          final VulkanPresentModeKHR surface_present =
+            pickPresentationMode(physical_device, khr_surface_ext, surface);
+          final VulkanSurfaceCapabilitiesKHR surface_caps =
             khr_surface_ext.surfaceCapabilities(physical_device, surface);
+          final VulkanExtent2D surface_extent =
+            pickExtent(surface_caps);
 
-          LOG.debug("surface capabilities: {}", capabilities);
+          LOG.debug("selected surface format: {}", surface_format);
+          LOG.debug("selected surface presentation mode: {}", surface_present);
+          LOG.debug("selected surface extent: {}", surface_extent);
 
           /*
            * We know that the selected physical device has a graphics queue family, and a queue
@@ -220,7 +231,11 @@ public final class Demo
           }
 
           try (final VulkanLogicalDeviceType device =
-                 physical_device.createLogicalDevice(logical_device_info_builder.build())) {
+                 physical_device.createLogicalDevice(
+                   logical_device_info_builder
+                     .addEnabledExtensions("VK_KHR_swapchain")
+                     .build())) {
+
             LOG.debug("logical device: {}", device);
 
             final VulkanQueueType graphics_queue =
@@ -232,12 +247,183 @@ public final class Demo
 
             LOG.debug("graphics queue: {}", graphics_queue);
             LOG.debug("presentation queue: {}", presentation_queue);
+
+            final VulkanExtKHRSwapChainType khr_swapchain_ext =
+              device.findEnabledExtension("VK_KHR_swapchain", VulkanExtKHRSwapChainType.class)
+                .orElseThrow(() -> new IllegalStateException("Missing VK_KHR_swapchain extension"));
+
+            final int minimum_image_count =
+              pickMinimumImageCount(surface_caps);
+
+            final List<Integer> queue_indices = new ArrayList<>();
+            final VulkanSharingMode image_sharing_mode =
+              pickImageSharingMode(graphics_queue, presentation_queue, queue_indices);
+            final Set<VulkanImageUsageFlag> image_usage_flags =
+              Set.of(VulkanImageUsageFlag.VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT);
+            final Set<VulkanCompositeAlphaFlagKHR> surface_alpha_flags =
+              Set.of(VulkanCompositeAlphaFlagKHR.VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR);
+
+            final VulkanSwapChainCreateInfo swap_chain_create_info =
+              VulkanSwapChainCreateInfo.of(
+                surface,
+                minimum_image_count,
+                surface_format.format(),
+                surface_format.colorSpace(),
+                surface_extent,
+                1,
+                image_usage_flags,
+                image_sharing_mode,
+                queue_indices,
+                surface_caps.currentTransform(),
+                surface_alpha_flags,
+                surface_present,
+                true,
+                Optional.empty());
+
+            try (VulkanExtKHRSwapChainType.VulkanKHRSwapChainType swap_chain =
+                   khr_swapchain_ext.swapChainCreate(device, swap_chain_create_info)) {
+            }
           }
         }
       }
     } finally {
       GLFW_ERROR_CALLBACK.close();
     }
+  }
+
+  private static VulkanSharingMode pickImageSharingMode(
+    final VulkanQueueType graphics_queue,
+    final VulkanQueueType presentation_queue,
+    final List<Integer> queue_indices)
+  {
+    /*
+     * If the graphics and presentation queues are separate families, then add the indices of
+     * those families into the given list and enable concurrent sharing mode. Otherwise, don't
+     * add any indices, and use exclusive sharing mode.
+     */
+
+    final int graphics_family = graphics_queue.queueFamilyProperties().queueFamilyIndex();
+    final int presentation_family = presentation_queue.queueFamilyProperties().queueFamilyIndex();
+    if (graphics_family != presentation_family) {
+      queue_indices.add(Integer.valueOf(graphics_family));
+      queue_indices.add(Integer.valueOf(presentation_family));
+      return VulkanSharingMode.VK_SHARING_MODE_CONCURRENT;
+    }
+    return VulkanSharingMode.VK_SHARING_MODE_EXCLUSIVE;
+  }
+
+  private static int pickMinimumImageCount(
+    final VulkanSurfaceCapabilitiesKHR surface_caps)
+  {
+    /*
+     * Select the minimum number of images required to do double-buffering.
+     */
+
+    final int count = surface_caps.minImageCount();
+    if (surface_caps.maxImageCount() > 0 && count > surface_caps.maxImageCount()) {
+      return surface_caps.maxImageCount();
+    }
+    return count;
+  }
+
+  private static VulkanExtent2D pickExtent(
+    final VulkanSurfaceCapabilitiesKHR surface_caps)
+  {
+    /*
+     * Work out the extent of the rendered image based on the implementation-defined supported
+     * limits.
+     */
+
+    if (surface_caps.currentExtent().width() != 0xffff_ffff) {
+      return surface_caps.currentExtent();
+    }
+
+    return VulkanExtent2D.of(
+      Math.max(
+        surface_caps.minImageExtent().width(),
+        Math.min(surface_caps.maxImageExtent().width(), 640)),
+      Math.max(
+        surface_caps.minImageExtent().height(),
+        Math.min(surface_caps.maxImageExtent().height(), 480))
+    );
+  }
+
+  private static VulkanPresentModeKHR pickPresentationMode(
+    final VulkanPhysicalDeviceType device,
+    final VulkanExtKHRSurfaceType khr_surface_ext,
+    final VulkanExtKHRSurfaceType.VulkanKHRSurfaceType surface)
+    throws VulkanException
+  {
+    /*
+     * Pick the best presentation mode available.
+     */
+
+    final List<VulkanPresentModeKHR> modes =
+      khr_surface_ext.surfacePresentModes(device, surface);
+
+    VulkanPresentModeKHR preferred =
+      VulkanPresentModeKHR.VK_PRESENT_MODE_FIFO_KHR;
+
+    for (final VulkanPresentModeKHR mode : modes) {
+      if (mode == VulkanPresentModeKHR.VK_PRESENT_MODE_MAILBOX_KHR) {
+        return mode;
+      }
+      if (mode == VulkanPresentModeKHR.VK_PRESENT_MODE_IMMEDIATE_KHR) {
+        preferred = mode;
+      }
+    }
+
+    return preferred;
+  }
+
+  private static VulkanSurfaceFormatKHR pickSurfaceFormat(
+    final VulkanPhysicalDeviceType device,
+    final VulkanExtKHRSurfaceType khr_surface_ext,
+    final VulkanExtKHRSurfaceType.VulkanKHRSurfaceType surface)
+    throws VulkanException
+  {
+    final List<VulkanSurfaceFormatKHR> formats = khr_surface_ext.surfaceFormats(device, surface);
+
+    /*
+     * If there are no formats, try a commonly supported one.
+     */
+
+    if (formats.isEmpty()) {
+      return VulkanSurfaceFormatKHR.of(
+        VulkanFormat.VK_FORMAT_B8G8R8A8_UNORM,
+        VulkanColorSpaceKHR.VK_COLOR_SPACE_SRGB_NONLINEAR_KHR);
+    }
+
+    /*
+     * If there's one VK_FORMAT_UNDEFINED format, then this means that the implementation
+     * doesn't have a preferred format and anything can be used.
+     */
+
+    if (formats.size() == 1) {
+      final VulkanSurfaceFormatKHR format0 = formats.get(0);
+      if (format0.format() == VulkanFormat.VK_FORMAT_UNDEFINED) {
+        return VulkanSurfaceFormatKHR.of(
+          VulkanFormat.VK_FORMAT_B8G8R8A8_UNORM,
+          VulkanColorSpaceKHR.VK_COLOR_SPACE_SRGB_NONLINEAR_KHR);
+      }
+    }
+
+    /*
+     * Otherwise, look for a linear BGRA unsigned normalized format, with an SRGB color space.
+     */
+
+    for (final VulkanSurfaceFormatKHR format : formats) {
+      if (format.format() == VulkanFormat.VK_FORMAT_B8G8R8A8_UNORM
+        && format.colorSpace() == VulkanColorSpaceKHR.VK_COLOR_SPACE_SRGB_NONLINEAR_KHR) {
+        return format;
+      }
+    }
+
+    /*
+     * Otherwise, use whatever was first.
+     */
+
+    return formats.get(0);
   }
 
   private static Optional<VulkanPhysicalDeviceType> pickPhysicalDevice(
@@ -256,11 +442,30 @@ public final class Demo
 
     try {
       return devices.stream()
+        .filter(Demo::physicalDeviceHasSwapChainExtension)
         .filter(Demo::physicalDeviceHasGraphicsQueue)
         .filter(device -> physicalDeviceHasPresentationQueue(khr_surface_ext, surface, device))
         .findFirst();
     } catch (final VulkanUncheckedException e) {
       throw e.getCause();
+    }
+  }
+
+  private static boolean physicalDeviceHasSwapChainExtension(
+    final VulkanPhysicalDeviceType device)
+  {
+    /*
+     * Determine if the device supports the swapchain extension.
+     */
+
+    try {
+      LOG.debug(
+        "checking device \"{}\" for VK_KHR_swapchain support",
+        device.properties().name());
+
+      return device.extensions(Optional.empty()).containsKey("VK_KHR_swapchain");
+    } catch (final VulkanException e) {
+      throw new VulkanUncheckedException(e);
     }
   }
 

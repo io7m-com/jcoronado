@@ -16,11 +16,13 @@
 
 package com.io7m.jcoronado.extensions.api;
 
+import com.io7m.jcoronado.api.VulkanEnumIntegerType;
+
 /**
  * @see "VkCompositeAlphaFlagBitsKHR"
  */
 
-public enum VulkanCompositeAlphaFlagKHR
+public enum VulkanCompositeAlphaFlagKHR implements VulkanEnumIntegerType
 {
   /**
    * The alpha channel, if it exists, of the images is ignored in the compositing process. Instead,
@@ -63,10 +65,7 @@ public enum VulkanCompositeAlphaFlagKHR
     this.value = i;
   }
 
-  /**
-   * @return The integer value of the constant
-   */
-
+  @Override
   public int value()
   {
     return this.value;

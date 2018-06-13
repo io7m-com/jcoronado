@@ -22,7 +22,7 @@ package com.io7m.jcoronado.api;
  * @see "VkQueueFlagBits"
  */
 
-public enum VulkanQueueFamilyPropertyFlag
+public enum VulkanQueueFamilyPropertyFlag implements VulkanEnumIntegerType
 {
   /**
    * Queues in this queue family support graphics operations.
@@ -62,10 +62,7 @@ public enum VulkanQueueFamilyPropertyFlag
     this.value = i;
   }
 
-  /**
-   * @return The integer value of the flag
-   */
-
+  @Override
   public int value()
   {
     return this.value;

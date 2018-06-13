@@ -16,11 +16,16 @@
 
 package com.io7m.jcoronado.extensions.api;
 
+import com.io7m.jcoronado.api.VulkanEnumIntegerType;
+
+import java.util.Optional;
+import java.util.stream.Stream;
+
 /**
  * @see "VkPresentModeKHR"
  */
 
-public enum VulkanPresentModeKHR
+public enum VulkanPresentModeKHR implements VulkanEnumIntegerType
 {
   /**
    * The presentation engine does not wait for a vertical blanking period to update the current
@@ -75,9 +80,20 @@ public enum VulkanPresentModeKHR
   }
 
   /**
-   * @return The integer value of the constant
+   * @param x An integer value
+   *
+   * @return The constant associated with the given integer value, if any
    */
 
+  public static Optional<VulkanPresentModeKHR> ofInteger(
+    final int x)
+  {
+    return Stream.of(VulkanPresentModeKHR.values())
+      .filter(mode -> mode.value == x)
+      .findFirst();
+  }
+
+  @Override
   public int value()
   {
     return this.value;

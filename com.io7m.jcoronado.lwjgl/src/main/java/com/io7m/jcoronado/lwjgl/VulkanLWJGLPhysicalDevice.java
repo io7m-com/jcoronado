@@ -17,11 +17,12 @@
 package com.io7m.jcoronado.lwjgl;
 
 import com.io7m.jcoronado.api.VulkanDestroyedException;
+import com.io7m.jcoronado.api.VulkanEnumMaps;
 import com.io7m.jcoronado.api.VulkanException;
 import com.io7m.jcoronado.api.VulkanExtensionProperties;
+import com.io7m.jcoronado.api.VulkanExtensionType;
 import com.io7m.jcoronado.api.VulkanInstanceType;
 import com.io7m.jcoronado.api.VulkanLayerProperties;
-import com.io7m.jcoronado.api.VulkanLogicalDeviceCreateFlag;
 import com.io7m.jcoronado.api.VulkanLogicalDeviceCreateInfo;
 import com.io7m.jcoronado.api.VulkanLogicalDeviceQueueCreateInfo;
 import com.io7m.jcoronado.api.VulkanLogicalDeviceType;
@@ -51,7 +52,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
 
 import static com.io7m.jcoronado.api.VulkanChecks.checkReturnCode;
 
@@ -177,16 +177,6 @@ final class VulkanLWJGLPhysicalDevice
       .variableMultisampleRate(features.variableMultisampleRate())
       .vertexPipelineStoresAndAtomics(features.vertexPipelineStoresAndAtomics())
       .wideLines(features.wideLines());
-  }
-
-  private static int createFlags(
-    final Set<VulkanLogicalDeviceCreateFlag> flags)
-  {
-    int result = 0;
-    for (final VulkanLogicalDeviceCreateFlag flag : flags) {
-      result |= flag.value();
-    }
-    return result;
   }
 
   private static VkDeviceQueueCreateInfo.Buffer createQueueBuffer(
@@ -389,7 +379,14 @@ final class VulkanLWJGLPhysicalDevice
 
     this.checkNotClosed();
 
-    LOG.debug("creating logical device");
+    final List<String> enabled_extensions = info.enabledExtensions();
+    final List<String> enabled_layers = info.enabledLayers();
+
+    if (LOG.isDebugEnabled()) {
+      LOG.debug("creating logical device");
+      enabled_extensions.forEach(name -> LOG.debug("enabling extension: {}", name));
+      enabled_layers.forEach(name -> LOG.debug("enabling layer: {}", name));
+    }
 
     try (MemoryStack stack = this.stack_initial.push()) {
       final List<VulkanLogicalDeviceQueueCreateInfo> infos =
@@ -397,9 +394,9 @@ final class VulkanLWJGLPhysicalDevice
       final VkDeviceQueueCreateInfo.Buffer vk_queue_buffer =
         createQueueBuffer(stack, infos);
       final PointerBuffer vk_enabled_layers =
-        VulkanStrings.stringsToPointerBuffer(stack, info.enabledLayers());
+        VulkanStrings.stringsToPointerBuffer(stack, enabled_layers);
       final PointerBuffer vk_enabled_extensions =
-        VulkanStrings.stringsToPointerBuffer(stack, info.enabledExtensions());
+        VulkanStrings.stringsToPointerBuffer(stack, enabled_extensions);
       final VkPhysicalDeviceFeatures vk_features =
         createPhysicalDeviceFeatures(stack, info);
 
@@ -407,7 +404,7 @@ final class VulkanLWJGLPhysicalDevice
         VkDeviceCreateInfo.mallocStack(stack)
           .sType(VK10.VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO)
           .pNext(0L)
-          .flags(createFlags(info.flags()))
+          .flags(VulkanEnumMaps.packValues(info.flags()))
           .pQueueCreateInfos(vk_queue_buffer)
           .ppEnabledLayerNames(vk_enabled_layers)
           .ppEnabledExtensionNames(vk_enabled_extensions)
@@ -425,7 +422,17 @@ final class VulkanLWJGLPhysicalDevice
           this.device,
           vk_device_create_info);
 
-      return new VulkanLWJGLLogicalDevice(this, vk_logical_device, info);
+      final VulkanLWJGLExtensionsRegistry registry =
+        this.instance.extensionRegistry();
+      final Map<String, VulkanExtensionType> enabled =
+        registry.ofNames(enabled_extensions);
+
+      return new VulkanLWJGLLogicalDevice(
+        registry,
+        enabled,
+        this,
+        vk_logical_device,
+        info);
     }
   }
 

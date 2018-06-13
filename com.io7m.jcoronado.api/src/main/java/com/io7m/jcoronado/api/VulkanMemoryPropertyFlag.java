@@ -22,7 +22,7 @@ package com.io7m.jcoronado.api;
  * @see "VkMemoryPropertyFlagBits"
  */
 
-public enum VulkanMemoryPropertyFlag
+public enum VulkanMemoryPropertyFlag implements VulkanEnumIntegerType
 {
   /**
    * Specifies that memory allocated with this type is the most efficient for device access.
@@ -74,10 +74,7 @@ public enum VulkanMemoryPropertyFlag
     this.value = i;
   }
 
-  /**
-   * @return The integer value of the flag
-   */
-
+  @Override
   public int value()
   {
     return this.value;

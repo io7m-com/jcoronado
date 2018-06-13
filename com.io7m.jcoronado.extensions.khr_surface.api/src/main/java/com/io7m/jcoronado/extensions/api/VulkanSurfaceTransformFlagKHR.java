@@ -16,11 +16,13 @@
 
 package com.io7m.jcoronado.extensions.api;
 
+import com.io7m.jcoronado.api.VulkanEnumIntegerType;
+
 /**
  * @see "VkSurfaceTransformFlagBitsKHR"
  */
 
-public enum VulkanSurfaceTransformFlagKHR
+public enum VulkanSurfaceTransformFlagKHR implements VulkanEnumIntegerType
 {
   /**
    * The image content is presented without being transformed.
@@ -85,10 +87,7 @@ public enum VulkanSurfaceTransformFlagKHR
     this.value = i;
   }
 
-  /**
-   * @return The integer value of the constant
-   */
-
+  @Override
   public int value()
   {
     return this.value;

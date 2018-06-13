@@ -17,6 +17,7 @@
 package com.io7m.jcoronado.lwjgl;
 
 import com.io7m.jcoronado.api.VulkanException;
+import com.io7m.jcoronado.api.VulkanExtensionType;
 import com.io7m.jcoronado.api.VulkanLogicalDeviceCreateInfo;
 import com.io7m.jcoronado.api.VulkanLogicalDeviceQueueCreateInfo;
 import com.io7m.jcoronado.api.VulkanLogicalDeviceType;
@@ -34,6 +35,7 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 final class VulkanLWJGLLogicalDevice
@@ -48,13 +50,19 @@ final class VulkanLWJGLLogicalDevice
   private final VulkanLogicalDeviceCreateInfo creation;
   private final List<VulkanLWJGLQueue> queues;
   private final List<VulkanQueueType> queues_read;
+  private final Map<String, VulkanExtensionType> extensions_enabled_read_only;
 
   VulkanLWJGLLogicalDevice(
+    final VulkanLWJGLExtensionsRegistry in_extensions_registry,
+    final Map<String, VulkanExtensionType> in_extensions_enabled,
     final VulkanLWJGLPhysicalDevice in_physical_device,
     final VkDevice in_device,
     final VulkanLogicalDeviceCreateInfo in_creation)
     throws VulkanException
   {
+    this.extensions_enabled_read_only =
+      Collections.unmodifiableMap(
+        Objects.requireNonNull(in_extensions_enabled, "in_extensions"));
     this.physical_device =
       Objects.requireNonNull(in_physical_device, "in_physical_device");
     this.device =
@@ -69,6 +77,11 @@ final class VulkanLWJGLLogicalDevice
       MemoryStack.create();
 
     this.initializeQueues();
+  }
+
+  VkDevice device()
+  {
+    return this.device;
   }
 
   private void initializeQueues()
@@ -117,6 +130,12 @@ final class VulkanLWJGLLogicalDevice
   public List<VulkanQueueType> queues()
   {
     return this.queues_read;
+  }
+
+  @Override
+  public Map<String, VulkanExtensionType> enabledExtensions()
+  {
+    return this.extensions_enabled_read_only;
   }
 
   @Override

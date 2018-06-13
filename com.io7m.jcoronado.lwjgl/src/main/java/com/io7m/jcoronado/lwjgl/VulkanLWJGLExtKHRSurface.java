@@ -27,6 +27,7 @@ import com.io7m.jcoronado.api.VulkanQueueFamilyProperties;
 import com.io7m.jcoronado.extensions.api.VulkanColorSpaceKHR;
 import com.io7m.jcoronado.extensions.api.VulkanCompositeAlphaFlagKHR;
 import com.io7m.jcoronado.extensions.api.VulkanExtKHRSurfaceType;
+import com.io7m.jcoronado.extensions.api.VulkanPresentModeKHR;
 import com.io7m.jcoronado.extensions.api.VulkanSurfaceCapabilitiesKHR;
 import com.io7m.jcoronado.extensions.api.VulkanSurfaceFormatKHR;
 import com.io7m.jcoronado.extensions.api.VulkanSurfaceTransformFlagKHR;
@@ -125,7 +126,7 @@ public final class VulkanLWJGLExtKHRSurface implements VulkanExtKHRSurfaceType
         KHRSurface.vkGetPhysicalDeviceSurfaceSupportKHR(
           device.device(),
           queue.queueFamilyIndex(),
-          surface.pointer,
+          surface.handle,
           supported),
         "vkGetPhysicalDeviceSurfaceSupportKHR");
       if (supported[0] != 0) {
@@ -156,7 +157,7 @@ public final class VulkanLWJGLExtKHRSurface implements VulkanExtKHRSurfaceType
       VulkanChecks.checkReturnCode(
         KHRSurface.vkGetPhysicalDeviceSurfaceFormatsKHR(
           device.device(),
-          surface.pointer,
+          surface.handle,
           count,
           null),
         "vkGetPhysicalDeviceSurfaceFormatsKHR");
@@ -172,7 +173,7 @@ public final class VulkanLWJGLExtKHRSurface implements VulkanExtKHRSurfaceType
       VulkanChecks.checkReturnCode(
         KHRSurface.vkGetPhysicalDeviceSurfaceFormatsKHR(
           device.device(),
-          surface.pointer,
+          surface.handle,
           count,
           formats),
         "vkGetPhysicalDeviceSurfaceFormatsKHR");
@@ -216,7 +217,7 @@ public final class VulkanLWJGLExtKHRSurface implements VulkanExtKHRSurfaceType
       VulkanChecks.checkReturnCode(
         KHRSurface.vkGetPhysicalDeviceSurfaceCapabilitiesKHR(
           device.device(),
-          surface.pointer,
+          surface.handle,
           capabilities),
         "vkGetPhysicalDeviceSurfaceCapabilitiesKHR");
 
@@ -232,6 +233,50 @@ public final class VulkanLWJGLExtKHRSurface implements VulkanExtKHRSurfaceType
         parseCompositeAlpha(capabilities.supportedCompositeAlpha()),
         parseUsageFlags(capabilities.supportedUsageFlags()));
     }
+  }
+
+  @Override
+  public List<VulkanPresentModeKHR> surfacePresentModes(
+    final VulkanPhysicalDeviceType in_device,
+    final VulkanKHRSurfaceType in_surface)
+    throws VulkanException
+  {
+    final VulkanLWJGLPhysicalDevice device =
+      VulkanLWJGLClassChecks.check(in_device, VulkanLWJGLPhysicalDevice.class);
+    final VulkanLWJGLExtKHRSurfaceValue surface =
+      VulkanLWJGLClassChecks.check(in_surface, VulkanLWJGLExtKHRSurfaceValue.class);
+
+    device.checkNotClosed();
+
+    final int[] count = new int[1];
+    VulkanChecks.checkReturnCode(
+      KHRSurface.vkGetPhysicalDeviceSurfacePresentModesKHR(
+        device.device(),
+        surface.handle,
+        count,
+        null),
+      "vkGetPhysicalDeviceSurfacePresentModesKHR");
+
+    final int mode_count = count[0];
+    if (mode_count == 0) {
+      return List.of();
+    }
+
+    final int[] modes = new int[mode_count];
+    VulkanChecks.checkReturnCode(
+      KHRSurface.vkGetPhysicalDeviceSurfacePresentModesKHR(
+        device.device(),
+        surface.handle,
+        count,
+        modes),
+      "vkGetPhysicalDeviceSurfacePresentModesKHR");
+
+    final List<VulkanPresentModeKHR> results = new ArrayList<>(mode_count);
+    for (int index = 0; index < mode_count; ++index) {
+      VulkanPresentModeKHR.ofInteger(modes[index]).ifPresent(results::add);
+    }
+
+    return results;
   }
 
   private static Set<VulkanCompositeAlphaFlagKHR> parseCompositeAlpha(
@@ -287,15 +332,20 @@ public final class VulkanLWJGLExtKHRSurface implements VulkanExtKHRSurfaceType
     return VulkanExtent2D.of(extent.width(), extent.height());
   }
 
-  private static final class VulkanLWJGLExtKHRSurfaceValue
+  static final class VulkanLWJGLExtKHRSurfaceValue
     implements VulkanExtKHRSurfaceType.VulkanKHRSurfaceType
   {
-    private long pointer;
+    private long handle;
 
     VulkanLWJGLExtKHRSurfaceValue(
-      final long in_pointer)
+      final long in_handle)
     {
-      this.pointer = in_pointer;
+      this.handle = in_handle;
+    }
+
+    long handle()
+    {
+      return this.handle;
     }
   }
 }

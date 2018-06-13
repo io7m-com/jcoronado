@@ -74,17 +74,28 @@ final class VulkanLWJGLInstance
 
   private final VkInstance instance;
   private final MemoryStack initial_stack;
-  private final Map<String, VulkanExtensionType> extensions_read;
+  private final Map<String, VulkanExtensionType> extensions_enabled_read_only;
+  private final VulkanLWJGLExtensionsRegistry extension_registry;
+
+  VulkanLWJGLExtensionsRegistry extensionRegistry()
+  {
+    return this.extension_registry;
+  }
 
   VulkanLWJGLInstance(
     final VkInstance in_instance,
-    final Map<String, VulkanExtensionType> in_extensions)
+    final VulkanLWJGLExtensionsRegistry in_extension_registry,
+    final Map<String, VulkanExtensionType> in_extensions_enabled)
   {
-    this.instance = Objects.requireNonNull(in_instance, "instance");
-    this.initial_stack = MemoryStack.create();
-    this.extensions_read =
+    this.instance =
+      Objects.requireNonNull(in_instance, "instance");
+    this.extension_registry =
+      Objects.requireNonNull(in_extension_registry, "extension_registry");
+    this.initial_stack =
+      MemoryStack.create();
+    this.extensions_enabled_read_only =
       Collections.unmodifiableMap(
-        Objects.requireNonNull(in_extensions, "in_extensions"));
+        Objects.requireNonNull(in_extensions_enabled, "in_extensions"));
   }
 
   private static List<VulkanQueueFamilyProperties> parsePhysicalDeviceQueueFamilies(
@@ -584,7 +595,7 @@ final class VulkanLWJGLInstance
   @Override
   public Map<String, VulkanExtensionType> enabledExtensions()
   {
-    return this.extensions_read;
+    return this.extensions_enabled_read_only;
   }
 
   private VulkanLWJGLPhysicalDevice parsePhysicalDevice(

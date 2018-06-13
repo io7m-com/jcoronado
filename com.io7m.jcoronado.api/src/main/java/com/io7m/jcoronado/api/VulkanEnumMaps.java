@@ -31,6 +31,25 @@ public final class VulkanEnumMaps
   }
 
   /**
+   * Bitwise OR the integer values of all of the given constants.
+   *
+   * @param values The values
+   * @param <T>    The precise type of enum
+   *
+   * @return The integer-packed values
+   */
+
+  public static <T extends Enum<T> & VulkanEnumIntegerType> int packValues(
+    final Iterable<T> values)
+  {
+    int result = 0;
+    for (final T constant : values) {
+      result |= constant.value();
+    }
+    return result;
+  }
+
+  /**
    * Produce an efficient map of integers to enum constants.
    *
    * @param values The list of enum values

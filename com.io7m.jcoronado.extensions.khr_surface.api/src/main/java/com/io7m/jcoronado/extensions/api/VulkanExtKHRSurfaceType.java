@@ -107,6 +107,23 @@ public interface VulkanExtKHRSurfaceType extends VulkanExtensionType
     throws VulkanException;
 
   /**
+   * Determine the presentation modes for {@code surface}.
+   *
+   * @param device  The physical device
+   * @param surface The surface
+   *
+   * @return The presentation modes for the given surface
+   *
+   * @throws VulkanException On errors
+   * @see "vkGetPhysicalDeviceSurfacePresentModesKHR"
+   */
+
+  List<VulkanPresentModeKHR> surfacePresentModes(
+    VulkanPhysicalDeviceType device,
+    VulkanKHRSurfaceType surface)
+    throws VulkanException;
+
+  /**
    * An abstraction over a native platform surface or window object.
    */
 

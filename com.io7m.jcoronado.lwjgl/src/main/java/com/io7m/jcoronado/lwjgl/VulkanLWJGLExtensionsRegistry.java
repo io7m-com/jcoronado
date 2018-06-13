@@ -32,6 +32,7 @@ final class VulkanLWJGLExtensionsRegistry
     this.extensions = new HashMap<>(32);
     this.extensions_read = Collections.unmodifiableMap(this.extensions);
     this.addExtension(new VulkanLWJGLExtKHRSurface());
+    this.addExtension(new VulkanLWJGLExtKHRSwapChain());
   }
 
   Map<String, VulkanExtensionType> extensions()
@@ -58,5 +59,18 @@ final class VulkanLWJGLExtensionsRegistry
           .toString());
     }
     this.extensions.put(name, ext);
+  }
+
+  Map<String, VulkanExtensionType> ofNames(
+    final Iterable<String> names)
+  {
+    final Map<String, VulkanExtensionType> matching = new HashMap<>(this.extensions_read.size());
+    for (final String name : names) {
+      final VulkanExtensionType extension = this.extensions_read.get(name);
+      if (extension != null) {
+        matching.put(name, extension);
+      }
+    }
+    return matching;
   }
 }

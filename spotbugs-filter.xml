@@ -28,6 +28,7 @@
       <Class name="com.io7m.jcoronado.api.VulkanViewportDimensions"/>
       <Class name="com.io7m.jcoronado.extensions.api.VulkanSurfaceFormatKHR"/>
       <Class name="com.io7m.jcoronado.extensions.api.VulkanSurfaceCapabilitiesKHR"/>
+      <Class name="com.io7m.jcoronado.extensions.api.VulkanSwapChainCreateInfo"/>
     </Or>
   </Match>
 
@@ -41,6 +42,20 @@
   <Match>
     <And>
       <Class name="com.io7m.jcoronado.lwjgl.VulkanLWJGLLogicalDevice"/>
+      <Bug pattern="FCCD_FIND_CLASS_CIRCULAR_DEPENDENCY"/>
+    </And>
+  </Match>
+
+  <Match>
+    <And>
+      <Class name="com.io7m.jcoronado.lwjgl.VulkanLWJGLExtensionsRegistry"/>
+      <Bug pattern="FCCD_FIND_CLASS_CIRCULAR_DEPENDENCY"/>
+    </And>
+  </Match>
+
+  <Match>
+    <And>
+      <Class name="com.io7m.jcoronado.lwjgl.VulkanLWJGLInstance"/>
       <Bug pattern="FCCD_FIND_CLASS_CIRCULAR_DEPENDENCY"/>
     </And>
   </Match>
