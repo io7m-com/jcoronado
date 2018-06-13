@@ -41,6 +41,16 @@ final class VulkanLWJGLImageView extends VulkanLWJGLObject implements VulkanImag
   }
 
   @Override
+  public String toString()
+  {
+    return new StringBuilder(32)
+      .append("[VulkanLWJGLImageView 0x")
+      .append(Long.toUnsignedString(this.handle, 16))
+      .append("]")
+      .toString();
+  }
+
+  @Override
   protected Logger logger()
   {
     return LOG;
