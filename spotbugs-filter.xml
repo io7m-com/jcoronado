@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <FindBugsFilter xmlns="https://github.com/spotbugs/filter/3.0.0">
 
+  <!-- Generated types -->
   <Match>
     <Or>
       <Class name="com.io7m.jcoronado.api.VulkanApplicationInfo"/>
@@ -22,11 +23,18 @@
       <Class name="com.io7m.jcoronado.api.VulkanPhysicalDeviceLimits"/>
       <Class name="com.io7m.jcoronado.api.VulkanPhysicalDeviceMemoryProperties"/>
       <Class name="com.io7m.jcoronado.api.VulkanPhysicalDeviceProperties"/>
+      <Class name="com.io7m.jcoronado.api.VulkanPipelineColorBlendAttachmentState"/>
+      <Class name="com.io7m.jcoronado.api.VulkanPipelineColorBlendStateCreateInfo"/>
+      <Class name="com.io7m.jcoronado.api.VulkanPipelineInputAssemblyCreateInfo"/>
+      <Class name="com.io7m.jcoronado.api.VulkanPipelineMultisampleStateCreateInfo"/>
+      <Class name="com.io7m.jcoronado.api.VulkanPipelineRasterizationStateCreateInfo"/>
       <Class name="com.io7m.jcoronado.api.VulkanPipelineShaderStageCreateInfo"/>
       <Class name="com.io7m.jcoronado.api.VulkanPointSizeRange"/>
       <Class name="com.io7m.jcoronado.api.VulkanQueueFamilyProperties"/>
       <Class name="com.io7m.jcoronado.api.VulkanShaderModuleCreateInfo"/>
       <Class name="com.io7m.jcoronado.api.VulkanVersion"/>
+      <Class name="com.io7m.jcoronado.api.VulkanVertexInputAttributeDescription"/>
+      <Class name="com.io7m.jcoronado.api.VulkanVertexInputBindingDescription"/>
       <Class name="com.io7m.jcoronado.api.VulkanViewportBoundsRange"/>
       <Class name="com.io7m.jcoronado.api.VulkanViewportDimensions"/>
       <Class name="~com\.io7m\.jcoronado\..+\$Builder"/>
