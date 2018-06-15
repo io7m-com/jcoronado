@@ -30,6 +30,7 @@
       <Class name="com.io7m.jcoronado.api.VulkanPipelineRasterizationStateCreateInfo"/>
       <Class name="com.io7m.jcoronado.api.VulkanPipelineShaderStageCreateInfo"/>
       <Class name="com.io7m.jcoronado.api.VulkanPointSizeRange"/>
+      <Class name="com.io7m.jcoronado.api.VulkanPushConstantRange"/>
       <Class name="com.io7m.jcoronado.api.VulkanQueueFamilyProperties"/>
       <Class name="com.io7m.jcoronado.api.VulkanShaderModuleCreateInfo"/>
       <Class name="com.io7m.jcoronado.api.VulkanVersion"/>
