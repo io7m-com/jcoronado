@@ -5,6 +5,7 @@
   <Match>
     <Or>
       <Class name="com.io7m.jcoronado.api.VulkanApplicationInfo"/>
+      <Class name="com.io7m.jcoronado.api.VulkanAttachmentDescription"/>
       <Class name="com.io7m.jcoronado.api.VulkanComponentMapping"/>
       <Class name="com.io7m.jcoronado.api.VulkanComputeWorkGroupCount"/>
       <Class name="com.io7m.jcoronado.api.VulkanComputeWorkGroupSize"/>
