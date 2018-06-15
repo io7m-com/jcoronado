@@ -22,7 +22,7 @@ package com.io7m.jcoronado.api;
  * @see "VkDeviceQueueCreateFlagBits"
  */
 
-public enum VulkanDeviceQueueCreationFlag implements VulkanEnumIntegerType
+public enum VulkanDeviceQueueCreationFlag implements VulkanEnumBitmaskType
 {
   /**
    * Specifies that the device queue is a protected-capable queue.

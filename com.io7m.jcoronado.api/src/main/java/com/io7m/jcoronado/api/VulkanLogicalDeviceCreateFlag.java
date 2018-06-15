@@ -23,7 +23,7 @@ package com.io7m.jcoronado.api;
  * currently reserved for future use."
  */
 
-public enum VulkanLogicalDeviceCreateFlag implements VulkanEnumIntegerType
+public enum VulkanLogicalDeviceCreateFlag implements VulkanEnumBitmaskType
 {
   // CHECKSTYLE:OFF
   ;

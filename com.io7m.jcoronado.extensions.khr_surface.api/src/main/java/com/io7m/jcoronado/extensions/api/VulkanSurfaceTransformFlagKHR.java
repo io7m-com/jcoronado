@@ -16,13 +16,13 @@
 
 package com.io7m.jcoronado.extensions.api;
 
-import com.io7m.jcoronado.api.VulkanEnumIntegerType;
+import com.io7m.jcoronado.api.VulkanEnumBitmaskType;
 
 /**
  * @see "VkSurfaceTransformFlagBitsKHR"
  */
 
-public enum VulkanSurfaceTransformFlagKHR implements VulkanEnumIntegerType
+public enum VulkanSurfaceTransformFlagKHR implements VulkanEnumBitmaskType
 {
   /**
    * The image content is presented without being transformed.

@@ -77,6 +77,20 @@ public interface VulkanLogicalDeviceType extends VulkanObjectType
     throws VulkanException;
 
   /**
+   * Create a shader module.
+   *
+   * @param create_info The creation info
+   *
+   * @return A shader module
+   *
+   * @throws VulkanException On errors
+   */
+
+  VulkanShaderModuleType createShaderModule(
+    VulkanShaderModuleCreateInfo create_info)
+    throws VulkanException;
+
+  /**
    * Create an image view.
    *
    * @param info The image view creation info

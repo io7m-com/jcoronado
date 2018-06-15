@@ -43,7 +43,10 @@ import com.io7m.jcoronado.api.VulkanLogicalDeviceType;
 import com.io7m.jcoronado.api.VulkanPhysicalDeviceType;
 import com.io7m.jcoronado.api.VulkanQueueFamilyProperties;
 import com.io7m.jcoronado.api.VulkanQueueType;
+import com.io7m.jcoronado.api.VulkanShaderModuleCreateInfo;
+import com.io7m.jcoronado.api.VulkanShaderModuleType;
 import com.io7m.jcoronado.api.VulkanSharingMode;
+import com.io7m.jcoronado.api.VulkanTemporaryAllocatorType;
 import com.io7m.jcoronado.api.VulkanUncheckedException;
 import com.io7m.jcoronado.api.VulkanVersions;
 import com.io7m.jcoronado.extensions.api.VulkanColorSpaceKHR;
@@ -55,6 +58,7 @@ import com.io7m.jcoronado.extensions.api.VulkanSurfaceCapabilitiesKHR;
 import com.io7m.jcoronado.extensions.api.VulkanSurfaceFormatKHR;
 import com.io7m.jcoronado.extensions.api.VulkanSwapChainCreateInfo;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLInstanceProvider;
+import com.io7m.jcoronado.lwjgl.VulkanLWJGLTemporaryAllocator;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWErrorCallback;
@@ -62,6 +66,9 @@ import org.lwjgl.glfw.GLFWVulkan;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -86,9 +93,11 @@ public final class HelloVulkan
 
   public static void main(
     final String[] args)
-    throws VulkanException
+    throws VulkanException, IOException
   {
     GLFW_ERROR_CALLBACK.set();
+
+    final VulkanTemporaryAllocatorType alloc = VulkanLWJGLTemporaryAllocator.create();
 
     try {
       final long window = createWindow();
@@ -274,13 +283,20 @@ public final class HelloVulkan
                   .map(image -> createImageViewForImage(surface_format, device, image))
                   .collect(Collectors.toList());
 
-              views.forEach(view -> {
-                try {
-                  view.close();
-                } catch (final VulkanException e) {
-                  throw new VulkanUncheckedException(e);
+              try {
+                final byte[] data = readShaderModule("shaders.spv");
+                try (VulkanShaderModuleType shaders = createShaderModule(device, alloc, data)) {
+
                 }
-              });
+              } finally {
+                views.forEach(view -> {
+                  try {
+                    view.close();
+                  } catch (final VulkanException e) {
+                    throw new VulkanUncheckedException(e);
+                  }
+                });
+              }
             }
           }
         }
@@ -289,6 +305,31 @@ public final class HelloVulkan
       throw e.getCause();
     } finally {
       GLFW_ERROR_CALLBACK.close();
+    }
+  }
+
+  private static VulkanShaderModuleType createShaderModule(
+    final VulkanLogicalDeviceType device,
+    final VulkanTemporaryAllocatorType allocator,
+    final byte[] data)
+    throws VulkanException
+  {
+    return allocator.withAllocationBufferInitialized(
+      data,
+      4L,
+      buffer -> device.createShaderModule(
+        VulkanShaderModuleCreateInfo.of(Set.of(), buffer, (long) buffer.capacity())));
+  }
+
+  private static byte[] readShaderModule(
+    final String name)
+    throws IOException
+  {
+    try (InputStream input = HelloVulkan.class.getResourceAsStream(name)) {
+      try (ByteArrayOutputStream output = new ByteArrayOutputStream(8192)) {
+        input.transferTo(output);
+        return output.toByteArray();
+      }
     }
   }
 

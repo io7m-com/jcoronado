@@ -22,7 +22,7 @@ package com.io7m.jcoronado.api;
  * @see "VkQueueFlagBits"
  */
 
-public enum VulkanQueueFamilyPropertyFlag implements VulkanEnumIntegerType
+public enum VulkanQueueFamilyPropertyFlag implements VulkanEnumBitmaskType
 {
   /**
    * Queues in this queue family support graphics operations.

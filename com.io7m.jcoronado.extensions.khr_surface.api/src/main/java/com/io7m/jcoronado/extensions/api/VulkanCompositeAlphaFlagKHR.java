@@ -16,13 +16,13 @@
 
 package com.io7m.jcoronado.extensions.api;
 
-import com.io7m.jcoronado.api.VulkanEnumIntegerType;
+import com.io7m.jcoronado.api.VulkanEnumBitmaskType;
 
 /**
  * @see "VkCompositeAlphaFlagBitsKHR"
  */
 
-public enum VulkanCompositeAlphaFlagKHR implements VulkanEnumIntegerType
+public enum VulkanCompositeAlphaFlagKHR implements VulkanEnumBitmaskType
 {
   /**
    * The alpha channel, if it exists, of the images is ignored in the compositing process. Instead,

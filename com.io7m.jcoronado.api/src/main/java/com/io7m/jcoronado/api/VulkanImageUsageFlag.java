@@ -20,7 +20,7 @@ package com.io7m.jcoronado.api;
  * @see "VkImageUsageFlags"
  */
 
-public enum VulkanImageUsageFlag implements VulkanEnumIntegerType
+public enum VulkanImageUsageFlag implements VulkanEnumBitmaskType
 {
   /**
    * Can be used as a source of transfer operations

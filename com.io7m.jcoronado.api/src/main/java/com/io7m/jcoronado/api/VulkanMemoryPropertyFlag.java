@@ -22,7 +22,7 @@ package com.io7m.jcoronado.api;
  * @see "VkMemoryPropertyFlagBits"
  */
 
-public enum VulkanMemoryPropertyFlag implements VulkanEnumIntegerType
+public enum VulkanMemoryPropertyFlag implements VulkanEnumBitmaskType
 {
   /**
    * Specifies that memory allocated with this type is the most efficient for device access.

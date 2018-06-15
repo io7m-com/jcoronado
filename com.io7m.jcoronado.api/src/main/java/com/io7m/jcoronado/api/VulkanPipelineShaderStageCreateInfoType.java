@@ -16,66 +16,52 @@
 
 package com.io7m.jcoronado.api;
 
+import com.io7m.immutables.styles.ImmutablesStyleType;
+import org.immutables.value.Value;
+
+import java.util.Optional;
+import java.util.Set;
+
 /**
- * Bitmask specifying which aspects of an image are included in a view.
- *
- * @see "VkImageAspectFlagBits"
+ * @see "VkPipelineShaderStageCreateInfo"
  */
 
-public enum VulkanImageAspectFlag implements VulkanEnumBitmaskType
+@ImmutablesStyleType
+@Value.Immutable
+public interface VulkanPipelineShaderStageCreateInfoType
 {
   /**
-   * Specifies the color aspect
+   * @return Flags reserved for future use
    */
 
-  VK_IMAGE_ASPECT_COLOR_BIT(0x00000001),
+  @Value.Parameter
+  Set<VulkanPipelineShaderStageCreateFlag> flags();
 
   /**
-   * Specifies the depth aspect
+   * @return A single pipeline stage.
    */
 
-  VK_IMAGE_ASPECT_DEPTH_BIT(0x00000002),
+  @Value.Parameter
+  VulkanShaderStageFlag stage();
 
   /**
-   * Specifies the stencil aspect
+   * @return A shader module containing the shader for the stage.
    */
 
-  VK_IMAGE_ASPECT_STENCIL_BIT(0x00000004),
+  @Value.Parameter
+  VulkanShaderModuleType module();
 
   /**
-   * Specifies the metadata aspect, used for sparse sparse resource operations
+   * @return The entry point name of the shader for this stage.
    */
 
-  VK_IMAGE_ASPECT_METADATA_BIT(0x00000008),
+  @Value.Parameter
+  String shaderEntryPoint();
 
   /**
-   * Specifies plane 0
+   * @return The optional specialization info
    */
 
-  VK_IMAGE_ASPECT_PLANE_0_BIT(0x00000010),
-
-  /**
-   * Specifies plane 1
-   */
-
-  VK_IMAGE_ASPECT_PLANE_1_BIT(0x00000020),
-
-  /**
-   * Specifies plane 2
-   */
-
-  VK_IMAGE_ASPECT_PLANE_2_BIT(0x00000040);
-
-  private final int value;
-
-  VulkanImageAspectFlag(final int i)
-  {
-    this.value = i;
-  }
-
-  @Override
-  public int value()
-  {
-    return this.value;
-  }
+  @Value.Parameter
+  Optional<VulkanSpecializationMap> specializationInfo();
 }

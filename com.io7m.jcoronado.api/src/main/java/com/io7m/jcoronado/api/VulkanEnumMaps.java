@@ -39,7 +39,7 @@ public final class VulkanEnumMaps
    * @return The integer-packed values
    */
 
-  public static <T extends Enum<T> & VulkanEnumIntegerType> int packValues(
+  public static <T extends Enum<T> & VulkanEnumBitmaskType> int packValues(
     final Iterable<T> values)
   {
     int result = 0;

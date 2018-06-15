@@ -17,58 +17,65 @@
 package com.io7m.jcoronado.api;
 
 /**
- * Bitmask specifying which aspects of an image are included in a view.
- *
- * @see "VkImageAspectFlagBits"
+ * @see "VkShaderStageFlagBits"
  */
 
-public enum VulkanImageAspectFlag implements VulkanEnumBitmaskType
+public enum VulkanShaderStageFlag implements VulkanEnumBitmaskType
 {
   /**
-   * Specifies the color aspect
+   * The vertex stage.
    */
 
-  VK_IMAGE_ASPECT_COLOR_BIT(0x00000001),
+  VK_SHADER_STAGE_VERTEX_BIT(0x00000001),
 
   /**
-   * Specifies the depth aspect
+   * The tessellation control stage.
    */
 
-  VK_IMAGE_ASPECT_DEPTH_BIT(0x00000002),
+  VK_SHADER_STAGE_TESSELLATION_CONTROL_BIT(0x00000002),
 
   /**
-   * Specifies the stencil aspect
+   * The tessellation evaluation stage.
    */
 
-  VK_IMAGE_ASPECT_STENCIL_BIT(0x00000004),
+  VK_SHADER_STAGE_TESSELLATION_EVALUATION_BIT(0x00000004),
 
   /**
-   * Specifies the metadata aspect, used for sparse sparse resource operations
+   * The geometry stage.
    */
 
-  VK_IMAGE_ASPECT_METADATA_BIT(0x00000008),
+  VK_SHADER_STAGE_GEOMETRY_BIT(0x00000008),
 
   /**
-   * Specifies plane 0
+   * The fragment stage.
    */
 
-  VK_IMAGE_ASPECT_PLANE_0_BIT(0x00000010),
+  VK_SHADER_STAGE_FRAGMENT_BIT(0x00000010),
 
   /**
-   * Specifies plane 1
+   * The compute stage.
    */
 
-  VK_IMAGE_ASPECT_PLANE_1_BIT(0x00000020),
+  VK_SHADER_STAGE_COMPUTE_BIT(0x00000020),
 
   /**
-   * Specifies plane 2
+   * A combination of bits used as shorthand to specify all graphics stages defined above (excluding
+   * the compute stage).
    */
 
-  VK_IMAGE_ASPECT_PLANE_2_BIT(0x00000040);
+  VK_SHADER_STAGE_ALL_GRAPHICS(0x0000001F),
+
+  /**
+   * A combination of bits used as shorthand to specify all shader stages supported by the device,
+   * including all additional stages which are introduced by extensions.
+   */
+
+  VK_SHADER_STAGE_ALL(0x7FFFFFFF);
 
   private final int value;
 
-  VulkanImageAspectFlag(final int i)
+  VulkanShaderStageFlag(
+    final int i)
   {
     this.value = i;
   }

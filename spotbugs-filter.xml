@@ -22,8 +22,10 @@
       <Class name="com.io7m.jcoronado.api.VulkanPhysicalDeviceLimits"/>
       <Class name="com.io7m.jcoronado.api.VulkanPhysicalDeviceMemoryProperties"/>
       <Class name="com.io7m.jcoronado.api.VulkanPhysicalDeviceProperties"/>
+      <Class name="com.io7m.jcoronado.api.VulkanPipelineShaderStageCreateInfo"/>
       <Class name="com.io7m.jcoronado.api.VulkanPointSizeRange"/>
       <Class name="com.io7m.jcoronado.api.VulkanQueueFamilyProperties"/>
+      <Class name="com.io7m.jcoronado.api.VulkanShaderModuleCreateInfo"/>
       <Class name="com.io7m.jcoronado.api.VulkanVersion"/>
       <Class name="com.io7m.jcoronado.api.VulkanViewportBoundsRange"/>
       <Class name="com.io7m.jcoronado.api.VulkanViewportDimensions"/>

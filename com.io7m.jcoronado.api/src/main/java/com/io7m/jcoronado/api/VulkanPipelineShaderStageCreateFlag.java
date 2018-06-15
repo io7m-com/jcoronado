@@ -17,13 +17,13 @@
 package com.io7m.jcoronado.api;
 
 /**
- * Flags specified when creating image views.
+ * Flags specified when creating pipeline shader stages.
  *
- * Vulkan 1.1 specification: "VkImageViewCreateFlags is a bitmask type for setting a mask, but is
- * currently reserved for future use."
+ * Vulkan 1.1 specification: "VkPipelineShaderStageCreateFlags is a bitmask type for setting a mask,
+ * but is currently reserved for future use."
  */
 
-public enum VulkanImageViewCreateFlag implements VulkanEnumBitmaskType
+public enum VulkanPipelineShaderStageCreateFlag implements VulkanEnumBitmaskType
 {
   // CHECKSTYLE:OFF
   ;

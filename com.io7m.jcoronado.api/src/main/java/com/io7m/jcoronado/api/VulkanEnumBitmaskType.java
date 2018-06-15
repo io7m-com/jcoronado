@@ -17,21 +17,14 @@
 package com.io7m.jcoronado.api;
 
 /**
- * Flags specified when creating image views.
- *
- * Vulkan 1.1 specification: "VkImageViewCreateFlags is a bitmask type for setting a mask, but is
- * currently reserved for future use."
+ * The type of enums with integer values.
  */
 
-public enum VulkanImageViewCreateFlag implements VulkanEnumBitmaskType
+public interface VulkanEnumBitmaskType
 {
-  // CHECKSTYLE:OFF
-  ;
-  // CHECKSTYLE:ON
+  /**
+   * @return The integer value of the constant
+   */
 
-  @Override
-  public int value()
-  {
-    return 0;
-  }
+  int value();
 }

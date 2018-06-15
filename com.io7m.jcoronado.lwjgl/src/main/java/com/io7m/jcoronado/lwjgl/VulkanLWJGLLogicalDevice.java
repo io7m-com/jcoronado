@@ -23,7 +23,6 @@ import com.io7m.jcoronado.api.VulkanEnumMaps;
 import com.io7m.jcoronado.api.VulkanException;
 import com.io7m.jcoronado.api.VulkanExtensionType;
 import com.io7m.jcoronado.api.VulkanImageSubresourceRange;
-import com.io7m.jcoronado.api.VulkanImageViewCreateFlag;
 import com.io7m.jcoronado.api.VulkanImageViewCreateInfo;
 import com.io7m.jcoronado.api.VulkanImageViewType;
 import com.io7m.jcoronado.api.VulkanLogicalDeviceCreateInfo;
@@ -32,6 +31,8 @@ import com.io7m.jcoronado.api.VulkanLogicalDeviceType;
 import com.io7m.jcoronado.api.VulkanPhysicalDeviceType;
 import com.io7m.jcoronado.api.VulkanQueueFamilyProperties;
 import com.io7m.jcoronado.api.VulkanQueueType;
+import com.io7m.jcoronado.api.VulkanShaderModuleCreateInfo;
+import com.io7m.jcoronado.api.VulkanShaderModuleType;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.vulkan.VK10;
@@ -40,6 +41,7 @@ import org.lwjgl.vulkan.VkDevice;
 import org.lwjgl.vulkan.VkImageSubresourceRange;
 import org.lwjgl.vulkan.VkImageViewCreateInfo;
 import org.lwjgl.vulkan.VkQueue;
+import org.lwjgl.vulkan.VkShaderModuleCreateInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,7 +50,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 
 final class VulkanLWJGLLogicalDevice
   extends VulkanLWJGLObject implements VulkanLogicalDeviceType
@@ -102,12 +103,6 @@ final class VulkanLWJGLLogicalDevice
       .baseMipLevel(range.baseMipLevel())
       .layerCount(range.layerCount())
       .levelCount(range.levelCount());
-  }
-
-  private static int packFlags(
-    final Set<VulkanImageViewCreateFlag> flags)
-  {
-    return VulkanEnumMaps.packValues(flags);
   }
 
   private static VkComponentMapping packComponentMapping(
@@ -186,6 +181,40 @@ final class VulkanLWJGLLogicalDevice
   }
 
   @Override
+  public VulkanShaderModuleType createShaderModule(
+    final VulkanShaderModuleCreateInfo create_info)
+    throws VulkanException
+  {
+    Objects.requireNonNull(create_info, "create_info");
+
+    this.checkNotClosed();
+
+    if (LOG.isDebugEnabled()) {
+      LOG.debug("creating shader module: {} octets", Long.valueOf(create_info.size()));
+    }
+
+    try (MemoryStack stack = this.stack_initial.push()) {
+      final VkShaderModuleCreateInfo vk_create_info =
+        VkShaderModuleCreateInfo.mallocStack(stack)
+          .sType(VK10.VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO)
+          .pNext(0L)
+          .pCode(create_info.data())
+          .flags(VulkanEnumMaps.packValues(create_info.flags()));
+
+      final long[] results = new long[1];
+      VulkanChecks.checkReturnCode(
+        VK10.vkCreateShaderModule(this.device, vk_create_info, null, results),
+        "vkCreateShaderModule");
+
+      final long shader_module = results[0];
+      if (LOG.isDebugEnabled()) {
+        LOG.debug("created shader module: 0x{}", Long.toUnsignedString(shader_module, 16));
+      }
+      return new VulkanLWJGLShaderModule(Ownership.USER_OWNED, this.device, shader_module);
+    }
+  }
+
+  @Override
   public VulkanImageViewType createImageView(
     final VulkanImageViewCreateInfo info)
     throws VulkanException
@@ -202,7 +231,7 @@ final class VulkanLWJGLLogicalDevice
         VkImageViewCreateInfo.mallocStack(stack)
           .sType(VK10.VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO)
           .components(packComponentMapping(stack, info.components()))
-          .flags(packFlags(info.flags()))
+          .flags(VulkanEnumMaps.packValues(info.flags()))
           .format(info.format().value())
           .image(image.handle())
           .subresourceRange(packSubresourceRange(stack, info.subresourceRange()))

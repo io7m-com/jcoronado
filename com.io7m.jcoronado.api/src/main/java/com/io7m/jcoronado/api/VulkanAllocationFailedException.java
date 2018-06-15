@@ -16,22 +16,23 @@
 
 package com.io7m.jcoronado.api;
 
+import java.util.Objects;
+
 /**
- * Flags specified when creating image views.
- *
- * Vulkan 1.1 specification: "VkImageViewCreateFlags is a bitmask type for setting a mask, but is
- * currently reserved for future use."
+ * An exception raised by a memory allocation failure.
  */
 
-public enum VulkanImageViewCreateFlag implements VulkanEnumBitmaskType
+public final class VulkanAllocationFailedException extends VulkanException
 {
-  // CHECKSTYLE:OFF
-  ;
-  // CHECKSTYLE:ON
+  /**
+   * Construct an exception.
+   *
+   * @param message The error message
+   */
 
-  @Override
-  public int value()
+  public VulkanAllocationFailedException(
+    final String message)
   {
-    return 0;
+    super(Objects.requireNonNull(message, "message"));
   }
 }

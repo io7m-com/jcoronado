@@ -20,7 +20,7 @@ package com.io7m.jcoronado.api;
  * @see "VkMemoryHeapFlagBits"
  */
 
-public enum VulkanMemoryHeapFlag implements VulkanEnumIntegerType
+public enum VulkanMemoryHeapFlag implements VulkanEnumBitmaskType
 {
   /**
    * Specifies that the heap corresponds to device local memory.

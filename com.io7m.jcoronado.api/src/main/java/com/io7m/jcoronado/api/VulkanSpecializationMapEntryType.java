@@ -16,22 +16,35 @@
 
 package com.io7m.jcoronado.api;
 
+import com.io7m.immutables.styles.ImmutablesStyleType;
+import org.immutables.value.Value;
+
 /**
- * Flags specified when creating image views.
- *
- * Vulkan 1.1 specification: "VkImageViewCreateFlags is a bitmask type for setting a mask, but is
- * currently reserved for future use."
+ * @see "VkSpecializationMapEntry"
  */
 
-public enum VulkanImageViewCreateFlag implements VulkanEnumBitmaskType
+@ImmutablesStyleType
+@Value.Immutable
+public interface VulkanSpecializationMapEntryType
 {
-  // CHECKSTYLE:OFF
-  ;
-  // CHECKSTYLE:ON
+  /**
+   * @return The ID of the specialization constant in SPIR-V.
+   */
 
-  @Override
-  public int value()
-  {
-    return 0;
-  }
+  @Value.Parameter
+  int constantID();
+
+  /**
+   * @return The byte offset of the specialization constant value within the supplied data buffer.
+   */
+
+  @Value.Parameter
+  long offset();
+
+  /**
+   * @return The byte size of the specialization constant value within the supplied data buffer.
+   */
+
+  @Value.Parameter
+  long size();
 }

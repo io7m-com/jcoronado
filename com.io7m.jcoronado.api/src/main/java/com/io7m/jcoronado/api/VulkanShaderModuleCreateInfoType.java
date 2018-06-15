@@ -16,22 +16,40 @@
 
 package com.io7m.jcoronado.api;
 
+import com.io7m.immutables.styles.ImmutablesStyleType;
+import org.immutables.value.Value;
+
+import java.nio.ByteBuffer;
+import java.util.Set;
+
 /**
- * Flags specified when creating image views.
+ * The type of Vulkan image view creation information.
  *
- * Vulkan 1.1 specification: "VkImageViewCreateFlags is a bitmask type for setting a mask, but is
- * currently reserved for future use."
+ * @see "VkShaderModuleCreateInfo"
  */
 
-public enum VulkanImageViewCreateFlag implements VulkanEnumBitmaskType
+@ImmutablesStyleType
+@Value.Immutable
+public interface VulkanShaderModuleCreateInfoType
 {
-  // CHECKSTYLE:OFF
-  ;
-  // CHECKSTYLE:ON
+  /**
+   * @return The module creation flags
+   */
 
-  @Override
-  public int value()
-  {
-    return 0;
-  }
+  @Value.Parameter
+  Set<VulkanShaderModuleCreateFlag> flags();
+
+  /**
+   * @return The shader module bytecode
+   */
+
+  @Value.Parameter
+  ByteBuffer data();
+
+  /**
+   * @return The shader code size
+   */
+
+  @Value.Parameter
+  long size();
 }
