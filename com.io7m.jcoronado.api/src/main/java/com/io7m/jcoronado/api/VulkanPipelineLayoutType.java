@@ -17,12 +17,10 @@
 package com.io7m.jcoronado.api;
 
 /**
- * The type of Vulkan images.
- *
- * @see "VkImage"
+ * @see "VkPipelineLayout"
  */
 
-public interface VulkanImageType extends VulkanHandleNonDispatchableType
+public interface VulkanPipelineLayoutType extends VulkanHandleNonDispatchableType
 {
 
 }

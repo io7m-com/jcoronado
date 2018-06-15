@@ -22,7 +22,7 @@ package com.io7m.jcoronado.api;
  * @see "VkImageView"
  */
 
-public interface VulkanImageViewType extends VulkanObjectType
+public interface VulkanImageViewType extends VulkanHandleNonDispatchableType
 {
 
 }

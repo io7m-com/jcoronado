@@ -16,13 +16,34 @@
 
 package com.io7m.jcoronado.api;
 
+import com.io7m.immutables.styles.ImmutablesStyleType;
+import org.immutables.value.Value;
+
+import java.util.List;
+import java.util.Set;
+
 /**
- * The type of Vulkan images.
+ * Structure specifying parameters of a newly created pipeline dynamic state.
  *
- * @see "VkImage"
+ * @see "VkPipelineDynamicStateCreateInfo"
  */
 
-public interface VulkanImageType extends VulkanHandleNonDispatchableType
+@ImmutablesStyleType
+@Value.Immutable
+public interface VulkanPipelineDynamicStateCreateInfoType
 {
+  /**
+   * @return Flags reserved for future use
+   */
 
+  @Value.Parameter
+  Set<VulkanPipelineDynamicStateCreateFlag> flags();
+
+  /**
+   * @return Values specifying which pieces of pipeline state will use the values from dynamic state
+   * commands rather than from pipeline state creation info.
+   */
+
+  @Value.Parameter
+  List<VulkanDynamicState> dynamicStates();
 }

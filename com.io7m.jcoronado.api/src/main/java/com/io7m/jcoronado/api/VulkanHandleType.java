@@ -17,12 +17,18 @@
 package com.io7m.jcoronado.api;
 
 /**
- * The type of Vulkan images.
- *
- * @see "VkImage"
+ * The base type of Vulkan handles.
  */
 
-public interface VulkanImageType extends VulkanHandleNonDispatchableType
+public interface VulkanHandleType extends AutoCloseable
 {
+  /**
+   * Destroy the object.
+   *
+   * @throws VulkanException On errors
+   */
 
+  @Override
+  void close()
+    throws VulkanException;
 }

@@ -16,38 +16,22 @@
 
 package com.io7m.jcoronado.api;
 
-import com.io7m.immutables.styles.ImmutablesStyleType;
-import org.immutables.value.Value;
-
-import java.util.Set;
-
 /**
- * @see "VkPipelineInputAssemblyStateCreateInfo"
+ * Flags specified when creating pipeline tessellation stages.
+ *
+ * Vulkan 1.1 specification: "VkPipelineTessellationStateCreateFlags is a bitmask type for setting a
+ * mask, but is currently reserved for future use."
  */
 
-@ImmutablesStyleType
-@Value.Immutable
-public interface VulkanPipelineInputAssemblyCreateInfoType
+public enum VulkanPipelineTessellationStageCreateFlag implements VulkanEnumBitmaskType
 {
-  /**
-   * @return Flags reserved for future use
-   */
+  // CHECKSTYLE:OFF
+  ;
+  // CHECKSTYLE:ON
 
-  @Value.Parameter
-  Set<VulkanPipelineInputAssemblyStateCreateFlag> flags();
-
-  /**
-   * @return The primitive topology
-   */
-
-  @Value.Parameter
-  VulkanPrimitiveTopology topology();
-
-  /**
-   * @return {@code true} if a special vertex index value is treated as restarting the assembly of
-   * primitives
-   */
-
-  @Value.Parameter
-  boolean primitiveRestartEnable();
+  @Override
+  public int value()
+  {
+    return 0;
+  }
 }

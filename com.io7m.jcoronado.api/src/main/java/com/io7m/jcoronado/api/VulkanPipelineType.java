@@ -20,7 +20,7 @@ package com.io7m.jcoronado.api;
  * @see "VkPipeline"
  */
 
-public interface VulkanPipelineType
+public interface VulkanPipelineType extends VulkanHandleNonDispatchableType
 {
 
 }

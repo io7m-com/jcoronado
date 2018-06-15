@@ -17,12 +17,21 @@
 package com.io7m.jcoronado.api;
 
 /**
- * The type of Vulkan images.
+ * Flags specified when creating depth/stencil state.
  *
- * @see "VkImage"
+ * Vulkan 1.1 specification: "VkPipelineDepthStencilStateCreateFlags is a bitmask type for setting a
+ * mask, but is currently reserved for future use."
  */
 
-public interface VulkanImageType extends VulkanHandleNonDispatchableType
+public enum VulkanPipelineDepthStencilStateCreateFlag implements VulkanEnumBitmaskType
 {
+  // CHECKSTYLE:OFF
+  ;
+  // CHECKSTYLE:ON
 
+  @Override
+  public int value()
+  {
+    return 0;
+  }
 }

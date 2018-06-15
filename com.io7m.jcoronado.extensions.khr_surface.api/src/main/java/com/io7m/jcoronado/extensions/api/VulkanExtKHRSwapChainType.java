@@ -20,7 +20,7 @@ import com.io7m.jcoronado.api.VulkanException;
 import com.io7m.jcoronado.api.VulkanExtensionType;
 import com.io7m.jcoronado.api.VulkanImageType;
 import com.io7m.jcoronado.api.VulkanLogicalDeviceType;
-import com.io7m.jcoronado.api.VulkanObjectType;
+import com.io7m.jcoronado.api.VulkanHandleType;
 
 import java.util.List;
 
@@ -57,7 +57,7 @@ public interface VulkanExtKHRSwapChainType extends VulkanExtensionType
    * A created swap chain.
    */
 
-  interface VulkanKHRSwapChainType extends VulkanObjectType
+  interface VulkanKHRSwapChainType extends VulkanHandleType
   {
     /**
      * @return The list of images associated with the swap chain

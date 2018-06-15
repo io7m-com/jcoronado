@@ -52,7 +52,7 @@ import java.util.Map;
 import java.util.Objects;
 
 final class VulkanLWJGLLogicalDevice
-  extends VulkanLWJGLObject implements VulkanLogicalDeviceType
+  extends VulkanLWJGLHandle implements VulkanLogicalDeviceType
 {
   private static final Logger LOG =
     LoggerFactory.getLogger(VulkanLWJGLLogicalDevice.class);

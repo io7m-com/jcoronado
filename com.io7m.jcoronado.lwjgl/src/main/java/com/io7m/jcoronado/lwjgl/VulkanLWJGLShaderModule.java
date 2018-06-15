@@ -24,7 +24,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Objects;
 
-final class VulkanLWJGLShaderModule extends VulkanLWJGLObject implements VulkanShaderModuleType
+final class VulkanLWJGLShaderModule extends VulkanLWJGLHandle implements VulkanShaderModuleType
 {
   private static final Logger LOG = LoggerFactory.getLogger(VulkanLWJGLShaderModule.class);
 

@@ -22,7 +22,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Objects;
 
-final class VulkanLWJGLImage extends VulkanLWJGLObject implements VulkanImageType
+final class VulkanLWJGLImage extends VulkanLWJGLHandle implements VulkanImageType
 {
   private static final Logger LOG = LoggerFactory.getLogger(VulkanLWJGLImage.class);
 

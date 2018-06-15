@@ -22,7 +22,7 @@ package com.io7m.jcoronado.api;
  * @see "VkQueue"
  */
 
-public interface VulkanQueueType
+public interface VulkanQueueType extends VulkanHandleDispatchableType
 {
   /**
    * @return The properties for the queue family to which this queue belongs

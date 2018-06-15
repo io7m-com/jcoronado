@@ -17,18 +17,10 @@
 package com.io7m.jcoronado.api;
 
 /**
- * The base type of Vulkan objects.
+ * @see "VkRenderPass"
  */
 
-public interface VulkanObjectType extends AutoCloseable
+public interface VulkanRenderPassType extends VulkanHandleNonDispatchableType
 {
-  /**
-   * Destroy the object.
-   *
-   * @throws VulkanException On errors
-   */
 
-  @Override
-  void close()
-    throws VulkanException;
 }

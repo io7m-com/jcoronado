@@ -26,7 +26,7 @@ import java.util.Optional;
  * @see "VkPhysicalDevice"
  */
 
-public interface VulkanPhysicalDeviceType extends VulkanObjectType
+public interface VulkanPhysicalDeviceType extends VulkanHandleDispatchableType
 {
   /**
    * @return The instance to which the physical device belongs

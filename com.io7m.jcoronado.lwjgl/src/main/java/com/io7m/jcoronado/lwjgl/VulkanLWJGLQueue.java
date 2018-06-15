@@ -24,10 +24,10 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Objects;
 
-import static com.io7m.jcoronado.lwjgl.VulkanLWJGLObject.Ownership.VULKAN_OWNED;
+import static com.io7m.jcoronado.lwjgl.VulkanLWJGLHandle.Ownership.VULKAN_OWNED;
 
 final class VulkanLWJGLQueue
-  extends VulkanLWJGLObject implements VulkanQueueType
+  extends VulkanLWJGLHandle implements VulkanQueueType
 {
   private static final Logger LOG =
     LoggerFactory.getLogger(VulkanLWJGLQueue.class);

@@ -4,13 +4,23 @@
   <!-- Generated types -->
   <Match>
     <Or>
+      <Class name="com.io7m.jcoronado.extensions.api.VulkanSurfaceCapabilitiesKHR"/>
+      <Class name="com.io7m.jcoronado.extensions.api.VulkanSurfaceFormatKHR"/>
+      <Class name="com.io7m.jcoronado.extensions.api.VulkanSwapChainCreateInfo"/>
+
+      <Class name="~com\.io7m\.jcoronado\..+\$Builder"/>
+      <Class name="~com\.io7m\.jcoronado\..+\$InitShim"/>
+
       <Class name="com.io7m.jcoronado.api.VulkanApplicationInfo"/>
       <Class name="com.io7m.jcoronado.api.VulkanAttachmentDescription"/>
+      <Class name="com.io7m.jcoronado.api.VulkanBlendConstants"/>
       <Class name="com.io7m.jcoronado.api.VulkanComponentMapping"/>
       <Class name="com.io7m.jcoronado.api.VulkanComputeWorkGroupCount"/>
       <Class name="com.io7m.jcoronado.api.VulkanComputeWorkGroupSize"/>
       <Class name="com.io7m.jcoronado.api.VulkanExtensionProperties"/>
+      <Class name="com.io7m.jcoronado.api.VulkanExtent2D"/>
       <Class name="com.io7m.jcoronado.api.VulkanExtent3D"/>
+      <Class name="com.io7m.jcoronado.api.VulkanGraphicsPipelineCreateInfo"/>
       <Class name="com.io7m.jcoronado.api.VulkanImageSubresourceRange"/>
       <Class name="com.io7m.jcoronado.api.VulkanImageViewCreateInfo"/>
       <Class name="com.io7m.jcoronado.api.VulkanInstanceCreateInfo"/>
@@ -20,30 +30,38 @@
       <Class name="com.io7m.jcoronado.api.VulkanLogicalDeviceQueueCreateInfo"/>
       <Class name="com.io7m.jcoronado.api.VulkanMemoryHeap"/>
       <Class name="com.io7m.jcoronado.api.VulkanMemoryType"/>
+      <Class name="com.io7m.jcoronado.api.VulkanOffset2D"/>
+      <Class name="com.io7m.jcoronado.api.VulkanOffset3D"/>
       <Class name="com.io7m.jcoronado.api.VulkanPhysicalDeviceFeatures"/>
       <Class name="com.io7m.jcoronado.api.VulkanPhysicalDeviceLimits"/>
       <Class name="com.io7m.jcoronado.api.VulkanPhysicalDeviceMemoryProperties"/>
       <Class name="com.io7m.jcoronado.api.VulkanPhysicalDeviceProperties"/>
       <Class name="com.io7m.jcoronado.api.VulkanPipelineColorBlendAttachmentState"/>
       <Class name="com.io7m.jcoronado.api.VulkanPipelineColorBlendStateCreateInfo"/>
-      <Class name="com.io7m.jcoronado.api.VulkanPipelineInputAssemblyCreateInfo"/>
+      <Class name="com.io7m.jcoronado.api.VulkanPipelineDepthStencilStateCreateInfo"/>
+      <Class name="com.io7m.jcoronado.api.VulkanPipelineDynamicStateCreateInfo"/>
+      <Class name="com.io7m.jcoronado.api.VulkanPipelineInputAssemblyStateCreateInfo"/>
+      <Class name="com.io7m.jcoronado.api.VulkanPipelineLayoutCreateInfo"/>
       <Class name="com.io7m.jcoronado.api.VulkanPipelineMultisampleStateCreateInfo"/>
       <Class name="com.io7m.jcoronado.api.VulkanPipelineRasterizationStateCreateInfo"/>
       <Class name="com.io7m.jcoronado.api.VulkanPipelineShaderStageCreateInfo"/>
+      <Class name="com.io7m.jcoronado.api.VulkanPipelineTessellationStateCreateInfo"/>
+      <Class name="com.io7m.jcoronado.api.VulkanPipelineVertexInputStateCreateInfo"/>
+      <Class name="com.io7m.jcoronado.api.VulkanPipelineViewportStateCreateInfo"/>
       <Class name="com.io7m.jcoronado.api.VulkanPointSizeRange"/>
       <Class name="com.io7m.jcoronado.api.VulkanPushConstantRange"/>
       <Class name="com.io7m.jcoronado.api.VulkanQueueFamilyProperties"/>
+      <Class name="com.io7m.jcoronado.api.VulkanRectangle2D"/>
       <Class name="com.io7m.jcoronado.api.VulkanShaderModuleCreateInfo"/>
+      <Class name="com.io7m.jcoronado.api.VulkanSpecializationMapEntry"/>
+      <Class name="com.io7m.jcoronado.api.VulkanSpecializationMap"/>
+      <Class name="com.io7m.jcoronado.api.VulkanStencilOpState"/>
       <Class name="com.io7m.jcoronado.api.VulkanVersion"/>
       <Class name="com.io7m.jcoronado.api.VulkanVertexInputAttributeDescription"/>
       <Class name="com.io7m.jcoronado.api.VulkanVertexInputBindingDescription"/>
       <Class name="com.io7m.jcoronado.api.VulkanViewportBoundsRange"/>
       <Class name="com.io7m.jcoronado.api.VulkanViewportDimensions"/>
-      <Class name="~com\.io7m\.jcoronado\..+\$Builder"/>
-      <Class name="com.io7m.jcoronado.extensions.api.VulkanSurfaceCapabilitiesKHR"/>
-      <Class name="com.io7m.jcoronado.extensions.api.VulkanSurfaceFormatKHR"/>
-      <Class name="com.io7m.jcoronado.extensions.api.VulkanSwapChainCreateInfo"/>
-      <Class name="~com\.io7m\.jcoronado\..+\$InitShim"/>
+      <Class name="com.io7m.jcoronado.api.VulkanViewport"/>
     </Or>
   </Match>
 

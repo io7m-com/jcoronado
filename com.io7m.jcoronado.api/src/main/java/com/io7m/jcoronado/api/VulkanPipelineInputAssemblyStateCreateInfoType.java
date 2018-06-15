@@ -16,13 +16,38 @@
 
 package com.io7m.jcoronado.api;
 
+import com.io7m.immutables.styles.ImmutablesStyleType;
+import org.immutables.value.Value;
+
+import java.util.Set;
+
 /**
- * The type of Vulkan images.
- *
- * @see "VkImage"
+ * @see "VkPipelineInputAssemblyStateCreateInfo"
  */
 
-public interface VulkanImageType extends VulkanHandleNonDispatchableType
+@ImmutablesStyleType
+@Value.Immutable
+public interface VulkanPipelineInputAssemblyStateCreateInfoType
 {
+  /**
+   * @return Flags reserved for future use
+   */
 
+  @Value.Parameter
+  Set<VulkanPipelineInputAssemblyStateCreateFlag> flags();
+
+  /**
+   * @return The primitive topology
+   */
+
+  @Value.Parameter
+  VulkanPrimitiveTopology topology();
+
+  /**
+   * @return {@code true} if a special vertex index value is treated as restarting the assembly of
+   * primitives
+   */
+
+  @Value.Parameter
+  boolean primitiveRestartEnable();
 }

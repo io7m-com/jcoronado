@@ -68,7 +68,7 @@ import java.util.Objects;
 import java.util.Set;
 
 final class VulkanLWJGLInstance
-  extends VulkanLWJGLObject implements VulkanInstanceType
+  extends VulkanLWJGLHandle implements VulkanInstanceType
 {
   private static final Logger LOG = LoggerFactory.getLogger(VulkanLWJGLInstance.class);
 

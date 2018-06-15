@@ -17,12 +17,10 @@
 package com.io7m.jcoronado.api;
 
 /**
- * The type of Vulkan images.
- *
- * @see "VkImage"
+ * The base type of dispatchable Vulkan handles.
  */
 
-public interface VulkanImageType extends VulkanHandleNonDispatchableType
+public interface VulkanHandleDispatchableType extends VulkanHandleType
 {
 
 }

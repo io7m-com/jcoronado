@@ -41,8 +41,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.LongStream;
 
-import static com.io7m.jcoronado.lwjgl.VulkanLWJGLObject.Ownership.USER_OWNED;
-import static com.io7m.jcoronado.lwjgl.VulkanLWJGLObject.Ownership.VULKAN_OWNED;
+import static com.io7m.jcoronado.lwjgl.VulkanLWJGLHandle.Ownership.USER_OWNED;
+import static com.io7m.jcoronado.lwjgl.VulkanLWJGLHandle.Ownership.VULKAN_OWNED;
 
 /**
  * Access to the {@code VK_KHR_swapchain} extension.
@@ -178,7 +178,7 @@ public final class VulkanLWJGLExtKHRSwapChain implements VulkanExtKHRSwapChainTy
   }
 
   private static final class VulkanLWJGLKHRSwapChain
-    extends VulkanLWJGLObject implements VulkanKHRSwapChainType
+    extends VulkanLWJGLHandle implements VulkanKHRSwapChainType
   {
     private final long chain;
     private final VkDevice device;

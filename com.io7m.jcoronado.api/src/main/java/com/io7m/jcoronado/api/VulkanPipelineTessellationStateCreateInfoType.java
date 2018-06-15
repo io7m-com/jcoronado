@@ -16,13 +16,32 @@
 
 package com.io7m.jcoronado.api;
 
+import com.io7m.immutables.styles.ImmutablesStyleType;
+import org.immutables.value.Value;
+
+import java.util.Set;
+
 /**
- * The type of Vulkan images.
+ * Structure specifying parameters of a newly created pipeline tessellation state.
  *
- * @see "VkImage"
+ * @see "VkPipelineTessellationStateCreateInfo"
  */
 
-public interface VulkanImageType extends VulkanHandleNonDispatchableType
+@ImmutablesStyleType
+@Value.Immutable
+public interface VulkanPipelineTessellationStateCreateInfoType
 {
+  /**
+   * @return Creation flags
+   */
 
+  @Value.Parameter
+  Set<VulkanPipelineTessellationStageCreateFlag> flags();
+
+  /**
+   * @return The number of control points per patch.
+   */
+
+  @Value.Parameter
+  int patchControlPoints();
 }

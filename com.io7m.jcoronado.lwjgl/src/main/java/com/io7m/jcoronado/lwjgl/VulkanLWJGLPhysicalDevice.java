@@ -56,7 +56,7 @@ import java.util.Optional;
 import static com.io7m.jcoronado.api.VulkanChecks.checkReturnCode;
 
 final class VulkanLWJGLPhysicalDevice
-  extends VulkanLWJGLObject implements VulkanPhysicalDeviceType
+  extends VulkanLWJGLHandle implements VulkanPhysicalDeviceType
 {
   private static final Logger LOG =
     LoggerFactory.getLogger(VulkanLWJGLPhysicalDevice.class);

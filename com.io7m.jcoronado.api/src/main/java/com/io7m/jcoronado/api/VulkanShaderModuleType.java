@@ -20,7 +20,7 @@ package com.io7m.jcoronado.api;
  * The type of shader modules.
  */
 
-public interface VulkanShaderModuleType extends VulkanObjectType
+public interface VulkanShaderModuleType extends VulkanHandleNonDispatchableType
 {
 
 }

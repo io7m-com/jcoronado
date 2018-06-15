@@ -17,17 +17,17 @@
 package com.io7m.jcoronado.lwjgl;
 
 import com.io7m.jcoronado.api.VulkanDestroyedException;
-import com.io7m.jcoronado.api.VulkanObjectType;
+import com.io7m.jcoronado.api.VulkanHandleType;
 import org.slf4j.Logger;
 
 import java.util.Objects;
 
-abstract class VulkanLWJGLObject implements VulkanObjectType
+abstract class VulkanLWJGLHandle implements VulkanHandleType
 {
   private final Ownership ownership;
   private boolean closed;
 
-  VulkanLWJGLObject(
+  VulkanLWJGLHandle(
     final Ownership in_ownership)
   {
     this.closed = false;
