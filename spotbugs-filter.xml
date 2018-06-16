@@ -13,6 +13,7 @@
 
       <Class name="com.io7m.jcoronado.api.VulkanApplicationInfo"/>
       <Class name="com.io7m.jcoronado.api.VulkanAttachmentDescription"/>
+      <Class name="com.io7m.jcoronado.api.VulkanAttachmentReference"/>
       <Class name="com.io7m.jcoronado.api.VulkanBlendConstants"/>
       <Class name="com.io7m.jcoronado.api.VulkanComponentMapping"/>
       <Class name="com.io7m.jcoronado.api.VulkanComputeWorkGroupCount"/>
@@ -52,16 +53,19 @@
       <Class name="com.io7m.jcoronado.api.VulkanPushConstantRange"/>
       <Class name="com.io7m.jcoronado.api.VulkanQueueFamilyProperties"/>
       <Class name="com.io7m.jcoronado.api.VulkanRectangle2D"/>
+      <Class name="com.io7m.jcoronado.api.VulkanRenderPassCreateInfo"/>
       <Class name="com.io7m.jcoronado.api.VulkanShaderModuleCreateInfo"/>
-      <Class name="com.io7m.jcoronado.api.VulkanSpecializationMapEntry"/>
       <Class name="com.io7m.jcoronado.api.VulkanSpecializationMap"/>
+      <Class name="com.io7m.jcoronado.api.VulkanSpecializationMapEntry"/>
       <Class name="com.io7m.jcoronado.api.VulkanStencilOpState"/>
+      <Class name="com.io7m.jcoronado.api.VulkanSubpassDependency"/>
+      <Class name="com.io7m.jcoronado.api.VulkanSubpassDescription"/>
       <Class name="com.io7m.jcoronado.api.VulkanVersion"/>
       <Class name="com.io7m.jcoronado.api.VulkanVertexInputAttributeDescription"/>
       <Class name="com.io7m.jcoronado.api.VulkanVertexInputBindingDescription"/>
+      <Class name="com.io7m.jcoronado.api.VulkanViewport"/>
       <Class name="com.io7m.jcoronado.api.VulkanViewportBoundsRange"/>
       <Class name="com.io7m.jcoronado.api.VulkanViewportDimensions"/>
-      <Class name="com.io7m.jcoronado.api.VulkanViewport"/>
     </Or>
   </Match>
 
