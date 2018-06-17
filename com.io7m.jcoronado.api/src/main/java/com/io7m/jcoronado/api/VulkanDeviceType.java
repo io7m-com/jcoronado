@@ -17,19 +17,11 @@
 package com.io7m.jcoronado.api;
 
 /**
- * Vulkan 1.1 specification: "VkPipelineLayoutCreateFlags is a bitmask type for setting a mask, but
- * is currently reserved for future use."
+ * @see "VkDevice"
  */
 
-public enum VulkanPipelineLayoutCreateFlag implements VulkanEnumBitmaskType
+public interface VulkanDeviceType extends VulkanHandleDispatchableType
 {
-  // CHECKSTYLE:OFF
-  ;
-  // CHECKSTYLE:ON
 
-  @Override
-  public int value()
-  {
-    return 0;
-  }
 }
+

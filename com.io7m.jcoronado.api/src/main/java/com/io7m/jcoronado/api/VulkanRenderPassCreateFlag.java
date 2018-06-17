@@ -17,8 +17,8 @@
 package com.io7m.jcoronado.api;
 
 /**
- * Vulkan 1.1 specification: "VkRenderPassCreateFlags is a bitmask type for setting
- * a mask, but is currently reserved for future use."
+ * Vulkan 1.1 specification: "VkRenderPassCreateFlags is a bitmask type for setting a mask, but is
+ * currently reserved for future use."
  */
 
 public enum VulkanRenderPassCreateFlag implements VulkanEnumBitmaskType
