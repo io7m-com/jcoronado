@@ -136,4 +136,19 @@ public interface VulkanLogicalDeviceType extends VulkanHandleDispatchableType
         return Optional.empty();
       });
   }
+
+  /**
+   * Create a pipeline layout.
+   *
+   * @param info The pipeline layout creation info
+   *
+   * @return A pipeline layout
+   *
+   * @throws VulkanException On errors
+   */
+
+  VulkanPipelineLayoutType createPipelineLayout(
+    VulkanPipelineLayoutCreateInfo info)
+    throws VulkanException;
+
 }

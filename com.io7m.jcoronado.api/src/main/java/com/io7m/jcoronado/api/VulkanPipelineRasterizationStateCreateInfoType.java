@@ -19,6 +19,7 @@ package com.io7m.jcoronado.api;
 import com.io7m.immutables.styles.ImmutablesStyleType;
 import org.immutables.value.Value;
 
+import java.util.EnumSet;
 import java.util.Set;
 
 /**
@@ -56,21 +57,33 @@ public interface VulkanPipelineRasterizationStateCreateInfoType
    */
 
   @Value.Parameter
-  VulkanPolygonMode polygonMode();
+  @Value.Default
+  default VulkanPolygonMode polygonMode()
+  {
+    return VulkanPolygonMode.VK_POLYGON_MODE_FILL;
+  }
 
   /**
    * @return the triangle facing direction used for primitive culling.
    */
 
   @Value.Parameter
-  Set<VulkanCullModeFlag> cullMode();
+  @Value.Default
+  default Set<VulkanCullModeFlag> cullMode()
+  {
+    return EnumSet.of(VulkanCullModeFlag.VK_CULL_MODE_BACK_BIT);
+  }
 
   /**
    * @return the front-facing triangle orientation to be used for culling.
    */
 
   @Value.Parameter
-  VulkanFrontFace frontFace();
+  @Value.Default
+  default VulkanFrontFace frontFace()
+  {
+    return VulkanFrontFace.VK_FRONT_FACE_COUNTER_CLOCKWISE;
+  }
 
   /**
    * @return controls whether to bias fragment depth values.
@@ -84,26 +97,42 @@ public interface VulkanPipelineRasterizationStateCreateInfoType
    */
 
   @Value.Parameter
-  float depthBiasConstantFactor();
+  @Value.Default
+  default float depthBiasConstantFactor()
+  {
+    return 0.0f;
+  }
 
   /**
    * @return the maximum (or minimum) depth bias of a fragment.
    */
 
   @Value.Parameter
-  float depthBiasClamp();
+  @Value.Default
+  default float depthBiasClamp()
+  {
+    return 0.0f;
+  }
 
   /**
    * @return a scalar factor applied to a fragment’s slope in depth bias calculations.
    */
 
   @Value.Parameter
-  float depthBiasSlopeFactor();
+  @Value.Default
+  default float depthBiasSlopeFactor()
+  {
+    return 0.0f;
+  }
 
   /**
    * @return the width of rasterized line segments.
    */
 
   @Value.Parameter
-  float lineWidth();
+  @Value.Default
+  default float lineWidth()
+  {
+    return 1.0f;
+  }
 }

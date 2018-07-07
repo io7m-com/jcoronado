@@ -31,35 +31,41 @@ public interface VulkanViewportType
    * @return the viewport’s upper left corner
    */
 
+  @Value.Parameter
   float x();
 
   /**
    * @return the viewport’s upper left corner
    */
 
+  @Value.Parameter
   float y();
 
   /**
    * @return the viewport’s width
    */
 
+  @Value.Parameter
   float width();
 
   /**
    * @return the viewport’s height
    */
 
+  @Value.Parameter
   float height();
 
   /**
    * @return the viewport’s depth range (minimum)
    */
 
+  @Value.Parameter
   float minDepth();
 
   /**
    * @return the viewport’s depth range (maximum)
    */
 
+  @Value.Parameter
   float maxDepth();
 }

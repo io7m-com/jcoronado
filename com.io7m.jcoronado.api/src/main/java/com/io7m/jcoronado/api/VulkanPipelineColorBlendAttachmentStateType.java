@@ -19,6 +19,7 @@ package com.io7m.jcoronado.api;
 import com.io7m.immutables.styles.ImmutablesStyleType;
 import org.immutables.value.Value;
 
+import java.util.EnumSet;
 import java.util.Set;
 
 /**
@@ -44,35 +45,55 @@ public interface VulkanPipelineColorBlendAttachmentStateType
    */
 
   @Value.Parameter
-  VulkanBlendFactor srcColorBlendFactor();
+  @Value.Default
+  default VulkanBlendFactor srcColorBlendFactor()
+  {
+    return VulkanBlendFactor.VK_BLEND_FACTOR_ONE;
+  }
 
   /**
    * @return the blend factor used to determine the destination factors (Dr,Dg,Db).
    */
 
   @Value.Parameter
-  VulkanBlendFactor dstColorBlendFactor();
+  @Value.Default
+  default VulkanBlendFactor dstColorBlendFactor()
+  {
+    return VulkanBlendFactor.VK_BLEND_FACTOR_ZERO;
+  }
 
   /**
    * @return the blend operation used to calculate the RGB values to write to the color attachment.
    */
 
   @Value.Parameter
-  VulkanBlendOp colorBlendOp();
+  @Value.Default
+  default VulkanBlendOp colorBlendOp()
+  {
+    return VulkanBlendOp.VK_BLEND_OP_ADD;
+  }
 
   /**
    * @return the blend factor used to determine the source factor Sa.
    */
 
   @Value.Parameter
-  VulkanBlendFactor srcAlphaBlendFactor();
+  @Value.Default
+  default VulkanBlendFactor srcAlphaBlendFactor()
+  {
+    return VulkanBlendFactor.VK_BLEND_FACTOR_ONE;
+  }
 
   /**
    * @return the blend factor used to determine the destination factor Da.
    */
 
   @Value.Parameter
-  VulkanBlendFactor dstAlphaBlendFactor();
+  @Value.Default
+  default VulkanBlendFactor dstAlphaBlendFactor()
+  {
+    return VulkanBlendFactor.VK_BLEND_FACTOR_ZERO;
+  }
 
   /**
    * @return the blend operation used to calculate the alpha values to write to the color
@@ -80,12 +101,20 @@ public interface VulkanPipelineColorBlendAttachmentStateType
    */
 
   @Value.Parameter
-  VulkanBlendOp alphaBlendOp();
+  @Value.Default
+  default VulkanBlendOp alphaBlendOp()
+  {
+    return VulkanBlendOp.VK_BLEND_OP_ADD;
+  }
 
   /**
    * @return the R, G, B, and/or A components enabled for writing.
    */
 
   @Value.Parameter
-  Set<VulkanColorComponentFlag> colorWriteMask();
+  @Value.Default
+  default Set<VulkanColorComponentFlag> colorWriteMask()
+  {
+    return EnumSet.allOf(VulkanColorComponentFlag.class);
+  }
 }

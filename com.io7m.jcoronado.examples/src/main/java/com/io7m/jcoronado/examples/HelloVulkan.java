@@ -24,6 +24,7 @@ import com.io7m.jcoronado.api.VulkanExtensionProperties;
 import com.io7m.jcoronado.api.VulkanExtensions;
 import com.io7m.jcoronado.api.VulkanExtent2D;
 import com.io7m.jcoronado.api.VulkanFormat;
+import com.io7m.jcoronado.api.VulkanFrontFace;
 import com.io7m.jcoronado.api.VulkanImageAspectFlag;
 import com.io7m.jcoronado.api.VulkanImageSubresourceRange;
 import com.io7m.jcoronado.api.VulkanImageType;
@@ -40,15 +41,32 @@ import com.io7m.jcoronado.api.VulkanLayers;
 import com.io7m.jcoronado.api.VulkanLogicalDeviceCreateInfo;
 import com.io7m.jcoronado.api.VulkanLogicalDeviceQueueCreateInfo;
 import com.io7m.jcoronado.api.VulkanLogicalDeviceType;
+import com.io7m.jcoronado.api.VulkanOffset2D;
 import com.io7m.jcoronado.api.VulkanPhysicalDeviceType;
+import com.io7m.jcoronado.api.VulkanPipelineColorBlendAttachmentState;
+import com.io7m.jcoronado.api.VulkanPipelineColorBlendStateCreateInfo;
+import com.io7m.jcoronado.api.VulkanPipelineInputAssemblyStateCreateInfo;
+import com.io7m.jcoronado.api.VulkanPipelineLayoutCreateInfo;
+import com.io7m.jcoronado.api.VulkanPipelineLayoutType;
+import com.io7m.jcoronado.api.VulkanPipelineMultisampleStateCreateInfo;
+import com.io7m.jcoronado.api.VulkanPipelineRasterizationStateCreateInfo;
+import com.io7m.jcoronado.api.VulkanPipelineShaderStageCreateInfo;
+import com.io7m.jcoronado.api.VulkanPipelineVertexInputStateCreateInfo;
+import com.io7m.jcoronado.api.VulkanPipelineViewportStateCreateInfo;
+import com.io7m.jcoronado.api.VulkanPolygonMode;
+import com.io7m.jcoronado.api.VulkanPrimitiveTopology;
 import com.io7m.jcoronado.api.VulkanQueueFamilyProperties;
 import com.io7m.jcoronado.api.VulkanQueueType;
+import com.io7m.jcoronado.api.VulkanRectangle2D;
+import com.io7m.jcoronado.api.VulkanSampleCountFlag;
 import com.io7m.jcoronado.api.VulkanShaderModuleCreateInfo;
 import com.io7m.jcoronado.api.VulkanShaderModuleType;
+import com.io7m.jcoronado.api.VulkanShaderStageFlag;
 import com.io7m.jcoronado.api.VulkanSharingMode;
 import com.io7m.jcoronado.api.VulkanTemporaryAllocatorType;
 import com.io7m.jcoronado.api.VulkanUncheckedException;
 import com.io7m.jcoronado.api.VulkanVersions;
+import com.io7m.jcoronado.api.VulkanViewport;
 import com.io7m.jcoronado.extensions.api.VulkanColorSpaceKHR;
 import com.io7m.jcoronado.extensions.api.VulkanCompositeAlphaFlagKHR;
 import com.io7m.jcoronado.extensions.api.VulkanExtKHRSurfaceType;
@@ -70,6 +88,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -77,6 +96,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static com.io7m.jcoronado.api.VulkanCullModeFlag.VK_CULL_MODE_BACK_BIT;
 import static com.io7m.jcoronado.api.VulkanQueueFamilyPropertyFlag.VK_QUEUE_GRAPHICS_BIT;
 
 public final class HelloVulkan
@@ -287,6 +307,83 @@ public final class HelloVulkan
                 final byte[] data = readShaderModule("shaders.spv");
                 try (VulkanShaderModuleType shaders = createShaderModule(device, alloc, data)) {
 
+                  final VulkanPipelineShaderStageCreateInfo vertex_stage_info =
+                    VulkanPipelineShaderStageCreateInfo.builder()
+                      .setStage(VulkanShaderStageFlag.VK_SHADER_STAGE_VERTEX_BIT)
+                      .setModule(shaders)
+                      .setShaderEntryPoint("R3_clip_triangle_vert_main")
+                      .build();
+
+                  final VulkanPipelineShaderStageCreateInfo fragment_stage_info =
+                    VulkanPipelineShaderStageCreateInfo.builder()
+                      .setStage(VulkanShaderStageFlag.VK_SHADER_STAGE_FRAGMENT_BIT)
+                      .setModule(shaders)
+                      .setShaderEntryPoint("R3_clip_triangle_frag_main")
+                      .build();
+
+                  final VulkanPipelineVertexInputStateCreateInfo vertex_input_info =
+                    VulkanPipelineVertexInputStateCreateInfo.builder()
+                      .build();
+
+                  final VulkanPipelineInputAssemblyStateCreateInfo input_assembly_info =
+                    VulkanPipelineInputAssemblyStateCreateInfo.builder()
+                      .setTopology(VulkanPrimitiveTopology.VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST)
+                      .setPrimitiveRestartEnable(false)
+                      .build();
+
+                  final VulkanPipelineViewportStateCreateInfo viewport_state_info =
+                    VulkanPipelineViewportStateCreateInfo.builder()
+                      .addScissors(VulkanRectangle2D.of(VulkanOffset2D.of(0, 0), surface_extent))
+                      .addViewports(VulkanViewport.of(
+                        0.0f,
+                        0.0f,
+                        (float) surface_extent.width(),
+                        (float) surface_extent.height(),
+                        0.0f,
+                        1.0f))
+                      .build();
+
+                  final VulkanPipelineRasterizationStateCreateInfo rasterizer =
+                    VulkanPipelineRasterizationStateCreateInfo.builder()
+                      .setDepthClampEnable(false)
+                      .setRasterizerDiscardEnable(false)
+                      .setPolygonMode(VulkanPolygonMode.VK_POLYGON_MODE_FILL)
+                      .setLineWidth(1.0f)
+                      .setCullMode(EnumSet.of(VK_CULL_MODE_BACK_BIT))
+                      .setFrontFace(VulkanFrontFace.VK_FRONT_FACE_CLOCKWISE)
+                      .setDepthBiasEnable(false)
+                      .setDepthBiasConstantFactor(0.0f)
+                      .setDepthBiasClamp(0.0f)
+                      .setDepthBiasSlopeFactor(0.0f)
+                      .build();
+
+                  final VulkanPipelineMultisampleStateCreateInfo multisampling =
+                    VulkanPipelineMultisampleStateCreateInfo.builder()
+                      .setSampleShadingEnable(false)
+                      .setRasterizationSamples(VulkanSampleCountFlag.VK_SAMPLE_COUNT_1_BIT)
+                      .setMinSampleShading(1.0f)
+                      .setAlphaToCoverageEnable(false)
+                      .setAlphaToOneEnable(false)
+                      .build();
+
+                  final VulkanPipelineColorBlendAttachmentState blend_state =
+                    VulkanPipelineColorBlendAttachmentState.builder()
+                      .setEnable(false)
+                      .build();
+
+                  final VulkanPipelineColorBlendStateCreateInfo color_blending =
+                    VulkanPipelineColorBlendStateCreateInfo.builder()
+                      .addAttachments(blend_state)
+                      .build();
+
+                  final VulkanPipelineLayoutCreateInfo pipeline_layout_info =
+                    VulkanPipelineLayoutCreateInfo.builder()
+                      .build();
+
+                  try (VulkanPipelineLayoutType pipeline_layout =
+                         device.createPipelineLayout(pipeline_layout_info)) {
+
+                  }
                 }
               } finally {
                 views.forEach(view -> {

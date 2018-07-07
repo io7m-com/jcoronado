@@ -36,6 +36,11 @@
     </dependency>
 
     <dependency>
+      <groupId>com.io7m.jmulticlose</groupId>
+      <artifactId>com.io7m.jmulticlose.core</artifactId>
+    </dependency>
+
+    <dependency>
       <groupId>org.lwjgl.osgi</groupId>
       <artifactId>org.lwjgl.lwjgl</artifactId>
     </dependency>

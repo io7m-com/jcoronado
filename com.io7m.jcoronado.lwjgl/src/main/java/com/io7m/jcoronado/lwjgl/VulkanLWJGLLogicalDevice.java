@@ -18,6 +18,7 @@ package com.io7m.jcoronado.lwjgl;
 
 import com.io7m.jcoronado.api.VulkanChecks;
 import com.io7m.jcoronado.api.VulkanComponentMapping;
+import com.io7m.jcoronado.api.VulkanDescriptorSetLayoutType;
 import com.io7m.jcoronado.api.VulkanDestroyedException;
 import com.io7m.jcoronado.api.VulkanEnumMaps;
 import com.io7m.jcoronado.api.VulkanException;
@@ -29,6 +30,9 @@ import com.io7m.jcoronado.api.VulkanLogicalDeviceCreateInfo;
 import com.io7m.jcoronado.api.VulkanLogicalDeviceQueueCreateInfo;
 import com.io7m.jcoronado.api.VulkanLogicalDeviceType;
 import com.io7m.jcoronado.api.VulkanPhysicalDeviceType;
+import com.io7m.jcoronado.api.VulkanPipelineLayoutCreateInfo;
+import com.io7m.jcoronado.api.VulkanPipelineLayoutType;
+import com.io7m.jcoronado.api.VulkanPushConstantRange;
 import com.io7m.jcoronado.api.VulkanQueueFamilyProperties;
 import com.io7m.jcoronado.api.VulkanQueueType;
 import com.io7m.jcoronado.api.VulkanShaderModuleCreateInfo;
@@ -40,11 +44,14 @@ import org.lwjgl.vulkan.VkComponentMapping;
 import org.lwjgl.vulkan.VkDevice;
 import org.lwjgl.vulkan.VkImageSubresourceRange;
 import org.lwjgl.vulkan.VkImageViewCreateInfo;
+import org.lwjgl.vulkan.VkPipelineLayoutCreateInfo;
+import org.lwjgl.vulkan.VkPushConstantRange;
 import org.lwjgl.vulkan.VkQueue;
 import org.lwjgl.vulkan.VkShaderModuleCreateInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.nio.LongBuffer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -91,6 +98,21 @@ final class VulkanLWJGLLogicalDevice
       MemoryStack.create();
 
     this.initializeQueues();
+  }
+
+  private static VkPushConstantRange.Buffer packPushConstantRanges(
+    final MemoryStack stack,
+    final List<VulkanPushConstantRange> ranges)
+  {
+    final VkPushConstantRange.Buffer buffer = VkPushConstantRange.callocStack(ranges.size(), stack);
+    for (int index = 0; index < ranges.size(); ++index) {
+      final VulkanPushConstantRange range = ranges.get(index);
+      buffer.position(index);
+      buffer.offset(range.offset());
+      buffer.size(range.size());
+      buffer.stageFlags(VulkanEnumMaps.packValues(range.stageFlags()));
+    }
+    return buffer;
   }
 
   private static VkImageSubresourceRange packSubresourceRange(
@@ -244,6 +266,42 @@ final class VulkanLWJGLLogicalDevice
 
       return new VulkanLWJGLImageView(this.device, view[0]);
     }
+  }
+
+  @Override
+  public VulkanPipelineLayoutType createPipelineLayout(
+    final VulkanPipelineLayoutCreateInfo info)
+    throws VulkanException
+  {
+    Objects.requireNonNull(info, "info");
+
+    this.checkNotClosed();
+
+    try (MemoryStack stack = this.stack_initial.push()) {
+      final VkPipelineLayoutCreateInfo create_info =
+        VkPipelineLayoutCreateInfo.mallocStack(stack)
+          .sType(VK10.VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO)
+          .pPushConstantRanges(packPushConstantRanges(stack, info.pushConstantRanges()))
+          .pSetLayouts(packSetLayouts(stack, info.setLayouts()))
+          .flags(VulkanEnumMaps.packValues(info.flags()));
+
+      final long[] layout = new long[1];
+      VulkanChecks.checkReturnCode(
+        VK10.vkCreatePipelineLayout(this.device, create_info, null, layout),
+        "vkCreatePipelineLayout");
+
+      return new VulkanLWJGLPipelineLayout(Ownership.USER_OWNED, this.device, layout[0]);
+    }
+  }
+
+  private static LongBuffer packSetLayouts(
+    final MemoryStack stack,
+    final List<VulkanDescriptorSetLayoutType> layouts)
+  {
+    if (layouts.size() > 0) {
+      throw new AssertionError("Not implemented!");
+    }
+    return null;
   }
 
   @Override
