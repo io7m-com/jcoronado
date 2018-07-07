@@ -25,6 +25,7 @@ import com.io7m.jcoronado.api.VulkanExtensions;
 import com.io7m.jcoronado.api.VulkanExtent2D;
 import com.io7m.jcoronado.api.VulkanFormat;
 import com.io7m.jcoronado.api.VulkanFrontFace;
+import com.io7m.jcoronado.api.VulkanGeneralException;
 import com.io7m.jcoronado.api.VulkanImageAspectFlag;
 import com.io7m.jcoronado.api.VulkanImageSubresourceRange;
 import com.io7m.jcoronado.api.VulkanImageType;
@@ -77,6 +78,8 @@ import com.io7m.jcoronado.extensions.api.VulkanSurfaceFormatKHR;
 import com.io7m.jcoronado.extensions.api.VulkanSwapChainCreateInfo;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLInstanceProvider;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLTemporaryAllocator;
+import com.io7m.jmulticlose.core.CloseableCollection;
+import com.io7m.jmulticlose.core.CloseableCollectionType;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWErrorCallback;
@@ -94,6 +97,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import static com.io7m.jcoronado.api.VulkanCullModeFlag.VK_CULL_MODE_BACK_BIT;
@@ -117,9 +121,14 @@ public final class HelloVulkan
   {
     GLFW_ERROR_CALLBACK.set();
 
-    final VulkanTemporaryAllocatorType alloc = VulkanLWJGLTemporaryAllocator.create();
+    final VulkanTemporaryAllocatorType alloc =
+      VulkanLWJGLTemporaryAllocator.create();
+    final Supplier<VulkanException> exception_supplier =
+      () -> new VulkanGeneralException("Could not close one or more resources.");
 
-    try {
+    try (CloseableCollectionType<VulkanException> resources =
+           CloseableCollection.create(exception_supplier)) {
+
       final long window = createWindow();
 
       /*
@@ -183,223 +192,227 @@ public final class HelloVulkan
           .setEnabledLayers(enable_layers)
           .build();
 
-      try (final VulkanInstanceType instance = instances.createInstance(create_info)) {
+      final VulkanInstanceType instance = resources.add(instances.createInstance(create_info));
+
+      /*
+       * Get access to the VK_KHR_surface extension in order to produce a renderable
+       * surface from the created window.
+       */
+
+      final VulkanExtKHRSurfaceType khr_surface_ext =
+        instance.findEnabledExtension("VK_KHR_surface", VulkanExtKHRSurfaceType.class)
+          .orElseThrow(() -> new IllegalStateException("Missing VK_KHR_surface extension"));
+
+      final VulkanExtKHRSurfaceType.VulkanKHRSurfaceType surface =
+        khr_surface_ext.surfaceFromWindow(instance, window);
+
+      /*
+       * List the available physical devices and pick the "best" one.
+       */
+
+      final List<VulkanPhysicalDeviceType> physical_devices = instance.physicalDevices();
+
+      final VulkanPhysicalDeviceType physical_device =
+             resources.add(pickPhysicalDeviceOrAbort(khr_surface_ext, surface, physical_devices));
+
+        LOG.debug("physical device: {}", physical_device);
 
         /*
-         * Get access to the VK_KHR_surface extension in order to produce a renderable
-         * surface from the created window.
+         * Determine the format, presentation mode, and size of the surface that will be
+         * used for rendering.
          */
 
-        final VulkanExtKHRSurfaceType khr_surface_ext =
-          instance.findEnabledExtension("VK_KHR_surface", VulkanExtKHRSurfaceType.class)
-            .orElseThrow(() -> new IllegalStateException("Missing VK_KHR_surface extension"));
+        final VulkanSurfaceFormatKHR surface_format =
+          pickSurfaceFormat(physical_device, khr_surface_ext, surface);
+        final VulkanPresentModeKHR surface_present =
+          pickPresentationMode(physical_device, khr_surface_ext, surface);
+        final VulkanSurfaceCapabilitiesKHR surface_caps =
+          khr_surface_ext.surfaceCapabilities(physical_device, surface);
+        final VulkanExtent2D surface_extent =
+          pickExtent(surface_caps);
 
-        final VulkanExtKHRSurfaceType.VulkanKHRSurfaceType surface =
-          khr_surface_ext.surfaceFromWindow(instance, window);
+        LOG.debug("selected surface format: {}", surface_format);
+        LOG.debug("selected surface presentation mode: {}", surface_present);
+        LOG.debug("selected surface extent: {}", surface_extent);
 
-        /*
-         * List the available physical devices and pick the "best" one.
-         */
+      /*
+       * We know that the selected physical device has a graphics queue family, and a queue
+       * family for presentation. We don't know if these are the same queue families or not.
+       */
 
-        final List<VulkanPhysicalDeviceType> physical_devices = instance.physicalDevices();
+      final VulkanQueueFamilyProperties graphics_queue_props =
+        physical_device.queueFamilies()
+          .stream()
+          .filter(queue -> queue.queueFlags().contains(VK_QUEUE_GRAPHICS_BIT))
+          .findFirst()
+          .orElseThrow(() -> new IllegalStateException("Could not find graphics queue"));
 
-        try (final VulkanPhysicalDeviceType physical_device =
-               pickPhysicalDeviceOrAbort(khr_surface_ext, surface, physical_devices)) {
+      final VulkanQueueFamilyProperties presentation_queue_props =
+        khr_surface_ext.surfaceSupport(physical_device, surface)
+          .stream()
+          .findFirst()
+          .orElseThrow(() -> new IllegalStateException("Could not find presentation queue"));
 
-          LOG.debug("physical device: {}", physical_device);
+      /*
+       * Put together the information needed to create a logical device. In this case,
+       * all that is really needed is to specify the creation of one or more queues.
+       */
 
-          /*
-           * Determine the format, presentation mode, and size of the surface that will be
-           * used for rendering.
-           */
+      final VulkanLogicalDeviceCreateInfo.Builder logical_device_info_builder =
+        VulkanLogicalDeviceCreateInfo.builder();
 
-          final VulkanSurfaceFormatKHR surface_format =
-            pickSurfaceFormat(physical_device, khr_surface_ext, surface);
-          final VulkanPresentModeKHR surface_present =
-            pickPresentationMode(physical_device, khr_surface_ext, surface);
-          final VulkanSurfaceCapabilitiesKHR surface_caps =
-            khr_surface_ext.surfaceCapabilities(physical_device, surface);
-          final VulkanExtent2D surface_extent =
-            pickExtent(surface_caps);
+      logical_device_info_builder.addQueueCreateInfos(
+        VulkanLogicalDeviceQueueCreateInfo.builder()
+          .setQueueCount(1)
+          .setQueueFamilyIndex(graphics_queue_props.queueFamilyIndex())
+          .setQueuePriorities(1.0f)
+          .build());
 
-          LOG.debug("selected surface format: {}", surface_format);
-          LOG.debug("selected surface presentation mode: {}", surface_present);
-          LOG.debug("selected surface extent: {}", surface_extent);
-
-          /*
-           * We know that the selected physical device has a graphics queue family, and a queue
-           * family for presentation. We don't know if these are the same queue families or not.
-           */
-
-          final VulkanQueueFamilyProperties graphics_queue_props =
-            physical_device.queueFamilies()
-              .stream()
-              .filter(queue -> queue.queueFlags().contains(VK_QUEUE_GRAPHICS_BIT))
-              .findFirst()
-              .orElseThrow(() -> new IllegalStateException("Could not find graphics queue"));
-
-          final VulkanQueueFamilyProperties presentation_queue_props =
-            khr_surface_ext.surfaceSupport(physical_device, surface)
-              .stream()
-              .findFirst()
-              .orElseThrow(() -> new IllegalStateException("Could not find presentation queue"));
-
-          /*
-           * Put together the information needed to create a logical device. In this case,
-           * all that is really needed is to specify the creation of one or more queues.
-           */
-
-          final VulkanLogicalDeviceCreateInfo.Builder logical_device_info_builder =
-            VulkanLogicalDeviceCreateInfo.builder();
-
-          logical_device_info_builder.addQueueCreateInfos(
-            VulkanLogicalDeviceQueueCreateInfo.builder()
-              .setQueueCount(1)
-              .setQueueFamilyIndex(graphics_queue_props.queueFamilyIndex())
-              .setQueuePriorities(1.0f)
-              .build());
-
-          if (graphics_queue_props.queueFamilyIndex() != presentation_queue_props.queueFamilyIndex()) {
-            logical_device_info_builder.addQueueCreateInfos(
-              VulkanLogicalDeviceQueueCreateInfo.builder()
-                .setQueueCount(1)
-                .setQueueFamilyIndex(presentation_queue_props.queueFamilyIndex())
-                .setQueuePriorities(1.0f)
-                .build());
-          }
-
-          try (final VulkanLogicalDeviceType device =
-                 physical_device.createLogicalDevice(
-                   logical_device_info_builder
-                     .addEnabledExtensions("VK_KHR_swapchain")
-                     .build())) {
-
-            LOG.debug("logical device: {}", device);
-
-            final VulkanQueueType graphics_queue =
-              device.queue(graphics_queue_props.queueFamilyIndex(), 0)
-                .orElseThrow(() -> new IllegalStateException("Could not find graphics queue"));
-            final VulkanQueueType presentation_queue =
-              device.queue(presentation_queue_props.queueFamilyIndex(), 0)
-                .orElseThrow(() -> new IllegalStateException("Could not find presentation queue"));
-
-            LOG.debug("graphics queue: {}", graphics_queue);
-            LOG.debug("presentation queue: {}", presentation_queue);
-
-            try (VulkanExtKHRSwapChainType.VulkanKHRSwapChainType swap_chain =
-                   createSwapChain(
-                     surface,
-                     surface_format,
-                     surface_present,
-                     surface_caps,
-                     surface_extent,
-                     device,
-                     graphics_queue,
-                     presentation_queue)) {
-
-              final List<VulkanImageType> images = swap_chain.images();
-              final List<VulkanImageViewType> views =
-                images.stream()
-                  .map(image -> createImageViewForImage(surface_format, device, image))
-                  .collect(Collectors.toList());
-
-              try {
-                final byte[] data = readShaderModule("shaders.spv");
-                try (VulkanShaderModuleType shaders = createShaderModule(device, alloc, data)) {
-
-                  final VulkanPipelineShaderStageCreateInfo vertex_stage_info =
-                    VulkanPipelineShaderStageCreateInfo.builder()
-                      .setStage(VulkanShaderStageFlag.VK_SHADER_STAGE_VERTEX_BIT)
-                      .setModule(shaders)
-                      .setShaderEntryPoint("R3_clip_triangle_vert_main")
-                      .build();
-
-                  final VulkanPipelineShaderStageCreateInfo fragment_stage_info =
-                    VulkanPipelineShaderStageCreateInfo.builder()
-                      .setStage(VulkanShaderStageFlag.VK_SHADER_STAGE_FRAGMENT_BIT)
-                      .setModule(shaders)
-                      .setShaderEntryPoint("R3_clip_triangle_frag_main")
-                      .build();
-
-                  final VulkanPipelineVertexInputStateCreateInfo vertex_input_info =
-                    VulkanPipelineVertexInputStateCreateInfo.builder()
-                      .build();
-
-                  final VulkanPipelineInputAssemblyStateCreateInfo input_assembly_info =
-                    VulkanPipelineInputAssemblyStateCreateInfo.builder()
-                      .setTopology(VulkanPrimitiveTopology.VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST)
-                      .setPrimitiveRestartEnable(false)
-                      .build();
-
-                  final VulkanPipelineViewportStateCreateInfo viewport_state_info =
-                    VulkanPipelineViewportStateCreateInfo.builder()
-                      .addScissors(VulkanRectangle2D.of(VulkanOffset2D.of(0, 0), surface_extent))
-                      .addViewports(VulkanViewport.of(
-                        0.0f,
-                        0.0f,
-                        (float) surface_extent.width(),
-                        (float) surface_extent.height(),
-                        0.0f,
-                        1.0f))
-                      .build();
-
-                  final VulkanPipelineRasterizationStateCreateInfo rasterizer =
-                    VulkanPipelineRasterizationStateCreateInfo.builder()
-                      .setDepthClampEnable(false)
-                      .setRasterizerDiscardEnable(false)
-                      .setPolygonMode(VulkanPolygonMode.VK_POLYGON_MODE_FILL)
-                      .setLineWidth(1.0f)
-                      .setCullMode(EnumSet.of(VK_CULL_MODE_BACK_BIT))
-                      .setFrontFace(VulkanFrontFace.VK_FRONT_FACE_CLOCKWISE)
-                      .setDepthBiasEnable(false)
-                      .setDepthBiasConstantFactor(0.0f)
-                      .setDepthBiasClamp(0.0f)
-                      .setDepthBiasSlopeFactor(0.0f)
-                      .build();
-
-                  final VulkanPipelineMultisampleStateCreateInfo multisampling =
-                    VulkanPipelineMultisampleStateCreateInfo.builder()
-                      .setSampleShadingEnable(false)
-                      .setRasterizationSamples(VulkanSampleCountFlag.VK_SAMPLE_COUNT_1_BIT)
-                      .setMinSampleShading(1.0f)
-                      .setAlphaToCoverageEnable(false)
-                      .setAlphaToOneEnable(false)
-                      .build();
-
-                  final VulkanPipelineColorBlendAttachmentState blend_state =
-                    VulkanPipelineColorBlendAttachmentState.builder()
-                      .setEnable(false)
-                      .build();
-
-                  final VulkanPipelineColorBlendStateCreateInfo color_blending =
-                    VulkanPipelineColorBlendStateCreateInfo.builder()
-                      .addAttachments(blend_state)
-                      .build();
-
-                  final VulkanPipelineLayoutCreateInfo pipeline_layout_info =
-                    VulkanPipelineLayoutCreateInfo.builder()
-                      .build();
-
-                  try (VulkanPipelineLayoutType pipeline_layout =
-                         device.createPipelineLayout(pipeline_layout_info)) {
-
-                  }
-                }
-              } finally {
-                views.forEach(view -> {
-                  try {
-                    view.close();
-                  } catch (final VulkanException e) {
-                    throw new VulkanUncheckedException(e);
-                  }
-                });
-              }
-            }
-          }
-        }
+      if (graphics_queue_props.queueFamilyIndex() != presentation_queue_props.queueFamilyIndex()) {
+        logical_device_info_builder.addQueueCreateInfos(
+          VulkanLogicalDeviceQueueCreateInfo.builder()
+            .setQueueCount(1)
+            .setQueueFamilyIndex(presentation_queue_props.queueFamilyIndex())
+            .setQueuePriorities(1.0f)
+            .build());
       }
-    } catch (final VulkanUncheckedException e) {
-      throw e.getCause();
+
+      /*
+       * Create the logical device and find the graphics and presentation queues.
+       */
+
+      final VulkanLogicalDeviceType device = resources.add(
+        physical_device.createLogicalDevice(logical_device_info_builder
+            .addEnabledExtensions("VK_KHR_swapchain")
+            .build()));
+
+      LOG.debug("logical device: {}", device);
+
+      final VulkanQueueType graphics_queue =
+        device.queue(graphics_queue_props.queueFamilyIndex(), 0)
+          .orElseThrow(() -> new IllegalStateException("Could not find graphics queue"));
+      final VulkanQueueType presentation_queue =
+        device.queue(presentation_queue_props.queueFamilyIndex(), 0)
+          .orElseThrow(() -> new IllegalStateException("Could not find presentation queue"));
+
+      LOG.debug("graphics queue: {}", graphics_queue);
+      LOG.debug("presentation queue: {}", presentation_queue);
+
+      /*
+       * Create a swap chain used to display images onscreen.
+       */
+
+      final VulkanExtKHRSwapChainType.VulkanKHRSwapChainType swap_chain =
+        resources.add(createSwapChain(
+          surface,
+          surface_format,
+          surface_present,
+          surface_caps,
+          surface_extent,
+          device,
+          graphics_queue,
+          presentation_queue));
+
+      final List<VulkanImageType> images = swap_chain.images();
+
+      final List<VulkanImageViewType> views =
+        images.stream()
+          .map(image -> createImageViewForImage(surface_format, device, image))
+          .map(resources::add)
+          .collect(Collectors.toList());
+
+      /*
+       * Load a shader module.
+       */
+
+      final byte[] data = readShaderModule("shaders.spv");
+
+      final VulkanShaderModuleType shaders =
+        resources.add(createShaderModule(device, alloc, data));
+
+      /*
+       * Configure the rendering pipeline.
+       */
+
+      final VulkanPipelineShaderStageCreateInfo vertex_stage_info =
+        VulkanPipelineShaderStageCreateInfo.builder()
+          .setStage(VulkanShaderStageFlag.VK_SHADER_STAGE_VERTEX_BIT)
+          .setModule(shaders)
+          .setShaderEntryPoint("R3_clip_triangle_vert_main")
+          .build();
+
+      final VulkanPipelineShaderStageCreateInfo fragment_stage_info =
+        VulkanPipelineShaderStageCreateInfo.builder()
+          .setStage(VulkanShaderStageFlag.VK_SHADER_STAGE_FRAGMENT_BIT)
+          .setModule(shaders)
+          .setShaderEntryPoint("R3_clip_triangle_frag_main")
+          .build();
+
+      final VulkanPipelineVertexInputStateCreateInfo vertex_input_info =
+        VulkanPipelineVertexInputStateCreateInfo.builder()
+          .build();
+
+      final VulkanPipelineInputAssemblyStateCreateInfo input_assembly_info =
+        VulkanPipelineInputAssemblyStateCreateInfo.builder()
+          .setTopology(VulkanPrimitiveTopology.VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST)
+          .setPrimitiveRestartEnable(false)
+          .build();
+
+      final VulkanPipelineViewportStateCreateInfo viewport_state_info =
+        VulkanPipelineViewportStateCreateInfo.builder()
+          .addScissors(VulkanRectangle2D.of(VulkanOffset2D.of(0, 0), surface_extent))
+          .addViewports(VulkanViewport.of(
+            0.0f,
+            0.0f,
+            (float) surface_extent.width(),
+            (float) surface_extent.height(),
+            0.0f,
+            1.0f))
+          .build();
+
+      final VulkanPipelineRasterizationStateCreateInfo rasterizer =
+        VulkanPipelineRasterizationStateCreateInfo.builder()
+          .setDepthClampEnable(false)
+          .setRasterizerDiscardEnable(false)
+          .setPolygonMode(VulkanPolygonMode.VK_POLYGON_MODE_FILL)
+          .setLineWidth(1.0f)
+          .setCullMode(EnumSet.of(VK_CULL_MODE_BACK_BIT))
+          .setFrontFace(VulkanFrontFace.VK_FRONT_FACE_CLOCKWISE)
+          .setDepthBiasEnable(false)
+          .setDepthBiasConstantFactor(0.0f)
+          .setDepthBiasClamp(0.0f)
+          .setDepthBiasSlopeFactor(0.0f)
+          .build();
+
+      final VulkanPipelineMultisampleStateCreateInfo multisampling =
+        VulkanPipelineMultisampleStateCreateInfo.builder()
+          .setSampleShadingEnable(false)
+          .setRasterizationSamples(VulkanSampleCountFlag.VK_SAMPLE_COUNT_1_BIT)
+          .setMinSampleShading(1.0f)
+          .setAlphaToCoverageEnable(false)
+          .setAlphaToOneEnable(false)
+          .build();
+
+      final VulkanPipelineColorBlendAttachmentState blend_state =
+        VulkanPipelineColorBlendAttachmentState.builder()
+          .setEnable(false)
+          .build();
+
+      final VulkanPipelineColorBlendStateCreateInfo color_blending =
+        VulkanPipelineColorBlendStateCreateInfo.builder()
+          .addAttachments(blend_state)
+          .build();
+
+      final VulkanPipelineLayoutCreateInfo pipeline_layout_info =
+        VulkanPipelineLayoutCreateInfo.builder()
+          .build();
+
+      final VulkanPipelineLayoutType pipeline_layout =
+        resources.add(device.createPipelineLayout(pipeline_layout_info));
+
+    } catch (final VulkanException e) {
+      LOG.error("vulkan error: ", e);
+      throw e;
     } finally {
       GLFW_ERROR_CALLBACK.close();
     }
