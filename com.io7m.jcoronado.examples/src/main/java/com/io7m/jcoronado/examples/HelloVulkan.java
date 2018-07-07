@@ -25,7 +25,7 @@ import com.io7m.jcoronado.api.VulkanExtensions;
 import com.io7m.jcoronado.api.VulkanExtent2D;
 import com.io7m.jcoronado.api.VulkanFormat;
 import com.io7m.jcoronado.api.VulkanFrontFace;
-import com.io7m.jcoronado.api.VulkanGeneralException;
+import com.io7m.jcoronado.api.VulkanResourceException;
 import com.io7m.jcoronado.api.VulkanImageAspectFlag;
 import com.io7m.jcoronado.api.VulkanImageSubresourceRange;
 import com.io7m.jcoronado.api.VulkanImageType;
@@ -124,7 +124,7 @@ public final class HelloVulkan
     final VulkanTemporaryAllocatorType alloc =
       VulkanLWJGLTemporaryAllocator.create();
     final Supplier<VulkanException> exception_supplier =
-      () -> new VulkanGeneralException("Could not close one or more resources.");
+      () -> new VulkanResourceException("Could not close one or more resources.");
 
     try (CloseableCollectionType<VulkanException> resources =
            CloseableCollection.create(exception_supplier)) {

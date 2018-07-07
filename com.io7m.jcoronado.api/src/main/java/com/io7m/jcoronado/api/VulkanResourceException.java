@@ -19,10 +19,10 @@ package com.io7m.jcoronado.api;
 import java.util.Objects;
 
 /**
- * An exception raised by an unspecified problem.
+ * An exception raised by mishandling a resource.
  */
 
-public final class VulkanGeneralException extends VulkanException
+public final class VulkanResourceException extends VulkanException
 {
   /**
    * Construct an exception.
@@ -30,7 +30,7 @@ public final class VulkanGeneralException extends VulkanException
    * @param message The error message
    */
 
-  public VulkanGeneralException(
+  public VulkanResourceException(
     final String message)
   {
     super(Objects.requireNonNull(message, "message"));
