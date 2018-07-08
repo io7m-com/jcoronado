@@ -23,13 +23,22 @@ package com.io7m.jcoronado.api;
 
 public enum VulkanPipelineInputAssemblyStateCreateFlag implements VulkanEnumBitmaskType
 {
-  // CHECKSTYLE:OFF
-  ;
-  // CHECKSTYLE:ON
+  /**
+   * No flags set.
+   */
+
+  VK_VULKAN_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_FLAG(0x0);
+
+  private final int value;
+
+  VulkanPipelineInputAssemblyStateCreateFlag(final int i)
+  {
+    this.value = i;
+  }
 
   @Override
   public int value()
   {
-    return 0;
+    return this.value;
   }
 }

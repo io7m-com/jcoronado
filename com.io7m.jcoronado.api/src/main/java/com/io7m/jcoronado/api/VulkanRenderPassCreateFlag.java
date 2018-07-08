@@ -23,13 +23,22 @@ package com.io7m.jcoronado.api;
 
 public enum VulkanRenderPassCreateFlag implements VulkanEnumBitmaskType
 {
-  // CHECKSTYLE:OFF
-  ;
-  // CHECKSTYLE:ON
+  /**
+   * No flags set.
+   */
+
+  VK_RENDER_PASS_CREATE_FLAG_NONE(0x0);
+
+  private final int value;
+
+  VulkanRenderPassCreateFlag(final int i)
+  {
+    this.value = i;
+  }
 
   @Override
   public int value()
   {
-    return 0;
+    return this.value;
   }
 }

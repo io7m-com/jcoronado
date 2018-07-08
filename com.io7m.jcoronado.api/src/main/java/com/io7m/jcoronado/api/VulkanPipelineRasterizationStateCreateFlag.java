@@ -23,13 +23,22 @@ package com.io7m.jcoronado.api;
 
 public enum VulkanPipelineRasterizationStateCreateFlag implements VulkanEnumBitmaskType
 {
-  // CHECKSTYLE:OFF
-  ;
-  // CHECKSTYLE:ON
+  /**
+   * No flags set.
+   */
+
+  VK_PIPELINE_RASTERIZATION_STATE_CREATE_FLAG_NONE(0x0);
+
+  private final int value;
+
+  VulkanPipelineRasterizationStateCreateFlag(final int i)
+  {
+    this.value = i;
+  }
 
   @Override
   public int value()
   {
-    return 0;
+    return this.value;
   }
 }

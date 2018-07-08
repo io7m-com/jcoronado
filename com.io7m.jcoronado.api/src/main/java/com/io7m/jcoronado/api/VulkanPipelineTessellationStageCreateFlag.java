@@ -25,13 +25,22 @@ package com.io7m.jcoronado.api;
 
 public enum VulkanPipelineTessellationStageCreateFlag implements VulkanEnumBitmaskType
 {
-  // CHECKSTYLE:OFF
-  ;
-  // CHECKSTYLE:ON
+  /**
+   * No flags set.
+   */
+
+  VK_VULKAN_PIPELINE_TESSELLATION_STAGE_CREATE_FLAG_NONE(0x0);
+
+  private final int value;
+
+  VulkanPipelineTessellationStageCreateFlag(final int i)
+  {
+    this.value = i;
+  }
 
   @Override
   public int value()
   {
-    return 0;
+    return this.value;
   }
 }
