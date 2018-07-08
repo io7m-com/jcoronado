@@ -446,6 +446,8 @@ final class VulkanLWJGLPhysicalDevice
   @Override
   protected void closeActual()
   {
-    LOG.debug("destroying physical device: {}", this.device);
+    if (LOG.isTraceEnabled()) {
+      LOG.trace("destroying physical device: {}", this);
+    }
   }
 }

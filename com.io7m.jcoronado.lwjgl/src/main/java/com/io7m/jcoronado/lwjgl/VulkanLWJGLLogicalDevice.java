@@ -17,13 +17,10 @@
 package com.io7m.jcoronado.lwjgl;
 
 import com.io7m.jcoronado.api.VulkanChecks;
-import com.io7m.jcoronado.api.VulkanComponentMapping;
-import com.io7m.jcoronado.api.VulkanDescriptorSetLayoutType;
 import com.io7m.jcoronado.api.VulkanDestroyedException;
-import com.io7m.jcoronado.api.VulkanEnumMaps;
 import com.io7m.jcoronado.api.VulkanException;
 import com.io7m.jcoronado.api.VulkanExtensionType;
-import com.io7m.jcoronado.api.VulkanImageSubresourceRange;
+import com.io7m.jcoronado.api.VulkanGraphicsPipelineCreateInfo;
 import com.io7m.jcoronado.api.VulkanImageViewCreateInfo;
 import com.io7m.jcoronado.api.VulkanImageViewType;
 import com.io7m.jcoronado.api.VulkanLogicalDeviceCreateInfo;
@@ -32,31 +29,33 @@ import com.io7m.jcoronado.api.VulkanLogicalDeviceType;
 import com.io7m.jcoronado.api.VulkanPhysicalDeviceType;
 import com.io7m.jcoronado.api.VulkanPipelineLayoutCreateInfo;
 import com.io7m.jcoronado.api.VulkanPipelineLayoutType;
-import com.io7m.jcoronado.api.VulkanPushConstantRange;
+import com.io7m.jcoronado.api.VulkanPipelineType;
 import com.io7m.jcoronado.api.VulkanQueueFamilyProperties;
 import com.io7m.jcoronado.api.VulkanQueueType;
+import com.io7m.jcoronado.api.VulkanRenderPassCreateInfo;
+import com.io7m.jcoronado.api.VulkanRenderPassType;
 import com.io7m.jcoronado.api.VulkanShaderModuleCreateInfo;
 import com.io7m.jcoronado.api.VulkanShaderModuleType;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.vulkan.VK10;
-import org.lwjgl.vulkan.VkComponentMapping;
 import org.lwjgl.vulkan.VkDevice;
-import org.lwjgl.vulkan.VkImageSubresourceRange;
+import org.lwjgl.vulkan.VkGraphicsPipelineCreateInfo;
 import org.lwjgl.vulkan.VkImageViewCreateInfo;
 import org.lwjgl.vulkan.VkPipelineLayoutCreateInfo;
-import org.lwjgl.vulkan.VkPushConstantRange;
 import org.lwjgl.vulkan.VkQueue;
+import org.lwjgl.vulkan.VkRenderPassCreateInfo;
 import org.lwjgl.vulkan.VkShaderModuleCreateInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.nio.LongBuffer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+
+import static com.io7m.jcoronado.lwjgl.VulkanLWJGLHandle.Ownership.USER_OWNED;
 
 final class VulkanLWJGLLogicalDevice
   extends VulkanLWJGLHandle implements VulkanLogicalDeviceType
@@ -79,7 +78,7 @@ final class VulkanLWJGLLogicalDevice
     final VulkanLogicalDeviceCreateInfo in_creation)
     throws VulkanException
   {
-    super(Ownership.USER_OWNED);
+    super(USER_OWNED);
 
     this.extensions_enabled_read_only =
       Collections.unmodifiableMap(
@@ -91,7 +90,7 @@ final class VulkanLWJGLLogicalDevice
     this.creation =
       Objects.requireNonNull(in_creation, "in_creation");
     this.queues =
-      new ArrayList<>();
+      new ArrayList<>(32);
     this.queues_read =
       Collections.unmodifiableList(this.queues);
     this.stack_initial =
@@ -100,43 +99,11 @@ final class VulkanLWJGLLogicalDevice
     this.initializeQueues();
   }
 
-  private static VkPushConstantRange.Buffer packPushConstantRanges(
-    final MemoryStack stack,
-    final List<VulkanPushConstantRange> ranges)
+  @SuppressWarnings("unchecked")
+  private static List<VulkanPipelineType> castPipelines(
+    final ArrayList<VulkanLWJGLPipeline> result_pipelines)
   {
-    final VkPushConstantRange.Buffer buffer = VkPushConstantRange.callocStack(ranges.size(), stack);
-    for (int index = 0; index < ranges.size(); ++index) {
-      final VulkanPushConstantRange range = ranges.get(index);
-      buffer.position(index);
-      buffer.offset(range.offset());
-      buffer.size(range.size());
-      buffer.stageFlags(VulkanEnumMaps.packValues(range.stageFlags()));
-    }
-    return buffer;
-  }
-
-  private static VkImageSubresourceRange packSubresourceRange(
-    final MemoryStack stack,
-    final VulkanImageSubresourceRange range)
-  {
-    return VkImageSubresourceRange.mallocStack(stack)
-      .aspectMask(VulkanEnumMaps.packValues(range.flags()))
-      .baseArrayLayer(range.baseArrayLayer())
-      .baseMipLevel(range.baseMipLevel())
-      .layerCount(range.layerCount())
-      .levelCount(range.levelCount());
-  }
-
-  private static VkComponentMapping packComponentMapping(
-    final MemoryStack stack,
-    final VulkanComponentMapping components)
-  {
-    return VkComponentMapping.mallocStack(stack)
-      .set(
-        components.r().value(),
-        components.g().value(),
-        components.b().value(),
-        components.a().value());
+    return (List<VulkanPipelineType>) (Object) result_pipelines;
   }
 
   VkDevice device()
@@ -177,7 +144,11 @@ final class VulkanLWJGLLogicalDevice
   @Override
   public String toString()
   {
-    return "[VulkanLWJGLLogicalDevice]";
+    return new StringBuilder(32)
+      .append("[VulkanLWJGLLogicalDevice 0x")
+      .append(Long.toUnsignedString(this.device.address(), 16))
+      .append(']')
+      .toString();
   }
 
   @Override
@@ -217,11 +188,7 @@ final class VulkanLWJGLLogicalDevice
 
     try (MemoryStack stack = this.stack_initial.push()) {
       final VkShaderModuleCreateInfo vk_create_info =
-        VkShaderModuleCreateInfo.mallocStack(stack)
-          .sType(VK10.VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO)
-          .pNext(0L)
-          .pCode(create_info.data())
-          .flags(VulkanEnumMaps.packValues(create_info.flags()));
+        VulkanLWJGLShaderModules.packShaderModuleCreateInfo(stack, create_info);
 
       final long[] results = new long[1];
       VulkanChecks.checkReturnCode(
@@ -229,10 +196,11 @@ final class VulkanLWJGLLogicalDevice
         "vkCreateShaderModule");
 
       final long shader_module = results[0];
-      if (LOG.isDebugEnabled()) {
-        LOG.debug("created shader module: 0x{}", Long.toUnsignedString(shader_module, 16));
+      if (LOG.isTraceEnabled()) {
+        LOG.trace("created shader module: 0x{}", Long.toUnsignedString(shader_module, 16));
       }
-      return new VulkanLWJGLShaderModule(Ownership.USER_OWNED, this.device, shader_module);
+
+      return new VulkanLWJGLShaderModule(USER_OWNED, this.device, shader_module);
     }
   }
 
@@ -250,21 +218,19 @@ final class VulkanLWJGLLogicalDevice
 
     try (MemoryStack stack = this.stack_initial.push()) {
       final VkImageViewCreateInfo create_info =
-        VkImageViewCreateInfo.mallocStack(stack)
-          .sType(VK10.VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO)
-          .components(packComponentMapping(stack, info.components()))
-          .flags(VulkanEnumMaps.packValues(info.flags()))
-          .format(info.format().value())
-          .image(image.handle())
-          .subresourceRange(packSubresourceRange(stack, info.subresourceRange()))
-          .viewType(info.viewType().value());
+        VulkanLWJGLImageViews.packImageViewCreateInfo(stack, info, image);
 
       final long[] view = new long[1];
       VulkanChecks.checkReturnCode(
         VK10.vkCreateImageView(this.device, create_info, null, view),
         "vkCreateImageView");
 
-      return new VulkanLWJGLImageView(this.device, view[0]);
+      final long view_handle = view[0];
+      if (LOG.isTraceEnabled()) {
+        LOG.trace("created image view: 0x{}", Long.toUnsignedString(view_handle, 16));
+      }
+
+      return new VulkanLWJGLImageView(this.device, view_handle);
     }
   }
 
@@ -279,29 +245,80 @@ final class VulkanLWJGLLogicalDevice
 
     try (MemoryStack stack = this.stack_initial.push()) {
       final VkPipelineLayoutCreateInfo create_info =
-        VkPipelineLayoutCreateInfo.mallocStack(stack)
-          .sType(VK10.VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO)
-          .pPushConstantRanges(packPushConstantRanges(stack, info.pushConstantRanges()))
-          .pSetLayouts(packSetLayouts(stack, info.setLayouts()))
-          .flags(VulkanEnumMaps.packValues(info.flags()));
+        VulkanLWJGLPipelineLayouts.packPipelineLayoutCreateInfo(stack, info);
 
       final long[] layout = new long[1];
       VulkanChecks.checkReturnCode(
         VK10.vkCreatePipelineLayout(this.device, create_info, null, layout),
         "vkCreatePipelineLayout");
 
-      return new VulkanLWJGLPipelineLayout(Ownership.USER_OWNED, this.device, layout[0]);
+      final long layout_handle = layout[0];
+      if (LOG.isTraceEnabled()) {
+        LOG.trace("created pipeline layout: 0x{}", Long.toUnsignedString(layout_handle, 16));
+      }
+
+      return new VulkanLWJGLPipelineLayout(USER_OWNED, this.device, layout_handle);
     }
   }
 
-  private static LongBuffer packSetLayouts(
-    final MemoryStack stack,
-    final List<VulkanDescriptorSetLayoutType> layouts)
+  @Override
+  public VulkanRenderPassType createRenderPass(
+    final VulkanRenderPassCreateInfo render_pass_create_info)
+    throws VulkanException
   {
-    if (layouts.size() > 0) {
-      throw new AssertionError("Not implemented!");
+    Objects.requireNonNull(render_pass_create_info, "render_pass_create_info");
+
+    this.checkNotClosed();
+
+    try (MemoryStack stack = this.stack_initial.push()) {
+      final VkRenderPassCreateInfo create_info =
+        VulkanLWJGLRenderPasses.packRenderPassCreateInfo(stack, render_pass_create_info);
+
+      final long[] pass = new long[1];
+      VulkanChecks.checkReturnCode(
+        VK10.vkCreateRenderPass(this.device, create_info, null, pass),
+        "vkCreateRenderPass");
+
+      final long pass_handle = pass[0];
+      if (LOG.isTraceEnabled()) {
+        LOG.trace("created render pass: 0x{}", Long.toUnsignedString(pass_handle, 16));
+      }
+
+      return new VulkanLWJGLRenderPass(USER_OWNED, this.device, pass_handle);
     }
-    return null;
+  }
+
+  @Override
+  public List<VulkanPipelineType> createPipelines(
+    final List<VulkanGraphicsPipelineCreateInfo> pipeline_infos)
+    throws VulkanException
+  {
+    Objects.requireNonNull(pipeline_infos, "pipeline_infos");
+
+    this.checkNotClosed();
+
+    try (MemoryStack stack = this.stack_initial.push()) {
+      final VkGraphicsPipelineCreateInfo.Buffer infos =
+        VulkanLWJGLGraphicsPipelineCreateInfos.pack(stack, pipeline_infos);
+
+      final long[] pipes = new long[pipeline_infos.size()];
+      VulkanChecks.checkReturnCode(
+        VK10.vkCreateGraphicsPipelines(this.device, 0L, infos, null, pipes),
+        "vkCreateGraphicsPipelines");
+
+      final ArrayList<VulkanLWJGLPipeline> result_pipelines =
+        new ArrayList<>(pipeline_infos.size());
+
+      for (int index = 0; index < pipeline_infos.size(); ++index) {
+        final long pipe = pipes[index];
+        if (LOG.isTraceEnabled()) {
+          LOG.trace("created pipeline: 0x{}", Long.toUnsignedString(pipe, 16));
+        }
+        result_pipelines.add(new VulkanLWJGLPipeline(USER_OWNED, this.device, pipe));
+      }
+
+      return castPipelines(result_pipelines);
+    }
   }
 
   @Override
@@ -313,7 +330,9 @@ final class VulkanLWJGLLogicalDevice
   @Override
   protected void closeActual()
   {
-    LOG.debug("destroying logical device: {}", this.device);
+    if (LOG.isTraceEnabled()) {
+      LOG.trace("destroying logical device: {}", this);
+    }
     VK10.vkDestroyDevice(this.device, null);
   }
 }

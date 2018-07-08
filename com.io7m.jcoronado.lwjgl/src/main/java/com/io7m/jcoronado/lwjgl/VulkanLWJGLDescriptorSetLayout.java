@@ -16,54 +16,40 @@
 
 package com.io7m.jcoronado.lwjgl;
 
-import com.io7m.jcoronado.api.VulkanImageType;
+import com.io7m.jcoronado.api.VulkanDescriptorSetLayoutType;
+import org.lwjgl.vulkan.VK10;
+import org.lwjgl.vulkan.VkDevice;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Objects;
 
 /**
- * LWJGL {@link VulkanImageType}.
+ * LWJGL {@code VkDescriptorSetLayout}
  */
 
-public final class VulkanLWJGLImage extends VulkanLWJGLHandle implements VulkanImageType
+public final class VulkanLWJGLDescriptorSetLayout
+  extends VulkanLWJGLHandle implements VulkanDescriptorSetLayoutType
 {
-  private static final Logger LOG = LoggerFactory.getLogger(VulkanLWJGLImage.class);
+  private static final Logger LOG = LoggerFactory.getLogger(VulkanLWJGLDescriptorSetLayout.class);
 
   private final long handle;
+  private final VkDevice device;
 
-  VulkanLWJGLImage(
-    final Ownership ownership,
+  VulkanLWJGLDescriptorSetLayout(
+    final VkDevice in_device,
     final long in_handle)
   {
-    super(ownership);
+    super(Ownership.USER_OWNED);
+    this.device = Objects.requireNonNull(in_device, "device");
     this.handle = in_handle;
-  }
-
-  @Override
-  public boolean equals(final Object o)
-  {
-    if (this == o) {
-      return true;
-    }
-    if (o == null || !Objects.equals(this.getClass(), o.getClass())) {
-      return false;
-    }
-    final VulkanLWJGLImage that = (VulkanLWJGLImage) o;
-    return this.handle == that.handle;
-  }
-
-  @Override
-  public int hashCode()
-  {
-    return Objects.hash(Long.valueOf(this.handle));
   }
 
   @Override
   public String toString()
   {
     return new StringBuilder(32)
-      .append("[VulkanLWJGLImage 0x")
+      .append("[VulkanLWJGLDescriptorSetLayout 0x")
       .append(Long.toUnsignedString(this.handle, 16))
       .append("]")
       .toString();
@@ -79,8 +65,9 @@ public final class VulkanLWJGLImage extends VulkanLWJGLHandle implements VulkanI
   protected void closeActual()
   {
     if (LOG.isTraceEnabled()) {
-      LOG.trace("destroying image: {}", this);
+      LOG.trace("destroying descriptor set layout: {}", this);
     }
+    VK10.vkDestroyImageView(this.device, this.handle, null);
   }
 
   /**

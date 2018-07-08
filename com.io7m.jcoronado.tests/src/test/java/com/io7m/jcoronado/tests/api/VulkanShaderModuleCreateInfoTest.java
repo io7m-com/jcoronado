@@ -14,45 +14,26 @@
  * IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-package com.io7m.jcoronado.api;
+package com.io7m.jcoronado.tests.api;
 
-import com.io7m.immutables.styles.ImmutablesStyleType;
-import org.immutables.value.Value;
+import com.io7m.jcoronado.api.VulkanShaderModuleCreateFlag;
+import com.io7m.jcoronado.api.VulkanShaderModuleCreateInfo;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.nio.ByteBuffer;
-import java.util.List;
 
-/**
- * @see "VkSpecializationMap"
- */
-
-@ImmutablesStyleType
-@Value.Immutable
-public interface VulkanSpecializationMapType
+public final class VulkanShaderModuleCreateInfoTest
 {
-  /**
-   * @return A list of entries mapping constants to offsets in {@code data}
-   */
-
-  @Value.Parameter
-  List<VulkanSpecializationMapEntry> entries();
-
-  /**
-   * @return The constant data
-   */
-
-  @Value.Parameter
-  ByteBuffer data();
-
-  /**
-   * Check preconditions for the type.
-   */
-
-  @Value.Check
-  default void checkPreconditions()
+  @Test
+  public void testNotDirect()
   {
-    if (!this.data().isDirect()) {
-      throw new IllegalArgumentException("Must use direct byte buffers for specialization data");
-    }
+    Assertions.assertThrows(IllegalArgumentException.class, () -> {
+      VulkanShaderModuleCreateInfo.builder()
+        .setSize(256L)
+        .setData(ByteBuffer.allocate(256))
+        .addFlags(VulkanShaderModuleCreateFlag.values())
+        .build();
+    });
   }
 }

@@ -16,27 +16,28 @@
 
 package com.io7m.jcoronado.lwjgl;
 
-import com.io7m.jcoronado.api.VulkanImageType;
+import com.io7m.jcoronado.api.VulkanPipelineType;
+import org.lwjgl.vulkan.VK10;
+import org.lwjgl.vulkan.VkDevice;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Objects;
 
-/**
- * LWJGL {@link VulkanImageType}.
- */
-
-public final class VulkanLWJGLImage extends VulkanLWJGLHandle implements VulkanImageType
+final class VulkanLWJGLPipeline extends VulkanLWJGLHandle implements VulkanPipelineType
 {
-  private static final Logger LOG = LoggerFactory.getLogger(VulkanLWJGLImage.class);
+  private static final Logger LOG = LoggerFactory.getLogger(VulkanLWJGLPipeline.class);
 
   private final long handle;
+  private final VkDevice device;
 
-  VulkanLWJGLImage(
+  VulkanLWJGLPipeline(
     final Ownership ownership,
+    final VkDevice in_device,
     final long in_handle)
   {
     super(ownership);
+    this.device = Objects.requireNonNull(in_device, "device");
     this.handle = in_handle;
   }
 
@@ -49,7 +50,7 @@ public final class VulkanLWJGLImage extends VulkanLWJGLHandle implements VulkanI
     if (o == null || !Objects.equals(this.getClass(), o.getClass())) {
       return false;
     }
-    final VulkanLWJGLImage that = (VulkanLWJGLImage) o;
+    final VulkanLWJGLPipeline that = (VulkanLWJGLPipeline) o;
     return this.handle == that.handle;
   }
 
@@ -63,7 +64,7 @@ public final class VulkanLWJGLImage extends VulkanLWJGLHandle implements VulkanI
   public String toString()
   {
     return new StringBuilder(32)
-      .append("[VulkanLWJGLImage 0x")
+      .append("[VulkanLWJGLPipeline 0x")
       .append(Long.toUnsignedString(this.handle, 16))
       .append("]")
       .toString();
@@ -79,8 +80,9 @@ public final class VulkanLWJGLImage extends VulkanLWJGLHandle implements VulkanI
   protected void closeActual()
   {
     if (LOG.isTraceEnabled()) {
-      LOG.trace("destroying image: {}", this);
+      LOG.trace("destroying pipeline: {}", this);
     }
+    VK10.vkDestroyPipeline(this.device, this.handle, null);
   }
 
   /**

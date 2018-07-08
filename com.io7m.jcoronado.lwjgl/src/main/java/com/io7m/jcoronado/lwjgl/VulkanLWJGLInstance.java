@@ -526,6 +526,16 @@ final class VulkanLWJGLInstance
   }
 
   @Override
+  public String toString()
+  {
+    return new StringBuilder(64)
+      .append("[VulkanLWJGLInstance 0x")
+      .append(Long.toUnsignedString(this.instance.address(), 16))
+      .append(']')
+      .toString();
+  }
+
+  @Override
   protected Logger logger()
   {
     return LOG;
@@ -534,7 +544,9 @@ final class VulkanLWJGLInstance
   @Override
   protected void closeActual()
   {
-    LOG.debug("destroying instance");
+    if (LOG.isTraceEnabled()) {
+      LOG.trace("destroying instance: {}", this);
+    }
     VK10.vkDestroyInstance(this.instance, null);
   }
 

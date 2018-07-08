@@ -76,7 +76,9 @@ final class VulkanLWJGLQueue
   @Override
   protected void closeActual()
   {
-    LOG.debug("destroying queue: {}", this.queue);
+    if (LOG.isTraceEnabled()) {
+      LOG.trace("destroying queue: {}", this);
+    }
   }
 
   @Override

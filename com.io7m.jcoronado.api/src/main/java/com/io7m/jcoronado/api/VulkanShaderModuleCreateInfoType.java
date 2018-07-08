@@ -52,4 +52,16 @@ public interface VulkanShaderModuleCreateInfoType
 
   @Value.Parameter
   long size();
+
+  /**
+   * Check preconditions for the type.
+   */
+
+  @Value.Check
+  default void checkPreconditions()
+  {
+    if (!this.data().isDirect()) {
+      throw new IllegalArgumentException("Must use direct byte buffers for shader modules");
+    }
+  }
 }

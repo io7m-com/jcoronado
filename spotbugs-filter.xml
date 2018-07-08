@@ -114,6 +114,7 @@
       <Bug pattern="UVA_USE_VAR_ARGS"/>
       <Bug pattern="OPM_OVERLY_PERMISSIVE_METHOD"/>
       <Bug pattern="OCP_OVERLY_CONCRETE_PARAMETER"/>
+      <Bug pattern="AI_ANNOTATION_ISSUES_NEEDS_NULLABLE"/>
     </Or>
   </Match>
 

@@ -73,20 +73,22 @@ public final class VulkanLWJGLTemporaryAllocator implements VulkanTemporaryAlloc
       }
 
       if (LOG.isTraceEnabled()) {
-        LOG.trace("allocated 0x{} (size {} align {})",
-                  Long.toUnsignedString(address, 16),
-                  Long.toUnsignedString(size),
-                  Long.toUnsignedString(alignment));
+        LOG.trace(
+          "allocated 0x{} (size {} align {})",
+          Long.toUnsignedString(address, 16),
+          Long.toUnsignedString(size),
+          Long.toUnsignedString(alignment));
       }
 
       return receiver.receive(address, size);
     } finally {
       if (address != 0L) {
         if (LOG.isTraceEnabled()) {
-          LOG.trace("freed 0x{} (size {} align {})",
-                    Long.toUnsignedString(address, 16),
-                    Long.toUnsignedString(size),
-                    Long.toUnsignedString(alignment));
+          LOG.trace(
+            "freed 0x{} (size {} align {})",
+            Long.toUnsignedString(address, 16),
+            Long.toUnsignedString(size),
+            Long.toUnsignedString(alignment));
         }
         this.alloc.aligned_free(address);
       }

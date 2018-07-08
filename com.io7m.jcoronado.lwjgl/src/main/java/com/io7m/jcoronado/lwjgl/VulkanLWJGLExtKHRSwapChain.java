@@ -28,7 +28,6 @@ import com.io7m.jcoronado.extensions.api.VulkanExtKHRSwapChainType;
 import com.io7m.jcoronado.extensions.api.VulkanSwapChainCreateInfo;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.vulkan.KHRSwapchain;
-import org.lwjgl.vulkan.VkDevice;
 import org.lwjgl.vulkan.VkExtent2D;
 import org.lwjgl.vulkan.VkSwapchainCreateInfoKHR;
 import org.slf4j.Logger;
@@ -110,7 +109,7 @@ public final class VulkanLWJGLExtKHRSwapChain implements VulkanExtKHRSwapChainTy
     final int[] count = new int[1];
 
     VulkanChecks.checkReturnCode(
-      KHRSwapchain.vkGetSwapchainImagesKHR(chain.device, chain.chain, count, null),
+      KHRSwapchain.vkGetSwapchainImagesKHR(chain.device.device(), chain.chain, count, null),
       "vkGetSwapchainImagesKHR");
 
     final int image_count = count[0];
@@ -120,7 +119,7 @@ public final class VulkanLWJGLExtKHRSwapChain implements VulkanExtKHRSwapChainTy
 
     final long[] images = new long[image_count];
     VulkanChecks.checkReturnCode(
-      KHRSwapchain.vkGetSwapchainImagesKHR(chain.device, chain.chain, count, images),
+      KHRSwapchain.vkGetSwapchainImagesKHR(chain.device.device(), chain.chain, count, images),
       "vkGetSwapchainImagesKHR");
 
     return LongStream.of(images)
@@ -173,7 +172,7 @@ public final class VulkanLWJGLExtKHRSwapChain implements VulkanExtKHRSwapChainTy
       if (LOG.isDebugEnabled()) {
         LOG.debug("created swapchain: {}", Long.toUnsignedString(swapchain_address, 16));
       }
-      return new VulkanLWJGLKHRSwapChain(this, device.device(), swapchain_address);
+      return new VulkanLWJGLKHRSwapChain(this, device, swapchain_address);
     }
   }
 
@@ -181,12 +180,12 @@ public final class VulkanLWJGLExtKHRSwapChain implements VulkanExtKHRSwapChainTy
     extends VulkanLWJGLHandle implements VulkanKHRSwapChainType
   {
     private final long chain;
-    private final VkDevice device;
+    private final VulkanLWJGLLogicalDevice device;
     private final VulkanLWJGLExtKHRSwapChain extension;
 
     VulkanLWJGLKHRSwapChain(
       final VulkanLWJGLExtKHRSwapChain in_extension,
-      final VkDevice in_device,
+      final VulkanLWJGLLogicalDevice in_device,
       final long in_chain)
     {
       super(USER_OWNED);
@@ -202,6 +201,21 @@ public final class VulkanLWJGLExtKHRSwapChain implements VulkanExtKHRSwapChainTy
     }
 
     @Override
+    public String toString()
+    {
+      return new StringBuilder(64)
+        .append("[VulkanLWJGLKHRSwapChain ")
+        .append("0x")
+        .append(Long.toUnsignedString(this.chain, 16))
+        .append(' ')
+        .append(this.device)
+        .append(' ')
+        .append(this.extension)
+        .append(']')
+        .toString();
+    }
+
+    @Override
     protected Logger logger()
     {
       return LOG;
@@ -210,11 +224,11 @@ public final class VulkanLWJGLExtKHRSwapChain implements VulkanExtKHRSwapChainTy
     @Override
     protected void closeActual()
     {
-      if (LOG.isDebugEnabled()) {
-        LOG.debug("destroying swapchain: {}", Long.toUnsignedString(this.chain, 16));
+      if (LOG.isTraceEnabled()) {
+        LOG.trace("destroying swapchain: {}", this);
       }
 
-      KHRSwapchain.vkDestroySwapchainKHR(this.device, this.chain, null);
+      KHRSwapchain.vkDestroySwapchainKHR(this.device.device(), this.chain, null);
     }
 
     @Override

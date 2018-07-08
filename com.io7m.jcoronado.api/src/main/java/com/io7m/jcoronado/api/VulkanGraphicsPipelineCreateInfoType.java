@@ -67,14 +67,14 @@ public interface VulkanGraphicsPipelineCreateInfoType
    */
 
   @Value.Parameter
-  VulkanPipelineTessellationStateCreateInfo tessellationState();
+  Optional<VulkanPipelineTessellationStateCreateInfo> tessellationState();
 
   /**
    * @return State for the viewport
    */
 
   @Value.Parameter
-  VulkanPipelineViewportStateCreateInfo viewportState();
+  Optional<VulkanPipelineViewportStateCreateInfo> viewportState();
 
   /**
    * @return State for the rasterization stage
@@ -88,21 +88,21 @@ public interface VulkanGraphicsPipelineCreateInfoType
    */
 
   @Value.Parameter
-  VulkanPipelineMultisampleStateCreateInfo multisampleState();
+  Optional<VulkanPipelineMultisampleStateCreateInfo> multisampleState();
 
   /**
    * @return State for the depth/stencil buffer
    */
 
   @Value.Parameter
-  VulkanPipelineDepthStencilStateCreateInfo depthStencilState();
+  Optional<VulkanPipelineDepthStencilStateCreateInfo> depthStencilState();
 
   /**
    * @return State for the color blending stage
    */
 
   @Value.Parameter
-  VulkanPipelineColorBlendStateCreateInfo colorBlendState();
+  Optional<VulkanPipelineColorBlendStateCreateInfo> colorBlendState();
 
   /**
    * @return Dynamic state

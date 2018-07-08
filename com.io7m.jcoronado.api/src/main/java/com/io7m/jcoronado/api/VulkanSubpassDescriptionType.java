@@ -21,6 +21,7 @@ import org.immutables.value.Value;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * Structure specifying a subpass description.
@@ -36,7 +37,7 @@ public interface VulkanSubpassDescriptionType
    * @return Description flags
    */
 
-  VulkanSubpassDescriptionFlag flags();
+  Set<VulkanSubpassDescriptionFlag> flags();
 
   /**
    * @return The pipeline bind point specifying whether this is a graphics or compute subpass.

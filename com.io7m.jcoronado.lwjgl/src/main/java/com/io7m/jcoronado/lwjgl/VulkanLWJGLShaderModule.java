@@ -24,7 +24,12 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Objects;
 
-final class VulkanLWJGLShaderModule extends VulkanLWJGLHandle implements VulkanShaderModuleType
+/**
+ * LWJGL {@link VulkanShaderModuleType}.
+ */
+
+public final class VulkanLWJGLShaderModule
+  extends VulkanLWJGLHandle implements VulkanShaderModuleType
 {
   private static final Logger LOG = LoggerFactory.getLogger(VulkanLWJGLShaderModule.class);
 
@@ -79,11 +84,17 @@ final class VulkanLWJGLShaderModule extends VulkanLWJGLHandle implements VulkanS
   @Override
   protected void closeActual()
   {
-    LOG.debug("destroying shader module: {}", this);
+    if (LOG.isTraceEnabled()) {
+      LOG.trace("destroying shader module: {}", this);
+    }
     VK10.vkDestroyShaderModule(this.device, this.handle, null);
   }
 
-  long handle()
+  /**
+   * @return The handle value
+   */
+
+  public long handle()
   {
     return this.handle;
   }

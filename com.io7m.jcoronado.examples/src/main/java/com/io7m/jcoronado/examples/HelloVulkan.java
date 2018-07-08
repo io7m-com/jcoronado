@@ -17,6 +17,10 @@
 package com.io7m.jcoronado.examples;
 
 import com.io7m.jcoronado.api.VulkanApplicationInfo;
+import com.io7m.jcoronado.api.VulkanAttachmentDescription;
+import com.io7m.jcoronado.api.VulkanAttachmentLoadOp;
+import com.io7m.jcoronado.api.VulkanAttachmentReference;
+import com.io7m.jcoronado.api.VulkanAttachmentStoreOp;
 import com.io7m.jcoronado.api.VulkanComponentMapping;
 import com.io7m.jcoronado.api.VulkanComponentSwizzle;
 import com.io7m.jcoronado.api.VulkanException;
@@ -25,8 +29,9 @@ import com.io7m.jcoronado.api.VulkanExtensions;
 import com.io7m.jcoronado.api.VulkanExtent2D;
 import com.io7m.jcoronado.api.VulkanFormat;
 import com.io7m.jcoronado.api.VulkanFrontFace;
-import com.io7m.jcoronado.api.VulkanResourceException;
+import com.io7m.jcoronado.api.VulkanGraphicsPipelineCreateInfo;
 import com.io7m.jcoronado.api.VulkanImageAspectFlag;
+import com.io7m.jcoronado.api.VulkanImageLayout;
 import com.io7m.jcoronado.api.VulkanImageSubresourceRange;
 import com.io7m.jcoronado.api.VulkanImageType;
 import com.io7m.jcoronado.api.VulkanImageUsageFlag;
@@ -44,6 +49,7 @@ import com.io7m.jcoronado.api.VulkanLogicalDeviceQueueCreateInfo;
 import com.io7m.jcoronado.api.VulkanLogicalDeviceType;
 import com.io7m.jcoronado.api.VulkanOffset2D;
 import com.io7m.jcoronado.api.VulkanPhysicalDeviceType;
+import com.io7m.jcoronado.api.VulkanPipelineBindPoint;
 import com.io7m.jcoronado.api.VulkanPipelineColorBlendAttachmentState;
 import com.io7m.jcoronado.api.VulkanPipelineColorBlendStateCreateInfo;
 import com.io7m.jcoronado.api.VulkanPipelineInputAssemblyStateCreateInfo;
@@ -52,6 +58,7 @@ import com.io7m.jcoronado.api.VulkanPipelineLayoutType;
 import com.io7m.jcoronado.api.VulkanPipelineMultisampleStateCreateInfo;
 import com.io7m.jcoronado.api.VulkanPipelineRasterizationStateCreateInfo;
 import com.io7m.jcoronado.api.VulkanPipelineShaderStageCreateInfo;
+import com.io7m.jcoronado.api.VulkanPipelineType;
 import com.io7m.jcoronado.api.VulkanPipelineVertexInputStateCreateInfo;
 import com.io7m.jcoronado.api.VulkanPipelineViewportStateCreateInfo;
 import com.io7m.jcoronado.api.VulkanPolygonMode;
@@ -59,11 +66,15 @@ import com.io7m.jcoronado.api.VulkanPrimitiveTopology;
 import com.io7m.jcoronado.api.VulkanQueueFamilyProperties;
 import com.io7m.jcoronado.api.VulkanQueueType;
 import com.io7m.jcoronado.api.VulkanRectangle2D;
+import com.io7m.jcoronado.api.VulkanRenderPassCreateInfo;
+import com.io7m.jcoronado.api.VulkanRenderPassType;
+import com.io7m.jcoronado.api.VulkanResourceException;
 import com.io7m.jcoronado.api.VulkanSampleCountFlag;
 import com.io7m.jcoronado.api.VulkanShaderModuleCreateInfo;
 import com.io7m.jcoronado.api.VulkanShaderModuleType;
 import com.io7m.jcoronado.api.VulkanShaderStageFlag;
 import com.io7m.jcoronado.api.VulkanSharingMode;
+import com.io7m.jcoronado.api.VulkanSubpassDescription;
 import com.io7m.jcoronado.api.VulkanTemporaryAllocatorType;
 import com.io7m.jcoronado.api.VulkanUncheckedException;
 import com.io7m.jcoronado.api.VulkanVersions;
@@ -213,27 +224,27 @@ public final class HelloVulkan
       final List<VulkanPhysicalDeviceType> physical_devices = instance.physicalDevices();
 
       final VulkanPhysicalDeviceType physical_device =
-             resources.add(pickPhysicalDeviceOrAbort(khr_surface_ext, surface, physical_devices));
+        resources.add(pickPhysicalDeviceOrAbort(khr_surface_ext, surface, physical_devices));
 
-        LOG.debug("physical device: {}", physical_device);
+      LOG.debug("physical device: {}", physical_device);
 
-        /*
-         * Determine the format, presentation mode, and size of the surface that will be
-         * used for rendering.
-         */
+      /*
+       * Determine the format, presentation mode, and size of the surface that will be
+       * used for rendering.
+       */
 
-        final VulkanSurfaceFormatKHR surface_format =
-          pickSurfaceFormat(physical_device, khr_surface_ext, surface);
-        final VulkanPresentModeKHR surface_present =
-          pickPresentationMode(physical_device, khr_surface_ext, surface);
-        final VulkanSurfaceCapabilitiesKHR surface_caps =
-          khr_surface_ext.surfaceCapabilities(physical_device, surface);
-        final VulkanExtent2D surface_extent =
-          pickExtent(surface_caps);
+      final VulkanSurfaceFormatKHR surface_format =
+        pickSurfaceFormat(physical_device, khr_surface_ext, surface);
+      final VulkanPresentModeKHR surface_present =
+        pickPresentationMode(physical_device, khr_surface_ext, surface);
+      final VulkanSurfaceCapabilitiesKHR surface_caps =
+        khr_surface_ext.surfaceCapabilities(physical_device, surface);
+      final VulkanExtent2D surface_extent =
+        pickExtent(surface_caps);
 
-        LOG.debug("selected surface format: {}", surface_format);
-        LOG.debug("selected surface presentation mode: {}", surface_present);
-        LOG.debug("selected surface extent: {}", surface_extent);
+      LOG.debug("selected surface format: {}", surface_format);
+      LOG.debug("selected surface presentation mode: {}", surface_present);
+      LOG.debug("selected surface extent: {}", surface_extent);
 
       /*
        * We know that the selected physical device has a graphics queue family, and a queue
@@ -283,8 +294,8 @@ public final class HelloVulkan
 
       final VulkanLogicalDeviceType device = resources.add(
         physical_device.createLogicalDevice(logical_device_info_builder
-            .addEnabledExtensions("VK_KHR_swapchain")
-            .build()));
+                                              .addEnabledExtensions("VK_KHR_swapchain")
+                                              .build()));
 
       LOG.debug("logical device: {}", device);
 
@@ -329,6 +340,43 @@ public final class HelloVulkan
 
       final VulkanShaderModuleType shaders =
         resources.add(createShaderModule(device, alloc, data));
+
+      /*
+       * Configure the render pass.
+       */
+
+      final VulkanAttachmentDescription color_attachment_description =
+        VulkanAttachmentDescription.builder()
+          .setFormat(surface_format.format())
+          .setSamples(VulkanSampleCountFlag.VK_SAMPLE_COUNT_1_BIT)
+          .setLoadOp(VulkanAttachmentLoadOp.VK_ATTACHMENT_LOAD_OP_CLEAR)
+          .setStoreOp(VulkanAttachmentStoreOp.VK_ATTACHMENT_STORE_OP_STORE)
+          .setStencilLoadOp(VulkanAttachmentLoadOp.VK_ATTACHMENT_LOAD_OP_DONT_CARE)
+          .setStencilStoreOp(VulkanAttachmentStoreOp.VK_ATTACHMENT_STORE_OP_DONT_CARE)
+          .setInitialLayout(VulkanImageLayout.VK_IMAGE_LAYOUT_UNDEFINED)
+          .setFinalLayout(VulkanImageLayout.VK_IMAGE_LAYOUT_PRESENT_SRC_KHR)
+          .build();
+
+      final VulkanAttachmentReference color_attachment_reference =
+        VulkanAttachmentReference.builder()
+          .setAttachment(0)
+          .setLayout(VulkanImageLayout.VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL)
+          .build();
+
+      final VulkanSubpassDescription subpass_description =
+        VulkanSubpassDescription.builder()
+          .setPipelineBindPoint(VulkanPipelineBindPoint.VK_PIPELINE_BIND_POINT_GRAPHICS)
+          .addColorAttachments(color_attachment_reference)
+          .build();
+
+      final VulkanRenderPassCreateInfo render_pass_create_info =
+        VulkanRenderPassCreateInfo.builder()
+          .addAttachments(color_attachment_description)
+          .addSubpasses(subpass_description)
+          .build();
+
+      final VulkanRenderPassType render_pass =
+        resources.add(device.createRenderPass(render_pass_create_info));
 
       /*
        * Configure the rendering pipeline.
@@ -384,15 +432,6 @@ public final class HelloVulkan
           .setDepthBiasSlopeFactor(0.0f)
           .build();
 
-      final VulkanPipelineMultisampleStateCreateInfo multisampling =
-        VulkanPipelineMultisampleStateCreateInfo.builder()
-          .setSampleShadingEnable(false)
-          .setRasterizationSamples(VulkanSampleCountFlag.VK_SAMPLE_COUNT_1_BIT)
-          .setMinSampleShading(1.0f)
-          .setAlphaToCoverageEnable(false)
-          .setAlphaToOneEnable(false)
-          .build();
-
       final VulkanPipelineColorBlendAttachmentState blend_state =
         VulkanPipelineColorBlendAttachmentState.builder()
           .setEnable(false)
@@ -409,6 +448,33 @@ public final class HelloVulkan
 
       final VulkanPipelineLayoutType pipeline_layout =
         resources.add(device.createPipelineLayout(pipeline_layout_info));
+
+      final VulkanPipelineMultisampleStateCreateInfo multisample =
+        VulkanPipelineMultisampleStateCreateInfo.builder()
+          .setAlphaToCoverageEnable(false)
+          .setAlphaToOneEnable(false)
+          .setSampleShadingEnable(false)
+          .setMinSampleShading(1.0f)
+          .setRasterizationSamples(VulkanSampleCountFlag.VK_SAMPLE_COUNT_1_BIT)
+          .build();
+
+      final VulkanGraphicsPipelineCreateInfo pipeline_info =
+        VulkanGraphicsPipelineCreateInfo.builder()
+          .addStages(vertex_stage_info)
+          .addStages(fragment_stage_info)
+          .setVertexInputState(vertex_input_info)
+          .setInputAssemblyState(input_assembly_info)
+          .setViewportState(viewport_state_info)
+          .setMultisampleState(multisample)
+          .setRasterizationState(rasterizer)
+          .setColorBlendState(color_blending)
+          .setLayout(pipeline_layout)
+          .setRenderPass(render_pass)
+          .setSubpass(0)
+          .build();
+
+      final VulkanPipelineType pipeline =
+        resources.add(device.createPipeline(pipeline_info));
 
     } catch (final VulkanException e) {
       LOG.error("vulkan error: ", e);

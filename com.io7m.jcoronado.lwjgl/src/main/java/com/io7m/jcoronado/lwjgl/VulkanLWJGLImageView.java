@@ -59,7 +59,9 @@ final class VulkanLWJGLImageView extends VulkanLWJGLHandle implements VulkanImag
   @Override
   protected void closeActual()
   {
-    LOG.debug("destroying image view: 0x{}", Long.toUnsignedString(this.handle, 16));
+    if (LOG.isTraceEnabled()) {
+      LOG.trace("destroying image view: {}", this);
+    }
     VK10.vkDestroyImageView(this.device, this.handle, null);
   }
 }

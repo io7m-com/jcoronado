@@ -151,4 +151,49 @@ public interface VulkanLogicalDeviceType extends VulkanHandleDispatchableType
     VulkanPipelineLayoutCreateInfo info)
     throws VulkanException;
 
+  /**
+   * Create a render pass.
+   *
+   * @param render_pass_create_info The render pass creation info
+   *
+   * @return A render pass
+   *
+   * @throws VulkanException On errors
+   */
+
+  VulkanRenderPassType createRenderPass(
+    VulkanRenderPassCreateInfo render_pass_create_info)
+    throws VulkanException;
+
+  /**
+   * Create a pipeline.
+   *
+   * @param pipeline_info The pipeline creation info
+   *
+   * @return A pipeline
+   *
+   * @throws VulkanException On errors
+   */
+
+  default VulkanPipelineType createPipeline(
+    final VulkanGraphicsPipelineCreateInfo pipeline_info)
+    throws VulkanException
+  {
+    Objects.requireNonNull(pipeline_info, "pipeline_info");
+    return this.createPipelines(List.of(pipeline_info)).get(0);
+  }
+
+  /**
+   * Create a set of pipelines.
+   *
+   * @param pipeline_infos The pipeline creation infos
+   *
+   * @return A pipeline
+   *
+   * @throws VulkanException On errors
+   */
+
+  List<VulkanPipelineType> createPipelines(
+    List<VulkanGraphicsPipelineCreateInfo> pipeline_infos)
+    throws VulkanException;
 }

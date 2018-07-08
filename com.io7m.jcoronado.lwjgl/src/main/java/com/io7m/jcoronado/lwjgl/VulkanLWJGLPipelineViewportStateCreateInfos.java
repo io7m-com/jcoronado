@@ -1,0 +1,130 @@
+/*
+ * Copyright © 2018 Mark Raynsford <code@io7m.com> http://io7m.com
+ *
+ * Permission to use, copy, modify, and/or distribute this software for any
+ * purpose with or without fee is hereby granted, provided that the above
+ * copyright notice and this permission notice appear in all copies.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY
+ * SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR
+ * IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ */
+
+package com.io7m.jcoronado.lwjgl;
+
+import com.io7m.jcoronado.api.VulkanEnumMaps;
+import com.io7m.jcoronado.api.VulkanExtent2D;
+import com.io7m.jcoronado.api.VulkanOffset2D;
+import com.io7m.jcoronado.api.VulkanPipelineViewportStateCreateInfo;
+import com.io7m.jcoronado.api.VulkanRectangle2D;
+import com.io7m.jcoronado.api.VulkanViewport;
+import org.lwjgl.system.MemoryStack;
+import org.lwjgl.vulkan.VK10;
+import org.lwjgl.vulkan.VkExtent2D;
+import org.lwjgl.vulkan.VkOffset2D;
+import org.lwjgl.vulkan.VkPipelineViewportStateCreateInfo;
+import org.lwjgl.vulkan.VkRect2D;
+import org.lwjgl.vulkan.VkViewport;
+
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+
+/**
+ * Functions to pack pipeline creation info.
+ */
+
+public final class VulkanLWJGLPipelineViewportStateCreateInfos
+{
+  private VulkanLWJGLPipelineViewportStateCreateInfos()
+  {
+
+  }
+
+  /**
+   * Pack a structure.
+   *
+   * @param stack A stack
+   * @param info  A structure
+   *
+   * @return A packed structure
+   */
+
+  public static VkPipelineViewportStateCreateInfo pack(
+    final MemoryStack stack,
+    final VulkanPipelineViewportStateCreateInfo info)
+  {
+    Objects.requireNonNull(stack, "stack");
+    Objects.requireNonNull(info, "info");
+
+    final VkPipelineViewportStateCreateInfo target =
+      VkPipelineViewportStateCreateInfo.mallocStack(stack);
+
+    return target
+      .sType(VK10.VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO)
+      .pNext(0L)
+      .flags(VulkanEnumMaps.packValues(info.flags()))
+      .viewportCount(info.viewports().size())
+      .pViewports(packViewports(stack, info.viewports()))
+      .scissorCount(info.scissors().size())
+      .pScissors(packScissors(stack, info.scissors()));
+  }
+
+  private static VkRect2D.Buffer packScissors(
+    final MemoryStack stack,
+    final List<VulkanRectangle2D> scissors)
+  {
+    final VkRect2D.Buffer buffer = VkRect2D.mallocStack(scissors.size(), stack);
+    for (int index = 0; index < scissors.size(); ++index) {
+      final VulkanRectangle2D source = scissors.get(index);
+      final VkRect2D target = VkRect2D.create(buffer.address(index));
+      final VulkanExtent2D extent = source.extent();
+      final VulkanOffset2D offset = source.offset();
+      target.extent(VkExtent2D.mallocStack(stack).set(extent.width(), extent.height()));
+      target.offset(VkOffset2D.mallocStack(stack).set(offset.x(), offset.y()));
+    }
+    return buffer;
+  }
+
+  private static VkViewport.Buffer packViewports(
+    final MemoryStack stack,
+    final List<VulkanViewport> viewports)
+  {
+    final VkViewport.Buffer buffer = VkViewport.mallocStack(viewports.size(), stack);
+    for (int index = 0; index < viewports.size(); ++index) {
+      final VulkanViewport source = viewports.get(index);
+      final VkViewport target = VkViewport.create(buffer.address(index));
+      target.set(
+        source.x(),
+        source.y(),
+        source.width(),
+        source.height(),
+        source.minDepth(),
+        source.maxDepth());
+    }
+    return buffer;
+  }
+
+  /**
+   * Pack a structure.
+   *
+   * @param stack A stack
+   * @param info  A structure
+   *
+   * @return A packed structure (or null)
+   */
+
+  public static VkPipelineViewportStateCreateInfo packOptional(
+    final MemoryStack stack,
+    final Optional<VulkanPipelineViewportStateCreateInfo> info)
+  {
+    Objects.requireNonNull(stack, "stack");
+    Objects.requireNonNull(info, "info");
+
+    return info.map(iinfo -> pack(stack, iinfo)).orElse(null);
+  }
+}

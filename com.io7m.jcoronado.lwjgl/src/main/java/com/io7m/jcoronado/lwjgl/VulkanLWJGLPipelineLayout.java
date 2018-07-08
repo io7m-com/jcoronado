@@ -79,7 +79,9 @@ final class VulkanLWJGLPipelineLayout extends VulkanLWJGLHandle implements Vulka
   @Override
   protected void closeActual()
   {
-    LOG.debug("destroying pipeline layout: {}", this);
+    if (LOG.isTraceEnabled()) {
+      LOG.trace("destroying pipeline layout: {}", this);
+    }
     VK10.vkDestroyPipelineLayout(this.device, this.handle, null);
   }
 

@@ -21,6 +21,7 @@ import org.immutables.value.Value;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * Structure specifying parameters of a newly created pipeline color blend state.
@@ -38,6 +39,14 @@ public interface VulkanPipelineColorBlendStateCreateInfoType
 
   @Value.Parameter
   Optional<VulkanLogicOp> logicOp();
+
+  /**
+   *
+   * @return The creation flags
+   */
+
+  @Value.Parameter
+  Set<VulkanPipelineColorBlendStateCreateFlag> flags();
 
   /**
    * @return The per-target attachment states.
