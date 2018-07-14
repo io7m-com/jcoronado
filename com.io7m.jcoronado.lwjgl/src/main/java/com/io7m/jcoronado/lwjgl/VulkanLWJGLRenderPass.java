@@ -24,7 +24,11 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Objects;
 
-final class VulkanLWJGLRenderPass extends VulkanLWJGLHandle implements VulkanRenderPassType
+/**
+ * LWJGL {@link VulkanRenderPassType}.
+ */
+
+public final class VulkanLWJGLRenderPass extends VulkanLWJGLHandle implements VulkanRenderPassType
 {
   private static final Logger LOG = LoggerFactory.getLogger(VulkanLWJGLRenderPass.class);
 
@@ -85,7 +89,11 @@ final class VulkanLWJGLRenderPass extends VulkanLWJGLHandle implements VulkanRen
     VK10.vkDestroyRenderPass(this.device, this.handle, null);
   }
 
-  long handle()
+  /**
+   * @return The raw handle
+   */
+
+  public long handle()
   {
     return this.handle;
   }

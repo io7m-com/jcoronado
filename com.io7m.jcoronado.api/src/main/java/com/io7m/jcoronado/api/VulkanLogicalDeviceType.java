@@ -196,4 +196,18 @@ public interface VulkanLogicalDeviceType extends VulkanHandleDispatchableType
   List<VulkanPipelineType> createPipelines(
     List<VulkanGraphicsPipelineCreateInfo> pipeline_infos)
     throws VulkanException;
+
+  /**
+   * Create a framebuffer.
+   *
+   * @param create_info The framebuffer creation info
+   *
+   * @return A pipeline
+   *
+   * @throws VulkanException On errors
+   */
+
+  VulkanFramebufferType createFramebuffer(
+    VulkanFramebufferCreateInfo create_info)
+    throws VulkanException;
 }

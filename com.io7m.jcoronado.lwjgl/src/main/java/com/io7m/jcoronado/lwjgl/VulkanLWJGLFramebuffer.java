@@ -16,7 +16,7 @@
 
 package com.io7m.jcoronado.lwjgl;
 
-import com.io7m.jcoronado.api.VulkanImageViewType;
+import com.io7m.jcoronado.api.VulkanFramebufferType;
 import org.lwjgl.vulkan.VK10;
 import org.lwjgl.vulkan.VkDevice;
 import org.slf4j.Logger;
@@ -24,43 +24,50 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Objects;
 
-/**
- * LWJGL {@link VulkanImageViewType}.
- */
-
-public final class VulkanLWJGLImageView extends VulkanLWJGLHandle implements VulkanImageViewType
+final class VulkanLWJGLFramebuffer extends VulkanLWJGLHandle implements VulkanFramebufferType
 {
-  private static final Logger LOG = LoggerFactory.getLogger(VulkanLWJGLImageView.class);
+  private static final Logger LOG = LoggerFactory.getLogger(VulkanLWJGLFramebuffer.class);
 
   private final long handle;
   private final VkDevice device;
 
-  VulkanLWJGLImageView(
+  VulkanLWJGLFramebuffer(
+    final Ownership ownership,
     final VkDevice in_device,
     final long in_handle)
   {
-    super(Ownership.USER_OWNED);
+    super(ownership);
     this.device = Objects.requireNonNull(in_device, "device");
     this.handle = in_handle;
+  }
+
+  @Override
+  public boolean equals(final Object o)
+  {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || !Objects.equals(this.getClass(), o.getClass())) {
+      return false;
+    }
+    final VulkanLWJGLFramebuffer that = (VulkanLWJGLFramebuffer) o;
+    return this.handle == that.handle;
+  }
+
+  @Override
+  public int hashCode()
+  {
+    return Objects.hash(Long.valueOf(this.handle));
   }
 
   @Override
   public String toString()
   {
     return new StringBuilder(32)
-      .append("[VulkanLWJGLImageView 0x")
+      .append("[VulkanLWJGLFramebuffer 0x")
       .append(Long.toUnsignedString(this.handle, 16))
       .append("]")
       .toString();
-  }
-
-  /**
-   * @return The raw handle
-   */
-
-  public long handle()
-  {
-    return this.handle;
   }
 
   @Override
@@ -73,8 +80,13 @@ public final class VulkanLWJGLImageView extends VulkanLWJGLHandle implements Vul
   protected void closeActual()
   {
     if (LOG.isTraceEnabled()) {
-      LOG.trace("destroying image view: {}", this);
+      LOG.trace("destroying framebuffer: {}", this);
     }
-    VK10.vkDestroyImageView(this.device, this.handle, null);
+    VK10.vkDestroyFramebuffer(this.device, this.handle, null);
+  }
+
+  long handle()
+  {
+    return this.handle;
   }
 }

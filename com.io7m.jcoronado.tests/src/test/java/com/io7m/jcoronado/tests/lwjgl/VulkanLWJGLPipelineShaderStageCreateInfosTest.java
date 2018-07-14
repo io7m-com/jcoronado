@@ -33,6 +33,8 @@ import org.lwjgl.vulkan.VkPipelineShaderStageCreateInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.List;
+
 public final class VulkanLWJGLPipelineShaderStageCreateInfosTest
 {
   private static final Logger LOG = LoggerFactory.getLogger(
@@ -97,6 +99,71 @@ public final class VulkanLWJGLPipelineShaderStageCreateInfosTest
       () -> {
         Assertions.assertEquals(
           VK10.VK_SHADER_STAGE_VERTEX_BIT,
+          packed.stage());
+      }
+    );
+  }
+
+  @Test
+  public void testPipelineShaderStageCreateInfos(
+    final @Mocked VulkanLWJGLShaderModule module)
+    throws VulkanIncompatibleClassException
+  {
+    new Expectations()
+    {{
+      module.handle();
+      this.result = Long.valueOf(0x200L);
+    }};
+
+    final VulkanPipelineShaderStageCreateInfo info_0 =
+      VulkanPipelineShaderStageCreateInfo.builder()
+        .setShaderEntryPoint("main")
+        .setModule(module)
+        .setStage(VulkanShaderStageFlag.VK_SHADER_STAGE_VERTEX_BIT)
+        .build();
+
+    final VulkanPipelineShaderStageCreateInfo info_1 =
+      VulkanPipelineShaderStageCreateInfo.builder()
+        .setShaderEntryPoint("main2")
+        .setModule(module)
+        .setStage(VulkanShaderStageFlag.VK_SHADER_STAGE_FRAGMENT_BIT)
+        .build();
+
+    final VkPipelineShaderStageCreateInfo.Buffer packed =
+      VulkanLWJGLPipelineShaderStageCreateInfos.packAll(this.stack, List.of(info_0, info_1));
+
+    Assertions.assertAll(
+      () -> {
+        Assertions.assertEquals(0L, packed.pNext());
+      },
+      () -> {
+        Assertions.assertEquals(
+          VK10.VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO,
+          packed.sType());
+      },
+      () -> {
+        packed.position(0);
+
+        Assertions.assertEquals(
+          "main",
+          packed.pNameString());
+        Assertions.assertEquals(
+          module.handle(),
+          packed.module());
+        Assertions.assertEquals(
+          VK10.VK_SHADER_STAGE_VERTEX_BIT,
+          packed.stage());
+
+        packed.position(1);
+
+        Assertions.assertEquals(
+          "main2",
+          packed.pNameString());
+        Assertions.assertEquals(
+          module.handle(),
+          packed.module());
+        Assertions.assertEquals(
+          VK10.VK_SHADER_STAGE_FRAGMENT_BIT,
           packed.stage());
       }
     );

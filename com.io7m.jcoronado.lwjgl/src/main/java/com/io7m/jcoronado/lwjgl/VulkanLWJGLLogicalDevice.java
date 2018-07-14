@@ -20,9 +20,12 @@ import com.io7m.jcoronado.api.VulkanChecks;
 import com.io7m.jcoronado.api.VulkanDestroyedException;
 import com.io7m.jcoronado.api.VulkanException;
 import com.io7m.jcoronado.api.VulkanExtensionType;
+import com.io7m.jcoronado.api.VulkanFramebufferCreateInfo;
+import com.io7m.jcoronado.api.VulkanFramebufferType;
 import com.io7m.jcoronado.api.VulkanGraphicsPipelineCreateInfo;
 import com.io7m.jcoronado.api.VulkanImageViewCreateInfo;
 import com.io7m.jcoronado.api.VulkanImageViewType;
+import com.io7m.jcoronado.api.VulkanIncompatibleClassException;
 import com.io7m.jcoronado.api.VulkanLogicalDeviceCreateInfo;
 import com.io7m.jcoronado.api.VulkanLogicalDeviceQueueCreateInfo;
 import com.io7m.jcoronado.api.VulkanLogicalDeviceType;
@@ -36,10 +39,12 @@ import com.io7m.jcoronado.api.VulkanRenderPassCreateInfo;
 import com.io7m.jcoronado.api.VulkanRenderPassType;
 import com.io7m.jcoronado.api.VulkanShaderModuleCreateInfo;
 import com.io7m.jcoronado.api.VulkanShaderModuleType;
+import com.io7m.jcoronado.api.VulkanUncheckedException;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.vulkan.VK10;
 import org.lwjgl.vulkan.VkDevice;
+import org.lwjgl.vulkan.VkFramebufferCreateInfo;
 import org.lwjgl.vulkan.VkGraphicsPipelineCreateInfo;
 import org.lwjgl.vulkan.VkImageViewCreateInfo;
 import org.lwjgl.vulkan.VkPipelineLayoutCreateInfo;
@@ -54,6 +59,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import static com.io7m.jcoronado.lwjgl.VulkanLWJGLHandle.Ownership.USER_OWNED;
 
@@ -318,6 +324,52 @@ final class VulkanLWJGLLogicalDevice
       }
 
       return castPipelines(result_pipelines);
+    }
+  }
+
+  @Override
+  public VulkanFramebufferType createFramebuffer(
+    final VulkanFramebufferCreateInfo create_info)
+    throws VulkanException
+  {
+    Objects.requireNonNull(create_info, "create_info");
+
+    this.checkNotClosed();
+
+    try {
+      final List<VulkanLWJGLImageView> views =
+        create_info.attachments()
+          .stream()
+          .map(view -> {
+            try {
+              return VulkanLWJGLClassChecks.check(view, VulkanLWJGLImageView.class);
+            } catch (VulkanIncompatibleClassException e) {
+              throw new VulkanUncheckedException(e);
+            }
+          })
+          .collect(Collectors.toList());
+
+      final VulkanLWJGLRenderPass pass =
+        VulkanLWJGLClassChecks.check(create_info.renderPass(), VulkanLWJGLRenderPass.class);
+
+      try (MemoryStack stack = this.stack_initial.push()) {
+        final VkFramebufferCreateInfo info =
+          VulkanLWJGLFramebufferCreateInfos.pack(stack, create_info, views, pass);
+
+        final long[] framebuffers = new long[1];
+        VulkanChecks.checkReturnCode(
+          VK10.vkCreateFramebuffer(this.device, info, null, framebuffers),
+          "vkCreateFramebuffer");
+
+        final long handle = framebuffers[0];
+        if (LOG.isTraceEnabled()) {
+          LOG.trace("created framebuffer: 0x{}", Long.toUnsignedString(handle, 16));
+        }
+
+        return new VulkanLWJGLFramebuffer(USER_OWNED, this.device, handle);
+      }
+    } catch (final VulkanUncheckedException e) {
+      throw e.getCause();
     }
   }
 

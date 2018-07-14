@@ -21,6 +21,7 @@
       <Class name="com.io7m.jcoronado.api.VulkanExtensionProperties"/>
       <Class name="com.io7m.jcoronado.api.VulkanExtent2D"/>
       <Class name="com.io7m.jcoronado.api.VulkanExtent3D"/>
+      <Class name="com.io7m.jcoronado.api.VulkanFramebufferCreateInfo"/>
       <Class name="com.io7m.jcoronado.api.VulkanGraphicsPipelineCreateInfo"/>
       <Class name="com.io7m.jcoronado.api.VulkanImageSubresourceRange"/>
       <Class name="com.io7m.jcoronado.api.VulkanImageViewCreateInfo"/>
@@ -101,6 +102,14 @@
     <And>
       <Class name="com.io7m.jcoronado.lwjgl.VulkanLWJGLExtKHRSwapChain"/>
       <Bug pattern="FCCD_FIND_CLASS_CIRCULAR_DEPENDENCY"/>
+    </And>
+  </Match>
+
+  <Match>
+    <And>
+      <Class name="com.io7m.jcoronado.lwjgl.VulkanLWJGLLogicalDevice"/>
+      <Method name="createFramebuffer"/>
+      <Bug pattern="LEST_LOST_EXCEPTION_STACK_TRACE"/>
     </And>
   </Match>
 

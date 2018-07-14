@@ -28,6 +28,8 @@ import com.io7m.jcoronado.api.VulkanExtensionProperties;
 import com.io7m.jcoronado.api.VulkanExtensions;
 import com.io7m.jcoronado.api.VulkanExtent2D;
 import com.io7m.jcoronado.api.VulkanFormat;
+import com.io7m.jcoronado.api.VulkanFramebufferCreateInfo;
+import com.io7m.jcoronado.api.VulkanFramebufferType;
 import com.io7m.jcoronado.api.VulkanFrontFace;
 import com.io7m.jcoronado.api.VulkanGraphicsPipelineCreateInfo;
 import com.io7m.jcoronado.api.VulkanImageAspectFlag;
@@ -475,6 +477,28 @@ public final class HelloVulkan
 
       final VulkanPipelineType pipeline =
         resources.add(device.createPipeline(pipeline_info));
+
+      /*
+       * Create framebuffers.
+       */
+
+      final List<VulkanFramebufferType> framebuffers = new ArrayList<>(images.size());
+
+      for (int index = 0; index < images.size(); ++index) {
+        final VulkanFramebufferCreateInfo framebuffer_info =
+          VulkanFramebufferCreateInfo.builder()
+            .addAttachments(views.get(index))
+            .setHeight(surface_extent.height())
+            .setWidth(surface_extent.width())
+            .setLayers(1)
+            .setRenderPass(render_pass)
+            .build();
+
+        final VulkanFramebufferType framebuffer =
+          resources.add(device.createFramebuffer(framebuffer_info));
+
+        framebuffers.add(framebuffer);
+      }
 
     } catch (final VulkanException e) {
       LOG.error("vulkan error: ", e);
