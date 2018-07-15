@@ -17,6 +17,10 @@
 package com.io7m.jcoronado.lwjgl;
 
 import com.io7m.jcoronado.api.VulkanChecks;
+import com.io7m.jcoronado.api.VulkanCommandBufferCreateInfo;
+import com.io7m.jcoronado.api.VulkanCommandBufferType;
+import com.io7m.jcoronado.api.VulkanCommandPoolCreateInfo;
+import com.io7m.jcoronado.api.VulkanCommandPoolType;
 import com.io7m.jcoronado.api.VulkanDestroyedException;
 import com.io7m.jcoronado.api.VulkanException;
 import com.io7m.jcoronado.api.VulkanExtensionType;
@@ -43,6 +47,9 @@ import com.io7m.jcoronado.api.VulkanUncheckedException;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.vulkan.VK10;
+import org.lwjgl.vulkan.VkCommandBuffer;
+import org.lwjgl.vulkan.VkCommandBufferAllocateInfo;
+import org.lwjgl.vulkan.VkCommandPoolCreateInfo;
 import org.lwjgl.vulkan.VkDevice;
 import org.lwjgl.vulkan.VkFramebufferCreateInfo;
 import org.lwjgl.vulkan.VkGraphicsPipelineCreateInfo;
@@ -62,6 +69,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static com.io7m.jcoronado.lwjgl.VulkanLWJGLHandle.Ownership.USER_OWNED;
+import static com.io7m.jcoronado.lwjgl.VulkanLWJGLHandle.Ownership.VULKAN_OWNED;
 
 final class VulkanLWJGLLogicalDevice
   extends VulkanLWJGLHandle implements VulkanLogicalDeviceType
@@ -370,6 +378,76 @@ final class VulkanLWJGLLogicalDevice
       }
     } catch (final VulkanUncheckedException e) {
       throw e.getCause();
+    }
+  }
+
+  @Override
+  public VulkanCommandPoolType createCommandPool(
+    final VulkanCommandPoolCreateInfo create_info)
+    throws VulkanException
+  {
+    Objects.requireNonNull(create_info, "create_info");
+
+    this.checkNotClosed();
+
+    try (MemoryStack stack = this.stack_initial.push()) {
+      final VkCommandPoolCreateInfo packed =
+        VulkanLWJGLCommandPoolCreateInfos.pack(stack, create_info);
+
+      final long[] handles = new long[1];
+      VulkanChecks.checkReturnCode(
+        VK10.vkCreateCommandPool(this.device, packed, null, handles),
+        "vkCreateCommandPool");
+
+      final long handle = handles[0];
+      if (LOG.isTraceEnabled()) {
+        LOG.trace("created command pool: 0x{}", Long.toUnsignedString(handle, 16));
+      }
+
+      return new VulkanLWJGLCommandPool(USER_OWNED, this.device, handle);
+    }
+  }
+
+  @Override
+  public List<VulkanCommandBufferType> createCommandBuffers(
+    final VulkanCommandBufferCreateInfo create_info)
+    throws VulkanException
+  {
+    Objects.requireNonNull(create_info, "create_info");
+
+    this.checkNotClosed();
+
+    final VulkanLWJGLCommandPool pool =
+      VulkanLWJGLClassChecks.check(create_info.pool(), VulkanLWJGLCommandPool.class);
+
+    try (MemoryStack stack = this.stack_initial.push()) {
+      final VkCommandBufferAllocateInfo packed =
+        VulkanLWJGLCommandBufferCreateInfos.pack(stack, create_info, pool);
+
+      final int count = create_info.count();
+      final PointerBuffer buffers = stack.mallocPointer(count);
+
+      VulkanChecks.checkReturnCode(
+        VK10.vkAllocateCommandBuffers(this.device, packed, buffers),
+        "vkAllocateCommandBuffers");
+
+      final List<VulkanCommandBufferType> results = new ArrayList<>(count);
+
+      if (LOG.isTraceEnabled()) {
+        for (int index = 0; index < count; ++index) {
+          LOG.trace("created command buffer: 0x{}", Long.toUnsignedString(buffers.get(index), 16));
+        }
+      }
+
+      for (int index = 0; index < count; ++index) {
+        final VkCommandBuffer handle =
+          new VkCommandBuffer(buffers.get(index), this.device);
+        final VulkanLWJGLCommandBuffer buffer =
+          new VulkanLWJGLCommandBuffer(VULKAN_OWNED, handle);
+        results.add(buffer);
+      }
+
+      return results;
     }
   }
 

@@ -16,22 +16,33 @@
 
 package com.io7m.jcoronado.api;
 
+import com.io7m.immutables.styles.ImmutablesStyleType;
+import org.immutables.value.Value;
+
+import java.util.Set;
+
 /**
- * @see "VkCommandBuffer"
+ * Structure specifying parameters of a newly created command pool.
+ *
+ * @see "VkCommandPoolCreateInfo"
  */
 
-public interface VulkanCommandBufferType extends VulkanHandleDispatchableType
+@ImmutablesStyleType
+@Value.Immutable
+public interface VulkanCommandPoolCreateInfoType
 {
   /**
-   * Begin a command buffer.
-   *
-   * @param info The begin info
-   *
-   * @throws VulkanException On errors
+   * @return Flags specifying how the command pool will be generated.
    */
 
-  void beginCommandBuffer(
-    VulkanCommandBufferBeginInfo info)
-    throws VulkanException;
-}
+  @Value.Parameter
+  Set<VulkanCommandPoolCreateFlag> flags();
 
+  /**
+   * @return A queue family as described in section Queue Family Properties. All command buffers
+   * allocated from this command pool must be submitted on queues from the same queue family.
+   */
+
+  @Value.Parameter
+  int queueFamilyIndex();
+}

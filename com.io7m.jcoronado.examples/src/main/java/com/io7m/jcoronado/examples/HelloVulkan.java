@@ -21,6 +21,12 @@ import com.io7m.jcoronado.api.VulkanAttachmentDescription;
 import com.io7m.jcoronado.api.VulkanAttachmentLoadOp;
 import com.io7m.jcoronado.api.VulkanAttachmentReference;
 import com.io7m.jcoronado.api.VulkanAttachmentStoreOp;
+import com.io7m.jcoronado.api.VulkanCommandBufferBeginInfo;
+import com.io7m.jcoronado.api.VulkanCommandBufferCreateInfo;
+import com.io7m.jcoronado.api.VulkanCommandBufferLevel;
+import com.io7m.jcoronado.api.VulkanCommandBufferType;
+import com.io7m.jcoronado.api.VulkanCommandPoolCreateInfo;
+import com.io7m.jcoronado.api.VulkanCommandPoolType;
 import com.io7m.jcoronado.api.VulkanComponentMapping;
 import com.io7m.jcoronado.api.VulkanComponentSwizzle;
 import com.io7m.jcoronado.api.VulkanException;
@@ -108,11 +114,14 @@ import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import static com.io7m.jcoronado.api.VulkanCommandBufferLevel.*;
+import static com.io7m.jcoronado.api.VulkanCommandBufferUsageFlag.VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT;
 import static com.io7m.jcoronado.api.VulkanCullModeFlag.VK_CULL_MODE_BACK_BIT;
 import static com.io7m.jcoronado.api.VulkanQueueFamilyPropertyFlag.VK_QUEUE_GRAPHICS_BIT;
 
@@ -498,6 +507,77 @@ public final class HelloVulkan
           resources.add(device.createFramebuffer(framebuffer_info));
 
         framebuffers.add(framebuffer);
+      }
+
+      /*
+       * Create a command pool and buffers. If the graphics and presentation queues are separate,
+       * then separate command pools are required.
+       */
+
+      final VulkanCommandPoolCreateInfo graphics_pool_info =
+        VulkanCommandPoolCreateInfo.builder()
+          .setQueueFamilyIndex(graphics_queue.queueIndex())
+          .build();
+
+      final VulkanCommandPoolType graphics_command_pool =
+        resources.add(device.createCommandPool(graphics_pool_info));
+
+      final int command_buffer_count = swap_chain.images().size();
+      final VulkanCommandBufferCreateInfo graphics_command_buffer_info =
+        VulkanCommandBufferCreateInfo.builder()
+          .setCount(command_buffer_count)
+          .setLevel(VK_COMMAND_BUFFER_LEVEL_PRIMARY)
+          .setPool(graphics_command_pool)
+          .build();
+
+      final List<VulkanCommandBufferType> graphics_command_buffers =
+        device.createCommandBuffers(graphics_command_buffer_info);
+
+      final VulkanCommandPoolType presentation_command_pool;
+      final List<VulkanCommandBufferType> presentation_command_buffers;
+
+      if (graphics_queue.queueIndex() != presentation_queue.queueIndex()) {
+        final VulkanCommandPoolCreateInfo presentation_pool_info =
+          VulkanCommandPoolCreateInfo.builder()
+            .setQueueFamilyIndex(presentation_queue.queueIndex())
+            .build();
+
+        presentation_command_pool =
+          resources.add(device.createCommandPool(presentation_pool_info));
+
+        final VulkanCommandBufferCreateInfo presentation_command_buffer_info =
+          VulkanCommandBufferCreateInfo.builder()
+            .setCount(command_buffer_count)
+            .setLevel(VK_COMMAND_BUFFER_LEVEL_PRIMARY)
+            .setPool(presentation_command_pool)
+            .build();
+
+        presentation_command_buffers =
+          device.createCommandBuffers(presentation_command_buffer_info);
+      } else {
+        presentation_command_pool = graphics_command_pool;
+        presentation_command_buffers = graphics_command_buffers;
+      }
+
+      /*
+       * Start recording commands.
+       */
+
+      for (int index = 0; index < command_buffer_count; ++index) {
+        final VulkanCommandBufferBeginInfo info =
+          VulkanCommandBufferBeginInfo.builder()
+            .addFlags(VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT)
+            .build();
+
+        graphics_command_buffers
+          .get(index)
+          .beginCommandBuffer(info);
+
+        if (!Objects.equals(presentation_command_pool, graphics_command_pool)) {
+          presentation_command_buffers
+            .get(index)
+            .beginCommandBuffer(info);
+        }
       }
 
     } catch (final VulkanException e) {

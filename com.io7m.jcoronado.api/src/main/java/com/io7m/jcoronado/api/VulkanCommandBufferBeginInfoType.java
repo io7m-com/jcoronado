@@ -16,22 +16,25 @@
 
 package com.io7m.jcoronado.api;
 
+import com.io7m.immutables.styles.ImmutablesStyleType;
+import org.immutables.value.Value;
+
+import java.util.Set;
+
 /**
- * @see "VkCommandBuffer"
+ * Structure specifying parameters of a command.
+ *
+ * @see "VkCommandBufferBeginInfo"
  */
 
-public interface VulkanCommandBufferType extends VulkanHandleDispatchableType
+@ImmutablesStyleType
+@Value.Immutable
+public interface VulkanCommandBufferBeginInfoType
 {
   /**
-   * Begin a command buffer.
-   *
-   * @param info The begin info
-   *
-   * @throws VulkanException On errors
+   * @return Usage behaviour for the command buffer
    */
 
-  void beginCommandBuffer(
-    VulkanCommandBufferBeginInfo info)
-    throws VulkanException;
+  @Value.Parameter
+  Set<VulkanCommandBufferUsageFlag> flags();
 }
-

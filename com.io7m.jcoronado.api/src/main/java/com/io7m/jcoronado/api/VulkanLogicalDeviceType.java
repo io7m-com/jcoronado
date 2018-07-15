@@ -210,4 +210,32 @@ public interface VulkanLogicalDeviceType extends VulkanHandleDispatchableType
   VulkanFramebufferType createFramebuffer(
     VulkanFramebufferCreateInfo create_info)
     throws VulkanException;
+
+  /**
+   * Create a command pool.
+   *
+   * @param create_info The pool creation info
+   *
+   * @return A command pool
+   *
+   * @throws VulkanException On errors
+   */
+
+  VulkanCommandPoolType createCommandPool(
+    VulkanCommandPoolCreateInfo create_info)
+    throws VulkanException;
+
+  /**
+   * Create a command buffer.
+   *
+   * @param create_info The command buffer creation info
+   *
+   * @return A list of command buffers
+   *
+   * @throws VulkanException On errors
+   */
+
+  List<VulkanCommandBufferType> createCommandBuffers(
+    VulkanCommandBufferCreateInfo create_info)
+    throws VulkanException;
 }

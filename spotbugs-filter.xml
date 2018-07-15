@@ -15,6 +15,8 @@
       <Class name="com.io7m.jcoronado.api.VulkanAttachmentDescription"/>
       <Class name="com.io7m.jcoronado.api.VulkanAttachmentReference"/>
       <Class name="com.io7m.jcoronado.api.VulkanBlendConstants"/>
+      <Class name="com.io7m.jcoronado.api.VulkanCommandBufferCreateInfo"/>
+      <Class name="com.io7m.jcoronado.api.VulkanCommandPoolCreateInfo"/>
       <Class name="com.io7m.jcoronado.api.VulkanComponentMapping"/>
       <Class name="com.io7m.jcoronado.api.VulkanComputeWorkGroupCount"/>
       <Class name="com.io7m.jcoronado.api.VulkanComputeWorkGroupSize"/>

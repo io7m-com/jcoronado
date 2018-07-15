@@ -17,21 +17,33 @@
 package com.io7m.jcoronado.api;
 
 /**
- * @see "VkCommandBuffer"
+ * @see "VkCommandBufferLevel"
  */
 
-public interface VulkanCommandBufferType extends VulkanHandleDispatchableType
+public enum VulkanCommandBufferLevel implements VulkanEnumIntegerType
 {
   /**
-   * Begin a command buffer.
-   *
-   * @param info The begin info
-   *
-   * @throws VulkanException On errors
+   * Specifies a primary command buffer.
    */
 
-  void beginCommandBuffer(
-    VulkanCommandBufferBeginInfo info)
-    throws VulkanException;
-}
+  VK_COMMAND_BUFFER_LEVEL_PRIMARY(0),
 
+  /**
+   * Specifies a secondary command buffer.
+   */
+
+  VK_COMMAND_BUFFER_LEVEL_SECONDARY(1);
+
+  private final int value;
+
+  VulkanCommandBufferLevel(final int i)
+  {
+    this.value = i;
+  }
+
+  @Override
+  public int value()
+  {
+    return this.value;
+  }
+}
