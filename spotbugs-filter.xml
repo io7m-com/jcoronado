@@ -15,6 +15,10 @@
       <Class name="com.io7m.jcoronado.api.VulkanAttachmentDescription"/>
       <Class name="com.io7m.jcoronado.api.VulkanAttachmentReference"/>
       <Class name="com.io7m.jcoronado.api.VulkanBlendConstants"/>
+      <Class name="com.io7m.jcoronado.api.VulkanClearValueDepthStencil"/>
+      <Class name="com.io7m.jcoronado.api.VulkanClearValueColorFloatingPoint"/>
+      <Class name="com.io7m.jcoronado.api.VulkanClearValueColorIntegerSigned"/>
+      <Class name="com.io7m.jcoronado.api.VulkanClearValueColorIntegerUnsigned"/>
       <Class name="com.io7m.jcoronado.api.VulkanCommandBufferCreateInfo"/>
       <Class name="com.io7m.jcoronado.api.VulkanCommandPoolCreateInfo"/>
       <Class name="com.io7m.jcoronado.api.VulkanComponentMapping"/>

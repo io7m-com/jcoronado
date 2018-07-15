@@ -80,6 +80,14 @@
 
   <build>
     <plugins>
+      <!-- Add arguments for jmockit -->
+      <plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <argLine>-Djdk.attach.allowAttachSelf</argLine>
+        </configuration>
+      </plugin>
+
       <!-- Determine test coverage -->
       <plugin>
         <groupId>org.jacoco</groupId>

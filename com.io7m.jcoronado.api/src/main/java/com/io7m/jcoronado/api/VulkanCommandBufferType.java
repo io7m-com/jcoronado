@@ -33,5 +33,69 @@ public interface VulkanCommandBufferType extends VulkanHandleDispatchableType
   void beginCommandBuffer(
     VulkanCommandBufferBeginInfo info)
     throws VulkanException;
+
+  /**
+   * Specify how commands in the first subpass of a render pass are provided.
+   *
+   * @param info     The begin info
+   * @param contents Specifies how the commands in the first subpass will be provided.
+   *
+   * @throws VulkanException On errors
+   */
+
+  void beginRenderPass(
+    VulkanRenderPassBeginInfo info,
+    VulkanSubpassContents contents)
+    throws VulkanException;
+
+  /**
+   * Bind a rendering pipeline.
+   *
+   * @param bind_point The bind point
+   * @param pipeline   The pipeline
+   *
+   * @throws VulkanException On errors
+   */
+
+  void bindPipeline(
+    VulkanPipelineBindPoint bind_point,
+    VulkanPipelineType pipeline)
+    throws VulkanException;
+
+  /**
+   * Draw primitives.
+   *
+   * @param vertex_count   The number of vertices to draw.
+   * @param instance_count The number of instances to draw.
+   * @param first_vertex   The index of the first vertex to draw.
+   * @param first_instance The instance ID of the first instance to draw.
+   *
+   * @throws VulkanException On errors
+   */
+
+  void draw(
+    int vertex_count,
+    int instance_count,
+    int first_vertex,
+    int first_instance)
+    throws VulkanException;
+
+  /**
+   * End a render pass.
+   *
+   * @throws VulkanException On errors
+   */
+
+  void endRenderPass()
+    throws VulkanException;
+
+  /**
+   * End a command buffer.
+   *
+   * @throws VulkanException On errors
+   */
+
+  void endCommandBuffer()
+    throws VulkanException;
 }
 

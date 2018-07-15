@@ -21,9 +21,9 @@ import com.io7m.jcoronado.api.VulkanAttachmentDescription;
 import com.io7m.jcoronado.api.VulkanAttachmentLoadOp;
 import com.io7m.jcoronado.api.VulkanAttachmentReference;
 import com.io7m.jcoronado.api.VulkanAttachmentStoreOp;
+import com.io7m.jcoronado.api.VulkanClearValueColorFloatingPoint;
 import com.io7m.jcoronado.api.VulkanCommandBufferBeginInfo;
 import com.io7m.jcoronado.api.VulkanCommandBufferCreateInfo;
-import com.io7m.jcoronado.api.VulkanCommandBufferLevel;
 import com.io7m.jcoronado.api.VulkanCommandBufferType;
 import com.io7m.jcoronado.api.VulkanCommandPoolCreateInfo;
 import com.io7m.jcoronado.api.VulkanCommandPoolType;
@@ -57,7 +57,6 @@ import com.io7m.jcoronado.api.VulkanLogicalDeviceQueueCreateInfo;
 import com.io7m.jcoronado.api.VulkanLogicalDeviceType;
 import com.io7m.jcoronado.api.VulkanOffset2D;
 import com.io7m.jcoronado.api.VulkanPhysicalDeviceType;
-import com.io7m.jcoronado.api.VulkanPipelineBindPoint;
 import com.io7m.jcoronado.api.VulkanPipelineColorBlendAttachmentState;
 import com.io7m.jcoronado.api.VulkanPipelineColorBlendStateCreateInfo;
 import com.io7m.jcoronado.api.VulkanPipelineInputAssemblyStateCreateInfo;
@@ -74,6 +73,7 @@ import com.io7m.jcoronado.api.VulkanPrimitiveTopology;
 import com.io7m.jcoronado.api.VulkanQueueFamilyProperties;
 import com.io7m.jcoronado.api.VulkanQueueType;
 import com.io7m.jcoronado.api.VulkanRectangle2D;
+import com.io7m.jcoronado.api.VulkanRenderPassBeginInfo;
 import com.io7m.jcoronado.api.VulkanRenderPassCreateInfo;
 import com.io7m.jcoronado.api.VulkanRenderPassType;
 import com.io7m.jcoronado.api.VulkanResourceException;
@@ -120,10 +120,12 @@ import java.util.Set;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-import static com.io7m.jcoronado.api.VulkanCommandBufferLevel.*;
+import static com.io7m.jcoronado.api.VulkanCommandBufferLevel.VK_COMMAND_BUFFER_LEVEL_PRIMARY;
 import static com.io7m.jcoronado.api.VulkanCommandBufferUsageFlag.VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT;
 import static com.io7m.jcoronado.api.VulkanCullModeFlag.VK_CULL_MODE_BACK_BIT;
+import static com.io7m.jcoronado.api.VulkanPipelineBindPoint.VK_PIPELINE_BIND_POINT_GRAPHICS;
 import static com.io7m.jcoronado.api.VulkanQueueFamilyPropertyFlag.VK_QUEUE_GRAPHICS_BIT;
+import static com.io7m.jcoronado.api.VulkanSubpassContents.VK_SUBPASS_CONTENTS_INLINE;
 
 public final class HelloVulkan
 {
@@ -376,7 +378,7 @@ public final class HelloVulkan
 
       final VulkanSubpassDescription subpass_description =
         VulkanSubpassDescription.builder()
-          .setPipelineBindPoint(VulkanPipelineBindPoint.VK_PIPELINE_BIND_POINT_GRAPHICS)
+          .setPipelineBindPoint(VK_PIPELINE_BIND_POINT_GRAPHICS)
           .addColorAttachments(color_attachment_reference)
           .build();
 
@@ -564,19 +566,37 @@ public final class HelloVulkan
        */
 
       for (int index = 0; index < command_buffer_count; ++index) {
-        final VulkanCommandBufferBeginInfo info =
+        final VulkanFramebufferType framebuffer = framebuffers.get(index);
+
+        final VulkanCommandBufferType graphics_command_buffer =
+          graphics_command_buffers.get(index);
+
+        final VulkanCommandBufferBeginInfo begin_info =
           VulkanCommandBufferBeginInfo.builder()
             .addFlags(VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT)
             .build();
 
-        graphics_command_buffers
-          .get(index)
-          .beginCommandBuffer(info);
+        final VulkanRenderPassBeginInfo render_info =
+          VulkanRenderPassBeginInfo.builder()
+            .setFramebuffer(framebuffer)
+            .setRenderArea(VulkanRectangle2D.of(VulkanOffset2D.of(0, 0), surface_extent))
+            .setRenderPass(render_pass)
+            .addClearValues(VulkanClearValueColorFloatingPoint.of(0.0f, 0.0f, 0.0f, 1.0f))
+            .build();
+
+        graphics_command_buffer.beginCommandBuffer(begin_info);
+        graphics_command_buffer.beginRenderPass(render_info, VK_SUBPASS_CONTENTS_INLINE);
+        graphics_command_buffer.bindPipeline(VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline);
+        graphics_command_buffer.draw(3, 1, 0, 0);
+        graphics_command_buffer.endRenderPass();
+        graphics_command_buffer.endCommandBuffer();
 
         if (!Objects.equals(presentation_command_pool, graphics_command_pool)) {
-          presentation_command_buffers
-            .get(index)
-            .beginCommandBuffer(info);
+          final VulkanCommandBufferType presentation_command_buffer =
+            presentation_command_buffers.get(index);
+
+          presentation_command_buffer.beginCommandBuffer(begin_info);
+          presentation_command_buffer.endCommandBuffer();
         }
       }
 

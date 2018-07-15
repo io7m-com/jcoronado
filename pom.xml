@@ -9,7 +9,7 @@
   <parent>
     <groupId>com.io7m.primogenitor</groupId>
     <artifactId>com.io7m.primogenitor</artifactId>
-    <version>3.0.0-beta0006</version>
+    <version>3.0.0-beta0008</version>
   </parent>
 
   <groupId>com.io7m.jcoronado</groupId>
@@ -98,6 +98,11 @@
         <groupId>com.io7m.jmulticlose</groupId>
         <artifactId>com.io7m.jmulticlose.core</artifactId>
         <version>0.0.1</version>
+      </dependency>
+      <dependency>
+        <groupId>com.io7m.junreachable</groupId>
+        <artifactId>com.io7m.junreachable.core</artifactId>
+        <version>2.1.1</version>
       </dependency>
       <dependency>
         <groupId>com.io7m.immutables.style</groupId>

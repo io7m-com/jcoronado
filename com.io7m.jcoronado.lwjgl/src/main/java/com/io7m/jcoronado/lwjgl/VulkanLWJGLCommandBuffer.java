@@ -20,10 +20,15 @@ import com.io7m.jcoronado.api.VulkanChecks;
 import com.io7m.jcoronado.api.VulkanCommandBufferBeginInfo;
 import com.io7m.jcoronado.api.VulkanCommandBufferType;
 import com.io7m.jcoronado.api.VulkanException;
+import com.io7m.jcoronado.api.VulkanPipelineBindPoint;
+import com.io7m.jcoronado.api.VulkanPipelineType;
+import com.io7m.jcoronado.api.VulkanRenderPassBeginInfo;
+import com.io7m.jcoronado.api.VulkanSubpassContents;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.vulkan.VK10;
 import org.lwjgl.vulkan.VkCommandBuffer;
 import org.lwjgl.vulkan.VkCommandBufferBeginInfo;
+import org.lwjgl.vulkan.VkRenderPassBeginInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -108,5 +113,67 @@ public final class VulkanLWJGLCommandBuffer
         VK10.vkBeginCommandBuffer(this.handle, packed),
         "vkBeginCommandBuffer");
     }
+  }
+
+  @Override
+  public void beginRenderPass(
+    final VulkanRenderPassBeginInfo info,
+    final VulkanSubpassContents contents)
+    throws VulkanException
+  {
+    Objects.requireNonNull(info, "info");
+    Objects.requireNonNull(contents, "contents");
+
+    final VulkanLWJGLRenderPass render_pass =
+      VulkanLWJGLClassChecks.check(info.renderPass(), VulkanLWJGLRenderPass.class);
+    final VulkanLWJGLFramebuffer framebuffer =
+      VulkanLWJGLClassChecks.check(info.framebuffer(), VulkanLWJGLFramebuffer.class);
+
+    try (MemoryStack stack = this.stack_initial.push()) {
+      final VkRenderPassBeginInfo packed =
+        VulkanLWJGLRenderPassBeginInfos.pack(stack, info, render_pass, framebuffer);
+
+      VK10.vkCmdBeginRenderPass(this.handle, packed, contents.value());
+    }
+  }
+
+  @Override
+  public void bindPipeline(
+    final VulkanPipelineBindPoint bind_point,
+    final VulkanPipelineType pipeline)
+    throws VulkanException
+  {
+    Objects.requireNonNull(bind_point, "bind_point");
+    Objects.requireNonNull(pipeline, "pipeline");
+
+    final VulkanLWJGLPipeline pipe =
+      VulkanLWJGLClassChecks.check(pipeline, VulkanLWJGLPipeline.class);
+
+    VK10.vkCmdBindPipeline(this.handle, bind_point.value(), pipe.handle());
+  }
+
+  @Override
+  public void draw(
+    final int vertex_count,
+    final int instance_count,
+    final int first_vertex,
+    final int first_instance)
+  {
+    VK10.vkCmdDraw(this.handle, vertex_count, instance_count, first_vertex, first_instance);
+  }
+
+  @Override
+  public void endRenderPass()
+  {
+    VK10.vkCmdEndRenderPass(this.handle);
+  }
+
+  @Override
+  public void endCommandBuffer()
+    throws VulkanException
+  {
+    VulkanChecks.checkReturnCode(
+      VK10.vkEndCommandBuffer(this.handle),
+      "vkEndCommandBuffer");
   }
 }
