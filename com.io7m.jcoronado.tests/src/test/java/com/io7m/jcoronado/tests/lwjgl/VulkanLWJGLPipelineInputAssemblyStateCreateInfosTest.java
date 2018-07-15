@@ -48,13 +48,6 @@ public final class VulkanLWJGLPipelineInputAssemblyStateCreateInfosTest
     this.stack = this.stack.push();
   }
 
-  @AfterEach
-  public void testTearDown()
-  {
-    LOG.debug("testTearDown");
-    this.stack = this.stack.pop();
-  }
-
   @Test
   public void testPipelineInputAssemblyStateCreateInfo()
   {
@@ -74,9 +67,11 @@ public final class VulkanLWJGLPipelineInputAssemblyStateCreateInfosTest
       VulkanLWJGLPipelineInputAssemblyStateCreateInfos.packOptional(this.stack, Optional.empty()));
   }
 
-  private static void checkPacked(
+  static void checkPacked(
     final VkPipelineInputAssemblyStateCreateInfo packed)
   {
+    Assertions.assertNotNull(packed, "VkPipelineInputAssemblyStateCreateInfo");
+
     Assertions.assertAll(
       () -> {
         Assertions.assertEquals(0L, packed.pNext());

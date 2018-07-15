@@ -48,13 +48,6 @@ public final class VulkanLWJGLPipelineRasterizationStateCreateInfosTest
     this.stack = this.stack.push();
   }
 
-  @AfterEach
-  public void testTearDown()
-  {
-    LOG.debug("testTearDown");
-    this.stack = this.stack.pop();
-  }
-
   @Test
   public void testPipelineRasterizationStateCreateInfo()
   {
@@ -80,9 +73,11 @@ public final class VulkanLWJGLPipelineRasterizationStateCreateInfosTest
       VulkanLWJGLPipelineRasterizationStateCreateInfos.packOptional(this.stack, Optional.empty()));
   }
 
-  private static void checkPacked(
+  static void checkPacked(
     final VkPipelineRasterizationStateCreateInfo packed)
   {
+    Assertions.assertNotNull(packed, "VkPipelineRasterizationStateCreateInfo");
+
     Assertions.assertAll(
       () -> {
         Assertions.assertEquals(0L, packed.pNext());

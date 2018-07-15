@@ -49,13 +49,6 @@ public final class VulkanLWJGLPipelineShaderStageCreateInfosTest
     this.stack = this.stack.push();
   }
 
-  @AfterEach
-  public void testTearDown()
-  {
-    LOG.debug("testTearDown");
-    this.stack = this.stack.pop();
-  }
-
   @Test
   public void testPipelineShaderStageCreateInfo(
     final @Mocked VulkanLWJGLShaderModule module)
@@ -131,6 +124,15 @@ public final class VulkanLWJGLPipelineShaderStageCreateInfosTest
 
     final VkPipelineShaderStageCreateInfo.Buffer packed =
       VulkanLWJGLPipelineShaderStageCreateInfos.packAll(this.stack, List.of(info_0, info_1));
+
+    checkPacked(module, packed);
+  }
+
+  static void checkPacked(
+    final VulkanLWJGLShaderModule module,
+    final VkPipelineShaderStageCreateInfo.Buffer packed)
+  {
+    Assertions.assertNotNull(packed, "VkPipelineShaderStageCreateInfo");
 
     Assertions.assertAll(
       () -> {

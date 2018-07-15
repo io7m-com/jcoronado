@@ -55,13 +55,6 @@ public final class VulkanLWJGLFramebufferCreateInfosTest
     this.stack = this.stack.push();
   }
 
-  @AfterEach
-  public void testTearDown()
-  {
-    LOG.debug("testTearDown");
-    this.stack = this.stack.pop();
-  }
-
   @Test
   public void testFramebufferCreateInfo(
     final @Mocked VulkanLWJGLRenderPass render_pass,

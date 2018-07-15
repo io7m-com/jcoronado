@@ -50,13 +50,6 @@ public final class VulkanLWJGLPipelineViewportStateCreateInfosTest
     this.stack = this.stack.push();
   }
 
-  @AfterEach
-  public void testTearDown()
-  {
-    LOG.debug("testTearDown");
-    this.stack = this.stack.pop();
-  }
-
   @Test
   public void testPipelineViewportStateCreateInfo()
   {
@@ -89,9 +82,11 @@ public final class VulkanLWJGLPipelineViewportStateCreateInfosTest
       this.stack, Optional.empty()));
   }
 
-  private static void checkPacked(
+  static void checkPacked(
     final VkPipelineViewportStateCreateInfo packed)
   {
+    Assertions.assertNotNull(packed, "VkPipelineViewportStateCreateInfo");
+
     Assertions.assertAll(
       () -> {
         Assertions.assertEquals(0L, packed.pNext());

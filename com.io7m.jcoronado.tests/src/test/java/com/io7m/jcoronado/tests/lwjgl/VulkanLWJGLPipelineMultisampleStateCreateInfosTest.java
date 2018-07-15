@@ -45,13 +45,6 @@ public final class VulkanLWJGLPipelineMultisampleStateCreateInfosTest
     this.stack = this.stack.push();
   }
 
-  @AfterEach
-  public void testTearDown()
-  {
-    LOG.debug("testTearDown");
-    this.stack = this.stack.pop();
-  }
-
   @Test
   public void testPipelineMultisampleStateCreateInfo()
   {
@@ -75,9 +68,11 @@ public final class VulkanLWJGLPipelineMultisampleStateCreateInfosTest
       VulkanLWJGLPipelineMultisampleStateCreateInfos.packOptional(this.stack, Optional.empty()));
   }
 
-  private static void checkPacked(
+  static void checkPacked(
     final VkPipelineMultisampleStateCreateInfo packed)
   {
+    Assertions.assertNotNull(packed, "VkPipelineMultisampleStateCreateInfo");
+
     Assertions.assertAll(
       () -> {
         Assertions.assertEquals(0L, packed.pNext());

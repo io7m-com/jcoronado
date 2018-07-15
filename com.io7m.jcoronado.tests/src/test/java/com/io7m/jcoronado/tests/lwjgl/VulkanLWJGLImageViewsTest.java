@@ -54,13 +54,6 @@ public final class VulkanLWJGLImageViewsTest
     this.stack = this.stack.push();
   }
 
-  @AfterEach
-  public void testTearDown()
-  {
-    LOG.debug("testTearDown");
-    this.stack = this.stack.pop();
-  }
-
   @Test
   public void testImageViewCreateInfo(
     final @Mocked VulkanLWJGLImage image)

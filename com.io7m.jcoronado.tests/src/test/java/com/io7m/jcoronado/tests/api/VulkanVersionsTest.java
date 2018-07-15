@@ -21,6 +21,8 @@ import com.io7m.jcoronado.api.VulkanVersions;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.util.HashSet;
+
 public final class VulkanVersionsTest
 {
   @Test
@@ -39,5 +41,54 @@ public final class VulkanVersionsTest
         }
       }
     }
+  }
+
+  @Test
+  public void testCompare0()
+  {
+    final VulkanVersion v0 = VulkanVersion.of(1, 0, 0);
+    final VulkanVersion v1 = VulkanVersion.of(2, 0, 0);
+    Assertions.assertTrue(v0.compareTo(v1) < 0);
+    Assertions.assertTrue(v1.compareTo(v0) > 0);
+    Assertions.assertTrue(v0.compareTo(v0) == 0);
+  }
+
+  @Test
+  public void testCompare1()
+  {
+    final VulkanVersion v0 = VulkanVersion.of(1, 0, 0);
+    final VulkanVersion v1 = VulkanVersion.of(1, 1, 0);
+    Assertions.assertTrue(v0.compareTo(v1) < 0);
+    Assertions.assertTrue(v1.compareTo(v0) > 0);
+  }
+
+  @Test
+  public void testCompare2()
+  {
+    final VulkanVersion v0 = VulkanVersion.of(1, 0, 0);
+    final VulkanVersion v1 = VulkanVersion.of(1, 0, 1);
+    Assertions.assertTrue(v0.compareTo(v1) < 0);
+    Assertions.assertTrue(v1.compareTo(v0) > 0);
+  }
+
+  @Test
+  public void testToHumanString()
+  {
+    final VulkanVersion v0 = VulkanVersion.of(1, 0, 0);
+    final VulkanVersion v1 = VulkanVersion.of(1, 1, 0);
+    final VulkanVersion v2 = VulkanVersion.of(1, 1, 1);
+    final VulkanVersion v3 = VulkanVersion.of(1, 0, 0);
+    final VulkanVersion v4 = VulkanVersion.of(1, 1, 0);
+    final VulkanVersion v5 = VulkanVersion.of(1, 1, 1);
+
+    final HashSet<String> ss = new HashSet<>();
+    ss.add(v0.toHumanString());
+    ss.add(v1.toHumanString());
+    ss.add(v2.toHumanString());
+    ss.add(v3.toHumanString());
+    ss.add(v4.toHumanString());
+    ss.add(v5.toHumanString());
+
+    Assertions.assertEquals(3, ss.size());
   }
 }

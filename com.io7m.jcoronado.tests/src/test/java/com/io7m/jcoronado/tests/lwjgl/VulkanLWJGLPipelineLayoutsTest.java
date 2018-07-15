@@ -50,13 +50,6 @@ public final class VulkanLWJGLPipelineLayoutsTest
     this.stack = this.stack.push();
   }
 
-  @AfterEach
-  public void testTearDown()
-  {
-    LOG.debug("testTearDown");
-    this.stack = this.stack.pop();
-  }
-
   @Test
   public void testPipelineLayoutCreateInfo(
     final @Mocked VulkanLWJGLDescriptorSetLayout layout_0,

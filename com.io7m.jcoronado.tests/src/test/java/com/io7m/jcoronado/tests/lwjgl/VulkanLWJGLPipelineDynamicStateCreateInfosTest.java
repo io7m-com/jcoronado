@@ -49,13 +49,6 @@ public final class VulkanLWJGLPipelineDynamicStateCreateInfosTest
     this.stack = this.stack.push();
   }
 
-  @AfterEach
-  public void testTearDown()
-  {
-    LOG.debug("testTearDown");
-    this.stack = this.stack.pop();
-  }
-
   @Test
   public void testPipelineDynamicStateCreateInfo()
   {
@@ -74,9 +67,11 @@ public final class VulkanLWJGLPipelineDynamicStateCreateInfosTest
       VulkanLWJGLPipelineDynamicStateCreateInfos.packOptional(this.stack, Optional.empty()));
   }
 
-  private static void checkPacked(
+  static void checkPacked(
     final VkPipelineDynamicStateCreateInfo packed)
   {
+    Assertions.assertNotNull(packed, "VkPipelineDynamicStateCreateInfo");
+
     Assertions.assertAll(
       () -> {
         Assertions.assertEquals(0L, packed.pNext());

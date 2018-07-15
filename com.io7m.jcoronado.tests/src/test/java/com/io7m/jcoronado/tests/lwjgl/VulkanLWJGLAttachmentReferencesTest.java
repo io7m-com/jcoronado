@@ -43,13 +43,6 @@ public final class VulkanLWJGLAttachmentReferencesTest
     this.stack = this.stack.push();
   }
 
-  @AfterEach
-  public void testTearDown()
-  {
-    LOG.debug("testTearDown");
-    this.stack = this.stack.pop();
-  }
-
   @Test
   public void testPackReferences()
   {

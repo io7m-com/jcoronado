@@ -56,13 +56,6 @@ public final class VulkanLWJGLPipelineTessellationStateCreateInfosTest
     this.stack = this.stack.push();
   }
 
-  @AfterEach
-  public void testTearDown()
-  {
-    LOG.debug("testTearDown");
-    this.stack = this.stack.pop();
-  }
-
   @Test
   public void testPipelineVertexInputStateCreateInfo()
   {
@@ -81,9 +74,11 @@ public final class VulkanLWJGLPipelineTessellationStateCreateInfosTest
       VulkanLWJGLPipelineTessellationStateCreateInfos.packOptional(this.stack, Optional.empty()));
   }
 
-  private static void checkPacked(
+  static void checkPacked(
     final VkPipelineTessellationStateCreateInfo packed)
   {
+    Assertions.assertNotNull(packed, "VkPipelineTessellationStateCreateInfo");
+
     Assertions.assertAll(
       () -> {
         Assertions.assertEquals(0L, packed.pNext());

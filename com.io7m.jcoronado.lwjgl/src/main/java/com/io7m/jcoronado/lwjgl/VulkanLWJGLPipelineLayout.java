@@ -24,7 +24,12 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Objects;
 
-final class VulkanLWJGLPipelineLayout extends VulkanLWJGLHandle implements VulkanPipelineLayoutType
+/**
+ * LWJGL {@link VulkanPipelineLayoutType}.
+ */
+
+public final class VulkanLWJGLPipelineLayout
+  extends VulkanLWJGLHandle implements VulkanPipelineLayoutType
 {
   private static final Logger LOG = LoggerFactory.getLogger(VulkanLWJGLPipelineLayout.class);
 
@@ -85,7 +90,11 @@ final class VulkanLWJGLPipelineLayout extends VulkanLWJGLHandle implements Vulka
     VK10.vkDestroyPipelineLayout(this.device, this.handle, null);
   }
 
-  long handle()
+  /**
+   * @return The raw handle
+   */
+
+  public long handle()
   {
     return this.handle;
   }

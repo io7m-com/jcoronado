@@ -56,13 +56,6 @@ public final class VulkanLWJGLAttachmentDescriptionsTest
     this.stack = this.stack.push();
   }
 
-  @AfterEach
-  public void testTearDown()
-  {
-    LOG.debug("testTearDown");
-    this.stack = this.stack.pop();
-  }
-
   @Test
   public void testPackAttachments()
   {
