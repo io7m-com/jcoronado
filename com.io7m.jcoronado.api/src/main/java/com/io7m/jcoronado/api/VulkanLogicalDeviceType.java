@@ -238,4 +238,18 @@ public interface VulkanLogicalDeviceType extends VulkanHandleDispatchableType
   List<VulkanCommandBufferType> createCommandBuffers(
     VulkanCommandBufferCreateInfo create_info)
     throws VulkanException;
+
+  /**
+   * Create a semaphore.
+   *
+   * @param create_info The semaphore creation info
+   *
+   * @return A semaphore
+   *
+   * @throws VulkanException On errors
+   */
+
+  VulkanSemaphoreType createSemaphore(
+    VulkanSemaphoreCreateInfo create_info)
+    throws VulkanException;
 }

@@ -41,6 +41,8 @@ import com.io7m.jcoronado.api.VulkanQueueFamilyProperties;
 import com.io7m.jcoronado.api.VulkanQueueType;
 import com.io7m.jcoronado.api.VulkanRenderPassCreateInfo;
 import com.io7m.jcoronado.api.VulkanRenderPassType;
+import com.io7m.jcoronado.api.VulkanSemaphoreCreateInfo;
+import com.io7m.jcoronado.api.VulkanSemaphoreType;
 import com.io7m.jcoronado.api.VulkanShaderModuleCreateInfo;
 import com.io7m.jcoronado.api.VulkanShaderModuleType;
 import com.io7m.jcoronado.api.VulkanUncheckedException;
@@ -57,6 +59,7 @@ import org.lwjgl.vulkan.VkImageViewCreateInfo;
 import org.lwjgl.vulkan.VkPipelineLayoutCreateInfo;
 import org.lwjgl.vulkan.VkQueue;
 import org.lwjgl.vulkan.VkRenderPassCreateInfo;
+import org.lwjgl.vulkan.VkSemaphoreCreateInfo;
 import org.lwjgl.vulkan.VkShaderModuleCreateInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -448,6 +451,33 @@ final class VulkanLWJGLLogicalDevice
       }
 
       return results;
+    }
+  }
+
+  @Override
+  public VulkanSemaphoreType createSemaphore(
+    final VulkanSemaphoreCreateInfo create_info)
+    throws VulkanException
+  {
+    Objects.requireNonNull(create_info, "create_info");
+
+    this.checkNotClosed();
+
+    try (MemoryStack stack = this.stack_initial.push()) {
+      final VkSemaphoreCreateInfo packed =
+        VulkanLWJGLSemaphoreCreateInfos.pack(stack, create_info);
+
+      final long[] semaphores = new long[1];
+
+      VulkanChecks.checkReturnCode(
+        VK10.vkCreateSemaphore(this.device, packed, null, semaphores),
+        "vkCreateSemaphore");
+
+      final long handle = semaphores[0];
+      if (LOG.isTraceEnabled()) {
+        LOG.trace("created semaphore: 0x{}", Long.toUnsignedString(handle, 16));
+      }
+      return new VulkanLWJGLSemaphore(USER_OWNED, this.device, handle);
     }
   }
 

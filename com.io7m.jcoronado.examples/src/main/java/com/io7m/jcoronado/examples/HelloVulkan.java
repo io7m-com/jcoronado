@@ -78,6 +78,8 @@ import com.io7m.jcoronado.api.VulkanRenderPassCreateInfo;
 import com.io7m.jcoronado.api.VulkanRenderPassType;
 import com.io7m.jcoronado.api.VulkanResourceException;
 import com.io7m.jcoronado.api.VulkanSampleCountFlag;
+import com.io7m.jcoronado.api.VulkanSemaphoreCreateInfo;
+import com.io7m.jcoronado.api.VulkanSemaphoreType;
 import com.io7m.jcoronado.api.VulkanShaderModuleCreateInfo;
 import com.io7m.jcoronado.api.VulkanShaderModuleType;
 import com.io7m.jcoronado.api.VulkanShaderStageFlag;
@@ -560,6 +562,20 @@ public final class HelloVulkan
         presentation_command_pool = graphics_command_pool;
         presentation_command_buffers = graphics_command_buffers;
       }
+
+      /*
+       * Create a pair of semaphores for synchronizing command execution.
+       */
+
+      final VulkanSemaphoreType render_finished =
+        resources.add(device.createSemaphore(
+          VulkanSemaphoreCreateInfo.builder()
+            .build()));
+
+      final VulkanSemaphoreType image_available =
+        resources.add(device.createSemaphore(
+          VulkanSemaphoreCreateInfo.builder()
+            .build()));
 
       /*
        * Start recording commands.
