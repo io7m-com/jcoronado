@@ -26,11 +26,14 @@ import java.util.Objects;
 
 import static com.io7m.jcoronado.lwjgl.VulkanLWJGLHandle.Ownership.VULKAN_OWNED;
 
-final class VulkanLWJGLQueue
+/**
+ * LWJGL {@link VkQueue}
+ */
+
+public final class VulkanLWJGLQueue
   extends VulkanLWJGLHandle implements VulkanQueueType
 {
-  private static final Logger LOG =
-    LoggerFactory.getLogger(VulkanLWJGLQueue.class);
+  private static final Logger LOG = LoggerFactory.getLogger(VulkanLWJGLQueue.class);
 
   private final VulkanLWJGLLogicalDevice device;
   private final VkQueue queue;
@@ -53,6 +56,28 @@ final class VulkanLWJGLQueue
       Objects.requireNonNull(in_properties, "properties");
     this.queue_index =
       in_queue_index;
+  }
+
+  @Override
+  public boolean equals(final Object o)
+  {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || !Objects.equals(this.getClass(), o.getClass())) {
+      return false;
+    }
+    final VulkanLWJGLQueue that = (VulkanLWJGLQueue) o;
+    return this.queue_index == that.queue_index
+      && Objects.equals(this.queue, that.queue)
+      && Objects.equals(this.properties, that.properties);
+  }
+
+  @Override
+  public int hashCode()
+  {
+
+    return Objects.hash(this.queue, this.properties, Integer.valueOf(this.queue_index));
   }
 
   @Override

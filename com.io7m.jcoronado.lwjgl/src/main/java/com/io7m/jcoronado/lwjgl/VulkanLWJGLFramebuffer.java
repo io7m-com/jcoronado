@@ -24,7 +24,11 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Objects;
 
-final class VulkanLWJGLFramebuffer extends VulkanLWJGLHandle implements VulkanFramebufferType
+/**
+ * LWJGL {@link VulkanFramebufferType}.
+ */
+
+public final class VulkanLWJGLFramebuffer extends VulkanLWJGLHandle implements VulkanFramebufferType
 {
   private static final Logger LOG = LoggerFactory.getLogger(VulkanLWJGLFramebuffer.class);
 

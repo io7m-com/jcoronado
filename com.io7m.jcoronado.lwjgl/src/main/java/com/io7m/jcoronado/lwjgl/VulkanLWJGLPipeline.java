@@ -24,7 +24,11 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Objects;
 
-final class VulkanLWJGLPipeline extends VulkanLWJGLHandle implements VulkanPipelineType
+/**
+ * A pipeline.
+ */
+
+public final class VulkanLWJGLPipeline extends VulkanLWJGLHandle implements VulkanPipelineType
 {
   private static final Logger LOG = LoggerFactory.getLogger(VulkanLWJGLPipeline.class);
 

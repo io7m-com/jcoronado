@@ -42,6 +42,8 @@ import com.io7m.jcoronado.api.VulkanPhysicalDeviceProperties;
 import com.io7m.jcoronado.api.VulkanPipelineColorBlendAttachmentState;
 import com.io7m.jcoronado.api.VulkanPipelineColorBlendStateCreateInfo;
 import com.io7m.jcoronado.api.VulkanPipelineDepthStencilStateCreateInfo;
+import com.io7m.jcoronado.api.VulkanSemaphoreCreateInfo;
+import com.io7m.jcoronado.api.VulkanSubmitInfo;
 import nl.jqno.equalsverifier.EqualsVerifier;
 import org.junit.jupiter.api.Test;
 
@@ -310,6 +312,27 @@ public final class VulkanEqualsTest
         "flags",
         "front",
         "back")
+      .verify();
+  }
+
+  @Test
+  public void testSemaphoreCreateInfo()
+  {
+    EqualsVerifier.forClass(VulkanSemaphoreCreateInfo.class)
+      .withNonnullFields(
+        "flags")
+      .verify();
+  }
+
+  @Test
+  public void testSubmitInfo()
+  {
+    EqualsVerifier.forClass(VulkanSubmitInfo.class)
+      .withNonnullFields(
+        "waitSemaphores",
+        "waitStageMasks",
+        "commandBuffers",
+        "signalSemaphores")
       .verify();
   }
 }

@@ -55,7 +55,11 @@ import java.util.Optional;
 
 import static com.io7m.jcoronado.api.VulkanChecks.checkReturnCode;
 
-final class VulkanLWJGLPhysicalDevice
+/**
+ * LWJGL {@link VkPhysicalDevice}
+ */
+
+public final class VulkanLWJGLPhysicalDevice
   extends VulkanLWJGLHandle implements VulkanPhysicalDeviceType
 {
   private static final Logger LOG =
@@ -69,6 +73,25 @@ final class VulkanLWJGLPhysicalDevice
   private final VulkanPhysicalDeviceMemoryProperties memory;
   private final List<VulkanQueueFamilyProperties> queue_families;
   private final MemoryStack stack_initial;
+
+  @Override
+  public boolean equals(final Object o)
+  {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || !Objects.equals(this.getClass(), o.getClass())) {
+      return false;
+    }
+    final VulkanLWJGLPhysicalDevice that = (VulkanLWJGLPhysicalDevice) o;
+    return Objects.equals(this.device, that.device);
+  }
+
+  @Override
+  public int hashCode()
+  {
+    return Objects.hash(this.device);
+  }
 
   VulkanLWJGLPhysicalDevice(
     final VulkanLWJGLInstance in_instance,

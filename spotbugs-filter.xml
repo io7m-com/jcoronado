@@ -65,6 +65,7 @@
       <Class name="com.io7m.jcoronado.api.VulkanSpecializationMap"/>
       <Class name="com.io7m.jcoronado.api.VulkanSpecializationMapEntry"/>
       <Class name="com.io7m.jcoronado.api.VulkanStencilOpState"/>
+      <Class name="com.io7m.jcoronado.api.VulkanSubmitInfo"/>
       <Class name="com.io7m.jcoronado.api.VulkanSubpassDependency"/>
       <Class name="com.io7m.jcoronado.api.VulkanSubpassDescription"/>
       <Class name="com.io7m.jcoronado.api.VulkanVersion"/>

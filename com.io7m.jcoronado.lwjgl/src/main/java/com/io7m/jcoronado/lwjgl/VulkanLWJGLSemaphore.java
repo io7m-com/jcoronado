@@ -24,7 +24,11 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Objects;
 
-final class VulkanLWJGLSemaphore extends VulkanLWJGLHandle implements VulkanSemaphoreType
+/**
+ * A semaphore.
+ */
+
+public final class VulkanLWJGLSemaphore extends VulkanLWJGLHandle implements VulkanSemaphoreType
 {
   private static final Logger LOG = LoggerFactory.getLogger(VulkanLWJGLSemaphore.class);
 

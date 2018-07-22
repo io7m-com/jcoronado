@@ -45,6 +45,26 @@ public final class VulkanLWJGLImageView extends VulkanLWJGLHandle implements Vul
   }
 
   @Override
+  public boolean equals(final Object o)
+  {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || !Objects.equals(this.getClass(), o.getClass())) {
+      return false;
+    }
+    final VulkanLWJGLImageView that = (VulkanLWJGLImageView) o;
+    return this.handle == that.handle;
+  }
+
+  @Override
+  public int hashCode()
+  {
+
+    return Objects.hash(this.handle);
+  }
+
+  @Override
   public String toString()
   {
     return new StringBuilder(32)

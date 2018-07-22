@@ -74,7 +74,11 @@ import java.util.stream.Collectors;
 import static com.io7m.jcoronado.lwjgl.VulkanLWJGLHandle.Ownership.USER_OWNED;
 import static com.io7m.jcoronado.lwjgl.VulkanLWJGLHandle.Ownership.VULKAN_OWNED;
 
-final class VulkanLWJGLLogicalDevice
+/**
+ * LWJGL {@link VkDevice}
+ */
+
+public final class VulkanLWJGLLogicalDevice
   extends VulkanLWJGLHandle implements VulkanLogicalDeviceType
 {
   private static final Logger LOG =
@@ -121,6 +125,26 @@ final class VulkanLWJGLLogicalDevice
     final ArrayList<VulkanLWJGLPipeline> result_pipelines)
   {
     return (List<VulkanPipelineType>) (Object) result_pipelines;
+  }
+
+  @Override
+  public boolean equals(final Object o)
+  {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || !Objects.equals(this.getClass(), o.getClass())) {
+      return false;
+    }
+    final VulkanLWJGLLogicalDevice that = (VulkanLWJGLLogicalDevice) o;
+    return Objects.equals(this.physical_device, that.physical_device)
+      && Objects.equals(this.device, that.device);
+  }
+
+  @Override
+  public int hashCode()
+  {
+    return Objects.hash(this.physical_device, this.device);
   }
 
   VkDevice device()
