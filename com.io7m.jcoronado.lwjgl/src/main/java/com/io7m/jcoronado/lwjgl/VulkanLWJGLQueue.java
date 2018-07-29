@@ -164,4 +164,13 @@ public final class VulkanLWJGLQueue
         "vkQueueSubmit");
     }
   }
+
+  @Override
+  public void waitIdle()
+    throws VulkanException
+  {
+    VulkanChecks.checkReturnCode(
+      VK10.vkQueueWaitIdle(this.queue),
+      "vkQueueWaitIdle");
+  }
 }

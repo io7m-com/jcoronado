@@ -116,6 +116,9 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.OptionalInt;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -172,15 +175,16 @@ public final class HelloVulkan
      * terminal, and sets the "finished" flag when that happens.
      */
 
-    new Thread(() -> {
+    final ExecutorService exec = Executors.newFixedThreadPool(1);
+    exec.execute(() -> {
       try {
         System.in.read();
         LOG.debug("finished");
         finished.set(true);
-      } catch (IOException e) {
+      } catch (final IOException e) {
         LOG.error("i/o error: ", e);
       }
-    }).start();
+    });
 
     /*
      * Create an allocator for temporary objects.
@@ -678,6 +682,12 @@ public final class HelloVulkan
       throw e;
     } finally {
       GLFW_ERROR_CALLBACK.close();
+      exec.shutdown();
+      try {
+        exec.awaitTermination(5L, TimeUnit.SECONDS);
+      } catch (final InterruptedException e) {
+        Thread.currentThread().interrupt();
+      }
     }
   }
 
@@ -743,6 +753,17 @@ public final class HelloVulkan
         .build();
 
     khr_swapchain_ext.queuePresent(queue_presentation, presentation_info);
+
+    /*
+     * Wait until the presentation operation has finished before continuing. The reason for doing
+     * this is that it's possible to submit new work to the GPU at a vastly quicker rate than it
+     * can actually process it, meaning the queue of commands grows indefinitely and gives the
+     * appearance of a memory leak. Waiting for the presentation queue is not the most efficient
+     * way that this can be handled (because it implies that the GPU is waiting when it could
+     * otherwise be rendering the next frame), but it is the simplest.
+     */
+
+    queue_presentation.waitIdle();
   }
 
   private static VulkanShaderModuleType createShaderModule(

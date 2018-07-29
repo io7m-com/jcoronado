@@ -53,4 +53,14 @@ public interface VulkanQueueType extends VulkanHandleDispatchableType
     List<VulkanSubmitInfo> submissions,
     Optional<VulkanFenceType> fence)
     throws VulkanException;
+
+  /**
+   * Wait until all items in the given queue have finished executing.
+   *
+   * @throws VulkanException On errors
+   */
+
+  void waitIdle()
+    throws VulkanException;
+
 }
