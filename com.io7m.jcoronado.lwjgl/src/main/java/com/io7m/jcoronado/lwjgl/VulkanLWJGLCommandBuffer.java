@@ -176,4 +176,13 @@ public final class VulkanLWJGLCommandBuffer
       VK10.vkEndCommandBuffer(this.handle),
       "vkEndCommandBuffer");
   }
+
+  /**
+   * @return The raw handle
+   */
+
+  public VkCommandBuffer handle()
+  {
+    return this.handle;
+  }
 }

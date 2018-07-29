@@ -16,41 +16,28 @@
 
 package com.io7m.jcoronado.api;
 
-import java.util.List;
-import java.util.Optional;
-
 /**
- * A queue on a logical device.
- *
- * @see "VkQueue"
+ * Flags specified when creating fences.
  */
 
-public interface VulkanQueueType extends VulkanHandleDispatchableType
+public enum VulkanFenceCreateFlag implements VulkanEnumBitmaskType
 {
   /**
-   * @return The properties for the queue family to which this queue belongs
+   * Specifies that the fence object is created in the signaled state.
    */
 
-  VulkanQueueFamilyProperties queueFamilyProperties();
+  VK_FENCE_CREATE_SIGNALED_BIT(0x0000_0001);
 
-  /**
-   * @return The index of the queue within the queue family to which it belongs
-   */
+  private final int value;
 
-  int queueIndex();
+  VulkanFenceCreateFlag(final int i)
+  {
+    this.value = i;
+  }
 
-  /**
-   * Submit the given list of queue submissions. If a fence is provided, the fence is signalled when
-   * all of the command buffers have finished executing.
-   *
-   * @param submissions The queue submissions
-   * @param fence       A fence
-   *
-   * @throws VulkanException On errors
-   */
-
-  void submit(
-    List<VulkanSubmitInfo> submissions,
-    Optional<VulkanFenceType> fence)
-    throws VulkanException;
+  @Override
+  public int value()
+  {
+    return this.value;
+  }
 }

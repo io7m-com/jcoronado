@@ -18,9 +18,12 @@ package com.io7m.jcoronado.extensions.api;
 
 import com.io7m.jcoronado.api.VulkanException;
 import com.io7m.jcoronado.api.VulkanExtensionType;
+import com.io7m.jcoronado.api.VulkanFenceType;
+import com.io7m.jcoronado.api.VulkanHandleType;
 import com.io7m.jcoronado.api.VulkanImageType;
 import com.io7m.jcoronado.api.VulkanLogicalDeviceType;
-import com.io7m.jcoronado.api.VulkanHandleType;
+import com.io7m.jcoronado.api.VulkanQueueType;
+import com.io7m.jcoronado.api.VulkanSemaphoreType;
 
 import java.util.List;
 
@@ -54,6 +57,21 @@ public interface VulkanExtKHRSwapChainType extends VulkanExtensionType
     throws VulkanException;
 
   /**
+   * Queue images for presentation.
+   *
+   * @param queue        The presentation queue
+   * @param present_info The presentation info
+   *
+   * @throws VulkanException On errors
+   * @see "vkQueuePresentKHR"
+   */
+
+  void queuePresent(
+    VulkanQueueType queue,
+    VulkanPresentInfoKHR present_info)
+    throws VulkanException;
+
+  /**
    * A created swap chain.
    */
 
@@ -66,6 +84,62 @@ public interface VulkanExtKHRSwapChainType extends VulkanExtensionType
      */
 
     List<VulkanImageType> images()
+      throws VulkanException;
+
+    /**
+     * Attempt to acquire an image from the swap chain. If {@code timeout} is {@code 0}, the method
+     * will return immediately. If {@code timeout} is {@code 0xffffffff_ffffffff}, the method will
+     * wait indefinitely.
+     *
+     * @param semaphore A semaphore that will be signalled when an image is available
+     * @param timeout   A timeout value in nanoseconds.
+     *
+     * @return An image acquisition
+     *
+     * @throws VulkanException On errors
+     */
+
+    VulkanSwapChainImageAcquisition acquireImageWithSemaphore(
+      long timeout,
+      VulkanSemaphoreType semaphore)
+      throws VulkanException;
+
+    /**
+     * Attempt to acquire an image from the swap chain. If {@code timeout} is {@code 0}, the method
+     * will return immediately. If {@code timeout} is {@code 0xffffffff_ffffffff}, the method will
+     * wait indefinitely.
+     *
+     * @param fence   A fence that will be signalled when an image is available
+     * @param timeout A timeout value in nanoseconds.
+     *
+     * @return An image acquisition
+     *
+     * @throws VulkanException On errors
+     */
+
+    VulkanSwapChainImageAcquisition acquireImageWithFence(
+      long timeout,
+      VulkanFenceType fence)
+      throws VulkanException;
+
+    /**
+     * Attempt to acquire an image from the swap chain. If {@code timeout} is {@code 0}, the method
+     * will return immediately. If {@code timeout} is {@code 0xffffffff_ffffffff}, the method will
+     * wait indefinitely.
+     *
+     * @param fence     A fence that will be signalled when an image is available
+     * @param semaphore A semaphore that will be signalled when an image is available
+     * @param timeout   A timeout value in nanoseconds.
+     *
+     * @return An image acquisition
+     *
+     * @throws VulkanException On errors
+     */
+
+    VulkanSwapChainImageAcquisition acquireImageWithSemaphoreAndFence(
+      long timeout,
+      VulkanSemaphoreType semaphore,
+      VulkanFenceType fence)
       throws VulkanException;
   }
 }

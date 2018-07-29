@@ -14,75 +14,43 @@
  * IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-package com.io7m.jcoronado.api;
+package com.io7m.jcoronado.extensions.api;
 
 import com.io7m.immutables.styles.ImmutablesStyleType;
 import org.immutables.value.Value;
 
-import java.util.Set;
+import java.util.OptionalInt;
 
 /**
- * Structure specifying a subpass dependency.
- *
- * @see "VkSubpassDependency"
+ * The result of an attempt to acquire an image from the swap chain.
  */
 
 @ImmutablesStyleType
 @Value.Immutable
-public interface VulkanSubpassDependencyType
+public interface VulkanSwapChainImageAcquisitionType
 {
   /**
-   * The external subpass.
-   */
-
-  int EXTERNAL = -1;
-
-  /**
-   * @return The subpass index of the first subpass in the dependency, or VK_SUBPASS_EXTERNAL.
+   * @return The index of the acquired image in the swapchain
    */
 
   @Value.Parameter
-  int srcSubpass();
+  OptionalInt imageIndex();
 
   /**
-   * @return The subpass index of the second subpass in the dependency, or VK_SUBPASS_EXTERNAL.
+   * If an image became available, and the swapchain no longer matches the surface properties
+   * exactly but can still be used to present to the surface successfully, this method will return
+   * {@code true}.
+   *
+   * @return {@code true} if the image is now suboptimal
    */
 
   @Value.Parameter
-  int dstSubpass();
+  boolean subOptimal();
 
   /**
-   * @return The source stage mask
+   * @return {@code true} iff a timeout was specified and no image was available within that time
    */
 
   @Value.Parameter
-  Set<VulkanPipelineStageFlag> srcStageMask();
-
-  /**
-   * @return The destination stage mask
-   */
-
-  @Value.Parameter
-  Set<VulkanPipelineStageFlag> dstStageMask();
-
-  /**
-   * @return The source access mask
-   */
-
-  @Value.Parameter
-  Set<VulkanAccessFlag> srcAccessMask();
-
-  /**
-   * @return The destination access mask
-   */
-
-  @Value.Parameter
-  Set<VulkanAccessFlag> dstAccessMask();
-
-  /**
-   * @return The dependency flags for the subpass
-   */
-
-  @Value.Parameter
-  Set<VulkanDependencyFlag> dependencyFlags();
+  boolean timedOut();
 }

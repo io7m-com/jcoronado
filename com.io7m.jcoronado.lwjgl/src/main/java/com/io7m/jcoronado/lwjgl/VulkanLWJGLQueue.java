@@ -16,13 +16,22 @@
 
 package com.io7m.jcoronado.lwjgl;
 
+import com.io7m.jcoronado.api.VulkanChecks;
+import com.io7m.jcoronado.api.VulkanException;
+import com.io7m.jcoronado.api.VulkanFenceType;
 import com.io7m.jcoronado.api.VulkanQueueFamilyProperties;
 import com.io7m.jcoronado.api.VulkanQueueType;
+import com.io7m.jcoronado.api.VulkanSubmitInfo;
+import org.lwjgl.system.MemoryStack;
+import org.lwjgl.vulkan.VK10;
 import org.lwjgl.vulkan.VkQueue;
+import org.lwjgl.vulkan.VkSubmitInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import static com.io7m.jcoronado.lwjgl.VulkanLWJGLHandle.Ownership.VULKAN_OWNED;
 
@@ -39,6 +48,7 @@ public final class VulkanLWJGLQueue
   private final VkQueue queue;
   private final VulkanQueueFamilyProperties properties;
   private final int queue_index;
+  private final MemoryStack stack_initial;
 
   VulkanLWJGLQueue(
     final VulkanLWJGLLogicalDevice in_device,
@@ -56,6 +66,17 @@ public final class VulkanLWJGLQueue
       Objects.requireNonNull(in_properties, "properties");
     this.queue_index =
       in_queue_index;
+    this.stack_initial =
+      MemoryStack.create();
+  }
+
+  /**
+   * @return The underlying Vulkan queue
+   */
+
+  public VkQueue rawQueue()
+  {
+    return this.queue;
   }
 
   @Override
@@ -116,5 +137,31 @@ public final class VulkanLWJGLQueue
   public int queueIndex()
   {
     return this.queue_index;
+  }
+
+  @Override
+  public void submit(
+    final List<VulkanSubmitInfo> submissions,
+    final Optional<VulkanFenceType> fence)
+    throws VulkanException
+  {
+    Objects.requireNonNull(submissions, "submissions");
+    Objects.requireNonNull(fence, "fence");
+
+    final long cfence;
+    if (fence.isPresent()) {
+      cfence = VulkanLWJGLClassChecks.check(fence.get(), VulkanLWJGLFence.class).handle();
+    } else {
+      cfence = VK10.VK_NULL_HANDLE;
+    }
+
+    try (MemoryStack stack = this.stack_initial.push()) {
+      final int size = submissions.size();
+      final VkSubmitInfo.Buffer infos = VkSubmitInfo.mallocStack(size, stack);
+      VulkanLWJGLSubmitInfos.packInfos(stack, submissions, infos);
+      VulkanChecks.checkReturnCode(
+        VK10.vkQueueSubmit(this.queue, infos, cfence),
+        "vkQueueSubmit");
+    }
   }
 }

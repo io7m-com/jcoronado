@@ -7,6 +7,8 @@
       <Class name="com.io7m.jcoronado.extensions.api.VulkanSurfaceCapabilitiesKHR"/>
       <Class name="com.io7m.jcoronado.extensions.api.VulkanSurfaceFormatKHR"/>
       <Class name="com.io7m.jcoronado.extensions.api.VulkanSwapChainCreateInfo"/>
+      <Class name="com.io7m.jcoronado.extensions.api.VulkanSwapChainImageAcquisition"/>
+      <Class name="com.io7m.jcoronado.extensions.api.VulkanExtKHRSwapChainImageAcquisition"/>
 
       <Class name="~com\.io7m\.jcoronado\..+\$Builder"/>
       <Class name="~com\.io7m\.jcoronado\..+\$InitShim"/>

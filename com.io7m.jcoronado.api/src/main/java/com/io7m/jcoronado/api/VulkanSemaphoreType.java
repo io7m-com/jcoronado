@@ -17,6 +17,8 @@
 package com.io7m.jcoronado.api;
 
 /**
+ * A semaphore represents a GPU to GPU synchronization.
+ *
  * @see "VkSemaphore"
  */
 

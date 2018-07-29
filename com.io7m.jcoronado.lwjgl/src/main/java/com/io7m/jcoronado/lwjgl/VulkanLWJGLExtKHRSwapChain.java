@@ -16,24 +16,34 @@
 
 package com.io7m.jcoronado.lwjgl;
 
+import com.io7m.jcoronado.api.VulkanCallFailedException;
 import com.io7m.jcoronado.api.VulkanChecks;
 import com.io7m.jcoronado.api.VulkanEnumMaps;
 import com.io7m.jcoronado.api.VulkanException;
 import com.io7m.jcoronado.api.VulkanExtent2D;
+import com.io7m.jcoronado.api.VulkanFenceType;
 import com.io7m.jcoronado.api.VulkanImageType;
 import com.io7m.jcoronado.api.VulkanIncompatibleClassException;
 import com.io7m.jcoronado.api.VulkanLogicalDeviceType;
+import com.io7m.jcoronado.api.VulkanQueueType;
+import com.io7m.jcoronado.api.VulkanSemaphoreType;
 import com.io7m.jcoronado.api.VulkanUncheckedException;
 import com.io7m.jcoronado.extensions.api.VulkanExtKHRSwapChainType;
+import com.io7m.jcoronado.extensions.api.VulkanPresentInfoKHR;
 import com.io7m.jcoronado.extensions.api.VulkanSwapChainCreateInfo;
+import com.io7m.jcoronado.extensions.api.VulkanSwapChainImageAcquisition;
+import com.io7m.junreachable.UnreachableCodeException;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.vulkan.KHRSwapchain;
+import org.lwjgl.vulkan.VK10;
 import org.lwjgl.vulkan.VkExtent2D;
+import org.lwjgl.vulkan.VkPresentInfoKHR;
 import org.lwjgl.vulkan.VkSwapchainCreateInfoKHR;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.nio.IntBuffer;
+import java.nio.LongBuffer;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -127,6 +137,70 @@ public final class VulkanLWJGLExtKHRSwapChain implements VulkanExtKHRSwapChainTy
       .collect(Collectors.toList());
   }
 
+  private VulkanSwapChainImageAcquisition acquireImage(
+    final VulkanLWJGLKHRSwapChain chain,
+    final long timeout,
+    final VulkanSemaphoreType semaphore,
+    final VulkanFenceType fence)
+    throws VulkanIncompatibleClassException, VulkanCallFailedException
+  {
+    final long semaphore_handle;
+    if (semaphore != null) {
+      semaphore_handle =
+        VulkanLWJGLClassChecks.check(semaphore, VulkanLWJGLSemaphore.class).handle();
+    } else {
+      semaphore_handle = VK10.VK_NULL_HANDLE;
+    }
+
+    final long fence_handle;
+    if (fence != null) {
+      fence_handle =
+        VulkanLWJGLClassChecks.check(fence, VulkanLWJGLFence.class).handle();
+    } else {
+      fence_handle = VK10.VK_NULL_HANDLE;
+    }
+
+    final int[] image_handles = new int[1];
+    final int result =
+      KHRSwapchain.vkAcquireNextImageKHR(
+        chain.device.device(),
+        chain.chain,
+        timeout,
+        semaphore_handle,
+        fence_handle,
+        image_handles);
+
+    final int image_handle = image_handles[0];
+    switch (result) {
+      case VK10.VK_TIMEOUT:
+        return VulkanSwapChainImageAcquisition.builder()
+          .setSubOptimal(false)
+          .setTimedOut(true)
+          .build();
+      case VK10.VK_NOT_READY:
+        return VulkanSwapChainImageAcquisition.builder()
+          .setSubOptimal(false)
+          .setTimedOut(false)
+          .build();
+      case VK10.VK_SUCCESS:
+        return VulkanSwapChainImageAcquisition.builder()
+          .setSubOptimal(false)
+          .setTimedOut(false)
+          .setImageIndex(image_handle)
+          .build();
+      case KHRSwapchain.VK_SUBOPTIMAL_KHR:
+        return VulkanSwapChainImageAcquisition.builder()
+          .setSubOptimal(true)
+          .setTimedOut(false)
+          .setImageIndex(image_handle)
+          .build();
+      default:
+        VulkanChecks.checkReturnCode(result, "vkAcquireNextImageKHR");
+    }
+
+    throw new UnreachableCodeException();
+  }
+
   @Override
   public VulkanKHRSwapChainType swapChainCreate(
     final VulkanLogicalDeviceType in_device,
@@ -174,6 +248,84 @@ public final class VulkanLWJGLExtKHRSwapChain implements VulkanExtKHRSwapChainTy
       }
       return new VulkanLWJGLKHRSwapChain(this, device, swapchain_address);
     }
+  }
+
+  @Override
+  public void queuePresent(
+    final VulkanQueueType in_queue,
+    final VulkanPresentInfoKHR present_info)
+    throws VulkanException
+  {
+    final VulkanLWJGLQueue queue =
+      VulkanLWJGLClassChecks.check(in_queue, VulkanLWJGLQueue.class);
+
+    Objects.requireNonNull(present_info, "present_info");
+
+    try (MemoryStack stack = this.stack_initial.push()) {
+      final IntBuffer buffer_indices =
+        packImageIndices(stack, present_info.imageIndices());
+
+      final List<VulkanKHRSwapChainType> swap_chains = present_info.swapChains();
+      final int swap_chain_count = swap_chains.size();
+      final LongBuffer buffer_swapchains =
+        packSwapChains(stack, swap_chains, swap_chain_count);
+
+      final LongBuffer buffer_semaphores =
+        packSemaphoresX(stack, present_info.waitSemaphores());
+
+      final VkPresentInfoKHR vk_info =
+        VkPresentInfoKHR.mallocStack(stack)
+          .sType(KHRSwapchain.VK_STRUCTURE_TYPE_PRESENT_INFO_KHR)
+          .pNext(0L)
+          .pImageIndices(buffer_indices)
+          .pSwapchains(buffer_swapchains)
+          .swapchainCount(swap_chain_count)
+          .pWaitSemaphores(buffer_semaphores);
+
+      VulkanChecks.checkReturnCode(
+        KHRSwapchain.vkQueuePresentKHR(queue.rawQueue(), vk_info),
+        "vkQueuePresentKHR");
+    }
+  }
+
+  private static LongBuffer packSemaphoresX(
+    final MemoryStack stack,
+    final List<VulkanSemaphoreType> semaphores)
+    throws VulkanIncompatibleClassException
+  {
+    final LongBuffer buffer_semaphores = stack.mallocLong(semaphores.size());
+    for (int index = 0; index < semaphores.size(); ++index) {
+      final VulkanLWJGLSemaphore semaphore =
+        VulkanLWJGLClassChecks.check(semaphores.get(index), VulkanLWJGLSemaphore.class);
+      buffer_semaphores.put(index, semaphore.handle());
+    }
+    return buffer_semaphores;
+  }
+
+  private static IntBuffer packImageIndices(
+    final MemoryStack stack,
+    final List<Integer> indices)
+  {
+    final IntBuffer buffer_indices = stack.mallocInt(indices.size());
+    for (int index = 0; index < indices.size(); ++index) {
+      buffer_indices.put(index, indices.get(index).intValue());
+    }
+    return buffer_indices;
+  }
+
+  private static LongBuffer packSwapChains(
+    final MemoryStack stack,
+    final List<VulkanKHRSwapChainType> swap_chains,
+    final int swap_chain_count)
+    throws VulkanIncompatibleClassException
+  {
+    final LongBuffer buffer_swapchains = stack.mallocLong(swap_chain_count);
+    for (int index = 0; index < swap_chain_count; ++index) {
+      final VulkanLWJGLKHRSwapChain swap_chain =
+        VulkanLWJGLClassChecks.check(swap_chains.get(index), VulkanLWJGLKHRSwapChain.class);
+      buffer_swapchains.put(index, swap_chain.chain);
+    }
+    return buffer_swapchains;
   }
 
   private static final class VulkanLWJGLKHRSwapChain
@@ -237,6 +389,38 @@ public final class VulkanLWJGLExtKHRSwapChain implements VulkanExtKHRSwapChainTy
     {
       this.checkNotClosed();
       return this.extension.images(this);
+    }
+
+    @Override
+    public VulkanSwapChainImageAcquisition acquireImageWithSemaphore(
+      final long timeout,
+      final VulkanSemaphoreType semaphore)
+      throws VulkanException
+    {
+      Objects.requireNonNull(semaphore, "semaphore");
+      return this.extension.acquireImage(this, timeout, semaphore, null);
+    }
+
+    @Override
+    public VulkanSwapChainImageAcquisition acquireImageWithFence(
+      final long timeout,
+      final VulkanFenceType fence)
+      throws VulkanException
+    {
+      Objects.requireNonNull(fence, "fence");
+      return this.extension.acquireImage(this, timeout, null, fence);
+    }
+
+    @Override
+    public VulkanSwapChainImageAcquisition acquireImageWithSemaphoreAndFence(
+      final long timeout,
+      final VulkanSemaphoreType semaphore,
+      final VulkanFenceType fence)
+      throws VulkanException
+    {
+      Objects.requireNonNull(semaphore, "semaphore");
+      Objects.requireNonNull(fence, "fence");
+      return this.extension.acquireImage(this, timeout, semaphore, fence);
     }
   }
 }

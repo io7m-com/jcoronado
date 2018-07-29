@@ -14,43 +14,45 @@
  * IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-package com.io7m.jcoronado.api;
+package com.io7m.jcoronado.extensions.api;
+
+import com.io7m.immutables.styles.ImmutablesStyleType;
+import com.io7m.jcoronado.api.VulkanSemaphoreType;
+import org.immutables.value.Value;
 
 import java.util.List;
-import java.util.Optional;
+
+import static com.io7m.jcoronado.extensions.api.VulkanExtKHRSwapChainType.VulkanKHRSwapChainType;
 
 /**
- * A queue on a logical device.
- *
- * @see "VkQueue"
+ * @see "VkPresentInfoKHR"
  */
 
-public interface VulkanQueueType extends VulkanHandleDispatchableType
+@ImmutablesStyleType
+@Value.Immutable
+public interface VulkanPresentInfoKHRType
 {
   /**
-   * @return The properties for the queue family to which this queue belongs
+   * @return The semaphores upon which to wait before issuing the present request.
    */
 
-  VulkanQueueFamilyProperties queueFamilyProperties();
+  @Value.Parameter
+  List<VulkanSemaphoreType> waitSemaphores();
 
   /**
-   * @return The index of the queue within the queue family to which it belongs
+   * @return The list of swapchains
    */
 
-  int queueIndex();
+  @Value.Parameter
+  List<VulkanKHRSwapChainType> swapChains();
 
   /**
-   * Submit the given list of queue submissions. If a fence is provided, the fence is signalled when
-   * all of the command buffers have finished executing.
+   * Each entry in this array identifies the image to present on the corresponding entry in the
+   * {@link #swapChains()} list.
    *
-   * @param submissions The queue submissions
-   * @param fence       A fence
-   *
-   * @throws VulkanException On errors
+   * @return An array of images to be presented
    */
 
-  void submit(
-    List<VulkanSubmitInfo> submissions,
-    Optional<VulkanFenceType> fence)
-    throws VulkanException;
+  @Value.Parameter
+  List<Integer> imageIndices();
 }

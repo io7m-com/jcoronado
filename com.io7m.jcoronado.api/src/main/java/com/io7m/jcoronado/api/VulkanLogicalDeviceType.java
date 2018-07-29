@@ -252,4 +252,39 @@ public interface VulkanLogicalDeviceType extends VulkanHandleDispatchableType
   VulkanSemaphoreType createSemaphore(
     VulkanSemaphoreCreateInfo create_info)
     throws VulkanException;
+
+  /**
+   * Create a fence.
+   *
+   * @param create_info The fence creation info
+   *
+   * @return A fence
+   *
+   * @throws VulkanException On errors
+   */
+
+  VulkanFenceType createFence(
+    VulkanFenceCreateInfo create_info)
+    throws VulkanException;
+
+  /**
+   * Reset the given fences.
+   *
+   * @param fences The fences
+   *
+   * @throws VulkanException On errors
+   */
+
+  void resetFences(
+    List<VulkanFenceType> fences)
+    throws VulkanException;
+
+  /**
+   * Wait for this device to become idle.
+   *
+   * @throws VulkanException On errors
+   */
+
+  void waitIdle()
+    throws VulkanException;
 }

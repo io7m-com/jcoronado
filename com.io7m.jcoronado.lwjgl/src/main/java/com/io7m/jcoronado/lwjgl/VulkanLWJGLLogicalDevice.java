@@ -24,6 +24,8 @@ import com.io7m.jcoronado.api.VulkanCommandPoolType;
 import com.io7m.jcoronado.api.VulkanDestroyedException;
 import com.io7m.jcoronado.api.VulkanException;
 import com.io7m.jcoronado.api.VulkanExtensionType;
+import com.io7m.jcoronado.api.VulkanFenceCreateInfo;
+import com.io7m.jcoronado.api.VulkanFenceType;
 import com.io7m.jcoronado.api.VulkanFramebufferCreateInfo;
 import com.io7m.jcoronado.api.VulkanFramebufferType;
 import com.io7m.jcoronado.api.VulkanGraphicsPipelineCreateInfo;
@@ -53,6 +55,7 @@ import org.lwjgl.vulkan.VkCommandBuffer;
 import org.lwjgl.vulkan.VkCommandBufferAllocateInfo;
 import org.lwjgl.vulkan.VkCommandPoolCreateInfo;
 import org.lwjgl.vulkan.VkDevice;
+import org.lwjgl.vulkan.VkFenceCreateInfo;
 import org.lwjgl.vulkan.VkFramebufferCreateInfo;
 import org.lwjgl.vulkan.VkGraphicsPipelineCreateInfo;
 import org.lwjgl.vulkan.VkImageViewCreateInfo;
@@ -64,6 +67,7 @@ import org.lwjgl.vulkan.VkShaderModuleCreateInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.nio.LongBuffer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -503,6 +507,66 @@ public final class VulkanLWJGLLogicalDevice
       }
       return new VulkanLWJGLSemaphore(USER_OWNED, this.device, handle);
     }
+  }
+
+  @Override
+  public VulkanFenceType createFence(
+    final VulkanFenceCreateInfo create_info)
+    throws VulkanException
+  {
+    Objects.requireNonNull(create_info, "create_info");
+
+    this.checkNotClosed();
+
+    try (MemoryStack stack = this.stack_initial.push()) {
+      final VkFenceCreateInfo packed =
+        VulkanLWJGLFenceCreateInfos.pack(stack, create_info);
+
+      final long[] fences = new long[1];
+
+      VulkanChecks.checkReturnCode(
+        VK10.vkCreateFence(this.device, packed, null, fences),
+        "vkCreateFence");
+
+      final long handle = fences[0];
+      if (LOG.isTraceEnabled()) {
+        LOG.trace("created semaphore: 0x{}", Long.toUnsignedString(handle, 16));
+      }
+      return new VulkanLWJGLFence(USER_OWNED, this.device, handle);
+    }
+  }
+
+  @Override
+  public void resetFences(final List<VulkanFenceType> fences)
+    throws VulkanException
+  {
+    Objects.requireNonNull(fences, "fences");
+
+    this.checkNotClosed();
+
+    try (MemoryStack stack = this.stack_initial.push()) {
+      final LongBuffer array = stack.mallocLong(fences.size());
+      for (int index = 0; index < fences.size(); ++index) {
+        final VulkanLWJGLFence fence =
+          VulkanLWJGLClassChecks.check(fences.get(index), VulkanLWJGLFence.class);
+        array.put(index, fence.handle());
+      }
+
+      VulkanChecks.checkReturnCode(
+        VK10.vkResetFences(this.device, array),
+        "vkResetFences");
+    }
+  }
+
+  @Override
+  public void waitIdle()
+    throws VulkanException
+  {
+    this.checkNotClosed();
+
+    VulkanChecks.checkReturnCode(
+      VK10.vkDeviceWaitIdle(this.device),
+      "vkDeviceWaitIdle");
   }
 
   @Override

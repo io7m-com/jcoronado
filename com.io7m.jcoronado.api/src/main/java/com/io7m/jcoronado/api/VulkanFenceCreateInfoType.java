@@ -16,41 +16,25 @@
 
 package com.io7m.jcoronado.api;
 
-import java.util.List;
-import java.util.Optional;
+import com.io7m.immutables.styles.ImmutablesStyleType;
+import org.immutables.value.Value;
+
+import java.util.Set;
 
 /**
- * A queue on a logical device.
+ * The type of Vulkan fence creation information.
  *
- * @see "VkQueue"
+ * @see "VkFenceCreateInfo"
  */
 
-public interface VulkanQueueType extends VulkanHandleDispatchableType
+@ImmutablesStyleType
+@Value.Immutable
+public interface VulkanFenceCreateInfoType
 {
   /**
-   * @return The properties for the queue family to which this queue belongs
+   * @return The fence creation flags
    */
 
-  VulkanQueueFamilyProperties queueFamilyProperties();
-
-  /**
-   * @return The index of the queue within the queue family to which it belongs
-   */
-
-  int queueIndex();
-
-  /**
-   * Submit the given list of queue submissions. If a fence is provided, the fence is signalled when
-   * all of the command buffers have finished executing.
-   *
-   * @param submissions The queue submissions
-   * @param fence       A fence
-   *
-   * @throws VulkanException On errors
-   */
-
-  void submit(
-    List<VulkanSubmitInfo> submissions,
-    Optional<VulkanFenceType> fence)
-    throws VulkanException;
+  @Value.Parameter
+  Set<VulkanFenceCreateFlag> flags();
 }

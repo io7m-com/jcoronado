@@ -17,6 +17,8 @@
 package com.io7m.jcoronado.api;
 
 /**
+ * A fence represents a GPU to CPU synchronization.
+ *
  * @see "VkFence"
  */
 

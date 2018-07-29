@@ -28,24 +28,20 @@ import com.io7m.jcoronado.api.VulkanCommandBufferType;
 import com.io7m.jcoronado.api.VulkanCommandPoolCreateInfo;
 import com.io7m.jcoronado.api.VulkanCommandPoolType;
 import com.io7m.jcoronado.api.VulkanComponentMapping;
-import com.io7m.jcoronado.api.VulkanComponentSwizzle;
 import com.io7m.jcoronado.api.VulkanException;
 import com.io7m.jcoronado.api.VulkanExtensionProperties;
 import com.io7m.jcoronado.api.VulkanExtensions;
 import com.io7m.jcoronado.api.VulkanExtent2D;
-import com.io7m.jcoronado.api.VulkanFormat;
 import com.io7m.jcoronado.api.VulkanFramebufferCreateInfo;
 import com.io7m.jcoronado.api.VulkanFramebufferType;
 import com.io7m.jcoronado.api.VulkanFrontFace;
 import com.io7m.jcoronado.api.VulkanGraphicsPipelineCreateInfo;
-import com.io7m.jcoronado.api.VulkanImageAspectFlag;
 import com.io7m.jcoronado.api.VulkanImageLayout;
 import com.io7m.jcoronado.api.VulkanImageSubresourceRange;
 import com.io7m.jcoronado.api.VulkanImageType;
 import com.io7m.jcoronado.api.VulkanImageUsageFlag;
 import com.io7m.jcoronado.api.VulkanImageViewCreateFlag;
 import com.io7m.jcoronado.api.VulkanImageViewCreateInfo;
-import com.io7m.jcoronado.api.VulkanImageViewKind;
 import com.io7m.jcoronado.api.VulkanImageViewType;
 import com.io7m.jcoronado.api.VulkanInstanceCreateInfo;
 import com.io7m.jcoronado.api.VulkanInstanceProviderType;
@@ -68,8 +64,6 @@ import com.io7m.jcoronado.api.VulkanPipelineShaderStageCreateInfo;
 import com.io7m.jcoronado.api.VulkanPipelineType;
 import com.io7m.jcoronado.api.VulkanPipelineVertexInputStateCreateInfo;
 import com.io7m.jcoronado.api.VulkanPipelineViewportStateCreateInfo;
-import com.io7m.jcoronado.api.VulkanPolygonMode;
-import com.io7m.jcoronado.api.VulkanPrimitiveTopology;
 import com.io7m.jcoronado.api.VulkanQueueFamilyProperties;
 import com.io7m.jcoronado.api.VulkanQueueType;
 import com.io7m.jcoronado.api.VulkanRectangle2D;
@@ -82,21 +76,25 @@ import com.io7m.jcoronado.api.VulkanSemaphoreCreateInfo;
 import com.io7m.jcoronado.api.VulkanSemaphoreType;
 import com.io7m.jcoronado.api.VulkanShaderModuleCreateInfo;
 import com.io7m.jcoronado.api.VulkanShaderModuleType;
-import com.io7m.jcoronado.api.VulkanShaderStageFlag;
 import com.io7m.jcoronado.api.VulkanSharingMode;
+import com.io7m.jcoronado.api.VulkanSubmitInfo;
+import com.io7m.jcoronado.api.VulkanSubpassDependency;
+import com.io7m.jcoronado.api.VulkanSubpassDependencyType;
 import com.io7m.jcoronado.api.VulkanSubpassDescription;
 import com.io7m.jcoronado.api.VulkanTemporaryAllocatorType;
 import com.io7m.jcoronado.api.VulkanUncheckedException;
 import com.io7m.jcoronado.api.VulkanVersions;
 import com.io7m.jcoronado.api.VulkanViewport;
-import com.io7m.jcoronado.extensions.api.VulkanColorSpaceKHR;
 import com.io7m.jcoronado.extensions.api.VulkanCompositeAlphaFlagKHR;
 import com.io7m.jcoronado.extensions.api.VulkanExtKHRSurfaceType;
 import com.io7m.jcoronado.extensions.api.VulkanExtKHRSwapChainType;
+import com.io7m.jcoronado.extensions.api.VulkanExtKHRSwapChainType.VulkanKHRSwapChainType;
+import com.io7m.jcoronado.extensions.api.VulkanPresentInfoKHR;
 import com.io7m.jcoronado.extensions.api.VulkanPresentModeKHR;
 import com.io7m.jcoronado.extensions.api.VulkanSurfaceCapabilitiesKHR;
 import com.io7m.jcoronado.extensions.api.VulkanSurfaceFormatKHR;
 import com.io7m.jcoronado.extensions.api.VulkanSwapChainCreateInfo;
+import com.io7m.jcoronado.extensions.api.VulkanSwapChainImageAcquisition;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLInstanceProvider;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLTemporaryAllocator;
 import com.io7m.jmulticlose.core.CloseableCollection;
@@ -108,7 +106,6 @@ import org.lwjgl.glfw.GLFWVulkan;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -116,18 +113,39 @@ import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
+import java.util.OptionalInt;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import static com.io7m.jcoronado.api.VulkanAccessFlag.VK_ACCESS_COLOR_ATTACHMENT_READ_BIT;
+import static com.io7m.jcoronado.api.VulkanAccessFlag.VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
 import static com.io7m.jcoronado.api.VulkanCommandBufferLevel.VK_COMMAND_BUFFER_LEVEL_PRIMARY;
 import static com.io7m.jcoronado.api.VulkanCommandBufferUsageFlag.VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT;
+import static com.io7m.jcoronado.api.VulkanComponentSwizzle.VK_COMPONENT_SWIZZLE_IDENTITY;
 import static com.io7m.jcoronado.api.VulkanCullModeFlag.VK_CULL_MODE_BACK_BIT;
+import static com.io7m.jcoronado.api.VulkanFormat.VK_FORMAT_B8G8R8A8_UNORM;
+import static com.io7m.jcoronado.api.VulkanFormat.VK_FORMAT_UNDEFINED;
+import static com.io7m.jcoronado.api.VulkanImageAspectFlag.VK_IMAGE_ASPECT_COLOR_BIT;
+import static com.io7m.jcoronado.api.VulkanImageUsageFlag.VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
+import static com.io7m.jcoronado.api.VulkanImageViewKind.VK_IMAGE_VIEW_TYPE_2D;
 import static com.io7m.jcoronado.api.VulkanPipelineBindPoint.VK_PIPELINE_BIND_POINT_GRAPHICS;
+import static com.io7m.jcoronado.api.VulkanPipelineStageFlag.VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+import static com.io7m.jcoronado.api.VulkanPolygonMode.VK_POLYGON_MODE_FILL;
+import static com.io7m.jcoronado.api.VulkanPrimitiveTopology.VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
 import static com.io7m.jcoronado.api.VulkanQueueFamilyPropertyFlag.VK_QUEUE_GRAPHICS_BIT;
+import static com.io7m.jcoronado.api.VulkanShaderStageFlag.VK_SHADER_STAGE_FRAGMENT_BIT;
+import static com.io7m.jcoronado.api.VulkanShaderStageFlag.VK_SHADER_STAGE_VERTEX_BIT;
+import static com.io7m.jcoronado.api.VulkanSharingMode.VK_SHARING_MODE_CONCURRENT;
+import static com.io7m.jcoronado.api.VulkanSharingMode.VK_SHARING_MODE_EXCLUSIVE;
 import static com.io7m.jcoronado.api.VulkanSubpassContents.VK_SUBPASS_CONTENTS_INLINE;
+import static com.io7m.jcoronado.extensions.api.VulkanColorSpaceKHR.VK_COLOR_SPACE_SRGB_NONLINEAR_KHR;
+import static com.io7m.jcoronado.extensions.api.VulkanCompositeAlphaFlagKHR.VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR;
+import static com.io7m.jcoronado.extensions.api.VulkanPresentModeKHR.VK_PRESENT_MODE_FIFO_KHR;
+import static com.io7m.jcoronado.extensions.api.VulkanPresentModeKHR.VK_PRESENT_MODE_IMMEDIATE_KHR;
+import static com.io7m.jcoronado.extensions.api.VulkanPresentModeKHR.VK_PRESENT_MODE_MAILBOX_KHR;
 
 public final class HelloVulkan
 {
@@ -146,6 +164,27 @@ public final class HelloVulkan
     throws VulkanException, IOException
   {
     GLFW_ERROR_CALLBACK.set();
+
+    final AtomicBoolean finished = new AtomicBoolean(false);
+
+    /*
+     * Start a background thread that waits for the user to type a single character into the
+     * terminal, and sets the "finished" flag when that happens.
+     */
+
+    new Thread(() -> {
+      try {
+        System.in.read();
+        LOG.debug("finished");
+        finished.set(true);
+      } catch (IOException e) {
+        LOG.error("i/o error: ", e);
+      }
+    }).start();
+
+    /*
+     * Create an allocator for temporary objects.
+     */
 
     final VulkanTemporaryAllocatorType alloc =
       VulkanLWJGLTemporaryAllocator.create();
@@ -328,8 +367,12 @@ public final class HelloVulkan
        * Create a swap chain used to display images onscreen.
        */
 
-      final VulkanExtKHRSwapChainType.VulkanKHRSwapChainType swap_chain =
+      final VulkanExtKHRSwapChainType khr_swapchain_ext =
+        getSwapChainExtension(device);
+
+      final VulkanKHRSwapChainType swap_chain =
         resources.add(createSwapChain(
+          khr_swapchain_ext,
           surface,
           surface_format,
           surface_present,
@@ -358,6 +401,21 @@ public final class HelloVulkan
 
       /*
        * Configure the render pass.
+       *
+       * This specifies that:
+       *
+       * We don't want multisampling.
+       *
+       * Reads from the image attachment should behave as if the attachment has been cleared before
+       * rendering.
+       *
+       * Writes to the image attachment should be stored in the image.
+       *
+       * We don't care about reads or writes to the stencil buffer.
+       *
+       * We don't care about the initial layout of the image.
+       *
+       * The final layout of the image must be something usable for presentation to the screen.
        */
 
       final VulkanAttachmentDescription color_attachment_description =
@@ -384,10 +442,21 @@ public final class HelloVulkan
           .addColorAttachments(color_attachment_reference)
           .build();
 
+      final VulkanSubpassDependency subpass_dependency =
+        VulkanSubpassDependency.builder()
+          .setSrcSubpass(VulkanSubpassDependencyType.EXTERNAL)
+          .addSrcStageMask(VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT)
+          .setDstSubpass(0)
+          .addDstStageMask(VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT)
+          .addDstAccessMask(VK_ACCESS_COLOR_ATTACHMENT_READ_BIT)
+          .addDstAccessMask(VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT)
+          .build();
+
       final VulkanRenderPassCreateInfo render_pass_create_info =
         VulkanRenderPassCreateInfo.builder()
           .addAttachments(color_attachment_description)
           .addSubpasses(subpass_description)
+          .addDependencies(subpass_dependency)
           .build();
 
       final VulkanRenderPassType render_pass =
@@ -399,14 +468,14 @@ public final class HelloVulkan
 
       final VulkanPipelineShaderStageCreateInfo vertex_stage_info =
         VulkanPipelineShaderStageCreateInfo.builder()
-          .setStage(VulkanShaderStageFlag.VK_SHADER_STAGE_VERTEX_BIT)
+          .setStage(VK_SHADER_STAGE_VERTEX_BIT)
           .setModule(shaders)
           .setShaderEntryPoint("R3_clip_triangle_vert_main")
           .build();
 
       final VulkanPipelineShaderStageCreateInfo fragment_stage_info =
         VulkanPipelineShaderStageCreateInfo.builder()
-          .setStage(VulkanShaderStageFlag.VK_SHADER_STAGE_FRAGMENT_BIT)
+          .setStage(VK_SHADER_STAGE_FRAGMENT_BIT)
           .setModule(shaders)
           .setShaderEntryPoint("R3_clip_triangle_frag_main")
           .build();
@@ -417,7 +486,7 @@ public final class HelloVulkan
 
       final VulkanPipelineInputAssemblyStateCreateInfo input_assembly_info =
         VulkanPipelineInputAssemblyStateCreateInfo.builder()
-          .setTopology(VulkanPrimitiveTopology.VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST)
+          .setTopology(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST)
           .setPrimitiveRestartEnable(false)
           .build();
 
@@ -435,16 +504,16 @@ public final class HelloVulkan
 
       final VulkanPipelineRasterizationStateCreateInfo rasterizer =
         VulkanPipelineRasterizationStateCreateInfo.builder()
-          .setDepthClampEnable(false)
-          .setRasterizerDiscardEnable(false)
-          .setPolygonMode(VulkanPolygonMode.VK_POLYGON_MODE_FILL)
-          .setLineWidth(1.0f)
           .setCullMode(EnumSet.of(VK_CULL_MODE_BACK_BIT))
-          .setFrontFace(VulkanFrontFace.VK_FRONT_FACE_CLOCKWISE)
-          .setDepthBiasEnable(false)
-          .setDepthBiasConstantFactor(0.0f)
           .setDepthBiasClamp(0.0f)
+          .setDepthBiasConstantFactor(0.0f)
+          .setDepthBiasEnable(false)
           .setDepthBiasSlopeFactor(0.0f)
+          .setDepthClampEnable(false)
+          .setFrontFace(VulkanFrontFace.VK_FRONT_FACE_CLOCKWISE)
+          .setLineWidth(1.0f)
+          .setPolygonMode(VK_POLYGON_MODE_FILL)
+          .setRasterizerDiscardEnable(false)
           .build();
 
       final VulkanPipelineColorBlendAttachmentState blend_state =
@@ -468,24 +537,24 @@ public final class HelloVulkan
         VulkanPipelineMultisampleStateCreateInfo.builder()
           .setAlphaToCoverageEnable(false)
           .setAlphaToOneEnable(false)
-          .setSampleShadingEnable(false)
           .setMinSampleShading(1.0f)
           .setRasterizationSamples(VulkanSampleCountFlag.VK_SAMPLE_COUNT_1_BIT)
+          .setSampleShadingEnable(false)
           .build();
 
       final VulkanGraphicsPipelineCreateInfo pipeline_info =
         VulkanGraphicsPipelineCreateInfo.builder()
-          .addStages(vertex_stage_info)
           .addStages(fragment_stage_info)
-          .setVertexInputState(vertex_input_info)
+          .addStages(vertex_stage_info)
+          .setColorBlendState(color_blending)
           .setInputAssemblyState(input_assembly_info)
-          .setViewportState(viewport_state_info)
+          .setLayout(pipeline_layout)
           .setMultisampleState(multisample)
           .setRasterizationState(rasterizer)
-          .setColorBlendState(color_blending)
-          .setLayout(pipeline_layout)
           .setRenderPass(render_pass)
           .setSubpass(0)
+          .setVertexInputState(vertex_input_info)
+          .setViewportState(viewport_state_info)
           .build();
 
       final VulkanPipelineType pipeline =
@@ -537,32 +606,6 @@ public final class HelloVulkan
       final List<VulkanCommandBufferType> graphics_command_buffers =
         device.createCommandBuffers(graphics_command_buffer_info);
 
-      final VulkanCommandPoolType presentation_command_pool;
-      final List<VulkanCommandBufferType> presentation_command_buffers;
-
-      if (graphics_queue.queueIndex() != presentation_queue.queueIndex()) {
-        final VulkanCommandPoolCreateInfo presentation_pool_info =
-          VulkanCommandPoolCreateInfo.builder()
-            .setQueueFamilyIndex(presentation_queue.queueIndex())
-            .build();
-
-        presentation_command_pool =
-          resources.add(device.createCommandPool(presentation_pool_info));
-
-        final VulkanCommandBufferCreateInfo presentation_command_buffer_info =
-          VulkanCommandBufferCreateInfo.builder()
-            .setCount(command_buffer_count)
-            .setLevel(VK_COMMAND_BUFFER_LEVEL_PRIMARY)
-            .setPool(presentation_command_pool)
-            .build();
-
-        presentation_command_buffers =
-          device.createCommandBuffers(presentation_command_buffer_info);
-      } else {
-        presentation_command_pool = graphics_command_pool;
-        presentation_command_buffers = graphics_command_buffers;
-      }
-
       /*
        * Create a pair of semaphores for synchronizing command execution.
        */
@@ -606,15 +649,29 @@ public final class HelloVulkan
         graphics_command_buffer.draw(3, 1, 0, 0);
         graphics_command_buffer.endRenderPass();
         graphics_command_buffer.endCommandBuffer();
-
-        if (!Objects.equals(presentation_command_pool, graphics_command_pool)) {
-          final VulkanCommandBufferType presentation_command_buffer =
-            presentation_command_buffers.get(index);
-
-          presentation_command_buffer.beginCommandBuffer(begin_info);
-          presentation_command_buffer.endCommandBuffer();
-        }
       }
+
+      /*
+       * Start rendering frames.
+       */
+
+      while (!finished.get()) {
+        drawFrame(
+          khr_swapchain_ext,
+          swap_chain,
+          image_available,
+          render_finished,
+          graphics_command_buffers,
+          graphics_queue,
+          presentation_queue);
+      }
+
+      /*
+       * Wait until the device is idle before exiting.
+       */
+
+      LOG.debug("waiting for device to idle");
+      device.waitIdle();
 
     } catch (final VulkanException e) {
       LOG.error("vulkan error: ", e);
@@ -622,6 +679,70 @@ public final class HelloVulkan
     } finally {
       GLFW_ERROR_CALLBACK.close();
     }
+  }
+
+  /**
+   * Draw a single frame.
+   */
+
+  private static void drawFrame(
+    final VulkanExtKHRSwapChainType khr_swapchain_ext,
+    final VulkanKHRSwapChainType swap_chain,
+    final VulkanSemaphoreType image_available,
+    final VulkanSemaphoreType render_finished,
+    final List<VulkanCommandBufferType> graphics_command_buffers,
+    final VulkanQueueType graphics_queue,
+    final VulkanQueueType queue_presentation)
+    throws VulkanException
+  {
+    /*
+     * Try to acquire an image from the swap chain, waiting indefinitely until one is available.
+     * There isn't really anything sensible that we can do if an image can't be acquired in this
+     * example code, so all that will happen is that the code will immediately try again.
+     */
+
+    final VulkanSwapChainImageAcquisition acquisition =
+      swap_chain.acquireImageWithSemaphore(0xffff_ffff_ffff_ffffL, image_available);
+
+    final OptionalInt image_index_option = acquisition.imageIndex();
+    if (!image_index_option.isPresent()) {
+      LOG.error("could not acquire image");
+      return;
+    }
+
+    final int image_index = image_index_option.getAsInt();
+
+    final VulkanCommandBufferType graphics_command_buffer =
+      graphics_command_buffers.get(image_index);
+
+    /*
+     * Wait until the image is available (via the image available semaphore) before writing
+     * any color data to the image. When writing has completed, signal that rendering has finished
+     * (via the render finished semaphore).
+     */
+
+    final VulkanSubmitInfo submit_info =
+      VulkanSubmitInfo.builder()
+        .addWaitSemaphores(image_available)
+        .addWaitStageMasks(VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT)
+        .addCommandBuffers(graphics_command_buffer)
+        .addSignalSemaphores(render_finished)
+        .build();
+
+    graphics_queue.submit(List.of(submit_info), Optional.empty());
+
+    /*
+     * Tell the presentation queue to present.
+     */
+
+    final VulkanPresentInfoKHR presentation_info =
+      VulkanPresentInfoKHR.builder()
+        .addImageIndices(image_index)
+        .addSwapChains(swap_chain)
+        .addWaitSemaphores(render_finished)
+        .build();
+
+    khr_swapchain_ext.queuePresent(queue_presentation, presentation_info);
   }
 
   private static VulkanShaderModuleType createShaderModule(
@@ -642,10 +763,7 @@ public final class HelloVulkan
     throws IOException
   {
     try (InputStream input = HelloVulkan.class.getResourceAsStream(name)) {
-      try (ByteArrayOutputStream output = new ByteArrayOutputStream(8192)) {
-        input.transferTo(output);
-        return output.toByteArray();
-      }
+      return input.readAllBytes();
     }
   }
 
@@ -657,7 +775,7 @@ public final class HelloVulkan
     try {
       final VulkanImageSubresourceRange range =
         VulkanImageSubresourceRange.of(
-          Set.of(VulkanImageAspectFlag.VK_IMAGE_ASPECT_COLOR_BIT),
+          Set.of(VK_IMAGE_ASPECT_COLOR_BIT),
           0,
           1,
           0,
@@ -667,20 +785,21 @@ public final class HelloVulkan
       return device.createImageView(VulkanImageViewCreateInfo.of(
         flags,
         image,
-        VulkanImageViewKind.VK_IMAGE_VIEW_TYPE_2D,
+        VK_IMAGE_VIEW_TYPE_2D,
         surface_format.format(),
         VulkanComponentMapping.of(
-          VulkanComponentSwizzle.VK_COMPONENT_SWIZZLE_IDENTITY,
-          VulkanComponentSwizzle.VK_COMPONENT_SWIZZLE_IDENTITY,
-          VulkanComponentSwizzle.VK_COMPONENT_SWIZZLE_IDENTITY,
-          VulkanComponentSwizzle.VK_COMPONENT_SWIZZLE_IDENTITY),
+          VK_COMPONENT_SWIZZLE_IDENTITY,
+          VK_COMPONENT_SWIZZLE_IDENTITY,
+          VK_COMPONENT_SWIZZLE_IDENTITY,
+          VK_COMPONENT_SWIZZLE_IDENTITY),
         range));
     } catch (final VulkanException e) {
       throw new VulkanUncheckedException(e);
     }
   }
 
-  private static VulkanExtKHRSwapChainType.VulkanKHRSwapChainType createSwapChain(
+  private static VulkanKHRSwapChainType createSwapChain(
+    final VulkanExtKHRSwapChainType khr_swapchain_ext,
     final VulkanExtKHRSurfaceType.VulkanKHRSurfaceType surface,
     final VulkanSurfaceFormatKHR surface_format,
     final VulkanPresentModeKHR surface_present,
@@ -691,18 +810,15 @@ public final class HelloVulkan
     final VulkanQueueType presentation_queue)
     throws VulkanException
   {
-    final VulkanExtKHRSwapChainType khr_swapchain_ext =
-      getSwapChainExtension(device);
-
     final int minimum_image_count =
       pickMinimumImageCount(surface_caps);
     final List<Integer> queue_indices = new ArrayList<>();
     final VulkanSharingMode image_sharing_mode =
       pickImageSharingMode(graphics_queue, presentation_queue, queue_indices);
     final Set<VulkanImageUsageFlag> image_usage_flags =
-      Set.of(VulkanImageUsageFlag.VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT);
+      Set.of(VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT);
     final Set<VulkanCompositeAlphaFlagKHR> surface_alpha_flags =
-      Set.of(VulkanCompositeAlphaFlagKHR.VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR);
+      Set.of(VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR);
 
     LOG.debug("swap chain image count: {}", Integer.valueOf(minimum_image_count));
     LOG.debug("swap chain image mode: {}", image_sharing_mode);
@@ -761,9 +877,9 @@ public final class HelloVulkan
     if (graphics_family != presentation_family) {
       queue_indices.add(Integer.valueOf(graphics_family));
       queue_indices.add(Integer.valueOf(presentation_family));
-      return VulkanSharingMode.VK_SHARING_MODE_CONCURRENT;
+      return VK_SHARING_MODE_CONCURRENT;
     }
-    return VulkanSharingMode.VK_SHARING_MODE_EXCLUSIVE;
+    return VK_SHARING_MODE_EXCLUSIVE;
   }
 
   private static int pickMinimumImageCount(
@@ -815,14 +931,12 @@ public final class HelloVulkan
     final List<VulkanPresentModeKHR> modes =
       khr_surface_ext.surfacePresentModes(device, surface);
 
-    VulkanPresentModeKHR preferred =
-      VulkanPresentModeKHR.VK_PRESENT_MODE_FIFO_KHR;
-
+    VulkanPresentModeKHR preferred = VK_PRESENT_MODE_FIFO_KHR;
     for (final VulkanPresentModeKHR mode : modes) {
-      if (mode == VulkanPresentModeKHR.VK_PRESENT_MODE_MAILBOX_KHR) {
+      if (mode == VK_PRESENT_MODE_MAILBOX_KHR) {
         return mode;
       }
-      if (mode == VulkanPresentModeKHR.VK_PRESENT_MODE_IMMEDIATE_KHR) {
+      if (mode == VK_PRESENT_MODE_IMMEDIATE_KHR) {
         preferred = mode;
       }
     }
@@ -844,8 +958,8 @@ public final class HelloVulkan
 
     if (formats.isEmpty()) {
       return VulkanSurfaceFormatKHR.of(
-        VulkanFormat.VK_FORMAT_B8G8R8A8_UNORM,
-        VulkanColorSpaceKHR.VK_COLOR_SPACE_SRGB_NONLINEAR_KHR);
+        VK_FORMAT_B8G8R8A8_UNORM,
+        VK_COLOR_SPACE_SRGB_NONLINEAR_KHR);
     }
 
     /*
@@ -855,10 +969,10 @@ public final class HelloVulkan
 
     if (formats.size() == 1) {
       final VulkanSurfaceFormatKHR format0 = formats.get(0);
-      if (format0.format() == VulkanFormat.VK_FORMAT_UNDEFINED) {
+      if (format0.format() == VK_FORMAT_UNDEFINED) {
         return VulkanSurfaceFormatKHR.of(
-          VulkanFormat.VK_FORMAT_B8G8R8A8_UNORM,
-          VulkanColorSpaceKHR.VK_COLOR_SPACE_SRGB_NONLINEAR_KHR);
+          VK_FORMAT_B8G8R8A8_UNORM,
+          VK_COLOR_SPACE_SRGB_NONLINEAR_KHR);
       }
     }
 
@@ -867,8 +981,8 @@ public final class HelloVulkan
      */
 
     for (final VulkanSurfaceFormatKHR format : formats) {
-      if (format.format() == VulkanFormat.VK_FORMAT_B8G8R8A8_UNORM
-        && format.colorSpace() == VulkanColorSpaceKHR.VK_COLOR_SPACE_SRGB_NONLINEAR_KHR) {
+      if (format.format() == VK_FORMAT_B8G8R8A8_UNORM
+        && format.colorSpace() == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR) {
         return format;
       }
     }
