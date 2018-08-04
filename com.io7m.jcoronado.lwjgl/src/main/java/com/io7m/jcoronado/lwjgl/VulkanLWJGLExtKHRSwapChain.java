@@ -100,6 +100,46 @@ public final class VulkanLWJGLExtKHRSwapChain implements VulkanExtKHRSwapChainTy
     return VkExtent2D.mallocStack(stack).set(e.width(), e.height());
   }
 
+  private static LongBuffer packSemaphoresX(
+    final MemoryStack stack,
+    final List<VulkanSemaphoreType> semaphores)
+    throws VulkanIncompatibleClassException
+  {
+    final LongBuffer buffer_semaphores = stack.mallocLong(semaphores.size());
+    for (int index = 0; index < semaphores.size(); ++index) {
+      final VulkanLWJGLSemaphore semaphore =
+        VulkanLWJGLClassChecks.check(semaphores.get(index), VulkanLWJGLSemaphore.class);
+      buffer_semaphores.put(index, semaphore.handle());
+    }
+    return buffer_semaphores;
+  }
+
+  private static IntBuffer packImageIndices(
+    final MemoryStack stack,
+    final List<Integer> indices)
+  {
+    final IntBuffer buffer_indices = stack.mallocInt(indices.size());
+    for (int index = 0; index < indices.size(); ++index) {
+      buffer_indices.put(index, indices.get(index).intValue());
+    }
+    return buffer_indices;
+  }
+
+  private static LongBuffer packSwapChains(
+    final MemoryStack stack,
+    final List<VulkanKHRSwapChainType> swap_chains,
+    final int swap_chain_count)
+    throws VulkanIncompatibleClassException
+  {
+    final LongBuffer buffer_swapchains = stack.mallocLong(swap_chain_count);
+    for (int index = 0; index < swap_chain_count; ++index) {
+      final VulkanLWJGLKHRSwapChain swap_chain =
+        VulkanLWJGLClassChecks.check(swap_chains.get(index), VulkanLWJGLKHRSwapChain.class);
+      buffer_swapchains.put(index, swap_chain.chain);
+    }
+    return buffer_swapchains;
+  }
+
   @Override
   public String toString()
   {
@@ -286,46 +326,6 @@ public final class VulkanLWJGLExtKHRSwapChain implements VulkanExtKHRSwapChainTy
         KHRSwapchain.vkQueuePresentKHR(queue.rawQueue(), vk_info),
         "vkQueuePresentKHR");
     }
-  }
-
-  private static LongBuffer packSemaphoresX(
-    final MemoryStack stack,
-    final List<VulkanSemaphoreType> semaphores)
-    throws VulkanIncompatibleClassException
-  {
-    final LongBuffer buffer_semaphores = stack.mallocLong(semaphores.size());
-    for (int index = 0; index < semaphores.size(); ++index) {
-      final VulkanLWJGLSemaphore semaphore =
-        VulkanLWJGLClassChecks.check(semaphores.get(index), VulkanLWJGLSemaphore.class);
-      buffer_semaphores.put(index, semaphore.handle());
-    }
-    return buffer_semaphores;
-  }
-
-  private static IntBuffer packImageIndices(
-    final MemoryStack stack,
-    final List<Integer> indices)
-  {
-    final IntBuffer buffer_indices = stack.mallocInt(indices.size());
-    for (int index = 0; index < indices.size(); ++index) {
-      buffer_indices.put(index, indices.get(index).intValue());
-    }
-    return buffer_indices;
-  }
-
-  private static LongBuffer packSwapChains(
-    final MemoryStack stack,
-    final List<VulkanKHRSwapChainType> swap_chains,
-    final int swap_chain_count)
-    throws VulkanIncompatibleClassException
-  {
-    final LongBuffer buffer_swapchains = stack.mallocLong(swap_chain_count);
-    for (int index = 0; index < swap_chain_count; ++index) {
-      final VulkanLWJGLKHRSwapChain swap_chain =
-        VulkanLWJGLClassChecks.check(swap_chains.get(index), VulkanLWJGLKHRSwapChain.class);
-      buffer_swapchains.put(index, swap_chain.chain);
-    }
-    return buffer_swapchains;
   }
 
   private static final class VulkanLWJGLKHRSwapChain

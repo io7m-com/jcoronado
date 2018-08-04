@@ -17,23 +17,23 @@
 package com.io7m.jcoronado.api;
 
 /**
- * Flags specified when creating logical devices.
+ * Flags specified when mapping memory.
  *
- * Vulkan 1.1 specification: "VkDeviceCreateFlags is a bitmask type for setting a mask, but is
+ * Vulkan 1.1 specification: "VkMemoryMapFlags is a bitmask type for setting a mask, but is
  * currently reserved for future use."
  */
 
-public enum VulkanLogicalDeviceCreateFlag implements VulkanEnumBitmaskType
+public enum VulkanMemoryMapFlag implements VulkanEnumBitmaskType
 {
   /**
    * No flags set.
    */
 
-  VK_LOGICAL_DEVICE_CREATE_FLAG_NONE(0x0);
+  VK_MEMORY_MAP_FLAG_NONE(0x0);
 
   private final int value;
 
-  VulkanLogicalDeviceCreateFlag(final int i)
+  VulkanMemoryMapFlag(final int i)
   {
     this.value = i;
   }

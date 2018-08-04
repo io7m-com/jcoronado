@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * A reference to a logical Vulkan device.
@@ -286,5 +287,87 @@ public interface VulkanLogicalDeviceType extends VulkanHandleDispatchableType
    */
 
   void waitIdle()
+    throws VulkanException;
+
+  /**
+   * Create a buffer.
+   *
+   * @param create_info The buffer creation info
+   *
+   * @return A buffer
+   *
+   * @throws VulkanException On errors
+   */
+
+  VulkanBufferType createBuffer(
+    VulkanBufferCreateInfo create_info)
+    throws VulkanException;
+
+  /**
+   * Retrieve the memory requirements for the given buffer.
+   *
+   * @param buffer The buffer
+   *
+   * @return The memory requirements
+   *
+   * @throws VulkanException On errors
+   */
+
+  VulkanMemoryRequirements getBufferMemoryRequirements(
+    VulkanBufferType buffer)
+    throws VulkanException;
+
+  /**
+   * Allocate device memory.
+   *
+   * @param info The allocation info
+   *
+   * @return Allocated memory
+   *
+   * @throws VulkanException On errors
+   */
+
+  VulkanDeviceMemoryType allocateMemory(
+    VulkanMemoryAllocateInfo info)
+    throws VulkanException;
+
+  /**
+   * Bind device memory to a buffer object.
+   *
+   * @param buffer        The logical device that owns the buffer and memory
+   * @param device_memory The device memory to attach
+   * @param offset        The start offset of the region of memory which is to be bound to the
+   *                      buffer. The number of bytes returned in the VkMemoryRequirements::size
+   *                      member in memory, starting from memoryOffset bytes, will be bound to the
+   *                      specified buffer.
+   *
+   * @throws VulkanException On errors
+   */
+
+  void bindBufferMemory(
+    VulkanBufferType buffer,
+    VulkanDeviceMemoryType device_memory,
+    long offset)
+    throws VulkanException;
+
+  /**
+   * Map a memory object into the application address space.
+   *
+   * @param memory The device memory object to be mapped
+   * @param offset A zero-based byte offset from the beginning of the memory object
+   * @param size   The size of the memory range to map, or VK_WHOLE_SIZE to map from offset to the
+   *               end of the allocation
+   * @param flags  The flags
+   *
+   * @return Mapped memory
+   *
+   * @throws VulkanException On errors
+   */
+
+  VulkanMappedMemoryType mapMemory(
+    VulkanDeviceMemoryType memory,
+    long offset,
+    long size,
+    Set<VulkanMemoryMapFlag> flags)
     throws VulkanException;
 }

@@ -16,6 +16,8 @@
 
 package com.io7m.jcoronado.api;
 
+import java.util.List;
+
 /**
  * @see "VkCommandBuffer"
  */
@@ -60,6 +62,25 @@ public interface VulkanCommandBufferType extends VulkanHandleDispatchableType
   void bindPipeline(
     VulkanPipelineBindPoint bind_point,
     VulkanPipelineType pipeline)
+    throws VulkanException;
+
+  /**
+   * Bind vertex buffers to a command buffer.
+   *
+   * @param first_binding The index of the first vertex input binding whose state is updated by the
+   *                      command
+   * @param binding_count The number of vertex input bindings whose state is updated by the command
+   * @param buffers       An array of buffer handles
+   * @param offsets       An array of buffer offsets
+   *
+   * @throws VulkanException On errors
+   */
+
+  void bindVertexBuffers(
+    int first_binding,
+    int binding_count,
+    List<VulkanBufferType> buffers,
+    List<Long> offsets)
     throws VulkanException;
 
   /**

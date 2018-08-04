@@ -17,6 +17,7 @@
       <Class name="com.io7m.jcoronado.api.VulkanAttachmentDescription"/>
       <Class name="com.io7m.jcoronado.api.VulkanAttachmentReference"/>
       <Class name="com.io7m.jcoronado.api.VulkanBlendConstants"/>
+      <Class name="com.io7m.jcoronado.api.VulkanBufferCreateInfo"/>
       <Class name="com.io7m.jcoronado.api.VulkanClearValueDepthStencil"/>
       <Class name="com.io7m.jcoronado.api.VulkanClearValueColorFloatingPoint"/>
       <Class name="com.io7m.jcoronado.api.VulkanClearValueColorIntegerSigned"/>
@@ -119,6 +120,13 @@
       <Class name="com.io7m.jcoronado.lwjgl.VulkanLWJGLLogicalDevice"/>
       <Method name="createFramebuffer"/>
       <Bug pattern="LEST_LOST_EXCEPTION_STACK_TRACE"/>
+    </And>
+  </Match>
+
+  <Match>
+    <And>
+      <Class name="com.io7m.jcoronado.api.VulkanMissingRequiredMemoryTypeException"/>
+      <Bug pattern="SE_BAD_FIELD"/>
     </And>
   </Match>
 

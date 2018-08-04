@@ -99,25 +99,6 @@ public final class VulkanLWJGLInstance
         Objects.requireNonNull(in_extensions_enabled, "in_extensions"));
   }
 
-  @Override
-  public boolean equals(final Object o)
-  {
-    if (this == o) {
-      return true;
-    }
-    if (o == null || !Objects.equals(this.getClass(), o.getClass())) {
-      return false;
-    }
-    final VulkanLWJGLInstance that = (VulkanLWJGLInstance) o;
-    return Objects.equals(this.instance, that.instance);
-  }
-
-  @Override
-  public int hashCode()
-  {
-    return Objects.hash(this.instance);
-  }
-
   private static List<VulkanQueueFamilyProperties> parsePhysicalDeviceQueueFamilies(
     final MemoryStack stack_initial,
     final VkPhysicalDevice vk_device)
@@ -541,6 +522,25 @@ public final class VulkanLWJGLInstance
     return VulkanLineWidthRange.of(
       buffer.get(0),
       buffer.get(1));
+  }
+
+  @Override
+  public boolean equals(final Object o)
+  {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || !Objects.equals(this.getClass(), o.getClass())) {
+      return false;
+    }
+    final VulkanLWJGLInstance that = (VulkanLWJGLInstance) o;
+    return Objects.equals(this.instance, that.instance);
+  }
+
+  @Override
+  public int hashCode()
+  {
+    return Objects.hash(this.instance);
   }
 
   VulkanLWJGLExtensionsRegistry extensionRegistry()

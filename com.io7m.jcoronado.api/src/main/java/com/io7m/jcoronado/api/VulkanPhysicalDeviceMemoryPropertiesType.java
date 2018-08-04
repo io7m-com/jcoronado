@@ -20,6 +20,8 @@ import com.io7m.immutables.styles.ImmutablesStyleType;
 import org.immutables.value.Value;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 
 /**
  * The memory properties for a physical device.
@@ -45,4 +47,42 @@ public interface VulkanPhysicalDeviceMemoryPropertiesType
 
   @Value.Parameter
   List<VulkanMemoryType> types();
+
+  /**
+   * Find a suitable memory type for the given requirements and properties.
+   *
+   * @param requirements The memory requirements
+   * @param flags        The memory properties
+   *
+   * @return A memory type
+   *
+   * @throws VulkanMissingRequiredMemoryTypeException If no suitable memory type exists
+   */
+
+  default VulkanMemoryType findSuitableMemoryType(
+    final VulkanMemoryRequirements requirements,
+    final Set<VulkanMemoryPropertyFlag> flags)
+    throws VulkanMissingRequiredMemoryTypeException
+  {
+    Objects.requireNonNull(requirements, "requirements");
+    Objects.requireNonNull(flags, "flags");
+
+    final int type_filter = requirements.memoryTypeBits();
+    final List<VulkanMemoryType> types = this.types();
+    final int type_count = types.size();
+    for (int index = 0; index < type_count; ++index) {
+      final VulkanMemoryType type = types.get(index);
+      final int bit = 1 << index;
+      if (((type_filter & bit) == bit) && (type.flags().containsAll(flags))) {
+        return type;
+      }
+    }
+
+    throw new VulkanMissingRequiredMemoryTypeException(
+      "No suitable memory type is available.",
+      requirements,
+      flags,
+      this.heaps(),
+      types);
+  }
 }

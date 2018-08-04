@@ -18,9 +18,9 @@ package com.io7m.jcoronado.examples;
 
 import com.io7m.jcoronado.api.VulkanApplicationInfo;
 import com.io7m.jcoronado.api.VulkanAttachmentDescription;
-import com.io7m.jcoronado.api.VulkanAttachmentLoadOp;
 import com.io7m.jcoronado.api.VulkanAttachmentReference;
-import com.io7m.jcoronado.api.VulkanAttachmentStoreOp;
+import com.io7m.jcoronado.api.VulkanBufferCreateInfo;
+import com.io7m.jcoronado.api.VulkanBufferType;
 import com.io7m.jcoronado.api.VulkanClearValueColorFloatingPoint;
 import com.io7m.jcoronado.api.VulkanCommandBufferBeginInfo;
 import com.io7m.jcoronado.api.VulkanCommandBufferCreateInfo;
@@ -28,15 +28,14 @@ import com.io7m.jcoronado.api.VulkanCommandBufferType;
 import com.io7m.jcoronado.api.VulkanCommandPoolCreateInfo;
 import com.io7m.jcoronado.api.VulkanCommandPoolType;
 import com.io7m.jcoronado.api.VulkanComponentMapping;
+import com.io7m.jcoronado.api.VulkanDeviceMemoryType;
 import com.io7m.jcoronado.api.VulkanException;
 import com.io7m.jcoronado.api.VulkanExtensionProperties;
 import com.io7m.jcoronado.api.VulkanExtensions;
 import com.io7m.jcoronado.api.VulkanExtent2D;
 import com.io7m.jcoronado.api.VulkanFramebufferCreateInfo;
 import com.io7m.jcoronado.api.VulkanFramebufferType;
-import com.io7m.jcoronado.api.VulkanFrontFace;
 import com.io7m.jcoronado.api.VulkanGraphicsPipelineCreateInfo;
-import com.io7m.jcoronado.api.VulkanImageLayout;
 import com.io7m.jcoronado.api.VulkanImageSubresourceRange;
 import com.io7m.jcoronado.api.VulkanImageType;
 import com.io7m.jcoronado.api.VulkanImageUsageFlag;
@@ -51,6 +50,10 @@ import com.io7m.jcoronado.api.VulkanLayers;
 import com.io7m.jcoronado.api.VulkanLogicalDeviceCreateInfo;
 import com.io7m.jcoronado.api.VulkanLogicalDeviceQueueCreateInfo;
 import com.io7m.jcoronado.api.VulkanLogicalDeviceType;
+import com.io7m.jcoronado.api.VulkanMappedMemoryType;
+import com.io7m.jcoronado.api.VulkanMemoryAllocateInfo;
+import com.io7m.jcoronado.api.VulkanMemoryRequirements;
+import com.io7m.jcoronado.api.VulkanMemoryType;
 import com.io7m.jcoronado.api.VulkanOffset2D;
 import com.io7m.jcoronado.api.VulkanPhysicalDeviceType;
 import com.io7m.jcoronado.api.VulkanPipelineColorBlendAttachmentState;
@@ -71,7 +74,6 @@ import com.io7m.jcoronado.api.VulkanRenderPassBeginInfo;
 import com.io7m.jcoronado.api.VulkanRenderPassCreateInfo;
 import com.io7m.jcoronado.api.VulkanRenderPassType;
 import com.io7m.jcoronado.api.VulkanResourceException;
-import com.io7m.jcoronado.api.VulkanSampleCountFlag;
 import com.io7m.jcoronado.api.VulkanSemaphoreCreateInfo;
 import com.io7m.jcoronado.api.VulkanSemaphoreType;
 import com.io7m.jcoronado.api.VulkanShaderModuleCreateInfo;
@@ -84,6 +86,8 @@ import com.io7m.jcoronado.api.VulkanSubpassDescription;
 import com.io7m.jcoronado.api.VulkanTemporaryAllocatorType;
 import com.io7m.jcoronado.api.VulkanUncheckedException;
 import com.io7m.jcoronado.api.VulkanVersions;
+import com.io7m.jcoronado.api.VulkanVertexInputAttributeDescription;
+import com.io7m.jcoronado.api.VulkanVertexInputBindingDescription;
 import com.io7m.jcoronado.api.VulkanViewport;
 import com.io7m.jcoronado.extensions.api.VulkanCompositeAlphaFlagKHR;
 import com.io7m.jcoronado.extensions.api.VulkanExtKHRSurfaceType;
@@ -108,6 +112,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.HashSet;
@@ -118,37 +123,52 @@ import java.util.OptionalInt;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import static com.io7m.jcoronado.api.VulkanAccessFlag.VK_ACCESS_COLOR_ATTACHMENT_READ_BIT;
 import static com.io7m.jcoronado.api.VulkanAccessFlag.VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
+import static com.io7m.jcoronado.api.VulkanAttachmentLoadOp.VK_ATTACHMENT_LOAD_OP_CLEAR;
+import static com.io7m.jcoronado.api.VulkanAttachmentLoadOp.VK_ATTACHMENT_LOAD_OP_DONT_CARE;
+import static com.io7m.jcoronado.api.VulkanAttachmentStoreOp.VK_ATTACHMENT_STORE_OP_DONT_CARE;
+import static com.io7m.jcoronado.api.VulkanAttachmentStoreOp.VK_ATTACHMENT_STORE_OP_STORE;
+import static com.io7m.jcoronado.api.VulkanBufferUsageFlag.VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
 import static com.io7m.jcoronado.api.VulkanCommandBufferLevel.VK_COMMAND_BUFFER_LEVEL_PRIMARY;
 import static com.io7m.jcoronado.api.VulkanCommandBufferUsageFlag.VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT;
 import static com.io7m.jcoronado.api.VulkanComponentSwizzle.VK_COMPONENT_SWIZZLE_IDENTITY;
 import static com.io7m.jcoronado.api.VulkanCullModeFlag.VK_CULL_MODE_BACK_BIT;
 import static com.io7m.jcoronado.api.VulkanFormat.VK_FORMAT_B8G8R8A8_UNORM;
+import static com.io7m.jcoronado.api.VulkanFormat.VK_FORMAT_R32G32B32_SFLOAT;
+import static com.io7m.jcoronado.api.VulkanFormat.VK_FORMAT_R32G32_SFLOAT;
 import static com.io7m.jcoronado.api.VulkanFormat.VK_FORMAT_UNDEFINED;
+import static com.io7m.jcoronado.api.VulkanFrontFace.VK_FRONT_FACE_CLOCKWISE;
 import static com.io7m.jcoronado.api.VulkanImageAspectFlag.VK_IMAGE_ASPECT_COLOR_BIT;
+import static com.io7m.jcoronado.api.VulkanImageLayout.VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+import static com.io7m.jcoronado.api.VulkanImageLayout.VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
+import static com.io7m.jcoronado.api.VulkanImageLayout.VK_IMAGE_LAYOUT_UNDEFINED;
 import static com.io7m.jcoronado.api.VulkanImageUsageFlag.VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
 import static com.io7m.jcoronado.api.VulkanImageViewKind.VK_IMAGE_VIEW_TYPE_2D;
+import static com.io7m.jcoronado.api.VulkanMemoryPropertyFlag.VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
+import static com.io7m.jcoronado.api.VulkanMemoryPropertyFlag.VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT;
 import static com.io7m.jcoronado.api.VulkanPipelineBindPoint.VK_PIPELINE_BIND_POINT_GRAPHICS;
 import static com.io7m.jcoronado.api.VulkanPipelineStageFlag.VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
 import static com.io7m.jcoronado.api.VulkanPolygonMode.VK_POLYGON_MODE_FILL;
 import static com.io7m.jcoronado.api.VulkanPrimitiveTopology.VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
 import static com.io7m.jcoronado.api.VulkanQueueFamilyPropertyFlag.VK_QUEUE_GRAPHICS_BIT;
+import static com.io7m.jcoronado.api.VulkanSampleCountFlag.VK_SAMPLE_COUNT_1_BIT;
 import static com.io7m.jcoronado.api.VulkanShaderStageFlag.VK_SHADER_STAGE_FRAGMENT_BIT;
 import static com.io7m.jcoronado.api.VulkanShaderStageFlag.VK_SHADER_STAGE_VERTEX_BIT;
 import static com.io7m.jcoronado.api.VulkanSharingMode.VK_SHARING_MODE_CONCURRENT;
 import static com.io7m.jcoronado.api.VulkanSharingMode.VK_SHARING_MODE_EXCLUSIVE;
 import static com.io7m.jcoronado.api.VulkanSubpassContents.VK_SUBPASS_CONTENTS_INLINE;
+import static com.io7m.jcoronado.api.VulkanVertexInputRate.VK_VERTEX_INPUT_RATE_VERTEX;
 import static com.io7m.jcoronado.extensions.api.VulkanColorSpaceKHR.VK_COLOR_SPACE_SRGB_NONLINEAR_KHR;
 import static com.io7m.jcoronado.extensions.api.VulkanCompositeAlphaFlagKHR.VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR;
 import static com.io7m.jcoronado.extensions.api.VulkanPresentModeKHR.VK_PRESENT_MODE_FIFO_KHR;
 import static com.io7m.jcoronado.extensions.api.VulkanPresentModeKHR.VK_PRESENT_MODE_IMMEDIATE_KHR;
 import static com.io7m.jcoronado.extensions.api.VulkanPresentModeKHR.VK_PRESENT_MODE_MAILBOX_KHR;
+import static java.util.concurrent.TimeUnit.SECONDS;
 
 public final class HelloVulkan
 {
@@ -156,6 +176,10 @@ public final class HelloVulkan
 
   private static final GLFWErrorCallback GLFW_ERROR_CALLBACK =
     GLFWErrorCallback.createPrint();
+
+  private static final int VERTEX_POSITION_SIZE = 2 * 4;
+  private static final int VERTEX_COLOR_SIZE = 3 * 4;
+  private static final int VERTEX_SIZE = VERTEX_POSITION_SIZE + VERTEX_COLOR_SIZE;
 
   private HelloVulkan()
   {
@@ -425,19 +449,19 @@ public final class HelloVulkan
       final VulkanAttachmentDescription color_attachment_description =
         VulkanAttachmentDescription.builder()
           .setFormat(surface_format.format())
-          .setSamples(VulkanSampleCountFlag.VK_SAMPLE_COUNT_1_BIT)
-          .setLoadOp(VulkanAttachmentLoadOp.VK_ATTACHMENT_LOAD_OP_CLEAR)
-          .setStoreOp(VulkanAttachmentStoreOp.VK_ATTACHMENT_STORE_OP_STORE)
-          .setStencilLoadOp(VulkanAttachmentLoadOp.VK_ATTACHMENT_LOAD_OP_DONT_CARE)
-          .setStencilStoreOp(VulkanAttachmentStoreOp.VK_ATTACHMENT_STORE_OP_DONT_CARE)
-          .setInitialLayout(VulkanImageLayout.VK_IMAGE_LAYOUT_UNDEFINED)
-          .setFinalLayout(VulkanImageLayout.VK_IMAGE_LAYOUT_PRESENT_SRC_KHR)
+          .setSamples(VK_SAMPLE_COUNT_1_BIT)
+          .setLoadOp(VK_ATTACHMENT_LOAD_OP_CLEAR)
+          .setStoreOp(VK_ATTACHMENT_STORE_OP_STORE)
+          .setStencilLoadOp(VK_ATTACHMENT_LOAD_OP_DONT_CARE)
+          .setStencilStoreOp(VK_ATTACHMENT_STORE_OP_DONT_CARE)
+          .setInitialLayout(VK_IMAGE_LAYOUT_UNDEFINED)
+          .setFinalLayout(VK_IMAGE_LAYOUT_PRESENT_SRC_KHR)
           .build();
 
       final VulkanAttachmentReference color_attachment_reference =
         VulkanAttachmentReference.builder()
           .setAttachment(0)
-          .setLayout(VulkanImageLayout.VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL)
+          .setLayout(VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL)
           .build();
 
       final VulkanSubpassDescription subpass_description =
@@ -484,8 +508,34 @@ public final class HelloVulkan
           .setShaderEntryPoint("R3_clip_triangle_frag_main")
           .build();
 
+      final VulkanVertexInputBindingDescription vertex_binding_description =
+        VulkanVertexInputBindingDescription.builder()
+          .setBinding(0)
+          .setInputRate(VK_VERTEX_INPUT_RATE_VERTEX)
+          .setStride(VERTEX_SIZE)
+          .build();
+
+      final VulkanVertexInputAttributeDescription vertex_position_attribute =
+        VulkanVertexInputAttributeDescription.builder()
+          .setBinding(0)
+          .setLocation(0)
+          .setFormat(VK_FORMAT_R32G32_SFLOAT)
+          .setOffset(0)
+          .build();
+
+      final VulkanVertexInputAttributeDescription vertex_color_attribute =
+        VulkanVertexInputAttributeDescription.builder()
+          .setBinding(0)
+          .setLocation(1)
+          .setFormat(VK_FORMAT_R32G32B32_SFLOAT)
+          .setOffset(VERTEX_POSITION_SIZE)
+          .build();
+
       final VulkanPipelineVertexInputStateCreateInfo vertex_input_info =
         VulkanPipelineVertexInputStateCreateInfo.builder()
+          .addVertexBindingDescriptions(vertex_binding_description)
+          .addVertexAttributeDescriptions(vertex_position_attribute)
+          .addVertexAttributeDescriptions(vertex_color_attribute)
           .build();
 
       final VulkanPipelineInputAssemblyStateCreateInfo input_assembly_info =
@@ -514,7 +564,7 @@ public final class HelloVulkan
           .setDepthBiasEnable(false)
           .setDepthBiasSlopeFactor(0.0f)
           .setDepthClampEnable(false)
-          .setFrontFace(VulkanFrontFace.VK_FRONT_FACE_CLOCKWISE)
+          .setFrontFace(VK_FRONT_FACE_CLOCKWISE)
           .setLineWidth(1.0f)
           .setPolygonMode(VK_POLYGON_MODE_FILL)
           .setRasterizerDiscardEnable(false)
@@ -542,7 +592,7 @@ public final class HelloVulkan
           .setAlphaToCoverageEnable(false)
           .setAlphaToOneEnable(false)
           .setMinSampleShading(1.0f)
-          .setRasterizationSamples(VulkanSampleCountFlag.VK_SAMPLE_COUNT_1_BIT)
+          .setRasterizationSamples(VK_SAMPLE_COUNT_1_BIT)
           .setSampleShadingEnable(false)
           .build();
 
@@ -584,6 +634,76 @@ public final class HelloVulkan
           resources.add(device.createFramebuffer(framebuffer_info));
 
         framebuffers.add(framebuffer);
+      }
+
+      /*
+       * Create vertex buffers.
+       */
+
+      final VulkanBufferCreateInfo vertex_buffer_create_info =
+        VulkanBufferCreateInfo.builder()
+          .setSize(3L * VERTEX_SIZE)
+          .addUsageFlags(VK_BUFFER_USAGE_VERTEX_BUFFER_BIT)
+          .setSharingMode(VK_SHARING_MODE_EXCLUSIVE)
+          .build();
+
+      final VulkanBufferType vertex_buffer =
+        resources.add(device.createBuffer(vertex_buffer_create_info));
+
+      final VulkanMemoryRequirements vertex_buffer_requirements =
+        device.getBufferMemoryRequirements(vertex_buffer);
+
+      LOG.debug(
+        "buffer memory requirements: size {} alignment {} type 0x{}",
+        Long.valueOf(vertex_buffer_requirements.size()),
+        Long.valueOf(vertex_buffer_requirements.alignment()),
+        Integer.toUnsignedString(vertex_buffer_requirements.memoryTypeBits(), 16));
+
+      final VulkanMemoryType vertex_buffer_memory_type =
+        physical_device.memory()
+          .findSuitableMemoryType(
+            vertex_buffer_requirements,
+            Set.of(VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT));
+
+      LOG.debug("buffer memory type: {}", vertex_buffer_memory_type);
+
+      final VulkanMemoryAllocateInfo vertex_buffer_allocation =
+        VulkanMemoryAllocateInfo.builder()
+          .setMemoryTypeIndex(vertex_buffer_memory_type.heapIndex())
+          .setSize(vertex_buffer_requirements.size())
+          .build();
+
+      final VulkanDeviceMemoryType vertex_buffer_memory =
+        resources.add(device.allocateMemory(vertex_buffer_allocation));
+
+      device.bindBufferMemory(vertex_buffer, vertex_buffer_memory, 0L);
+
+      /*
+       * Populate vertex buffer by mapping the memory and writing to it. Closing the mapped
+       * memory will automatically unmap it.
+       */
+
+      try (VulkanMappedMemoryType vertex_mapped =
+             device.mapMemory(vertex_buffer_memory, 0L, 3L * VERTEX_SIZE, Set.of())) {
+
+        final ByteBuffer buffer = vertex_mapped.asByteBuffer();
+        buffer.putFloat(0, 0.0f);
+        buffer.putFloat(4, -0.5f);
+        buffer.putFloat(8, 1.0f);
+        buffer.putFloat(12, 0.0f);
+        buffer.putFloat(16, 0.0f);
+
+        buffer.putFloat(20, 0.5f);
+        buffer.putFloat(24, 0.5f);
+        buffer.putFloat(28, 0.0f);
+        buffer.putFloat(32, 1.0f);
+        buffer.putFloat(36, 0.0f);
+
+        buffer.putFloat(40, -0.5f);
+        buffer.putFloat(44, 0.5f);
+        buffer.putFloat(48, 0.0f);
+        buffer.putFloat(52, 0.0f);
+        buffer.putFloat(56, 1.0f);
       }
 
       /*
@@ -650,6 +770,8 @@ public final class HelloVulkan
         graphics_command_buffer.beginCommandBuffer(begin_info);
         graphics_command_buffer.beginRenderPass(render_info, VK_SUBPASS_CONTENTS_INLINE);
         graphics_command_buffer.bindPipeline(VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline);
+        graphics_command_buffer.bindVertexBuffers(
+          0, 1, List.of(vertex_buffer), List.of(Long.valueOf(0L)));
         graphics_command_buffer.draw(3, 1, 0, 0);
         graphics_command_buffer.endRenderPass();
         graphics_command_buffer.endCommandBuffer();
@@ -684,7 +806,7 @@ public final class HelloVulkan
       GLFW_ERROR_CALLBACK.close();
       exec.shutdown();
       try {
-        exec.awaitTermination(5L, TimeUnit.SECONDS);
+        exec.awaitTermination(5L, SECONDS);
       } catch (final InterruptedException e) {
         Thread.currentThread().interrupt();
       }

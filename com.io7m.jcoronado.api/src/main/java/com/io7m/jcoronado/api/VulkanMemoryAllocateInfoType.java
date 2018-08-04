@@ -16,31 +16,29 @@
 
 package com.io7m.jcoronado.api;
 
+import com.io7m.immutables.styles.ImmutablesStyleType;
+import org.immutables.value.Value;
+
 /**
- * Flags specified when creating logical devices.
- *
- * Vulkan 1.1 specification: "VkDeviceCreateFlags is a bitmask type for setting a mask, but is
- * currently reserved for future use."
+ * @see "VkMemoryAllocateInfo"
  */
 
-public enum VulkanLogicalDeviceCreateFlag implements VulkanEnumBitmaskType
+@ImmutablesStyleType
+@Value.Immutable
+public interface VulkanMemoryAllocateInfoType
 {
   /**
-   * No flags set.
+   * @return The size of the allocation in bytes
    */
 
-  VK_LOGICAL_DEVICE_CREATE_FLAG_NONE(0x0);
+  @Value.Parameter
+  long size();
 
-  private final int value;
+  /**
+   * @return An index identifying a memory type from the memoryTypes array of the
+   * VkPhysicalDeviceMemoryProperties structure
+   */
 
-  VulkanLogicalDeviceCreateFlag(final int i)
-  {
-    this.value = i;
-  }
-
-  @Override
-  public int value()
-  {
-    return this.value;
-  }
+  @Value.Parameter
+  int memoryTypeIndex();
 }

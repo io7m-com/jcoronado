@@ -16,6 +16,7 @@
 
 package com.io7m.jcoronado.lwjgl;
 
+import com.io7m.jcoronado.api.VulkanBufferType;
 import com.io7m.jcoronado.api.VulkanChecks;
 import com.io7m.jcoronado.api.VulkanCommandBufferBeginInfo;
 import com.io7m.jcoronado.api.VulkanCommandBufferType;
@@ -32,6 +33,8 @@ import org.lwjgl.vulkan.VkRenderPassBeginInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.nio.LongBuffer;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -150,6 +153,36 @@ public final class VulkanLWJGLCommandBuffer
       VulkanLWJGLClassChecks.check(pipeline, VulkanLWJGLPipeline.class);
 
     VK10.vkCmdBindPipeline(this.handle, bind_point.value(), pipe.handle());
+  }
+
+  @Override
+  public void bindVertexBuffers(
+    final int first_binding,
+    final int binding_count,
+    final List<VulkanBufferType> buffers,
+    final List<Long> offsets)
+    throws VulkanException
+  {
+    Objects.requireNonNull(buffers, "buffers");
+    Objects.requireNonNull(offsets, "offsets");
+
+    try (MemoryStack stack = this.stack_initial.push()) {
+      final int buffers_size = buffers.size();
+      final LongBuffer lbuffers = stack.mallocLong(buffers_size);
+      final int offsets_size = offsets.size();
+      final LongBuffer loffsets = stack.mallocLong(offsets_size);
+
+      for (int index = 0; index < buffers_size; ++index) {
+        final VulkanLWJGLBuffer cbuffer =
+          VulkanLWJGLClassChecks.check(buffers.get(index), VulkanLWJGLBuffer.class);
+        lbuffers.put(index, cbuffer.handle());
+      }
+      for (int index = 0; index < offsets_size; ++index) {
+        loffsets.put(index, offsets.get(index).longValue());
+      }
+
+      VK10.vkCmdBindVertexBuffers(this.handle, first_binding, lbuffers, loffsets);
+    }
   }
 
   @Override

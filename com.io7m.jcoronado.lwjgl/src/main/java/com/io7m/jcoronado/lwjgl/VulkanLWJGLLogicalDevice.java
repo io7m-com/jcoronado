@@ -16,12 +16,16 @@
 
 package com.io7m.jcoronado.lwjgl;
 
+import com.io7m.jcoronado.api.VulkanBufferCreateInfo;
+import com.io7m.jcoronado.api.VulkanBufferType;
 import com.io7m.jcoronado.api.VulkanChecks;
 import com.io7m.jcoronado.api.VulkanCommandBufferCreateInfo;
 import com.io7m.jcoronado.api.VulkanCommandBufferType;
 import com.io7m.jcoronado.api.VulkanCommandPoolCreateInfo;
 import com.io7m.jcoronado.api.VulkanCommandPoolType;
 import com.io7m.jcoronado.api.VulkanDestroyedException;
+import com.io7m.jcoronado.api.VulkanDeviceMemoryType;
+import com.io7m.jcoronado.api.VulkanEnumMaps;
 import com.io7m.jcoronado.api.VulkanException;
 import com.io7m.jcoronado.api.VulkanExtensionType;
 import com.io7m.jcoronado.api.VulkanFenceCreateInfo;
@@ -35,6 +39,10 @@ import com.io7m.jcoronado.api.VulkanIncompatibleClassException;
 import com.io7m.jcoronado.api.VulkanLogicalDeviceCreateInfo;
 import com.io7m.jcoronado.api.VulkanLogicalDeviceQueueCreateInfo;
 import com.io7m.jcoronado.api.VulkanLogicalDeviceType;
+import com.io7m.jcoronado.api.VulkanMappedMemoryType;
+import com.io7m.jcoronado.api.VulkanMemoryAllocateInfo;
+import com.io7m.jcoronado.api.VulkanMemoryMapFlag;
+import com.io7m.jcoronado.api.VulkanMemoryRequirements;
 import com.io7m.jcoronado.api.VulkanPhysicalDeviceType;
 import com.io7m.jcoronado.api.VulkanPipelineLayoutCreateInfo;
 import com.io7m.jcoronado.api.VulkanPipelineLayoutType;
@@ -51,6 +59,7 @@ import com.io7m.jcoronado.api.VulkanUncheckedException;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.vulkan.VK10;
+import org.lwjgl.vulkan.VkBufferCreateInfo;
 import org.lwjgl.vulkan.VkCommandBuffer;
 import org.lwjgl.vulkan.VkCommandBufferAllocateInfo;
 import org.lwjgl.vulkan.VkCommandPoolCreateInfo;
@@ -59,6 +68,8 @@ import org.lwjgl.vulkan.VkFenceCreateInfo;
 import org.lwjgl.vulkan.VkFramebufferCreateInfo;
 import org.lwjgl.vulkan.VkGraphicsPipelineCreateInfo;
 import org.lwjgl.vulkan.VkImageViewCreateInfo;
+import org.lwjgl.vulkan.VkMemoryAllocateInfo;
+import org.lwjgl.vulkan.VkMemoryRequirements;
 import org.lwjgl.vulkan.VkPipelineLayoutCreateInfo;
 import org.lwjgl.vulkan.VkQueue;
 import org.lwjgl.vulkan.VkRenderPassCreateInfo;
@@ -73,6 +84,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static com.io7m.jcoronado.lwjgl.VulkanLWJGLHandle.Ownership.USER_OWNED;
@@ -95,6 +107,7 @@ public final class VulkanLWJGLLogicalDevice
   private final List<VulkanLWJGLQueue> queues;
   private final List<VulkanQueueType> queues_read;
   private final Map<String, VulkanExtensionType> extensions_enabled_read_only;
+  private final PointerBuffer pointer_buffer;
 
   VulkanLWJGLLogicalDevice(
     final Map<String, VulkanExtensionType> in_extensions_enabled,
@@ -120,6 +133,8 @@ public final class VulkanLWJGLLogicalDevice
       Collections.unmodifiableList(this.queues);
     this.stack_initial =
       MemoryStack.create();
+    this.pointer_buffer =
+      this.stack_initial.mallocPointer(1);
 
     this.initializeQueues();
   }
@@ -567,6 +582,140 @@ public final class VulkanLWJGLLogicalDevice
     VulkanChecks.checkReturnCode(
       VK10.vkDeviceWaitIdle(this.device),
       "vkDeviceWaitIdle");
+  }
+
+  @Override
+  public VulkanBufferType createBuffer(
+    final VulkanBufferCreateInfo create_info)
+    throws VulkanException
+  {
+    Objects.requireNonNull(create_info, "create_info");
+
+    this.checkNotClosed();
+
+    try (MemoryStack stack = this.stack_initial.push()) {
+      final VkBufferCreateInfo info =
+        VulkanLWJGLBufferCreateInfos.packInfo(stack, create_info);
+
+      final long[] handles = new long[1];
+      VulkanChecks.checkReturnCode(
+        VK10.vkCreateBuffer(this.device, info, null, handles),
+        "vkCreateBuffer");
+
+      final long handle = handles[0];
+      if (LOG.isTraceEnabled()) {
+        LOG.trace("created buffer: 0x{}", Long.toUnsignedString(handle, 16));
+      }
+      return new VulkanLWJGLBuffer(USER_OWNED, this.device, handle);
+    }
+  }
+
+  @Override
+  public VulkanMemoryRequirements getBufferMemoryRequirements(
+    final VulkanBufferType buffer)
+    throws VulkanException
+  {
+    Objects.requireNonNull(buffer, "buffer");
+
+    this.checkNotClosed();
+
+    final VulkanLWJGLBuffer cbuffer =
+      VulkanLWJGLClassChecks.check(buffer, VulkanLWJGLBuffer.class);
+
+    try (MemoryStack stack = this.stack_initial.push()) {
+      final VkMemoryRequirements info = VkMemoryRequirements.mallocStack(stack);
+
+      VK10.vkGetBufferMemoryRequirements(this.device, cbuffer.handle(), info);
+
+      return VulkanMemoryRequirements.builder()
+        .setAlignment(info.alignment())
+        .setMemoryTypeBits(info.memoryTypeBits())
+        .setSize(info.size())
+        .build();
+    }
+  }
+
+  @Override
+  public VulkanDeviceMemoryType allocateMemory(
+    final VulkanMemoryAllocateInfo info)
+    throws VulkanException
+  {
+    Objects.requireNonNull(info, "info");
+
+    this.checkNotClosed();
+
+    try (MemoryStack stack = this.stack_initial.push()) {
+      final VkMemoryAllocateInfo cinfo =
+        VkMemoryAllocateInfo.mallocStack(stack)
+          .sType(VK10.VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO)
+          .pNext(0L)
+          .allocationSize(info.size())
+          .memoryTypeIndex(info.memoryTypeIndex());
+
+      final long[] handles = new long[1];
+      VulkanChecks.checkReturnCode(
+        VK10.vkAllocateMemory(this.device, cinfo, null, handles),
+        "vkAllocateMemory");
+
+      final long handle = handles[0];
+      if (LOG.isTraceEnabled()) {
+        LOG.trace("allocated device memory: 0x{}", Long.toUnsignedString(handle, 16));
+      }
+
+      return new VulkanLWJGLDeviceMemory(USER_OWNED, this.device, handles[0]);
+    }
+  }
+
+  @Override
+  public void bindBufferMemory(
+    final VulkanBufferType buffer,
+    final VulkanDeviceMemoryType device_memory,
+    final long offset)
+    throws VulkanException
+  {
+    Objects.requireNonNull(buffer, "buffer");
+    Objects.requireNonNull(device_memory, "device_memory");
+
+    final VulkanLWJGLBuffer cbuffer =
+      VulkanLWJGLClassChecks.check(buffer, VulkanLWJGLBuffer.class);
+    final VulkanLWJGLDeviceMemory cmemory =
+      VulkanLWJGLClassChecks.check(device_memory, VulkanLWJGLDeviceMemory.class);
+
+    VulkanChecks.checkReturnCode(
+      VK10.vkBindBufferMemory(this.device, cbuffer.handle(), cmemory.handle(), offset),
+      "vkBindBufferMemory");
+  }
+
+  @Override
+  public VulkanMappedMemoryType mapMemory(
+    final VulkanDeviceMemoryType memory,
+    final long offset,
+    final long size,
+    final Set<VulkanMemoryMapFlag> flags)
+    throws VulkanException
+  {
+    Objects.requireNonNull(memory, "memory");
+    Objects.requireNonNull(flags, "flags");
+
+    final VulkanLWJGLDeviceMemory cmemory =
+      VulkanLWJGLClassChecks.check(memory, VulkanLWJGLDeviceMemory.class);
+
+    final int int_flags = VulkanEnumMaps.packValues(flags);
+    final long int_handle = cmemory.handle();
+
+    VulkanChecks.checkReturnCode(
+      VK10.vkMapMemory(this.device, int_handle, offset, size, int_flags, this.pointer_buffer),
+      "vkMapMemory");
+
+    final long address = this.pointer_buffer.get(0);
+    if (LOG.isTraceEnabled()) {
+      LOG.trace(
+        "mapped memory: 0x{} -> 0x{}",
+        Long.toUnsignedString(int_handle, 16),
+        Long.toUnsignedString(address, 16));
+    }
+
+    return new VulkanLWJGLMappedMemory(this.device, cmemory, address, size);
   }
 
   @Override

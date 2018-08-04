@@ -16,31 +16,33 @@
 
 package com.io7m.jcoronado.api;
 
+import java.nio.ByteBuffer;
+
 /**
- * Flags specified when creating logical devices.
- *
- * Vulkan 1.1 specification: "VkDeviceCreateFlags is a bitmask type for setting a mask, but is
- * currently reserved for future use."
+ * A pointer to an area of mapped memory.
  */
 
-public enum VulkanLogicalDeviceCreateFlag implements VulkanEnumBitmaskType
+public interface VulkanMappedMemoryType extends AutoCloseable
 {
   /**
-   * No flags set.
+   * @return {@code true} iff {@link #close()} has not been called
    */
 
-  VK_LOGICAL_DEVICE_CREATE_FLAG_NONE(0x0);
+  boolean isMapped();
 
-  private final int value;
-
-  VulkanLogicalDeviceCreateFlag(final int i)
-  {
-    this.value = i;
-  }
+  /**
+   * Unmap the memory.
+   *
+   * @throws VulkanException On errors
+   */
 
   @Override
-  public int value()
-  {
-    return this.value;
-  }
+  void close()
+    throws VulkanException;
+
+  /**
+   * @return The mapped memory as a byte buffer
+   */
+
+  ByteBuffer asByteBuffer();
 }
