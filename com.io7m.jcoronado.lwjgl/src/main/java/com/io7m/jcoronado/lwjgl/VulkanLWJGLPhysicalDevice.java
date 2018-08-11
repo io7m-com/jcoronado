@@ -81,9 +81,10 @@ public final class VulkanLWJGLPhysicalDevice
     final VulkanPhysicalDeviceLimits in_limits,
     final VulkanPhysicalDeviceFeatures in_features,
     final VulkanPhysicalDeviceMemoryProperties in_memory,
-    final List<VulkanQueueFamilyProperties> in_queue_families)
+    final List<VulkanQueueFamilyProperties> in_queue_families,
+    final VulkanLWJGLHostAllocatorProxy in_host_allocator_proxy)
   {
-    super(Ownership.USER_OWNED);
+    super(Ownership.USER_OWNED, in_host_allocator_proxy);
 
     this.instance =
       Objects.requireNonNull(in_instance, "instance");
@@ -438,7 +439,10 @@ public final class VulkanLWJGLPhysicalDevice
       final PointerBuffer vk_logical_device_ptr = stack.mallocPointer(1);
       checkReturnCode(
         VK10.vkCreateDevice(
-          this.device, vk_device_create_info, null, vk_logical_device_ptr),
+          this.device,
+          vk_device_create_info,
+          this.hostAllocatorProxy().callbackBuffer(),
+          vk_logical_device_ptr),
         "vkCreateDevice");
 
       final VkDevice vk_logical_device =
@@ -456,7 +460,8 @@ public final class VulkanLWJGLPhysicalDevice
         enabled,
         this,
         vk_logical_device,
-        info);
+        info,
+        this.hostAllocatorProxy());
     }
   }
 

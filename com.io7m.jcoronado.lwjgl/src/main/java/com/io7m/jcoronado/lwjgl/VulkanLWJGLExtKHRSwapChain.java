@@ -153,7 +153,8 @@ public final class VulkanLWJGLExtKHRSwapChain implements VulkanExtKHRSwapChainTy
   }
 
   private List<VulkanImageType> images(
-    final VulkanLWJGLKHRSwapChain chain)
+    final VulkanLWJGLKHRSwapChain chain,
+    final VulkanLWJGLHostAllocatorProxy host_allocator_proxy)
     throws VulkanException
   {
     final int[] count = new int[1];
@@ -173,7 +174,7 @@ public final class VulkanLWJGLExtKHRSwapChain implements VulkanExtKHRSwapChainTy
       "vkGetSwapchainImagesKHR");
 
     return LongStream.of(images)
-      .mapToObj(image -> new VulkanLWJGLImage(VULKAN_OWNED, image))
+      .mapToObj(image -> new VulkanLWJGLImage(VULKAN_OWNED, image, host_allocator_proxy))
       .collect(Collectors.toList());
   }
 
@@ -247,6 +248,9 @@ public final class VulkanLWJGLExtKHRSwapChain implements VulkanExtKHRSwapChainTy
     final VulkanSwapChainCreateInfo info)
     throws VulkanException
   {
+    Objects.requireNonNull(in_device, "in_device");
+    Objects.requireNonNull(info, "info");
+
     final VulkanLWJGLLogicalDevice device =
       VulkanLWJGLClassChecks.check(in_device, VulkanLWJGLLogicalDevice.class);
 
@@ -286,7 +290,8 @@ public final class VulkanLWJGLExtKHRSwapChain implements VulkanExtKHRSwapChainTy
       if (LOG.isDebugEnabled()) {
         LOG.debug("created swapchain: {}", Long.toUnsignedString(swapchain_address, 16));
       }
-      return new VulkanLWJGLKHRSwapChain(this, device, swapchain_address);
+      return new VulkanLWJGLKHRSwapChain(
+        this, device, swapchain_address, device.hostAllocatorProxy());
     }
   }
 
@@ -338,9 +343,10 @@ public final class VulkanLWJGLExtKHRSwapChain implements VulkanExtKHRSwapChainTy
     VulkanLWJGLKHRSwapChain(
       final VulkanLWJGLExtKHRSwapChain in_extension,
       final VulkanLWJGLLogicalDevice in_device,
-      final long in_chain)
+      final long in_chain,
+      final VulkanLWJGLHostAllocatorProxy in_host_allocator_proxy)
     {
-      super(USER_OWNED);
+      super(USER_OWNED, in_host_allocator_proxy);
 
       this.extension = Objects.requireNonNull(in_extension, "Extension");
       this.chain = in_chain;
@@ -388,7 +394,7 @@ public final class VulkanLWJGLExtKHRSwapChain implements VulkanExtKHRSwapChainTy
       throws VulkanException
     {
       this.checkNotClosed();
-      return this.extension.images(this);
+      return this.extension.images(this, this.hostAllocatorProxy());
     }
 
     @Override

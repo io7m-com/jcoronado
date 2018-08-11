@@ -14,4 +14,8 @@
     <appender-ref ref="STDERR"/>
   </root>
 
+  <logger
+    name="com.io7m.jcoronado.allocation_tracker.VulkanHostAllocatorTracker"
+    level="INFO"/>
+
 </configuration>

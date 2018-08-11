@@ -31,7 +31,22 @@
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
+      <artifactId>com.io7m.jcoronado.extensions.khr_surface.api</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>com.io7m.jcoronado.vma</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
       <artifactId>com.io7m.jcoronado.lwjgl</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>com.io7m.jcoronado.allocation_tracker</artifactId>
       <version>${project.version}</version>
     </dependency>
 
@@ -47,6 +62,10 @@
     <dependency>
       <groupId>org.lwjgl.osgi</groupId>
       <artifactId>org.lwjgl.vulkan</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.lwjgl.osgi</groupId>
+      <artifactId>org.lwjgl.vma</artifactId>
     </dependency>
     <dependency>
       <groupId>org.lwjgl.osgi</groupId>

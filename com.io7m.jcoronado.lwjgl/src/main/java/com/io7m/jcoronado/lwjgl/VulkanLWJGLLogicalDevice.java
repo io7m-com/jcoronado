@@ -113,10 +113,11 @@ public final class VulkanLWJGLLogicalDevice
     final Map<String, VulkanExtensionType> in_extensions_enabled,
     final VulkanLWJGLPhysicalDevice in_physical_device,
     final VkDevice in_device,
-    final VulkanLogicalDeviceCreateInfo in_creation)
+    final VulkanLogicalDeviceCreateInfo in_creation,
+    final VulkanLWJGLHostAllocatorProxy in_host_allocator_proxy)
     throws VulkanException
   {
-    super(USER_OWNED);
+    super(USER_OWNED, in_host_allocator_proxy);
 
     this.extensions_enabled_read_only =
       Collections.unmodifiableMap(
@@ -195,7 +196,8 @@ public final class VulkanLWJGLLogicalDevice
             queue_buffer);
 
           final VkQueue queue = new VkQueue(queue_buffer.get(0), this.device);
-          this.queues.add(new VulkanLWJGLQueue(this, queue, family, queue_index));
+          this.queues.add(new VulkanLWJGLQueue(
+            this, queue, family, queue_index, this.hostAllocatorProxy()));
         }
       }
     }
@@ -252,7 +254,11 @@ public final class VulkanLWJGLLogicalDevice
 
       final long[] results = new long[1];
       VulkanChecks.checkReturnCode(
-        VK10.vkCreateShaderModule(this.device, vk_create_info, null, results),
+        VK10.vkCreateShaderModule(
+          this.device,
+          vk_create_info,
+          this.hostAllocatorProxy().callbackBuffer(),
+          results),
         "vkCreateShaderModule");
 
       final long shader_module = results[0];
@@ -260,7 +266,11 @@ public final class VulkanLWJGLLogicalDevice
         LOG.trace("created shader module: 0x{}", Long.toUnsignedString(shader_module, 16));
       }
 
-      return new VulkanLWJGLShaderModule(USER_OWNED, this.device, shader_module);
+      return new VulkanLWJGLShaderModule(
+        USER_OWNED,
+        this.device,
+        shader_module,
+        this.hostAllocatorProxy());
     }
   }
 
@@ -282,7 +292,11 @@ public final class VulkanLWJGLLogicalDevice
 
       final long[] view = new long[1];
       VulkanChecks.checkReturnCode(
-        VK10.vkCreateImageView(this.device, create_info, null, view),
+        VK10.vkCreateImageView(
+          this.device,
+          create_info,
+          this.hostAllocatorProxy().callbackBuffer(),
+          view),
         "vkCreateImageView");
 
       final long view_handle = view[0];
@@ -290,7 +304,7 @@ public final class VulkanLWJGLLogicalDevice
         LOG.trace("created image view: 0x{}", Long.toUnsignedString(view_handle, 16));
       }
 
-      return new VulkanLWJGLImageView(this.device, view_handle);
+      return new VulkanLWJGLImageView(this.device, view_handle, this.hostAllocatorProxy());
     }
   }
 
@@ -309,7 +323,11 @@ public final class VulkanLWJGLLogicalDevice
 
       final long[] layout = new long[1];
       VulkanChecks.checkReturnCode(
-        VK10.vkCreatePipelineLayout(this.device, create_info, null, layout),
+        VK10.vkCreatePipelineLayout(
+          this.device,
+          create_info,
+          this.hostAllocatorProxy().callbackBuffer(),
+          layout),
         "vkCreatePipelineLayout");
 
       final long layout_handle = layout[0];
@@ -317,7 +335,11 @@ public final class VulkanLWJGLLogicalDevice
         LOG.trace("created pipeline layout: 0x{}", Long.toUnsignedString(layout_handle, 16));
       }
 
-      return new VulkanLWJGLPipelineLayout(USER_OWNED, this.device, layout_handle);
+      return new VulkanLWJGLPipelineLayout(
+        USER_OWNED,
+        this.device,
+        layout_handle,
+        this.hostAllocatorProxy());
     }
   }
 
@@ -336,7 +358,11 @@ public final class VulkanLWJGLLogicalDevice
 
       final long[] pass = new long[1];
       VulkanChecks.checkReturnCode(
-        VK10.vkCreateRenderPass(this.device, create_info, null, pass),
+        VK10.vkCreateRenderPass(
+          this.device,
+          create_info,
+          this.hostAllocatorProxy().callbackBuffer(),
+          pass),
         "vkCreateRenderPass");
 
       final long pass_handle = pass[0];
@@ -344,7 +370,11 @@ public final class VulkanLWJGLLogicalDevice
         LOG.trace("created render pass: 0x{}", Long.toUnsignedString(pass_handle, 16));
       }
 
-      return new VulkanLWJGLRenderPass(USER_OWNED, this.device, pass_handle);
+      return new VulkanLWJGLRenderPass(
+        USER_OWNED,
+        this.device,
+        pass_handle,
+        this.hostAllocatorProxy());
     }
   }
 
@@ -363,7 +393,12 @@ public final class VulkanLWJGLLogicalDevice
 
       final long[] pipes = new long[pipeline_infos.size()];
       VulkanChecks.checkReturnCode(
-        VK10.vkCreateGraphicsPipelines(this.device, 0L, infos, null, pipes),
+        VK10.vkCreateGraphicsPipelines(
+          this.device,
+          0L,
+          infos,
+          this.hostAllocatorProxy().callbackBuffer(),
+          pipes),
         "vkCreateGraphicsPipelines");
 
       final ArrayList<VulkanLWJGLPipeline> result_pipelines =
@@ -374,7 +409,11 @@ public final class VulkanLWJGLLogicalDevice
         if (LOG.isTraceEnabled()) {
           LOG.trace("created pipeline: 0x{}", Long.toUnsignedString(pipe, 16));
         }
-        result_pipelines.add(new VulkanLWJGLPipeline(USER_OWNED, this.device, pipe));
+        result_pipelines.add(new VulkanLWJGLPipeline(
+          USER_OWNED,
+          this.device,
+          pipe,
+          this.hostAllocatorProxy()));
       }
 
       return castPipelines(result_pipelines);
@@ -412,7 +451,11 @@ public final class VulkanLWJGLLogicalDevice
 
         final long[] framebuffers = new long[1];
         VulkanChecks.checkReturnCode(
-          VK10.vkCreateFramebuffer(this.device, info, null, framebuffers),
+          VK10.vkCreateFramebuffer(
+            this.device,
+            info,
+            this.hostAllocatorProxy().callbackBuffer(),
+            framebuffers),
           "vkCreateFramebuffer");
 
         final long handle = framebuffers[0];
@@ -420,7 +463,11 @@ public final class VulkanLWJGLLogicalDevice
           LOG.trace("created framebuffer: 0x{}", Long.toUnsignedString(handle, 16));
         }
 
-        return new VulkanLWJGLFramebuffer(USER_OWNED, this.device, handle);
+        return new VulkanLWJGLFramebuffer(
+          USER_OWNED,
+          this.device,
+          handle,
+          this.hostAllocatorProxy());
       }
     } catch (final VulkanUncheckedException e) {
       throw e.getCause();
@@ -442,7 +489,11 @@ public final class VulkanLWJGLLogicalDevice
 
       final long[] handles = new long[1];
       VulkanChecks.checkReturnCode(
-        VK10.vkCreateCommandPool(this.device, packed, null, handles),
+        VK10.vkCreateCommandPool(
+          this.device,
+          packed,
+          this.hostAllocatorProxy().callbackBuffer(),
+          handles),
         "vkCreateCommandPool");
 
       final long handle = handles[0];
@@ -450,7 +501,7 @@ public final class VulkanLWJGLLogicalDevice
         LOG.trace("created command pool: 0x{}", Long.toUnsignedString(handle, 16));
       }
 
-      return new VulkanLWJGLCommandPool(USER_OWNED, this.device, handle);
+      return new VulkanLWJGLCommandPool(USER_OWNED, this.device, handle, this.hostAllocatorProxy());
     }
   }
 
@@ -489,7 +540,7 @@ public final class VulkanLWJGLLogicalDevice
         final VkCommandBuffer handle =
           new VkCommandBuffer(buffers.get(index), this.device);
         final VulkanLWJGLCommandBuffer buffer =
-          new VulkanLWJGLCommandBuffer(VULKAN_OWNED, handle);
+          new VulkanLWJGLCommandBuffer(VULKAN_OWNED, handle, this.hostAllocatorProxy());
         results.add(buffer);
       }
 
@@ -513,14 +564,18 @@ public final class VulkanLWJGLLogicalDevice
       final long[] semaphores = new long[1];
 
       VulkanChecks.checkReturnCode(
-        VK10.vkCreateSemaphore(this.device, packed, null, semaphores),
+        VK10.vkCreateSemaphore(
+          this.device,
+          packed,
+          this.hostAllocatorProxy().callbackBuffer(),
+          semaphores),
         "vkCreateSemaphore");
 
       final long handle = semaphores[0];
       if (LOG.isTraceEnabled()) {
         LOG.trace("created semaphore: 0x{}", Long.toUnsignedString(handle, 16));
       }
-      return new VulkanLWJGLSemaphore(USER_OWNED, this.device, handle);
+      return new VulkanLWJGLSemaphore(USER_OWNED, this.device, handle, this.hostAllocatorProxy());
     }
   }
 
@@ -540,14 +595,18 @@ public final class VulkanLWJGLLogicalDevice
       final long[] fences = new long[1];
 
       VulkanChecks.checkReturnCode(
-        VK10.vkCreateFence(this.device, packed, null, fences),
+        VK10.vkCreateFence(
+          this.device,
+          packed,
+          this.hostAllocatorProxy().callbackBuffer(),
+          fences),
         "vkCreateFence");
 
       final long handle = fences[0];
       if (LOG.isTraceEnabled()) {
         LOG.trace("created semaphore: 0x{}", Long.toUnsignedString(handle, 16));
       }
-      return new VulkanLWJGLFence(USER_OWNED, this.device, handle);
+      return new VulkanLWJGLFence(USER_OWNED, this.device, handle, this.hostAllocatorProxy());
     }
   }
 
@@ -599,14 +658,18 @@ public final class VulkanLWJGLLogicalDevice
 
       final long[] handles = new long[1];
       VulkanChecks.checkReturnCode(
-        VK10.vkCreateBuffer(this.device, info, null, handles),
+        VK10.vkCreateBuffer(
+          this.device,
+          info,
+          this.hostAllocatorProxy().callbackBuffer(),
+          handles),
         "vkCreateBuffer");
 
       final long handle = handles[0];
       if (LOG.isTraceEnabled()) {
         LOG.trace("created buffer: 0x{}", Long.toUnsignedString(handle, 16));
       }
-      return new VulkanLWJGLBuffer(USER_OWNED, this.device, handle);
+      return new VulkanLWJGLBuffer(USER_OWNED, this.device, handle, this.hostAllocatorProxy());
     }
   }
 
@@ -654,7 +717,11 @@ public final class VulkanLWJGLLogicalDevice
 
       final long[] handles = new long[1];
       VulkanChecks.checkReturnCode(
-        VK10.vkAllocateMemory(this.device, cinfo, null, handles),
+        VK10.vkAllocateMemory(
+          this.device,
+          cinfo,
+          this.hostAllocatorProxy().callbackBuffer(),
+          handles),
         "vkAllocateMemory");
 
       final long handle = handles[0];
@@ -662,7 +729,11 @@ public final class VulkanLWJGLLogicalDevice
         LOG.trace("allocated device memory: 0x{}", Long.toUnsignedString(handle, 16));
       }
 
-      return new VulkanLWJGLDeviceMemory(USER_OWNED, this.device, handles[0]);
+      return new VulkanLWJGLDeviceMemory(
+        USER_OWNED,
+        this.device,
+        handles[0],
+        this.hostAllocatorProxy());
     }
   }
 
@@ -730,6 +801,6 @@ public final class VulkanLWJGLLogicalDevice
     if (LOG.isTraceEnabled()) {
       LOG.trace("destroying logical device: {}", this);
     }
-    VK10.vkDestroyDevice(this.device, null);
+    VK10.vkDestroyDevice(this.device, this.hostAllocatorProxy().callbackBuffer());
   }
 }

@@ -54,9 +54,10 @@ public final class VulkanLWJGLQueue
     final VulkanLWJGLLogicalDevice in_device,
     final VkQueue in_queue,
     final VulkanQueueFamilyProperties in_properties,
-    final int in_queue_index)
+    final int in_queue_index,
+    final VulkanLWJGLHostAllocatorProxy in_host_allocator_proxy)
   {
-    super(VULKAN_OWNED);
+    super(VULKAN_OWNED, in_host_allocator_proxy);
 
     this.device =
       Objects.requireNonNull(in_device, "device");

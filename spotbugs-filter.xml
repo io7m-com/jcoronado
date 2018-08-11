@@ -131,6 +131,12 @@
   </Match>
 
   <Match>
+    <Class name="com.io7m.jcoronado.lwjgl.VulkanLWJGLHostAllocatorProxy"/>
+    <Method name="close"/>
+    <Bug pattern="SEO_SUBOPTIMAL_EXPRESSION_ORDER"/>
+  </Match>
+
+  <Match>
     <Or>
       <Bug pattern="CE_CLASS_ENVY"/>
       <Bug pattern="CRLF_INJECTION_LOGS"/>

@@ -27,12 +27,14 @@
     <module>com.io7m.jcoronado.lwjgl</module>
     <module>com.io7m.jcoronado.extensions.khr_surface.api</module>
     <module>com.io7m.jcoronado.examples</module>
+    <module>com.io7m.jcoronado.vma</module>
+    <module>com.io7m.jcoronado.allocation_tracker</module>
   </modules>
 
   <properties>
     <io7m.api.previousVersion>0.0.1</io7m.api.previousVersion>
     <io7m.org.immutables.value.version>2.6.1</io7m.org.immutables.value.version>
-    <io7m.org.lwjgl.version>3.1.6</io7m.org.lwjgl.version>
+    <io7m.org.lwjgl.version>3.2.0</io7m.org.lwjgl.version>
   </properties>
 
   <licenses>
@@ -121,6 +123,11 @@
       </dependency>
       <dependency>
         <groupId>org.lwjgl.osgi</groupId>
+        <artifactId>org.lwjgl.vma</artifactId>
+        <version>${io7m.org.lwjgl.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.lwjgl.osgi</groupId>
         <artifactId>org.lwjgl.glfw</artifactId>
         <version>${io7m.org.lwjgl.version}</version>
       </dependency>
@@ -158,6 +165,67 @@
         <groupId>org.reflections</groupId>
         <artifactId>reflections</artifactId>
         <version>0.9.11</version>
+      </dependency>
+      <dependency>
+        <groupId>it.unimi.dsi</groupId>
+        <artifactId>fastutil</artifactId>
+        <version>8.2.1</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.lwjgl</groupId>
+        <artifactId>lwjgl</artifactId>
+        <version>${io7m.org.lwjgl.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.lwjgl</groupId>
+        <artifactId>lwjgl</artifactId>
+        <version>${io7m.org.lwjgl.version}</version>
+        <classifier>natives-linux</classifier>
+      </dependency>
+      <dependency>
+        <groupId>org.lwjgl</groupId>
+        <artifactId>lwjgl-jemalloc</artifactId>
+        <version>${io7m.org.lwjgl.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.lwjgl</groupId>
+        <artifactId>lwjgl-jemalloc</artifactId>
+        <version>${io7m.org.lwjgl.version}</version>
+        <classifier>natives-linux</classifier>
+      </dependency>
+      <dependency>
+        <groupId>org.lwjgl</groupId>
+        <artifactId>lwjgl-vulkan</artifactId>
+        <version>${io7m.org.lwjgl.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.lwjgl</groupId>
+        <artifactId>lwjgl-vulkan</artifactId>
+        <version>${io7m.org.lwjgl.version}</version>
+        <classifier>natives-linux</classifier>
+      </dependency>
+      <dependency>
+        <groupId>org.lwjgl</groupId>
+        <artifactId>lwjgl-glfw</artifactId>
+        <version>${io7m.org.lwjgl.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.lwjgl</groupId>
+        <artifactId>lwjgl-glfw</artifactId>
+        <version>${io7m.org.lwjgl.version}</version>
+        <classifier>natives-linux</classifier>
+      </dependency>
+      <dependency>
+        <groupId>org.lwjgl</groupId>
+        <artifactId>lwjgl-vma</artifactId>
+        <version>${io7m.org.lwjgl.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.lwjgl</groupId>
+        <artifactId>lwjgl-vma</artifactId>
+        <version>${io7m.org.lwjgl.version}</version>
+        <classifier>natives-linux</classifier>
       </dependency>
     </dependencies>
   </dependencyManagement>

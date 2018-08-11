@@ -25,13 +25,23 @@ import java.util.Objects;
 abstract class VulkanLWJGLHandle implements VulkanHandleType
 {
   private final Ownership ownership;
+  private final VulkanLWJGLHostAllocatorProxy host_allocator_proxy;
   private boolean closed;
 
   VulkanLWJGLHandle(
-    final Ownership in_ownership)
+    final Ownership in_ownership,
+    final VulkanLWJGLHostAllocatorProxy in_host_allocator_proxy)
   {
     this.closed = false;
-    this.ownership = Objects.requireNonNull(in_ownership, "ownership");
+    this.ownership =
+      Objects.requireNonNull(in_ownership, "ownership");
+    this.host_allocator_proxy =
+      Objects.requireNonNull(in_host_allocator_proxy, "in_host_allocator_proxy");
+  }
+
+  protected final VulkanLWJGLHostAllocatorProxy hostAllocatorProxy()
+  {
+    return this.host_allocator_proxy;
   }
 
   protected abstract Logger logger();

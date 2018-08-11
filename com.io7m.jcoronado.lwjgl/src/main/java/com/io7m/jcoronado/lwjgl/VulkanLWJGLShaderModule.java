@@ -39,9 +39,10 @@ public final class VulkanLWJGLShaderModule
   VulkanLWJGLShaderModule(
     final Ownership ownership,
     final VkDevice in_device,
-    final long in_handle)
+    final long in_handle,
+    final VulkanLWJGLHostAllocatorProxy in_host_allocator_proxy)
   {
-    super(ownership);
+    super(ownership, in_host_allocator_proxy);
     this.device = Objects.requireNonNull(in_device, "device");
     this.handle = in_handle;
   }
@@ -87,7 +88,10 @@ public final class VulkanLWJGLShaderModule
     if (LOG.isTraceEnabled()) {
       LOG.trace("destroying shader module: {}", this);
     }
-    VK10.vkDestroyShaderModule(this.device, this.handle, null);
+    VK10.vkDestroyShaderModule(
+      this.device,
+      this.handle,
+      this.hostAllocatorProxy().callbackBuffer());
   }
 
   /**

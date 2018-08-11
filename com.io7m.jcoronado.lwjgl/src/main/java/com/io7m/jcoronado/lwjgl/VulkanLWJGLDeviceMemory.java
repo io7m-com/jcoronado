@@ -39,9 +39,10 @@ public final class VulkanLWJGLDeviceMemory
   VulkanLWJGLDeviceMemory(
     final Ownership ownership,
     final VkDevice in_device,
-    final long in_handle)
+    final long in_handle,
+    final VulkanLWJGLHostAllocatorProxy in_host_allocator_proxy)
   {
-    super(ownership);
+    super(ownership, in_host_allocator_proxy);
     this.device = Objects.requireNonNull(in_device, "device");
     this.handle = in_handle;
   }
@@ -87,7 +88,7 @@ public final class VulkanLWJGLDeviceMemory
     if (LOG.isTraceEnabled()) {
       LOG.trace("freeing device memory: {}", this);
     }
-    VK10.vkFreeMemory(this.device, this.handle, null);
+    VK10.vkFreeMemory(this.device, this.handle, this.hostAllocatorProxy().callbackBuffer());
   }
 
   long handle()

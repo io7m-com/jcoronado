@@ -16,29 +16,25 @@
 
 package com.io7m.jcoronado.lwjgl;
 
-import com.io7m.jcoronado.api.VulkanImageType;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.io7m.jcoronado.vma.VMAAllocatorType;
 
 import java.util.Objects;
 
 /**
- * LWJGL {@link VulkanImageType}.
+ * @see "VmaAllocator"
  */
 
-public final class VulkanLWJGLImage extends VulkanLWJGLHandle implements VulkanImageType
+public final class VMALWJGLAllocator implements VMAAllocatorType
 {
-  private static final Logger LOG = LoggerFactory.getLogger(VulkanLWJGLImage.class);
+  private final VulkanLWJGLLogicalDevice device;
+  private final long allocator_address;
 
-  private final long handle;
-
-  VulkanLWJGLImage(
-    final Ownership ownership,
-    final long in_handle,
-    final VulkanLWJGLHostAllocatorProxy in_host_allocator_proxy)
+  VMALWJGLAllocator(
+    final VulkanLWJGLLogicalDevice in_device,
+    final long in_allocator_address)
   {
-    super(ownership, in_host_allocator_proxy);
-    this.handle = in_handle;
+    this.device = Objects.requireNonNull(in_device, "device");
+    this.allocator_address = in_allocator_address;
   }
 
   @Override
@@ -50,46 +46,24 @@ public final class VulkanLWJGLImage extends VulkanLWJGLHandle implements VulkanI
     if (o == null || !Objects.equals(this.getClass(), o.getClass())) {
       return false;
     }
-    final VulkanLWJGLImage that = (VulkanLWJGLImage) o;
-    return this.handle == that.handle;
+    final VMALWJGLAllocator that = (VMALWJGLAllocator) o;
+    return this.allocator_address == that.allocator_address
+      && Objects.equals(this.device, that.device);
   }
 
   @Override
   public int hashCode()
   {
-    return Objects.hash(Long.valueOf(this.handle));
+    return Objects.hash(this.device, Long.valueOf(this.allocator_address));
   }
 
   @Override
   public String toString()
   {
     return new StringBuilder(32)
-      .append("[VulkanLWJGLImage 0x")
-      .append(Long.toUnsignedString(this.handle, 16))
-      .append("]")
+      .append("[VMALWJGLAllocator 0x")
+      .append(Long.toUnsignedString(this.allocator_address, 16))
+      .append(']')
       .toString();
-  }
-
-  @Override
-  protected Logger logger()
-  {
-    return LOG;
-  }
-
-  @Override
-  protected void closeActual()
-  {
-    if (LOG.isTraceEnabled()) {
-      LOG.trace("destroying image: {}", this);
-    }
-  }
-
-  /**
-   * @return The raw handle
-   */
-
-  public long handle()
-  {
-    return this.handle;
   }
 }

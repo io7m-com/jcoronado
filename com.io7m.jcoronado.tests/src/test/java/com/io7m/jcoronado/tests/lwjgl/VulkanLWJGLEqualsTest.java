@@ -45,7 +45,7 @@ public final class VulkanLWJGLEqualsTest
   public void testVulkanLWJGLCommandBuffer()
   {
     EqualsVerifier.forClass(VulkanLWJGLCommandBuffer.class)
-      .withIgnoredFields("stack_initial", "ownership", "closed")
+      .withIgnoredFields("stack_initial", "ownership", "closed", "host_allocator_proxy")
       .withNonnullFields("handle")
       .verify();
   }
@@ -54,7 +54,7 @@ public final class VulkanLWJGLEqualsTest
   public void testVulkanLWJGLCommandPool()
   {
     EqualsVerifier.forClass(VulkanLWJGLCommandPool.class)
-      .withIgnoredFields("ownership", "device", "closed")
+      .withIgnoredFields("ownership", "device", "closed", "host_allocator_proxy")
       .withNonnullFields("handle")
       .verify();
   }
@@ -63,7 +63,7 @@ public final class VulkanLWJGLEqualsTest
   public void testVulkanLWJGLDescriptorSetLayout()
   {
     EqualsVerifier.forClass(VulkanLWJGLDescriptorSetLayout.class)
-      .withIgnoredFields("ownership", "device", "closed")
+      .withIgnoredFields("ownership", "device", "closed", "host_allocator_proxy")
       .withNonnullFields("handle")
       .verify();
   }
@@ -72,7 +72,7 @@ public final class VulkanLWJGLEqualsTest
   public void testVulkanLWJGLFramebuffer()
   {
     EqualsVerifier.forClass(VulkanLWJGLFramebuffer.class)
-      .withIgnoredFields("ownership", "device", "closed")
+      .withIgnoredFields("ownership", "device", "closed", "host_allocator_proxy")
       .withNonnullFields("handle")
       .verify();
   }
@@ -81,7 +81,7 @@ public final class VulkanLWJGLEqualsTest
   public void testVulkanLWJGLImage()
   {
     EqualsVerifier.forClass(VulkanLWJGLImage.class)
-      .withIgnoredFields("ownership", "closed")
+      .withIgnoredFields("ownership", "closed", "host_allocator_proxy")
       .withNonnullFields("handle")
       .verify();
   }
@@ -90,7 +90,7 @@ public final class VulkanLWJGLEqualsTest
   public void testVulkanLWJGLImageView()
   {
     EqualsVerifier.forClass(VulkanLWJGLImageView.class)
-      .withIgnoredFields("ownership", "device", "closed")
+      .withIgnoredFields("ownership", "device", "closed", "host_allocator_proxy")
       .withNonnullFields("handle")
       .verify();
   }
@@ -126,7 +126,7 @@ public final class VulkanLWJGLEqualsTest
   public void testVulkanLWJGLPipeline()
   {
     EqualsVerifier.forClass(VulkanLWJGLPipeline.class)
-      .withIgnoredFields("ownership", "device", "closed")
+      .withIgnoredFields("ownership", "device", "closed", "host_allocator_proxy")
       .verify();
   }
 
@@ -134,7 +134,7 @@ public final class VulkanLWJGLEqualsTest
   public void testVulkanLWJGLPipelineLayout()
   {
     EqualsVerifier.forClass(VulkanLWJGLPipelineLayout.class)
-      .withIgnoredFields("ownership", "device", "closed")
+      .withIgnoredFields("ownership", "device", "closed", "host_allocator_proxy")
       .verify();
   }
 
@@ -153,7 +153,7 @@ public final class VulkanLWJGLEqualsTest
   public void testVulkanLWJGLRenderPass()
   {
     EqualsVerifier.forClass(VulkanLWJGLRenderPass.class)
-      .withIgnoredFields("ownership", "device", "closed")
+      .withIgnoredFields("ownership", "device", "closed", "host_allocator_proxy")
       .withNonnullFields("handle")
       .verify();
   }
@@ -162,7 +162,7 @@ public final class VulkanLWJGLEqualsTest
   public void testVulkanLWJGLSemaphore()
   {
     EqualsVerifier.forClass(VulkanLWJGLSemaphore.class)
-      .withIgnoredFields("ownership", "device", "closed")
+      .withIgnoredFields("ownership", "device", "closed", "host_allocator_proxy")
       .withNonnullFields("handle")
       .verify();
   }
@@ -171,7 +171,7 @@ public final class VulkanLWJGLEqualsTest
   public void testVulkanLWJGLShaderModule()
   {
     EqualsVerifier.forClass(VulkanLWJGLShaderModule.class)
-      .withIgnoredFields("ownership", "device", "closed")
+      .withIgnoredFields("ownership", "device", "closed", "host_allocator_proxy")
       .withNonnullFields("handle")
       .verify();
   }

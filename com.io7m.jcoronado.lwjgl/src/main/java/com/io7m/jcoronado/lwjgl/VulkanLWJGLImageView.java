@@ -37,9 +37,10 @@ public final class VulkanLWJGLImageView extends VulkanLWJGLHandle implements Vul
 
   VulkanLWJGLImageView(
     final VkDevice in_device,
-    final long in_handle)
+    final long in_handle,
+    final VulkanLWJGLHostAllocatorProxy in_host_allocator_proxy)
   {
-    super(Ownership.USER_OWNED);
+    super(Ownership.USER_OWNED, in_host_allocator_proxy);
     this.device = Objects.requireNonNull(in_device, "device");
     this.handle = in_handle;
   }
@@ -60,8 +61,7 @@ public final class VulkanLWJGLImageView extends VulkanLWJGLHandle implements Vul
   @Override
   public int hashCode()
   {
-
-    return Objects.hash(this.handle);
+    return Objects.hash(Long.valueOf(this.handle));
   }
 
   @Override
@@ -95,6 +95,6 @@ public final class VulkanLWJGLImageView extends VulkanLWJGLHandle implements Vul
     if (LOG.isTraceEnabled()) {
       LOG.trace("destroying image view: {}", this);
     }
-    VK10.vkDestroyImageView(this.device, this.handle, null);
+    VK10.vkDestroyImageView(this.device, this.handle, this.hostAllocatorProxy().callbackBuffer());
   }
 }

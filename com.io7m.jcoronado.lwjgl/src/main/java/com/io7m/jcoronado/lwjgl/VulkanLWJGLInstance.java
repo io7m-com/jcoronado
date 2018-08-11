@@ -84,9 +84,10 @@ public final class VulkanLWJGLInstance
   VulkanLWJGLInstance(
     final VkInstance in_instance,
     final VulkanLWJGLExtensionsRegistry in_extension_registry,
-    final Map<String, VulkanExtensionType> in_extensions_enabled)
+    final Map<String, VulkanExtensionType> in_extensions_enabled,
+    final VulkanLWJGLHostAllocatorProxy in_host_allocator_proxy)
   {
-    super(Ownership.USER_OWNED);
+    super(Ownership.USER_OWNED, in_host_allocator_proxy);
 
     this.instance =
       Objects.requireNonNull(in_instance, "instance");
@@ -570,7 +571,10 @@ public final class VulkanLWJGLInstance
     if (LOG.isTraceEnabled()) {
       LOG.trace("destroying instance: {}", this);
     }
-    VK10.vkDestroyInstance(this.instance, null);
+
+    final VulkanLWJGLHostAllocatorProxy host_allocator = this.hostAllocatorProxy();
+    VK10.vkDestroyInstance(this.instance, host_allocator.callbackBuffer());
+    host_allocator.close();
   }
 
   @Override
@@ -665,7 +669,8 @@ public final class VulkanLWJGLInstance
       limits,
       features,
       memory,
-      queue_families);
+      queue_families,
+      this.hostAllocatorProxy());
   }
 
   VkInstance instance()

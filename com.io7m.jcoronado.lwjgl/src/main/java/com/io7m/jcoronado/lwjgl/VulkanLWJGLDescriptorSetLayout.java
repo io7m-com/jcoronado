@@ -38,9 +38,10 @@ public final class VulkanLWJGLDescriptorSetLayout
 
   VulkanLWJGLDescriptorSetLayout(
     final VkDevice in_device,
-    final long in_handle)
+    final long in_handle,
+    final VulkanLWJGLHostAllocatorProxy in_host_allocator_proxy)
   {
-    super(Ownership.USER_OWNED);
+    super(Ownership.USER_OWNED, in_host_allocator_proxy);
     this.device = Objects.requireNonNull(in_device, "device");
     this.handle = in_handle;
   }
@@ -86,7 +87,7 @@ public final class VulkanLWJGLDescriptorSetLayout
     if (LOG.isTraceEnabled()) {
       LOG.trace("destroying descriptor set layout: {}", this);
     }
-    VK10.vkDestroyImageView(this.device, this.handle, null);
+    VK10.vkDestroyImageView(this.device, this.handle, this.hostAllocatorProxy().callbackBuffer());
   }
 
   /**

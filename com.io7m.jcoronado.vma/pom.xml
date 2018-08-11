@@ -12,11 +12,11 @@
     <version>0.0.1-SNAPSHOT</version>
   </parent>
 
-  <artifactId>com.io7m.jcoronado.lwjgl</artifactId>
+  <artifactId>com.io7m.jcoronado.vma</artifactId>
 
   <packaging>jar</packaging>
-  <name>com.io7m.jcoronado.lwjgl</name>
-  <description>Type-safe Vulkan frontend (LWJGL implementation)</description>
+  <name>com.io7m.jcoronado.vma</name>
+  <description>Type-safe Vulkan frontend (Vulkan Memory Allocator)</description>
   <url>http://www.io7m.com/software/jcoronado/</url>
 
   <dependencies>
@@ -25,42 +25,16 @@
       <artifactId>com.io7m.jcoronado.api</artifactId>
       <version>${project.version}</version>
     </dependency>
-    <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>com.io7m.jcoronado.extensions.khr_surface.api</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>com.io7m.jcoronado.vma</artifactId>
-      <version>${project.version}</version>
-    </dependency>
 
     <dependency>
-      <groupId>com.io7m.junreachable</groupId>
-      <artifactId>com.io7m.junreachable.core</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.lwjgl.osgi</groupId>
-      <artifactId>org.lwjgl.lwjgl</artifactId>
+      <groupId>com.io7m.immutables.style</groupId>
+      <artifactId>com.io7m.immutables.style</artifactId>
+      <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.lwjgl.osgi</groupId>
-      <artifactId>org.lwjgl.vulkan</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.lwjgl.osgi</groupId>
-      <artifactId>org.lwjgl.vma</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.lwjgl.osgi</groupId>
-      <artifactId>org.lwjgl.glfw</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-api</artifactId>
+      <groupId>org.immutables</groupId>
+      <artifactId>value</artifactId>
+      <scope>provided</scope>
     </dependency>
   </dependencies>
 
@@ -90,7 +64,7 @@
         <artifactId>bnd-maven-plugin</artifactId>
         <configuration>
           <bnd><![CDATA[
-            Export-Package: com.io7m.jcoronado.lwjgl
+            Export-Package: com.io7m.jcoronado.vma
 ]]></bnd>
         </configuration>
       </plugin>

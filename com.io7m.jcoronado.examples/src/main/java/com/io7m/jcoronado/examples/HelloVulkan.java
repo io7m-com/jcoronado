@@ -16,6 +16,7 @@
 
 package com.io7m.jcoronado.examples;
 
+import com.io7m.jcoronado.allocation_tracker.VulkanHostAllocatorTracker;
 import com.io7m.jcoronado.api.VulkanApplicationInfo;
 import com.io7m.jcoronado.api.VulkanAttachmentDescription;
 import com.io7m.jcoronado.api.VulkanAttachmentReference;
@@ -54,6 +55,7 @@ import com.io7m.jcoronado.api.VulkanMappedMemoryType;
 import com.io7m.jcoronado.api.VulkanMemoryAllocateInfo;
 import com.io7m.jcoronado.api.VulkanMemoryRequirements;
 import com.io7m.jcoronado.api.VulkanMemoryType;
+import com.io7m.jcoronado.api.VulkanMissingRequiredExtensionsException;
 import com.io7m.jcoronado.api.VulkanOffset2D;
 import com.io7m.jcoronado.api.VulkanPhysicalDeviceType;
 import com.io7m.jcoronado.api.VulkanPipelineColorBlendAttachmentState;
@@ -99,8 +101,13 @@ import com.io7m.jcoronado.extensions.api.VulkanSurfaceCapabilitiesKHR;
 import com.io7m.jcoronado.extensions.api.VulkanSurfaceFormatKHR;
 import com.io7m.jcoronado.extensions.api.VulkanSwapChainCreateInfo;
 import com.io7m.jcoronado.extensions.api.VulkanSwapChainImageAcquisition;
+import com.io7m.jcoronado.lwjgl.VMALWJGLAllocatorProvider;
+import com.io7m.jcoronado.lwjgl.VulkanLWJGLHostAllocatorJeMalloc;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLInstanceProvider;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLTemporaryAllocator;
+import com.io7m.jcoronado.vma.VMAAllocatorCreateInfo;
+import com.io7m.jcoronado.vma.VMAAllocatorProviderType;
+import com.io7m.jcoronado.vma.VMAAllocatorType;
 import com.io7m.jmulticlose.core.CloseableCollection;
 import com.io7m.jmulticlose.core.CloseableCollectionType;
 import org.lwjgl.PointerBuffer;
@@ -192,6 +199,21 @@ public final class HelloVulkan
   {
     GLFW_ERROR_CALLBACK.set();
 
+    /*
+     * XXX: Temporary workaround for bug in LWJGL VMA bindings.
+     */
+
+    try {
+      Class.forName("org.lwjgl.util.vma.LibVma");
+    } catch (final ClassNotFoundException e) {
+      LOG.error("VMA issue: ", e);
+    }
+
+    final VulkanLWJGLHostAllocatorJeMalloc host_allocator_main =
+      new VulkanLWJGLHostAllocatorJeMalloc();
+    final VulkanHostAllocatorTracker host_allocator =
+      new VulkanHostAllocatorTracker(host_allocator_main);
+
     final AtomicBoolean finished = new AtomicBoolean(false);
 
     /*
@@ -246,10 +268,10 @@ public final class HelloVulkan
       final Set<String> required_extensions =
         requiredGLFWExtensions();
 
-      available_extensions.forEach(HelloVulkan::showAvailableExtension);
-      available_layers.forEach(HelloVulkan::showAvailableLayer);
-      required_extensions.forEach(HelloVulkan::showRequiredExtension);
-      required_layers.forEach(HelloVulkan::showRequiredLayer);
+      available_extensions.forEach(HelloVulkan::showInstanceAvailableExtension);
+      available_layers.forEach(HelloVulkan::showInstanceAvailableLayer);
+      required_extensions.forEach(HelloVulkan::showInstanceRequiredExtension);
+      required_layers.forEach(HelloVulkan::showInstanceRequiredLayer);
 
       /*
        * Filter the available extensions and layers based on the requirements expressed above.
@@ -285,7 +307,8 @@ public final class HelloVulkan
           .setEnabledLayers(enable_layers)
           .build();
 
-      final VulkanInstanceType instance = resources.add(instances.createInstance(create_info));
+      final VulkanInstanceType instance =
+        resources.add(instances.createInstance(create_info, Optional.of(host_allocator)));
 
       /*
        * Get access to the VK_KHR_surface extension in order to produce a renderable
@@ -309,6 +332,20 @@ public final class HelloVulkan
         resources.add(pickPhysicalDeviceOrAbort(khr_surface_ext, surface, physical_devices));
 
       LOG.debug("physical device: {}", physical_device);
+
+      /*
+       * Require the VK_KHR_get_memory_requirements2 extension in order to use VMA.
+       */
+
+      final Map<String, VulkanExtensionProperties> device_extensions =
+        physical_device.extensions(Optional.empty());
+
+      device_extensions.forEach(HelloVulkan::showPhysicalDeviceAvailableExtension);
+      if (!device_extensions.containsKey("VK_KHR_get_memory_requirements2")) {
+        throw new VulkanMissingRequiredExtensionsException(
+          Set.of("VK_KHR_get_memory_requirements2"),
+          "Missing required extension");
+      }
 
       /*
        * Determine the format, presentation mode, and size of the surface that will be
@@ -371,15 +408,37 @@ public final class HelloVulkan
       }
 
       /*
-       * Create the logical device and find the graphics and presentation queues.
+       * Create the logical device.
        */
 
       final VulkanLogicalDeviceType device = resources.add(
-        physical_device.createLogicalDevice(logical_device_info_builder
-                                              .addEnabledExtensions("VK_KHR_swapchain")
-                                              .build()));
+        physical_device.createLogicalDevice(
+          logical_device_info_builder
+            .addEnabledExtensions("VK_KHR_swapchain")
+            .addEnabledExtensions("VK_KHR_get_memory_requirements2")
+            .build()));
 
       LOG.debug("logical device: {}", device);
+
+      /*
+       * Create a VMA allocator provider.
+       */
+
+      final VMAAllocatorProviderType vma_allocators = VMALWJGLAllocatorProvider.create();
+      LOG.debug(
+        "vma allocator provider: {} {}",
+        instances.providerName(),
+        instances.providerVersion());
+
+      final VMAAllocatorType vma_allocator =
+        vma_allocators.createAllocator(
+          VMAAllocatorCreateInfo.builder()
+            .setLogicalDevice(device)
+            .build());
+
+      /*
+       * Find the graphics and presentation queues.
+       */
 
       final VulkanQueueType graphics_queue =
         device.queue(graphics_queue_props.queueFamilyIndex(), 0)
@@ -781,6 +840,7 @@ public final class HelloVulkan
        * Start rendering frames.
        */
 
+      int frame = 0;
       while (!finished.get()) {
         drawFrame(
           khr_swapchain_ext,
@@ -790,6 +850,25 @@ public final class HelloVulkan
           graphics_command_buffers,
           graphics_queue,
           presentation_queue);
+
+        if (frame % 10_000 == 0) {
+          LOG.debug(
+            "allocated command scoped memory:  {} octets",
+            Long.valueOf(host_allocator.allocatedCommandScopeOctets()));
+          LOG.debug(
+            "allocated object scoped memory:   {} octets",
+            Long.valueOf(host_allocator.allocatedObjectScopeOctets()));
+          LOG.debug(
+            "allocated cache scoped memory:    {} octets",
+            Long.valueOf(host_allocator.allocatedCacheScopeOctets()));
+          LOG.debug(
+            "allocated device scoped memory:   {} octets",
+            Long.valueOf(host_allocator.allocatedDeviceScopeOctets()));
+          LOG.debug(
+            "allocated instance scoped memory: {} octets",
+            Long.valueOf(host_allocator.allocatedInstanceScopeOctets()));
+        }
+        ++frame;
       }
 
       /*
@@ -1245,36 +1324,46 @@ public final class HelloVulkan
     return window;
   }
 
-  private static void showRequiredLayer(
+  private static void showInstanceRequiredLayer(
     final String name)
   {
-    LOG.debug("required layer: {}", name);
+    LOG.debug("instance required layer: {}", name);
   }
 
-  private static void showRequiredExtension(
+  private static void showInstanceRequiredExtension(
     final String name)
   {
-    LOG.debug("required extension: {}", name);
+    LOG.debug("instance required extension: {}", name);
   }
 
-  private static void showAvailableLayer(
+  private static void showInstanceAvailableLayer(
     final String name,
     final VulkanLayerProperties layer)
   {
     LOG.debug(
-      "available layer: {}: {}, specification 0x{} implementation 0x{}",
+      "instance available layer: {}: {}, specification 0x{} implementation 0x{}",
       layer.name(),
       layer.description(),
       Integer.toUnsignedString(layer.specificationVersion(), 16),
       Integer.toUnsignedString(layer.implementationVersion(), 16));
   }
 
-  private static void showAvailableExtension(
+  private static void showInstanceAvailableExtension(
     final String name,
     final VulkanExtensionProperties extension)
   {
     LOG.debug(
-      "available extension: {} 0x{}",
+      "instance available extension: {} 0x{}",
+      extension.name(),
+      Integer.toUnsignedString(extension.version(), 16));
+  }
+
+  private static void showPhysicalDeviceAvailableExtension(
+    final String name,
+    final VulkanExtensionProperties extension)
+  {
+    LOG.debug(
+      "device available extension: {} 0x{}",
       extension.name(),
       Integer.toUnsignedString(extension.version(), 16));
   }

@@ -14,16 +14,15 @@
  * IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-package com.io7m.jcoronado.api;
+package com.io7m.jcoronado.vma;
 
-import java.util.Map;
-import java.util.Optional;
+import com.io7m.jcoronado.api.VulkanException;
 
 /**
- * Functions to provide Vulkan instances.
+ * Functions to provide VMA allocators.
  */
 
-public interface VulkanInstanceProviderType
+public interface VMAAllocatorProviderType
 {
   /**
    * @return The name of the (software) provider
@@ -38,36 +37,16 @@ public interface VulkanInstanceProviderType
   String providerVersion();
 
   /**
-   * @return The available instance extensions
+   * Create a new allocator.
+   *
+   * @param info The creation info
+   *
+   * @return A new allocator
    *
    * @throws VulkanException On errors
    */
 
-  Map<String, VulkanExtensionProperties> extensions()
-    throws VulkanException;
-
-  /**
-   * @return The available layers
-   *
-   * @throws VulkanException On errors
-   */
-
-  Map<String, VulkanLayerProperties> layers()
-    throws VulkanException;
-
-  /**
-   * Create a new instance.
-   *
-   * @param info      The creation info
-   * @param allocator The optional host allocator
-   *
-   * @return A new instance
-   *
-   * @throws VulkanException On errors
-   */
-
-  VulkanInstanceType createInstance(
-    VulkanInstanceCreateInfo info,
-    Optional<VulkanHostAllocatorType> allocator)
+  VMAAllocatorType createAllocator(
+    VMAAllocatorCreateInfo info)
     throws VulkanException;
 }

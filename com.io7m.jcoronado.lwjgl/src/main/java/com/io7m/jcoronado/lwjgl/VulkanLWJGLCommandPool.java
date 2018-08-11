@@ -38,9 +38,10 @@ public final class VulkanLWJGLCommandPool extends VulkanLWJGLHandle implements V
   VulkanLWJGLCommandPool(
     final Ownership ownership,
     final VkDevice in_device,
-    final long in_handle)
+    final long in_handle,
+    final VulkanLWJGLHostAllocatorProxy in_host_allocator_proxy)
   {
-    super(ownership);
+    super(ownership, in_host_allocator_proxy);
     this.device = Objects.requireNonNull(in_device, "device");
     this.handle = in_handle;
   }
@@ -86,7 +87,7 @@ public final class VulkanLWJGLCommandPool extends VulkanLWJGLHandle implements V
     if (LOG.isTraceEnabled()) {
       LOG.trace("destroying command pool: {}", this);
     }
-    VK10.vkDestroyCommandPool(this.device, this.handle, null);
+    VK10.vkDestroyCommandPool(this.device, this.handle, this.hostAllocatorProxy().callbackBuffer());
   }
 
   /**

@@ -51,9 +51,10 @@ public final class VulkanLWJGLCommandBuffer
 
   VulkanLWJGLCommandBuffer(
     final Ownership ownership,
-    final VkCommandBuffer in_handle)
+    final VkCommandBuffer in_handle,
+    final VulkanLWJGLHostAllocatorProxy in_host_allocator_proxy)
   {
-    super(ownership);
+    super(ownership, in_host_allocator_proxy);
     this.handle = in_handle;
 
     this.stack_initial =
