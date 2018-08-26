@@ -16,29 +16,30 @@
 
 package com.io7m.jcoronado.vma;
 
-import com.io7m.jcoronado.api.VulkanBufferCreateInfo;
-import com.io7m.jcoronado.api.VulkanBufferType;
-import com.io7m.jcoronado.api.VulkanException;
+import com.io7m.immutables.styles.ImmutablesStyleType;
+import org.immutables.value.Value;
 
 /**
- * A configured VMA allocator.
+ * An allocation result.
+ *
+ * @param <T> The type of allocation result
  */
 
-public interface VMAAllocatorType
+@ImmutablesStyleType
+@Value.Immutable
+public interface VMAAllocationResultType<T>
 {
   /**
-   * Allocate a buffer.
-   *
-   * @param alloc_create_info  The allocation creation info
-   * @param buffer_create_info The buffer creation info
-   *
-   * @return An allocation
-   *
-   * @throws VulkanException On errors
+   * @return The allocation
    */
 
-  VMAAllocationResult<VulkanBufferType> createBuffer(
-    VMAAllocationCreateInfo alloc_create_info,
-    VulkanBufferCreateInfo buffer_create_info)
-    throws VulkanException;
+  @Value.Parameter
+  VMAAllocationType allocation();
+
+  /**
+   * @return The allocation result. Typically an image or a buffer.
+   */
+
+  @Value.Parameter
+  T result();
 }

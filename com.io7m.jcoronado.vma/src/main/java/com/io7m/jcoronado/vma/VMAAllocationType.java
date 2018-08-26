@@ -16,29 +16,17 @@
 
 package com.io7m.jcoronado.vma;
 
-import com.io7m.jcoronado.api.VulkanBufferCreateInfo;
-import com.io7m.jcoronado.api.VulkanBufferType;
-import com.io7m.jcoronado.api.VulkanException;
+import com.io7m.jcoronado.api.VulkanHandleNonDispatchableType;
 
 /**
- * A configured VMA allocator.
+ * An allocation.
  */
 
-public interface VMAAllocatorType
+public interface VMAAllocationType extends VulkanHandleNonDispatchableType
 {
   /**
-   * Allocate a buffer.
-   *
-   * @param alloc_create_info  The allocation creation info
-   * @param buffer_create_info The buffer creation info
-   *
-   * @return An allocation
-   *
-   * @throws VulkanException On errors
+   * @return Information about the allocation
    */
 
-  VMAAllocationResult<VulkanBufferType> createBuffer(
-    VMAAllocationCreateInfo alloc_create_info,
-    VulkanBufferCreateInfo buffer_create_info)
-    throws VulkanException;
+  VMAAllocationInfoType info();
 }

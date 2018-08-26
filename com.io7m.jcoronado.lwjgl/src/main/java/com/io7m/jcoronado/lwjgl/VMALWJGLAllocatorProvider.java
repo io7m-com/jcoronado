@@ -101,7 +101,7 @@ public final class VMALWJGLAllocatorProvider implements VMAAllocatorProviderType
         Vma.vmaCreateAllocator(cinfo, buffer),
         "vmaCreateAllocator");
 
-      return new VMALWJGLAllocator(device, buffer.get(0));
+      return new VMALWJGLAllocator(device, buffer.get(0), device.hostAllocatorProxy());
     }
   }
 }

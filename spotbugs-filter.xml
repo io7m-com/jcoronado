@@ -13,6 +13,9 @@
       <Class name="~com\.io7m\.jcoronado\..+\$Builder"/>
       <Class name="~com\.io7m\.jcoronado\..+\$InitShim"/>
 
+      <Class name="com.io7m.jcoronado.vma.VMAAllocationCreateInfo"/>
+      <Class name="com.io7m.jcoronado.vma.VMAAllocationInfo"/>
+
       <Class name="com.io7m.jcoronado.api.VulkanApplicationInfo"/>
       <Class name="com.io7m.jcoronado.api.VulkanAttachmentDescription"/>
       <Class name="com.io7m.jcoronado.api.VulkanAttachmentReference"/>
