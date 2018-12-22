@@ -202,16 +202,6 @@ public final class HelloVulkan
   {
     GLFW_ERROR_CALLBACK.set();
 
-    /*
-     * XXX: Temporary workaround for bug in LWJGL VMA bindings.
-     */
-
-    try {
-      Class.forName("org.lwjgl.util.vma.LibVma");
-    } catch (final ClassNotFoundException e) {
-      LOG.error("VMA issue: ", e);
-    }
-
     final VulkanLWJGLHostAllocatorJeMalloc host_allocator_main =
       new VulkanLWJGLHostAllocatorJeMalloc();
     final VulkanHostAllocatorTracker host_allocator =

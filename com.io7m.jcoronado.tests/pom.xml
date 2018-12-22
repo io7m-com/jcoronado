@@ -84,7 +84,9 @@
       <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
-          <argLine>-Djdk.attach.allowAttachSelf</argLine>
+          <argLine>
+            -javaagent:${settings.localRepository}/org/jmockit/jmockit/${jmockit.version}/jmockit-${jmockit.version}.jar
+          </argLine>
         </configuration>
       </plugin>
 

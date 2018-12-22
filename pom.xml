@@ -9,7 +9,7 @@
   <parent>
     <groupId>com.io7m.primogenitor</groupId>
     <artifactId>com.io7m.primogenitor</artifactId>
-    <version>3.0.0-beta0013</version>
+    <version>3.0.0-beta0017</version>
   </parent>
 
   <groupId>com.io7m.jcoronado</groupId>
@@ -34,7 +34,8 @@
   <properties>
     <io7m.api.previousVersion>0.0.1</io7m.api.previousVersion>
     <io7m.org.immutables.value.version>2.6.1</io7m.org.immutables.value.version>
-    <io7m.org.lwjgl.version>3.2.0</io7m.org.lwjgl.version>
+    <io7m.org.lwjgl.version>3.2.1</io7m.org.lwjgl.version>
+    <jmockit.version>1.44</jmockit.version>
   </properties>
 
   <licenses>
@@ -149,17 +150,17 @@
       <dependency>
         <groupId>org.junit.jupiter</groupId>
         <artifactId>junit-jupiter-engine</artifactId>
-        <version>5.3.0-M1</version>
+        <version>5.3.2</version>
       </dependency>
       <dependency>
         <groupId>org.jmockit</groupId>
         <artifactId>jmockit</artifactId>
-        <version>1.40</version>
+        <version>${jmockit.version}</version>
       </dependency>
       <dependency>
         <groupId>nl.jqno.equalsverifier</groupId>
         <artifactId>equalsverifier</artifactId>
-        <version>2.4.8</version>
+        <version>3.0.3</version>
       </dependency>
       <dependency>
         <groupId>org.reflections</groupId>
@@ -169,7 +170,7 @@
       <dependency>
         <groupId>it.unimi.dsi</groupId>
         <artifactId>fastutil</artifactId>
-        <version>8.2.1</version>
+        <version>8.2.2</version>
       </dependency>
 
       <dependency>
@@ -233,14 +234,14 @@
   <build>
     <pluginManagement>
       <plugins>
-        <!-- Require JDK >= 9 -->
+        <!-- Require JDK >= 11 -->
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-compiler-plugin</artifactId>
           <configuration>
-            <source>9</source>
-            <target>9</target>
-            <release>9</release>
+            <source>11</source>
+            <target>11</target>
+            <release>11</release>
             <annotationProcessorPaths>
               <dependency>
                 <groupId>org.immutables</groupId>

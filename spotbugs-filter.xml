@@ -150,6 +150,9 @@
       <Bug pattern="OPM_OVERLY_PERMISSIVE_METHOD"/>
       <Bug pattern="OCP_OVERLY_CONCRETE_PARAMETER"/>
       <Bug pattern="AI_ANNOTATION_ISSUES_NEEDS_NULLABLE"/>
+      <Bug pattern="RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE"/>
+      <Bug pattern="UPM_UNCALLED_PRIVATE_METHOD"/>
+      <Bug pattern="FCBL_FIELD_COULD_BE_LOCAL"/>
     </Or>
   </Match>
 
