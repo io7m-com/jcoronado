@@ -22,15 +22,12 @@ import com.io7m.jcoronado.api.VulkanPipelineViewportStateCreateInfo;
 import com.io7m.jcoronado.api.VulkanRectangle2D;
 import com.io7m.jcoronado.api.VulkanViewport;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLPipelineViewportStateCreateInfos;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.vulkan.VK10;
 import org.lwjgl.vulkan.VkPipelineViewportStateCreateInfo;
-import org.lwjgl.vulkan.VkRect2D;
-import org.lwjgl.vulkan.VkViewport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,17 +50,17 @@ public final class VulkanLWJGLPipelineViewportStateCreateInfosTest
   @Test
   public void testPipelineViewportStateCreateInfo()
   {
-    final VulkanViewport viewport_0 =
+    final var viewport_0 =
       VulkanViewport.of(101.0f, 102.0f, 103.0f, 104.0f, 0.0f, 1.0f);
-    final VulkanViewport viewport_1 =
+    final var viewport_1 =
       VulkanViewport.of(105.0f, 106.0f, 107.0f, 108.0f, 0.0f, 1.0f);
 
-    final VulkanRectangle2D scissor_0 =
+    final var scissor_0 =
       VulkanRectangle2D.of(VulkanOffset2D.of(5, 17), VulkanExtent2D.of(23, 34));
-    final VulkanRectangle2D scissor_1 =
+    final var scissor_1 =
       VulkanRectangle2D.of(VulkanOffset2D.of(6, 18), VulkanExtent2D.of(25, 37));
 
-    final VulkanPipelineViewportStateCreateInfo info =
+    final var info =
       VulkanPipelineViewportStateCreateInfo.builder()
         .addViewports(viewport_0)
         .addViewports(viewport_1)
@@ -71,7 +68,7 @@ public final class VulkanLWJGLPipelineViewportStateCreateInfosTest
         .addScissors(scissor_1)
         .build();
 
-    final VkPipelineViewportStateCreateInfo packed =
+    final var packed =
       VulkanLWJGLPipelineViewportStateCreateInfos.pack(this.stack, info);
 
     checkPacked(packed);
@@ -101,7 +98,7 @@ public final class VulkanLWJGLPipelineViewportStateCreateInfosTest
           2,
           packed.viewportCount());
 
-        final VkViewport.Buffer vps = packed.pViewports();
+        final var vps = packed.pViewports();
         Assertions.assertEquals(
           101.0f,
           vps.x());
@@ -146,7 +143,7 @@ public final class VulkanLWJGLPipelineViewportStateCreateInfosTest
           2,
           packed.scissorCount());
 
-        final VkRect2D.Buffer vps = packed.pScissors();
+        final var vps = packed.pScissors();
         Assertions.assertEquals(
           5,
           vps.offset().x());

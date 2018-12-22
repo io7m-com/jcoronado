@@ -16,27 +16,18 @@
 
 package com.io7m.jcoronado.tests.lwjgl;
 
-import com.io7m.jcoronado.api.VulkanCommandBufferCreateInfo;
 import com.io7m.jcoronado.api.VulkanSemaphoreCreateFlag;
 import com.io7m.jcoronado.api.VulkanSemaphoreCreateInfo;
-import com.io7m.jcoronado.lwjgl.VulkanLWJGLCommandBufferCreateInfos;
-import com.io7m.jcoronado.lwjgl.VulkanLWJGLCommandPool;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLSemaphoreCreateInfos;
-import mockit.Expectations;
-import mockit.Mocked;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.vulkan.VK10;
-import org.lwjgl.vulkan.VkCommandBufferAllocateInfo;
-import org.lwjgl.vulkan.VkSemaphoreCreateInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
-
-import static com.io7m.jcoronado.api.VulkanCommandBufferLevel.VK_COMMAND_BUFFER_LEVEL_PRIMARY;
 
 public final class VulkanLWJGLSemaphoreCreateInfosTest
 {
@@ -55,12 +46,12 @@ public final class VulkanLWJGLSemaphoreCreateInfosTest
   @Test
   public void testSemaphoreCreateInfo()
   {
-    final VulkanSemaphoreCreateInfo info =
+    final var info =
       VulkanSemaphoreCreateInfo.builder()
         .addAllFlags(List.of(VulkanSemaphoreCreateFlag.values()))
         .build();
 
-    final VkSemaphoreCreateInfo packed =
+    final var packed =
       VulkanLWJGLSemaphoreCreateInfos.pack(this.stack, info);
 
     Assertions.assertAll(

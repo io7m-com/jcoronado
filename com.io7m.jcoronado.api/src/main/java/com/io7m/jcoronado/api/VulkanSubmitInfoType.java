@@ -69,10 +69,10 @@ public interface VulkanSubmitInfoType
   @Value.Check
   default void checkPreconditions()
   {
-    final int size_0 = this.waitSemaphores().size();
-    final int size_1 = this.waitStageMasks().size();
+    final var size_0 = this.waitSemaphores().size();
+    final var size_1 = this.waitStageMasks().size();
     if (size_0 != size_1) {
-      final String separator = System.lineSeparator();
+      final var separator = System.lineSeparator();
       throw new IllegalArgumentException(
         new StringBuilder(64)
           .append("Number of wait semaphores must match the number of stage masks.")

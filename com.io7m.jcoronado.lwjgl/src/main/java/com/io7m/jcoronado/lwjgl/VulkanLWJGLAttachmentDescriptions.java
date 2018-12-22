@@ -51,12 +51,12 @@ public final class VulkanLWJGLAttachmentDescriptions
     Objects.requireNonNull(stack, "stack");
     Objects.requireNonNull(attachments, "attachments");
 
-    final VkAttachmentDescription.Buffer buffer =
+    final var buffer =
       VkAttachmentDescription.mallocStack(attachments.size(), stack);
 
-    for (int index = 0; index < attachments.size(); ++index) {
-      final VulkanAttachmentDescription source = attachments.get(index);
-      final VkAttachmentDescription target =
+    for (var index = 0; index < attachments.size(); ++index) {
+      final var source = attachments.get(index);
+      final var target =
         VkAttachmentDescription.create(buffer.address(index));
       packAttachmentInto(source, target);
     }
@@ -80,7 +80,7 @@ public final class VulkanLWJGLAttachmentDescriptions
     Objects.requireNonNull(stack, "stack");
     Objects.requireNonNull(attachment, "attachment");
 
-    final VkAttachmentDescription buffer =
+    final var buffer =
       VkAttachmentDescription.mallocStack(stack);
 
     return packAttachmentInto(attachment, buffer);

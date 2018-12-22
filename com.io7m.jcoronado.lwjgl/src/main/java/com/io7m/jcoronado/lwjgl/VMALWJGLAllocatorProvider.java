@@ -21,7 +21,6 @@ import com.io7m.jcoronado.api.VulkanException;
 import com.io7m.jcoronado.vma.VMAAllocatorCreateInfo;
 import com.io7m.jcoronado.vma.VMAAllocatorProviderType;
 import com.io7m.jcoronado.vma.VMAAllocatorType;
-import org.lwjgl.PointerBuffer;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.util.vma.Vma;
 import org.lwjgl.util.vma.VmaAllocatorCreateInfo;
@@ -66,8 +65,8 @@ public final class VMALWJGLAllocatorProvider implements VMAAllocatorProviderType
   @Override
   public String providerVersion()
   {
-    final Package pack = this.getClass().getPackage();
-    final String version = pack.getImplementationVersion();
+    final var pack = this.getClass().getPackage();
+    final var version = pack.getImplementationVersion();
     return version == null ? "0.0.0" : version;
   }
 
@@ -78,20 +77,20 @@ public final class VMALWJGLAllocatorProvider implements VMAAllocatorProviderType
   {
     Objects.requireNonNull(info, "info");
 
-    final VulkanLWJGLLogicalDevice device =
+    final var device =
       VulkanLWJGLClassChecks.check(info.logicalDevice(), VulkanLWJGLLogicalDevice.class);
-    final VulkanLWJGLPhysicalDevice phys_device =
+    final var phys_device =
       VulkanLWJGLClassChecks.check(device.physicalDevice(), VulkanLWJGLPhysicalDevice.class);
-    final VulkanLWJGLInstance instance =
+    final var instance =
       VulkanLWJGLClassChecks.check(phys_device.instance(), VulkanLWJGLInstance.class);
 
-    try (MemoryStack stack = this.initial_stack.push()) {
-      final VmaVulkanFunctions functions = VmaVulkanFunctions.mallocStack(stack);
+    try (var stack = this.initial_stack.push()) {
+      final var functions = VmaVulkanFunctions.mallocStack(stack);
       functions.set(instance.instance(), device.device());
 
-      final PointerBuffer buffer = stack.mallocPointer(1);
+      final var buffer = stack.mallocPointer(1);
 
-      final VmaAllocatorCreateInfo cinfo =
+      final var cinfo =
         VmaAllocatorCreateInfo.mallocStack(stack)
           .device(device.device())
           .physicalDevice(phys_device.device())

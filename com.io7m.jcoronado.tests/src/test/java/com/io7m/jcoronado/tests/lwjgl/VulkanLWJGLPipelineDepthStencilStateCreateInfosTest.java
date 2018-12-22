@@ -19,7 +19,6 @@ package com.io7m.jcoronado.tests.lwjgl;
 import com.io7m.jcoronado.api.VulkanPipelineDepthStencilStateCreateInfo;
 import com.io7m.jcoronado.api.VulkanStencilOpState;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLPipelineDepthStencilStateCreateInfos;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -58,7 +57,7 @@ public final class VulkanLWJGLPipelineDepthStencilStateCreateInfosTest
   @Test
   public void testPipelineDepthStencilStateCreateInfo()
   {
-    final VulkanStencilOpState front =
+    final var front =
       VulkanStencilOpState.of(
         VK_STENCIL_OP_KEEP,
         VK_STENCIL_OP_DECREMENT_AND_CLAMP,
@@ -68,7 +67,7 @@ public final class VulkanLWJGLPipelineDepthStencilStateCreateInfosTest
         24,
         25);
 
-    final VulkanStencilOpState back =
+    final var back =
       VulkanStencilOpState.of(
         VK_STENCIL_OP_INVERT,
         VK_STENCIL_OP_REPLACE,
@@ -78,7 +77,7 @@ public final class VulkanLWJGLPipelineDepthStencilStateCreateInfosTest
         34,
         35);
 
-    final VulkanPipelineDepthStencilStateCreateInfo info =
+    final var info =
       VulkanPipelineDepthStencilStateCreateInfo.builder()
         .setMinDepthBounds(2.4f)
         .setMaxDepthBounds(23.0f)
@@ -91,7 +90,7 @@ public final class VulkanLWJGLPipelineDepthStencilStateCreateInfosTest
         .setBack(back)
         .build();
 
-    final VkPipelineDepthStencilStateCreateInfo packed =
+    final var packed =
       VulkanLWJGLPipelineDepthStencilStateCreateInfos.pack(this.stack, info);
 
     checkPacked(packed);

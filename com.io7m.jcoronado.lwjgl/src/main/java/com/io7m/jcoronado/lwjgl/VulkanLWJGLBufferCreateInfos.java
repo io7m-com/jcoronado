@@ -67,10 +67,10 @@ public final class VulkanLWJGLBufferCreateInfos
     final MemoryStack stack,
     final List<Integer> integers)
   {
-    final int size = integers.size();
+    final var size = integers.size();
     if (size > 0) {
-      final IntBuffer buffer = stack.mallocInt(size);
-      for (int index = 0; index < size; ++index) {
+      final var buffer = stack.mallocInt(size);
+      for (var index = 0; index < size; ++index) {
         buffer.put(index, integers.get(index).intValue());
       }
     }

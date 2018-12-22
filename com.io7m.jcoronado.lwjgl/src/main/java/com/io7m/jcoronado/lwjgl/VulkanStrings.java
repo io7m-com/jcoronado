@@ -36,11 +36,11 @@ final class VulkanStrings
     Objects.requireNonNull(stack, "stack");
     Objects.requireNonNull(input, "input");
 
-    final PointerBuffer buffer =
+    final var buffer =
       stack.mallocPointer(input.size());
 
-    int index = 0;
-    for (final String string : input) {
+    var index = 0;
+    for (final var string : input) {
       buffer.position(index);
       buffer.put(stack.ASCII(string));
       ++index;

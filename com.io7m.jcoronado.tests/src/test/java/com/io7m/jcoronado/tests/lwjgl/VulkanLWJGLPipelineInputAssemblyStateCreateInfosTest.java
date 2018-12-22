@@ -17,10 +17,7 @@
 package com.io7m.jcoronado.tests.lwjgl;
 
 import com.io7m.jcoronado.api.VulkanPipelineInputAssemblyStateCreateInfo;
-import com.io7m.jcoronado.api.VulkanPrimitiveTopology;
-import com.io7m.jcoronado.api.VulkanSampleCountFlag;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLPipelineInputAssemblyStateCreateInfos;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -51,13 +48,13 @@ public final class VulkanLWJGLPipelineInputAssemblyStateCreateInfosTest
   @Test
   public void testPipelineInputAssemblyStateCreateInfo()
   {
-    final VulkanPipelineInputAssemblyStateCreateInfo info =
+    final var info =
       VulkanPipelineInputAssemblyStateCreateInfo.builder()
         .setPrimitiveRestartEnable(true)
         .setTopology(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST)
         .build();
 
-    final VkPipelineInputAssemblyStateCreateInfo packed =
+    final var packed =
       VulkanLWJGLPipelineInputAssemblyStateCreateInfos.pack(this.stack, info);
 
     checkPacked(packed);

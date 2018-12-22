@@ -16,16 +16,13 @@
 
 package com.io7m.jcoronado.lwjgl;
 
-import com.io7m.jcoronado.api.VulkanApplicationInfo;
 import com.io7m.jcoronado.api.VulkanException;
 import com.io7m.jcoronado.api.VulkanExtensionProperties;
-import com.io7m.jcoronado.api.VulkanExtensionType;
 import com.io7m.jcoronado.api.VulkanHostAllocatorType;
 import com.io7m.jcoronado.api.VulkanInstanceCreateInfo;
 import com.io7m.jcoronado.api.VulkanInstanceProviderType;
 import com.io7m.jcoronado.api.VulkanInstanceType;
 import com.io7m.jcoronado.api.VulkanLayerProperties;
-import org.lwjgl.PointerBuffer;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.vulkan.VK10;
 import org.lwjgl.vulkan.VkApplicationInfo;
@@ -36,12 +33,10 @@ import org.lwjgl.vulkan.VkLayerProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
 
 import static com.io7m.jcoronado.api.VulkanChecks.checkReturnCode;
 
@@ -97,8 +92,8 @@ public final class VulkanLWJGLInstanceProvider
   @Override
   public String providerVersion()
   {
-    final Package pack = this.getClass().getPackage();
-    final String version = pack.getImplementationVersion();
+    final var pack = this.getClass().getPackage();
+    final var version = pack.getImplementationVersion();
     return version == null ? "0.0.0" : version;
   }
 
@@ -106,8 +101,8 @@ public final class VulkanLWJGLInstanceProvider
   public Map<String, VulkanExtensionProperties> extensions()
     throws VulkanException
   {
-    try (MemoryStack stack = this.initial_stack.push()) {
-      final int[] count = new int[1];
+    try (var stack = this.initial_stack.push()) {
+      final var count = new int[1];
 
       checkReturnCode(
         VK10.vkEnumerateInstanceExtensionProperties(
@@ -116,12 +111,12 @@ public final class VulkanLWJGLInstanceProvider
           null),
         "vkEnumerateInstanceExtensionProperties");
 
-      final int size = count[0];
+      final var size = count[0];
       if (size == 0) {
         return Map.of();
       }
 
-      final VkExtensionProperties.Buffer instance_extensions =
+      final var instance_extensions =
         VkExtensionProperties.mallocStack(size, stack);
 
       checkReturnCode(
@@ -132,9 +127,9 @@ public final class VulkanLWJGLInstanceProvider
         "vkEnumerateInstanceExtensionProperties");
 
       final HashMap<String, VulkanExtensionProperties> available_extensions = new HashMap<>(size);
-      for (int index = 0; index < size; ++index) {
+      for (var index = 0; index < size; ++index) {
         instance_extensions.position(index);
-        final VulkanExtensionProperties extension =
+        final var extension =
           VulkanExtensionProperties.of(
             instance_extensions.extensionNameString(),
             instance_extensions.specVersion());
@@ -149,8 +144,8 @@ public final class VulkanLWJGLInstanceProvider
   public Map<String, VulkanLayerProperties> layers()
     throws VulkanException
   {
-    try (MemoryStack stack = this.initial_stack.push()) {
-      final int[] count = new int[1];
+    try (var stack = this.initial_stack.push()) {
+      final var count = new int[1];
 
       checkReturnCode(
         VK10.vkEnumerateInstanceLayerProperties(
@@ -158,12 +153,12 @@ public final class VulkanLWJGLInstanceProvider
           null),
         "vkEnumerateInstanceLayerProperties");
 
-      final int size = count[0];
+      final var size = count[0];
       if (size == 0) {
         return Map.of();
       }
 
-      final VkLayerProperties.Buffer layers_buffer =
+      final var layers_buffer =
         VkLayerProperties.mallocStack(size, stack);
 
       checkReturnCode(
@@ -173,10 +168,10 @@ public final class VulkanLWJGLInstanceProvider
         "vkEnumerateInstanceLayerProperties");
 
       final HashMap<String, VulkanLayerProperties> layers = new HashMap<>(size);
-      for (int index = 0; index < size; ++index) {
+      for (var index = 0; index < size; ++index) {
         layers_buffer.position(index);
 
-        final VulkanLayerProperties layer =
+        final var layer =
           VulkanLayerProperties.of(
             layers_buffer.layerNameString(),
             layers_buffer.descriptionString(),
@@ -198,8 +193,8 @@ public final class VulkanLWJGLInstanceProvider
     Objects.requireNonNull(info, "info");
     Objects.requireNonNull(allocator, "allocator");
 
-    final Set<String> enabled_layers = info.enabledLayers();
-    final Set<String> enabled_extensions = info.enabledExtensions();
+    final var enabled_layers = info.enabledLayers();
+    final var enabled_extensions = info.enabledExtensions();
 
     if (LOG.isDebugEnabled()) {
       LOG.debug("creating instance");
@@ -207,20 +202,20 @@ public final class VulkanLWJGLInstanceProvider
       enabled_extensions.forEach(extension -> LOG.debug("enabling extension: {}", extension));
     }
 
-    try (MemoryStack stack = this.initial_stack.push()) {
-      final PointerBuffer enable_layers_ptr =
+    try (var stack = this.initial_stack.push()) {
+      final var enable_layers_ptr =
         VulkanStrings.stringsToPointerBuffer(stack, enabled_layers);
-      final PointerBuffer enable_extensions_ptr =
+      final var enable_extensions_ptr =
         VulkanStrings.stringsToPointerBuffer(stack, enabled_extensions);
 
-      final VulkanApplicationInfo app_info =
+      final var app_info =
         info.applicationInfo();
-      final ByteBuffer app_name_ptr =
+      final var app_name_ptr =
         stack.ASCII(app_info.applicationName());
-      final ByteBuffer engine_name_ptr =
+      final var engine_name_ptr =
         stack.ASCII(app_info.engineName());
 
-      final VkApplicationInfo application_info =
+      final var application_info =
         VkApplicationInfo.mallocStack(stack)
           .sType(VK10.VK_STRUCTURE_TYPE_APPLICATION_INFO)
           .pNext(0L)
@@ -232,7 +227,7 @@ public final class VulkanLWJGLInstanceProvider
 
       LOG.trace("application_info: {}", application_info);
 
-      final VkInstanceCreateInfo instance_info =
+      final var instance_info =
         VkInstanceCreateInfo.mallocStack(stack)
           .sType(VK10.VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO)
           .pNext(0L)
@@ -243,21 +238,21 @@ public final class VulkanLWJGLInstanceProvider
 
       LOG.trace("instance_info: {}", instance_info);
 
-      final PointerBuffer instance_ptr = stack.mallocPointer(1);
+      final var instance_ptr = stack.mallocPointer(1);
 
-      final VulkanLWJGLHostAllocatorProxy allocator_proxy =
+      final var allocator_proxy =
         VulkanLWJGLHostAllocatorProxy.create(stack, allocator);
 
-      final int err =
+      final var err =
         VK10.vkCreateInstance(instance_info, allocator_proxy.callbackBuffer(), instance_ptr);
       checkReturnCode(err, "vkCreateInstance");
 
-      final VkInstance instance =
+      final var instance =
         new VkInstance(instance_ptr.get(), instance_info);
 
       LOG.debug("created instance: {}", instance);
 
-      final Map<String, VulkanExtensionType> enabled =
+      final var enabled =
         this.extensions.ofNames(info.enabledExtensions());
 
       return new VulkanLWJGLInstance(instance, this.extensions, enabled, allocator_proxy);

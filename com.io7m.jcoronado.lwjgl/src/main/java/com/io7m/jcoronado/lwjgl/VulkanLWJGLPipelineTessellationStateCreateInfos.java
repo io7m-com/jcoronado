@@ -52,7 +52,7 @@ public final class VulkanLWJGLPipelineTessellationStateCreateInfos
     Objects.requireNonNull(stack, "stack");
     Objects.requireNonNull(info, "info");
 
-    final VkPipelineTessellationStateCreateInfo target =
+    final var target =
       VkPipelineTessellationStateCreateInfo.mallocStack(stack);
 
     return target

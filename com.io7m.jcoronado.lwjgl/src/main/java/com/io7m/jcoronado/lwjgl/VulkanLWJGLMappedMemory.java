@@ -63,7 +63,7 @@ public final class VulkanLWJGLMappedMemory implements VulkanMappedMemoryType
   {
     if (this.mapped) {
       try {
-        final long address = this.memory.handle();
+        final var address = this.memory.handle();
         if (LOG.isTraceEnabled()) {
           LOG.trace("unmapping memory: 0x{}", Long.toUnsignedString(address, 16));
         }

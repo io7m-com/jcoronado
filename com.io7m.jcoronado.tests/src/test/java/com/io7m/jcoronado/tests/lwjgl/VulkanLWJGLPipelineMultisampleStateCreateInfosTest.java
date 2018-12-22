@@ -19,7 +19,6 @@ package com.io7m.jcoronado.tests.lwjgl;
 import com.io7m.jcoronado.api.VulkanPipelineMultisampleStateCreateInfo;
 import com.io7m.jcoronado.api.VulkanSampleCountFlag;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLPipelineMultisampleStateCreateInfos;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -48,7 +47,7 @@ public final class VulkanLWJGLPipelineMultisampleStateCreateInfosTest
   @Test
   public void testPipelineMultisampleStateCreateInfo()
   {
-    final VulkanPipelineMultisampleStateCreateInfo info =
+    final var info =
       VulkanPipelineMultisampleStateCreateInfo.builder()
         .setAlphaToCoverageEnable(true)
         .setMinSampleShading(0.5f)
@@ -58,7 +57,7 @@ public final class VulkanLWJGLPipelineMultisampleStateCreateInfosTest
         .setSampleMask(new int[]{1, 2, 3})
         .build();
 
-    final VkPipelineMultisampleStateCreateInfo packed =
+    final var packed =
       VulkanLWJGLPipelineMultisampleStateCreateInfos.pack(this.stack, info);
 
     checkPacked(packed);

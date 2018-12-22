@@ -52,7 +52,7 @@ public final class VulkanLWJGLPipelineRasterizationStateCreateInfos
     Objects.requireNonNull(stack, "stack");
     Objects.requireNonNull(info, "info");
 
-    final VkPipelineRasterizationStateCreateInfo target =
+    final var target =
       VkPipelineRasterizationStateCreateInfo.mallocStack(stack);
 
     return target

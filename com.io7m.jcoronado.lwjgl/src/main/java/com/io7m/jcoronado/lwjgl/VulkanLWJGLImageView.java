@@ -54,7 +54,7 @@ public final class VulkanLWJGLImageView extends VulkanLWJGLHandle implements Vul
     if (o == null || !Objects.equals(this.getClass(), o.getClass())) {
       return false;
     }
-    final VulkanLWJGLImageView that = (VulkanLWJGLImageView) o;
+    final var that = (VulkanLWJGLImageView) o;
     return this.handle == that.handle;
   }
 

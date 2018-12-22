@@ -51,17 +51,17 @@ public final class VulkanLWJGLColorBlendAttachmentStates
     Objects.requireNonNull(stack, "stack");
     Objects.requireNonNull(attachments, "attachments");
 
-    final int count = attachments.size();
+    final var count = attachments.size();
     if (count == 0) {
       return null;
     }
 
-    final VkPipelineColorBlendAttachmentState.Buffer buffer =
+    final var buffer =
       VkPipelineColorBlendAttachmentState.mallocStack(count, stack);
 
-    for (int index = 0; index < count; ++index) {
-      final VulkanPipelineColorBlendAttachmentState source = attachments.get(index);
-      final VkPipelineColorBlendAttachmentState target =
+    for (var index = 0; index < count; ++index) {
+      final var source = attachments.get(index);
+      final var target =
         VkPipelineColorBlendAttachmentState.create(buffer.address(index));
       packInto(source, target);
     }

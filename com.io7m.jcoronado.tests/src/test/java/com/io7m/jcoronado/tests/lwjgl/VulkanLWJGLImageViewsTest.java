@@ -26,15 +26,11 @@ import com.io7m.jcoronado.lwjgl.VulkanLWJGLImage;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLImageViews;
 import mockit.Expectations;
 import mockit.Mocked;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.vulkan.VK10;
-import org.lwjgl.vulkan.VkComponentMapping;
-import org.lwjgl.vulkan.VkImageSubresourceRange;
-import org.lwjgl.vulkan.VkImageViewCreateInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -64,7 +60,7 @@ public final class VulkanLWJGLImageViewsTest
       this.result = Long.valueOf(0x200L);
     }};
 
-    final VulkanComponentMapping components =
+    final var components =
       VulkanComponentMapping.builder()
         .setA(VulkanComponentSwizzle.VK_COMPONENT_SWIZZLE_A)
         .setR(VulkanComponentSwizzle.VK_COMPONENT_SWIZZLE_R)
@@ -72,7 +68,7 @@ public final class VulkanLWJGLImageViewsTest
         .setB(VulkanComponentSwizzle.VK_COMPONENT_SWIZZLE_B)
         .build();
 
-    final VulkanImageSubresourceRange subresource_range =
+    final var subresource_range =
       VulkanImageSubresourceRange.builder()
         .addFlags(VulkanImageAspectFlag.values())
         .setBaseArrayLayer(3)
@@ -81,7 +77,7 @@ public final class VulkanLWJGLImageViewsTest
         .setLevelCount(5)
         .build();
 
-    final VulkanImageViewCreateInfo info =
+    final var info =
       VulkanImageViewCreateInfo.builder()
         .addFlags(VulkanImageViewCreateFlag.values())
         .setComponents(components)
@@ -91,7 +87,7 @@ public final class VulkanLWJGLImageViewsTest
         .setSubresourceRange(subresource_range)
         .build();
 
-    final VkImageViewCreateInfo packed =
+    final var packed =
       VulkanLWJGLImageViews.packImageViewCreateInfo(this.stack, info, image);
 
     Assertions.assertAll(
@@ -120,7 +116,7 @@ public final class VulkanLWJGLImageViewsTest
       },
 
       () -> {
-        final VkComponentMapping vk_components = packed.components();
+        final var vk_components = packed.components();
         Assertions.assertEquals(VK10.VK_COMPONENT_SWIZZLE_A, vk_components.a());
         Assertions.assertEquals(VK10.VK_COMPONENT_SWIZZLE_R, vk_components.r());
         Assertions.assertEquals(VK10.VK_COMPONENT_SWIZZLE_G, vk_components.g());
@@ -128,7 +124,7 @@ public final class VulkanLWJGLImageViewsTest
       },
 
       () -> {
-        final VkImageSubresourceRange vk_range = packed.subresourceRange();
+        final var vk_range = packed.subresourceRange();
         Assertions.assertEquals(0b1111111, vk_range.aspectMask());
         Assertions.assertEquals(3, vk_range.baseArrayLayer());
         Assertions.assertEquals(2, vk_range.baseMipLevel());

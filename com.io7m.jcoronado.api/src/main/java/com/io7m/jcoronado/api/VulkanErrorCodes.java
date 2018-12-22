@@ -17,7 +17,6 @@
 package com.io7m.jcoronado.api;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.UncheckedIOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -48,15 +47,15 @@ public final class VulkanErrorCodes
   private static Map<Integer, String> makeErrorCodes()
     throws IOException
   {
-    try (InputStream stream =
+    try (var stream =
            VulkanErrorCodes.class.getResourceAsStream("error_codes.properties")) {
-      final Properties properties = new Properties();
+      final var properties = new Properties();
       properties.load(stream);
 
       final HashMap<Integer, String> codes = new HashMap<>();
-      for (final String name : properties.stringPropertyNames()) {
-        final String value = properties.getProperty(name);
-        final int ivalue = Integer.parseInt(value);
+      for (final var name : properties.stringPropertyNames()) {
+        final var value = properties.getProperty(name);
+        final var ivalue = Integer.parseInt(value);
         codes.put(Integer.valueOf(ivalue), name);
       }
       return codes;

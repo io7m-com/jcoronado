@@ -28,12 +28,9 @@ import com.io7m.jcoronado.api.VulkanSubpassContents;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.vulkan.VK10;
 import org.lwjgl.vulkan.VkCommandBuffer;
-import org.lwjgl.vulkan.VkCommandBufferBeginInfo;
-import org.lwjgl.vulkan.VkRenderPassBeginInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.nio.LongBuffer;
 import java.util.List;
 import java.util.Objects;
 
@@ -70,7 +67,7 @@ public final class VulkanLWJGLCommandBuffer
     if (o == null || !Objects.equals(this.getClass(), o.getClass())) {
       return false;
     }
-    final VulkanLWJGLCommandBuffer that = (VulkanLWJGLCommandBuffer) o;
+    final var that = (VulkanLWJGLCommandBuffer) o;
     return Objects.equals(this.handle, that.handle);
   }
 
@@ -109,8 +106,8 @@ public final class VulkanLWJGLCommandBuffer
   {
     Objects.requireNonNull(info, "info");
 
-    try (MemoryStack stack = this.stack_initial.push()) {
-      final VkCommandBufferBeginInfo packed =
+    try (var stack = this.stack_initial.push()) {
+      final var packed =
         VulkanLWJGLCommandBufferBeginInfos.pack(stack, info);
 
       VulkanChecks.checkReturnCode(
@@ -128,13 +125,13 @@ public final class VulkanLWJGLCommandBuffer
     Objects.requireNonNull(info, "info");
     Objects.requireNonNull(contents, "contents");
 
-    final VulkanLWJGLRenderPass render_pass =
+    final var render_pass =
       VulkanLWJGLClassChecks.check(info.renderPass(), VulkanLWJGLRenderPass.class);
-    final VulkanLWJGLFramebuffer framebuffer =
+    final var framebuffer =
       VulkanLWJGLClassChecks.check(info.framebuffer(), VulkanLWJGLFramebuffer.class);
 
-    try (MemoryStack stack = this.stack_initial.push()) {
-      final VkRenderPassBeginInfo packed =
+    try (var stack = this.stack_initial.push()) {
+      final var packed =
         VulkanLWJGLRenderPassBeginInfos.pack(stack, info, render_pass, framebuffer);
 
       VK10.vkCmdBeginRenderPass(this.handle, packed, contents.value());
@@ -150,7 +147,7 @@ public final class VulkanLWJGLCommandBuffer
     Objects.requireNonNull(bind_point, "bind_point");
     Objects.requireNonNull(pipeline, "pipeline");
 
-    final VulkanLWJGLPipeline pipe =
+    final var pipe =
       VulkanLWJGLClassChecks.check(pipeline, VulkanLWJGLPipeline.class);
 
     VK10.vkCmdBindPipeline(this.handle, bind_point.value(), pipe.handle());
@@ -167,18 +164,18 @@ public final class VulkanLWJGLCommandBuffer
     Objects.requireNonNull(buffers, "buffers");
     Objects.requireNonNull(offsets, "offsets");
 
-    try (MemoryStack stack = this.stack_initial.push()) {
-      final int buffers_size = buffers.size();
-      final LongBuffer lbuffers = stack.mallocLong(buffers_size);
-      final int offsets_size = offsets.size();
-      final LongBuffer loffsets = stack.mallocLong(offsets_size);
+    try (var stack = this.stack_initial.push()) {
+      final var buffers_size = buffers.size();
+      final var lbuffers = stack.mallocLong(buffers_size);
+      final var offsets_size = offsets.size();
+      final var loffsets = stack.mallocLong(offsets_size);
 
-      for (int index = 0; index < buffers_size; ++index) {
-        final VulkanLWJGLBuffer cbuffer =
+      for (var index = 0; index < buffers_size; ++index) {
+        final var cbuffer =
           VulkanLWJGLClassChecks.check(buffers.get(index), VulkanLWJGLBuffer.class);
         lbuffers.put(index, cbuffer.handle());
       }
-      for (int index = 0; index < offsets_size; ++index) {
+      for (var index = 0; index < offsets_size; ++index) {
         loffsets.put(index, offsets.get(index).longValue());
       }
 

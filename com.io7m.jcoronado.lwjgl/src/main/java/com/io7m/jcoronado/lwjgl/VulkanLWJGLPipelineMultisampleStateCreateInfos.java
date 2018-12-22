@@ -53,7 +53,7 @@ public final class VulkanLWJGLPipelineMultisampleStateCreateInfos
     Objects.requireNonNull(stack, "stack");
     Objects.requireNonNull(info, "info");
 
-    final VkPipelineMultisampleStateCreateInfo target =
+    final var target =
       VkPipelineMultisampleStateCreateInfo.mallocStack(stack);
 
     return target
@@ -73,8 +73,8 @@ public final class VulkanLWJGLPipelineMultisampleStateCreateInfos
     final Optional<int[]> ints)
   {
     if (ints.isPresent()) {
-      final int[] ii = ints.get();
-      final IntBuffer buffer = stack.mallocInt(ii.length);
+      final var ii = ints.get();
+      final var buffer = stack.mallocInt(ii.length);
       buffer.put(ii);
       buffer.position(0);
       return buffer;

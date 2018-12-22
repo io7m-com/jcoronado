@@ -88,9 +88,9 @@ public final class VulkanLWJGLHostAllocatorProxy implements AutoCloseable
     final Optional<VulkanHostAllocatorType> allocator)
   {
     if (allocator.isPresent()) {
-      final VulkanHostAllocatorType java_allocator = allocator.get();
+      final var java_allocator = allocator.get();
 
-      final VkAllocationFunction pfn_allocate =
+      final var pfn_allocate =
         VkAllocationFunction.create(
           (user_data, size, alignment, scope) ->
             java_allocator.allocate(
@@ -98,10 +98,10 @@ public final class VulkanLWJGLHostAllocatorProxy implements AutoCloseable
               alignment,
               VulkanSystemAllocationScope.ofInt(scope)));
 
-      final VkFreeFunction pfn_free =
+      final var pfn_free =
         VkFreeFunction.create((user_data, address) -> java_allocator.deallocate(address));
 
-      final VkReallocationFunction pfn_reallocate =
+      final var pfn_reallocate =
         VkReallocationFunction.create(
           (user_data, address, size, alignment, scope) ->
             java_allocator.reallocate(
@@ -110,7 +110,7 @@ public final class VulkanLWJGLHostAllocatorProxy implements AutoCloseable
               alignment,
               VulkanSystemAllocationScope.ofInt(scope)));
 
-      final VkInternalAllocationNotification pfn_internal_allocation =
+      final var pfn_internal_allocation =
         VkInternalAllocationNotification.create(
           (user_data, size, type, scope) ->
             java_allocator.onAllocation(
@@ -118,7 +118,7 @@ public final class VulkanLWJGLHostAllocatorProxy implements AutoCloseable
               VulkanInternalAllocation.ofInt(type),
               VulkanSystemAllocationScope.ofInt(scope)));
 
-      final VkInternalFreeNotification pfn_internal_free =
+      final var pfn_internal_free =
         VkInternalFreeNotification.create(
           (user_data, size, type, scope) ->
             java_allocator.onFree(
@@ -126,7 +126,7 @@ public final class VulkanLWJGLHostAllocatorProxy implements AutoCloseable
               VulkanInternalAllocation.ofInt(type),
               VulkanSystemAllocationScope.ofInt(scope)));
 
-      final VkAllocationCallbacks callback_buffer =
+      final var callback_buffer =
         VkAllocationCallbacks.mallocStack(stack)
           .pfnAllocation(pfn_allocate)
           .pfnFree(pfn_free)

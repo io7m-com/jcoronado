@@ -56,7 +56,7 @@ public final class VulkanLWJGLShaderModule
     if (o == null || !Objects.equals(this.getClass(), o.getClass())) {
       return false;
     }
-    final VulkanLWJGLShaderModule that = (VulkanLWJGLShaderModule) o;
+    final var that = (VulkanLWJGLShaderModule) o;
     return this.handle == that.handle;
   }
 

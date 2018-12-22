@@ -18,20 +18,12 @@ package com.io7m.jcoronado.tests.lwjgl;
 
 import com.io7m.jcoronado.api.VulkanAttachmentDescription;
 import com.io7m.jcoronado.api.VulkanAttachmentDescriptionFlag;
-import com.io7m.jcoronado.api.VulkanAttachmentLoadOp;
-import com.io7m.jcoronado.api.VulkanAttachmentStoreOp;
-import com.io7m.jcoronado.api.VulkanFormat;
-import com.io7m.jcoronado.api.VulkanImageLayout;
-import com.io7m.jcoronado.api.VulkanSampleCountFlag;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLAttachmentDescriptions;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.lwjgl.system.MemoryStack;
-import org.lwjgl.vulkan.VK;
 import org.lwjgl.vulkan.VK10;
-import org.lwjgl.vulkan.VkAttachmentDescription;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -59,7 +51,7 @@ public final class VulkanLWJGLAttachmentDescriptionsTest
   @Test
   public void testPackAttachments()
   {
-    final VulkanAttachmentDescription description_0 =
+    final var description_0 =
       VulkanAttachmentDescription.builder()
         .setFinalLayout(VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL)
         .setInitialLayout(VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL)
@@ -72,7 +64,7 @@ public final class VulkanLWJGLAttachmentDescriptionsTest
         .addFlags(VulkanAttachmentDescriptionFlag.values())
         .build();
 
-    final VulkanAttachmentDescription description_1 =
+    final var description_1 =
       VulkanAttachmentDescription.builder()
         .setFinalLayout(VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL)
         .setInitialLayout(VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL)
@@ -85,7 +77,7 @@ public final class VulkanLWJGLAttachmentDescriptionsTest
         .addFlags(VulkanAttachmentDescriptionFlag.values())
         .build();
 
-    final VulkanAttachmentDescription description_2 =
+    final var description_2 =
       VulkanAttachmentDescription.builder()
         .setFinalLayout(VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL)
         .setInitialLayout(VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL)
@@ -98,15 +90,15 @@ public final class VulkanLWJGLAttachmentDescriptionsTest
         .addFlags(VulkanAttachmentDescriptionFlag.values())
         .build();
 
-    final List<VulkanAttachmentDescription> attachments =
+    final var attachments =
       List.of(description_0,
               description_1,
               description_2);
 
-    final VkAttachmentDescription.Buffer packed =
+    final var packed =
       VulkanLWJGLAttachmentDescriptions.packAttachments(this.stack, attachments);
 
-    for (int index = 0; index < 3; ++index) {
+    for (var index = 0; index < 3; ++index) {
       packed.position(index);
 
       Assertions.assertAll(
@@ -153,7 +145,7 @@ public final class VulkanLWJGLAttachmentDescriptionsTest
   @Test
   public void testPackAttachment()
   {
-    final VulkanAttachmentDescription description_0 =
+    final var description_0 =
       VulkanAttachmentDescription.builder()
         .setFinalLayout(VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL)
         .setInitialLayout(VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL)
@@ -166,7 +158,7 @@ public final class VulkanLWJGLAttachmentDescriptionsTest
         .addFlags(VulkanAttachmentDescriptionFlag.values())
         .build();
 
-    final VkAttachmentDescription packed =
+    final var packed =
       VulkanLWJGLAttachmentDescriptions.packAttachment(this.stack, description_0);
 
     Assertions.assertAll(

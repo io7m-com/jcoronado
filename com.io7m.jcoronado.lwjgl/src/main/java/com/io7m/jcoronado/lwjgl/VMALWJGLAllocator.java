@@ -28,16 +28,13 @@ import com.io7m.jcoronado.vma.VMAAllocationInfoType;
 import com.io7m.jcoronado.vma.VMAAllocationResult;
 import com.io7m.jcoronado.vma.VMAAllocationType;
 import com.io7m.jcoronado.vma.VMAAllocatorType;
-import org.lwjgl.PointerBuffer;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.util.vma.Vma;
 import org.lwjgl.util.vma.VmaAllocationCreateInfo;
 import org.lwjgl.util.vma.VmaAllocationInfo;
-import org.lwjgl.vulkan.VkBufferCreateInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.nio.LongBuffer;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -79,7 +76,7 @@ public final class VMALWJGLAllocator implements VMAAllocatorType
     if (o == null || !Objects.equals(this.getClass(), o.getClass())) {
       return false;
     }
-    final VMALWJGLAllocator that = (VMALWJGLAllocator) o;
+    final var that = (VMALWJGLAllocator) o;
     return this.allocator_address == that.allocator_address
       && Objects.equals(this.device, that.device);
   }
@@ -114,11 +111,11 @@ public final class VMALWJGLAllocator implements VMAAllocatorType
     Objects.requireNonNull(alloc_create_info, "alloc_create_info");
     Objects.requireNonNull(buffer_create_info, "buffer_create_info");
 
-    try (MemoryStack stack = this.stack_initial.push()) {
-      final VkBufferCreateInfo vk_buffer_create_info =
+    try (var stack = this.stack_initial.push()) {
+      final var vk_buffer_create_info =
         VulkanLWJGLBufferCreateInfos.packInfo(stack, buffer_create_info);
 
-      final VmaAllocationCreateInfo vk_alloc_create_info =
+      final var vk_alloc_create_info =
         VmaAllocationCreateInfo.mallocStack(stack)
           .flags(VulkanEnumMaps.packValues(alloc_create_info.flags()))
           .memoryTypeBits((int) alloc_create_info.memoryTypeBits())
@@ -127,11 +124,11 @@ public final class VMALWJGLAllocator implements VMAAllocatorType
           .pUserData(0L)
           .pool(0L);
 
-      final PointerBuffer vk_allocation =
+      final var vk_allocation =
         stack.mallocPointer(1);
-      final VmaAllocationInfo vk_allocation_info =
+      final var vk_allocation_info =
         VmaAllocationInfo.mallocStack(stack);
-      final LongBuffer vk_buffer =
+      final var vk_buffer =
         stack.mallocLong(1);
 
       VulkanChecks.checkReturnCode(
@@ -145,7 +142,7 @@ public final class VMALWJGLAllocator implements VMAAllocatorType
         "vmaCreateBuffer");
 
       final Optional<VulkanDeviceMemoryType> device_memory;
-      final long vk_device_memory = vk_allocation_info.deviceMemory();
+      final var vk_device_memory = vk_allocation_info.deviceMemory();
       if (vk_device_memory != 0L) {
         device_memory =
           Optional.of(new VulkanLWJGLDeviceMemory(
@@ -154,7 +151,7 @@ public final class VMALWJGLAllocator implements VMAAllocatorType
         device_memory = Optional.empty();
       }
 
-      final VMAAllocationInfo info =
+      final var info =
         VMAAllocationInfo.builder()
           .setDeviceMemory(device_memory)
           .setMemoryType((long) vk_allocation_info.memoryType())
@@ -162,14 +159,14 @@ public final class VMALWJGLAllocator implements VMAAllocatorType
           .setSize(vk_allocation_info.size())
           .build();
 
-      final VulkanLWJGLBuffer buffer =
+      final var buffer =
         new VulkanLWJGLBuffer(
           USER_OWNED,
           this.device.device(),
           vk_buffer.get(0),
           this.host_allocator_proxy);
 
-      final VMALWJGLAllocation<VulkanLWJGLBuffer> allocation =
+      final var allocation =
         new VMALWJGLAllocation<>(
           this,
           vk_allocation.get(0),
@@ -184,8 +181,8 @@ public final class VMALWJGLAllocator implements VMAAllocatorType
   private void destroyBuffer(
     final VMALWJGLAllocation<VulkanLWJGLBuffer> allocation)
   {
-    final long buffer_handle = allocation.item.handle();
-    final long alloc_handle = allocation.allocation;
+    final var buffer_handle = allocation.item.handle();
+    final var alloc_handle = allocation.allocation;
 
     if (LOG.isTraceEnabled()) {
       LOG.trace("destroying buffer and allocation: {}", this);
@@ -232,7 +229,7 @@ public final class VMALWJGLAllocator implements VMAAllocatorType
       if (o == null || !Objects.equals(this.getClass(), o.getClass())) {
         return false;
       }
-      final VMALWJGLAllocation<?> that = (VMALWJGLAllocation<?>) o;
+      final var that = (VMALWJGLAllocation<?>) o;
       return Objects.equals(this.info.deviceMemory(), that.info.deviceMemory())
         && (this.info.offset() == that.info.offset());
     }

@@ -43,9 +43,9 @@ final class VulkanLWJGLExtensionsRegistry
   private void addExtension(
     final VulkanExtensionType ext)
   {
-    final String name = ext.name();
+    final var name = ext.name();
     if (this.extensions.containsKey(name)) {
-      final String separator = System.lineSeparator();
+      final var separator = System.lineSeparator();
       throw new IllegalStateException(
         new StringBuilder(128)
           .append("Multiple extensions with the same name.")
@@ -65,8 +65,8 @@ final class VulkanLWJGLExtensionsRegistry
     final Iterable<String> names)
   {
     final Map<String, VulkanExtensionType> matching = new HashMap<>(this.extensions_read.size());
-    for (final String name : names) {
-      final VulkanExtensionType extension = this.extensions_read.get(name);
+    for (final var name : names) {
+      final var extension = this.extensions_read.get(name);
       if (extension != null) {
         matching.put(name, extension);
       }

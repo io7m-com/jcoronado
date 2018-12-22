@@ -26,7 +26,6 @@ import org.lwjgl.vulkan.VkPipelineVertexInputStateCreateInfo;
 import org.lwjgl.vulkan.VkVertexInputAttributeDescription;
 import org.lwjgl.vulkan.VkVertexInputBindingDescription;
 
-import java.util.List;
 import java.util.Objects;
 
 /**
@@ -55,7 +54,7 @@ public final class VulkanLWJGLPipelineVertexInputStateCreateInfos
   {
     Objects.requireNonNull(info, "info");
 
-    final VkPipelineVertexInputStateCreateInfo target =
+    final var target =
       VkPipelineVertexInputStateCreateInfo.mallocStack(stack);
 
     return target.sType(VK10.VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO)
@@ -69,17 +68,17 @@ public final class VulkanLWJGLPipelineVertexInputStateCreateInfos
     final MemoryStack stack,
     final VulkanPipelineVertexInputStateCreateInfo info)
   {
-    final List<VulkanVertexInputBindingDescription> descs = info.vertexBindingDescriptions();
-    final int descs_count = descs.size();
+    final var descs = info.vertexBindingDescriptions();
+    final var descs_count = descs.size();
     if (descs_count == 0) {
       return null;
     }
 
-    final VkVertexInputBindingDescription.Buffer buffer =
+    final var buffer =
       VkVertexInputBindingDescription.mallocStack(descs_count, stack);
-    for (int index = 0; index < descs_count; ++index) {
-      final VulkanVertexInputBindingDescription source = descs.get(index);
-      final VkVertexInputBindingDescription target =
+    for (var index = 0; index < descs_count; ++index) {
+      final var source = descs.get(index);
+      final var target =
         VkVertexInputBindingDescription.create(buffer.address(index));
       packVertexInputBindingDescriptionInto(source, target);
     }
@@ -99,17 +98,17 @@ public final class VulkanLWJGLPipelineVertexInputStateCreateInfos
     final MemoryStack stack,
     final VulkanPipelineVertexInputStateCreateInfo info)
   {
-    final List<VulkanVertexInputAttributeDescription> descs = info.vertexAttributeDescriptions();
-    final int descs_count = descs.size();
+    final var descs = info.vertexAttributeDescriptions();
+    final var descs_count = descs.size();
     if (descs_count == 0) {
       return null;
     }
 
-    final VkVertexInputAttributeDescription.Buffer buffer =
+    final var buffer =
       VkVertexInputAttributeDescription.mallocStack(descs_count, stack);
-    for (int index = 0; index < descs_count; ++index) {
-      final VulkanVertexInputAttributeDescription source = descs.get(index);
-      final VkVertexInputAttributeDescription target =
+    for (var index = 0; index < descs_count; ++index) {
+      final var source = descs.get(index);
+      final var target =
         VkVertexInputAttributeDescription.create(buffer.address(index));
       packVertexInputAttributeDescriptionInto(source, target);
     }

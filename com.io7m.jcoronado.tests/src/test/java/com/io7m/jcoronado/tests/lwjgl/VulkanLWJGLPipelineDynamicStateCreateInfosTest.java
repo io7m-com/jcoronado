@@ -19,7 +19,6 @@ package com.io7m.jcoronado.tests.lwjgl;
 import com.io7m.jcoronado.api.VulkanDynamicState;
 import com.io7m.jcoronado.api.VulkanPipelineDynamicStateCreateInfo;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLPipelineDynamicStateCreateInfos;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -29,7 +28,6 @@ import org.lwjgl.vulkan.VkPipelineDynamicStateCreateInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.nio.IntBuffer;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -52,12 +50,12 @@ public final class VulkanLWJGLPipelineDynamicStateCreateInfosTest
   @Test
   public void testPipelineDynamicStateCreateInfo()
   {
-    final VulkanPipelineDynamicStateCreateInfo info =
+    final var info =
       VulkanPipelineDynamicStateCreateInfo.builder()
         .addDynamicStates(VulkanDynamicState.values())
         .build();
 
-    final VkPipelineDynamicStateCreateInfo packed =
+    final var packed =
       VulkanLWJGLPipelineDynamicStateCreateInfos.pack(this.stack, info);
 
     checkPacked(packed);
@@ -91,8 +89,8 @@ public final class VulkanLWJGLPipelineDynamicStateCreateInfosTest
             .map(v -> Integer.valueOf(v.value()))
             .collect(Collectors.toList()));
 
-        final IntBuffer states = packed.pDynamicStates();
-        for (int index = 0; index < states.capacity(); ++index) {
+        final var states = packed.pDynamicStates();
+        for (var index = 0; index < states.capacity(); ++index) {
           received.add(Integer.valueOf(states.get(index)));
         }
 

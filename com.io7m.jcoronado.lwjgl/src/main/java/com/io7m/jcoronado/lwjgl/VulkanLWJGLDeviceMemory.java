@@ -25,7 +25,7 @@ import org.slf4j.LoggerFactory;
 import java.util.Objects;
 
 /**
- * LWJGL {@link com.io7m.jcoronado.api.VulkanDeviceMemoryType}.
+ * LWJGL {@link VulkanDeviceMemoryType}.
  */
 
 public final class VulkanLWJGLDeviceMemory
@@ -56,7 +56,7 @@ public final class VulkanLWJGLDeviceMemory
     if (o == null || !Objects.equals(this.getClass(), o.getClass())) {
       return false;
     }
-    final VulkanLWJGLDeviceMemory that = (VulkanLWJGLDeviceMemory) o;
+    final var that = (VulkanLWJGLDeviceMemory) o;
     return this.handle == that.handle;
   }
 

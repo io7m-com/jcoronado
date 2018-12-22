@@ -55,7 +55,7 @@ public final class VulkanLWJGLPipeline extends VulkanLWJGLHandle implements Vulk
     if (o == null || !Objects.equals(this.getClass(), o.getClass())) {
       return false;
     }
-    final VulkanLWJGLPipeline that = (VulkanLWJGLPipeline) o;
+    final var that = (VulkanLWJGLPipeline) o;
     return this.handle == that.handle;
   }
 

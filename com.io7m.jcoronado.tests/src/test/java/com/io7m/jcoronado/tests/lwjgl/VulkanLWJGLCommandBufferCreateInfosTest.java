@@ -17,10 +17,6 @@
 package com.io7m.jcoronado.tests.lwjgl;
 
 import com.io7m.jcoronado.api.VulkanCommandBufferCreateInfo;
-import com.io7m.jcoronado.api.VulkanCommandBufferLevel;
-import com.io7m.jcoronado.api.VulkanCommandBufferUsageFlag;
-import com.io7m.jcoronado.api.VulkanCommandPoolType;
-import com.io7m.jcoronado.api.VulkanEnumMaps;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLCommandBufferCreateInfos;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLCommandPool;
 import mockit.Expectations;
@@ -30,11 +26,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.vulkan.VK10;
-import org.lwjgl.vulkan.VkCommandBufferAllocateInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.List;
 
 import static com.io7m.jcoronado.api.VulkanCommandBufferLevel.*;
 
@@ -61,14 +54,14 @@ public final class VulkanLWJGLCommandBufferCreateInfosTest
       this.result = Long.valueOf(0x300L);
     }};
 
-    final VulkanCommandBufferCreateInfo info =
+    final var info =
       VulkanCommandBufferCreateInfo.builder()
         .setPool(pool)
         .setLevel(VK_COMMAND_BUFFER_LEVEL_PRIMARY)
         .setCount(23)
         .build();
 
-    final VkCommandBufferAllocateInfo packed =
+    final var packed =
       VulkanLWJGLCommandBufferCreateInfos.pack(this.stack, info, pool);
 
     Assertions.assertAll(

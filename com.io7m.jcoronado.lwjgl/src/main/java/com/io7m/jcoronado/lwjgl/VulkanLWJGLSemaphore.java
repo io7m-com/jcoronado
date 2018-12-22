@@ -55,7 +55,7 @@ public final class VulkanLWJGLSemaphore extends VulkanLWJGLHandle implements Vul
     if (o == null || !Objects.equals(this.getClass(), o.getClass())) {
       return false;
     }
-    final VulkanLWJGLSemaphore that = (VulkanLWJGLSemaphore) o;
+    final var that = (VulkanLWJGLSemaphore) o;
     return this.handle == that.handle;
   }
 

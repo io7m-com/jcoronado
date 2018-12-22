@@ -127,10 +127,10 @@ public interface VulkanLogicalDeviceType extends VulkanHandleDispatchableType
     Objects.requireNonNull(name, "name");
     Objects.requireNonNull(clazz, "clazz");
 
-    final Map<String, VulkanExtensionType> map = this.enabledExtensions();
+    final var map = this.enabledExtensions();
     return Optional.ofNullable(map.get(name))
       .flatMap(ext -> {
-        final Class<? extends VulkanExtensionType> extension_class = ext.getClass();
+        final var extension_class = ext.getClass();
         if (clazz.isAssignableFrom(extension_class)) {
           return Optional.of((T) ext);
         }

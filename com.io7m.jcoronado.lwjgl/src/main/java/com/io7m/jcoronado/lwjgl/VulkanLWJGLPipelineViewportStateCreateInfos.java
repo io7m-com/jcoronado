@@ -17,8 +17,6 @@
 package com.io7m.jcoronado.lwjgl;
 
 import com.io7m.jcoronado.api.VulkanEnumMaps;
-import com.io7m.jcoronado.api.VulkanExtent2D;
-import com.io7m.jcoronado.api.VulkanOffset2D;
 import com.io7m.jcoronado.api.VulkanPipelineViewportStateCreateInfo;
 import com.io7m.jcoronado.api.VulkanRectangle2D;
 import com.io7m.jcoronado.api.VulkanViewport;
@@ -61,7 +59,7 @@ public final class VulkanLWJGLPipelineViewportStateCreateInfos
     Objects.requireNonNull(stack, "stack");
     Objects.requireNonNull(info, "info");
 
-    final VkPipelineViewportStateCreateInfo target =
+    final var target =
       VkPipelineViewportStateCreateInfo.mallocStack(stack);
 
     return target
@@ -78,12 +76,12 @@ public final class VulkanLWJGLPipelineViewportStateCreateInfos
     final MemoryStack stack,
     final List<VulkanRectangle2D> scissors)
   {
-    final VkRect2D.Buffer buffer = VkRect2D.mallocStack(scissors.size(), stack);
-    for (int index = 0; index < scissors.size(); ++index) {
-      final VulkanRectangle2D source = scissors.get(index);
-      final VkRect2D target = VkRect2D.create(buffer.address(index));
-      final VulkanExtent2D extent = source.extent();
-      final VulkanOffset2D offset = source.offset();
+    final var buffer = VkRect2D.mallocStack(scissors.size(), stack);
+    for (var index = 0; index < scissors.size(); ++index) {
+      final var source = scissors.get(index);
+      final var target = VkRect2D.create(buffer.address(index));
+      final var extent = source.extent();
+      final var offset = source.offset();
       target.extent(VkExtent2D.mallocStack(stack).set(extent.width(), extent.height()));
       target.offset(VkOffset2D.mallocStack(stack).set(offset.x(), offset.y()));
     }
@@ -94,10 +92,10 @@ public final class VulkanLWJGLPipelineViewportStateCreateInfos
     final MemoryStack stack,
     final List<VulkanViewport> viewports)
   {
-    final VkViewport.Buffer buffer = VkViewport.mallocStack(viewports.size(), stack);
-    for (int index = 0; index < viewports.size(); ++index) {
-      final VulkanViewport source = viewports.get(index);
-      final VkViewport target = VkViewport.create(buffer.address(index));
+    final var buffer = VkViewport.mallocStack(viewports.size(), stack);
+    for (var index = 0; index < viewports.size(); ++index) {
+      final var source = viewports.get(index);
+      final var target = VkViewport.create(buffer.address(index));
       target.set(
         source.x(),
         source.y(),

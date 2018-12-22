@@ -55,7 +55,7 @@ public final class VulkanExtensions
     Objects.requireNonNull(optional_extensions, "optional_extensions");
     Objects.requireNonNull(required_extensions, "required_extensions");
 
-    final Set<String> enable_extensions =
+    final var enable_extensions =
       required_extensions.stream()
         .filter(available_extensions::containsKey)
         .collect(Collectors.toSet());
@@ -63,19 +63,19 @@ public final class VulkanExtensions
     enable_extensions.addAll(optional_extensions);
 
     if (enable_extensions.size() < required_extensions.size()) {
-      final Set<String> missing =
+      final var missing =
         required_extensions.stream()
           .filter(name -> !enable_extensions.contains(name))
           .collect(Collectors.toSet());
 
-      final StringBuilder builder = new StringBuilder(64);
-      final String separator = System.lineSeparator();
+      final var builder = new StringBuilder(64);
+      final var separator = System.lineSeparator();
       builder.append("Required extensions are missing from the Vulkan implementation.")
         .append(separator)
         .append("  Missing:")
         .append(separator);
 
-      for (final String name : missing) {
+      for (final var name : missing) {
         builder.append("  ");
         builder.append(name);
         builder.append(separator);

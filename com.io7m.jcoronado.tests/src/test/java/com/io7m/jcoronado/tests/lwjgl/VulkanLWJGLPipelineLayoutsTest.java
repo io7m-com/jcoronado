@@ -16,8 +16,6 @@
 
 package com.io7m.jcoronado.tests.lwjgl;
 
-import com.io7m.jcoronado.api.VulkanDescriptorSetLayoutType;
-import com.io7m.jcoronado.api.VulkanIncompatibleClassException;
 import com.io7m.jcoronado.api.VulkanPipelineLayoutCreateFlag;
 import com.io7m.jcoronado.api.VulkanPipelineLayoutCreateInfo;
 import com.io7m.jcoronado.api.VulkanPushConstantRange;
@@ -26,14 +24,11 @@ import com.io7m.jcoronado.lwjgl.VulkanLWJGLDescriptorSetLayout;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLPipelineLayouts;
 import mockit.Expectations;
 import mockit.Mocked;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.vulkan.VK10;
-import org.lwjgl.vulkan.VkPipelineLayoutCreateInfo;
-import org.lwjgl.vulkan.VkPushConstantRange;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -66,28 +61,28 @@ public final class VulkanLWJGLPipelineLayoutsTest
       this.result = Long.valueOf(0x102L);
     }};
 
-    final VulkanPushConstantRange push_range_0 =
+    final var push_range_0 =
       VulkanPushConstantRange.builder()
         .addStageFlags(VulkanShaderStageFlag.VK_SHADER_STAGE_VERTEX_BIT)
         .setOffset(0)
         .setSize(3)
         .build();
 
-    final VulkanPushConstantRange push_range_1 =
+    final var push_range_1 =
       VulkanPushConstantRange.builder()
         .addStageFlags(VulkanShaderStageFlag.VK_SHADER_STAGE_FRAGMENT_BIT)
         .setOffset(2)
         .setSize(5)
         .build();
 
-    final VulkanPushConstantRange push_range_2 =
+    final var push_range_2 =
       VulkanPushConstantRange.builder()
         .addStageFlags(VulkanShaderStageFlag.values())
         .setOffset(5)
         .setSize(10)
         .build();
 
-    final VulkanPipelineLayoutCreateInfo info =
+    final var info =
       VulkanPipelineLayoutCreateInfo.builder()
         .addFlags(VulkanPipelineLayoutCreateFlag.values())
         .addPushConstantRanges(push_range_0)
@@ -98,7 +93,7 @@ public final class VulkanLWJGLPipelineLayoutsTest
         .addSetLayouts(layout_2)
         .build();
 
-    final VkPipelineLayoutCreateInfo packed =
+    final var packed =
       VulkanLWJGLPipelineLayouts.packPipelineLayoutCreateInfo(this.stack, info);
 
     Assertions.assertAll(
@@ -115,19 +110,19 @@ public final class VulkanLWJGLPipelineLayoutsTest
       },
 
       () -> {
-        final VkPushConstantRange.Buffer r = packed.pPushConstantRanges().position(0);
+        final var r = packed.pPushConstantRanges().position(0);
         Assertions.assertEquals(3, r.size(), "size");
         Assertions.assertEquals(0, r.offset(), "offset");
       },
 
       () -> {
-        final VkPushConstantRange.Buffer r = packed.pPushConstantRanges().position(1);
+        final var r = packed.pPushConstantRanges().position(1);
         Assertions.assertEquals(5, r.size(), "size");
         Assertions.assertEquals(2, r.offset(), "offset");
       },
 
       () -> {
-        final VkPushConstantRange.Buffer r = packed.pPushConstantRanges().position(2);
+        final var r = packed.pPushConstantRanges().position(2);
         Assertions.assertEquals(10, r.size(), "size");
         Assertions.assertEquals(5, r.offset(), "offset");
       },
@@ -146,28 +141,28 @@ public final class VulkanLWJGLPipelineLayoutsTest
   public void testPipelineLayoutCreateInfoNoLayouts()
     throws Exception
   {
-    final VulkanPushConstantRange push_range_0 =
+    final var push_range_0 =
       VulkanPushConstantRange.builder()
         .addStageFlags(VulkanShaderStageFlag.VK_SHADER_STAGE_VERTEX_BIT)
         .setOffset(0)
         .setSize(3)
         .build();
 
-    final VulkanPushConstantRange push_range_1 =
+    final var push_range_1 =
       VulkanPushConstantRange.builder()
         .addStageFlags(VulkanShaderStageFlag.VK_SHADER_STAGE_FRAGMENT_BIT)
         .setOffset(2)
         .setSize(5)
         .build();
 
-    final VulkanPushConstantRange push_range_2 =
+    final var push_range_2 =
       VulkanPushConstantRange.builder()
         .addStageFlags(VulkanShaderStageFlag.values())
         .setOffset(5)
         .setSize(10)
         .build();
 
-    final VulkanPipelineLayoutCreateInfo info =
+    final var info =
       VulkanPipelineLayoutCreateInfo.builder()
         .addFlags(VulkanPipelineLayoutCreateFlag.values())
         .addPushConstantRanges(push_range_0)
@@ -175,7 +170,7 @@ public final class VulkanLWJGLPipelineLayoutsTest
         .addPushConstantRanges(push_range_2)
         .build();
 
-    final VkPipelineLayoutCreateInfo packed =
+    final var packed =
       VulkanLWJGLPipelineLayouts.packPipelineLayoutCreateInfo(this.stack, info);
 
     Assertions.assertAll(
@@ -192,19 +187,19 @@ public final class VulkanLWJGLPipelineLayoutsTest
       },
 
       () -> {
-        final VkPushConstantRange.Buffer r = packed.pPushConstantRanges().position(0);
+        final var r = packed.pPushConstantRanges().position(0);
         Assertions.assertEquals(3, r.size(), "size");
         Assertions.assertEquals(0, r.offset(), "offset");
       },
 
       () -> {
-        final VkPushConstantRange.Buffer r = packed.pPushConstantRanges().position(1);
+        final var r = packed.pPushConstantRanges().position(1);
         Assertions.assertEquals(5, r.size(), "size");
         Assertions.assertEquals(2, r.offset(), "offset");
       },
 
       () -> {
-        final VkPushConstantRange.Buffer r = packed.pPushConstantRanges().position(2);
+        final var r = packed.pPushConstantRanges().position(2);
         Assertions.assertEquals(10, r.size(), "size");
         Assertions.assertEquals(5, r.offset(), "offset");
       },

@@ -23,7 +23,6 @@ import com.io7m.jcoronado.lwjgl.VulkanLWJGLPipelineShaderStageCreateInfos;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLShaderModule;
 import mockit.Expectations;
 import mockit.Mocked;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -60,14 +59,14 @@ public final class VulkanLWJGLPipelineShaderStageCreateInfosTest
       this.result = Long.valueOf(0x200L);
     }};
 
-    final VulkanPipelineShaderStageCreateInfo info =
+    final var info =
       VulkanPipelineShaderStageCreateInfo.builder()
         .setShaderEntryPoint("main")
         .setModule(module)
         .setStage(VulkanShaderStageFlag.VK_SHADER_STAGE_VERTEX_BIT)
         .build();
 
-    final VkPipelineShaderStageCreateInfo packed =
+    final var packed =
       VulkanLWJGLPipelineShaderStageCreateInfos.pack(this.stack, info);
 
     Assertions.assertAll(
@@ -108,21 +107,21 @@ public final class VulkanLWJGLPipelineShaderStageCreateInfosTest
       this.result = Long.valueOf(0x200L);
     }};
 
-    final VulkanPipelineShaderStageCreateInfo info_0 =
+    final var info_0 =
       VulkanPipelineShaderStageCreateInfo.builder()
         .setShaderEntryPoint("main")
         .setModule(module)
         .setStage(VulkanShaderStageFlag.VK_SHADER_STAGE_VERTEX_BIT)
         .build();
 
-    final VulkanPipelineShaderStageCreateInfo info_1 =
+    final var info_1 =
       VulkanPipelineShaderStageCreateInfo.builder()
         .setShaderEntryPoint("main2")
         .setModule(module)
         .setStage(VulkanShaderStageFlag.VK_SHADER_STAGE_FRAGMENT_BIT)
         .build();
 
-    final VkPipelineShaderStageCreateInfo.Buffer packed =
+    final var packed =
       VulkanLWJGLPipelineShaderStageCreateInfos.packAll(this.stack, List.of(info_0, info_1));
 
     checkPacked(module, packed);

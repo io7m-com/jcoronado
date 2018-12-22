@@ -21,13 +21,11 @@ import com.io7m.jcoronado.api.VulkanDependencyFlag;
 import com.io7m.jcoronado.api.VulkanPipelineStageFlag;
 import com.io7m.jcoronado.api.VulkanSubpassDependency;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLSubpasses;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.vulkan.VK10;
-import org.lwjgl.vulkan.VkSubpassDependency;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,7 +45,7 @@ public final class VulkanLWJGLSubpassesTest
   @Test
   public void testPackSubpassDependency()
   {
-    final VulkanSubpassDependency dependency =
+    final var dependency =
       VulkanSubpassDependency.builder()
         .addDependencyFlags(VulkanDependencyFlag.values())
         .addDstAccessMask(VulkanAccessFlag.VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT)
@@ -58,7 +56,7 @@ public final class VulkanLWJGLSubpassesTest
         .setDstSubpass(24)
         .build();
 
-    final VkSubpassDependency packed =
+    final var packed =
       VulkanLWJGLSubpasses.packSubpassDependency(this.stack, dependency);
 
     Assertions.assertAll(

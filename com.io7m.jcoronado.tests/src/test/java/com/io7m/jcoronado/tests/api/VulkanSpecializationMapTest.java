@@ -28,7 +28,7 @@ public final class VulkanSpecializationMapTest
   @Test
   public void testNotDirect()
   {
-    final IllegalArgumentException e = Assertions.assertThrows(
+    final var e = Assertions.assertThrows(
       IllegalArgumentException.class, () -> {
         VulkanSpecializationMap.of(List.of(), ByteBuffer.allocate(23));
       });

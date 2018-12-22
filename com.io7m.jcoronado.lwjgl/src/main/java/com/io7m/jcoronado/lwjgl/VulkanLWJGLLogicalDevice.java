@@ -37,7 +37,6 @@ import com.io7m.jcoronado.api.VulkanImageViewCreateInfo;
 import com.io7m.jcoronado.api.VulkanImageViewType;
 import com.io7m.jcoronado.api.VulkanIncompatibleClassException;
 import com.io7m.jcoronado.api.VulkanLogicalDeviceCreateInfo;
-import com.io7m.jcoronado.api.VulkanLogicalDeviceQueueCreateInfo;
 import com.io7m.jcoronado.api.VulkanLogicalDeviceType;
 import com.io7m.jcoronado.api.VulkanMappedMemoryType;
 import com.io7m.jcoronado.api.VulkanMemoryAllocateInfo;
@@ -47,7 +46,6 @@ import com.io7m.jcoronado.api.VulkanPhysicalDeviceType;
 import com.io7m.jcoronado.api.VulkanPipelineLayoutCreateInfo;
 import com.io7m.jcoronado.api.VulkanPipelineLayoutType;
 import com.io7m.jcoronado.api.VulkanPipelineType;
-import com.io7m.jcoronado.api.VulkanQueueFamilyProperties;
 import com.io7m.jcoronado.api.VulkanQueueType;
 import com.io7m.jcoronado.api.VulkanRenderPassCreateInfo;
 import com.io7m.jcoronado.api.VulkanRenderPassType;
@@ -59,26 +57,14 @@ import com.io7m.jcoronado.api.VulkanUncheckedException;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.vulkan.VK10;
-import org.lwjgl.vulkan.VkBufferCreateInfo;
 import org.lwjgl.vulkan.VkCommandBuffer;
-import org.lwjgl.vulkan.VkCommandBufferAllocateInfo;
-import org.lwjgl.vulkan.VkCommandPoolCreateInfo;
 import org.lwjgl.vulkan.VkDevice;
-import org.lwjgl.vulkan.VkFenceCreateInfo;
-import org.lwjgl.vulkan.VkFramebufferCreateInfo;
-import org.lwjgl.vulkan.VkGraphicsPipelineCreateInfo;
-import org.lwjgl.vulkan.VkImageViewCreateInfo;
 import org.lwjgl.vulkan.VkMemoryAllocateInfo;
 import org.lwjgl.vulkan.VkMemoryRequirements;
-import org.lwjgl.vulkan.VkPipelineLayoutCreateInfo;
 import org.lwjgl.vulkan.VkQueue;
-import org.lwjgl.vulkan.VkRenderPassCreateInfo;
-import org.lwjgl.vulkan.VkSemaphoreCreateInfo;
-import org.lwjgl.vulkan.VkShaderModuleCreateInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.nio.LongBuffer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -156,7 +142,7 @@ public final class VulkanLWJGLLogicalDevice
     if (o == null || !Objects.equals(this.getClass(), o.getClass())) {
       return false;
     }
-    final VulkanLWJGLLogicalDevice that = (VulkanLWJGLLogicalDevice) o;
+    final var that = (VulkanLWJGLLogicalDevice) o;
     return Objects.equals(this.physical_device, that.physical_device)
       && Objects.equals(this.device, that.device);
   }
@@ -175,18 +161,18 @@ public final class VulkanLWJGLLogicalDevice
   private void initializeQueues()
     throws VulkanException
   {
-    try (MemoryStack stack = this.stack_initial.push()) {
-      final List<VulkanLogicalDeviceQueueCreateInfo> queue_requests =
+    try (var stack = this.stack_initial.push()) {
+      final var queue_requests =
         this.creation.queueCreateInfos();
-      final List<VulkanQueueFamilyProperties> families =
+      final var families =
         this.physical_device.queueFamilies();
 
-      final PointerBuffer queue_buffer = stack.mallocPointer(1);
-      for (final VulkanLogicalDeviceQueueCreateInfo queue_info : queue_requests) {
-        for (int queue_index = 0; queue_index < queue_info.queueCount(); ++queue_index) {
-          final int queue_family_index =
+      final var queue_buffer = stack.mallocPointer(1);
+      for (final var queue_info : queue_requests) {
+        for (var queue_index = 0; queue_index < queue_info.queueCount(); ++queue_index) {
+          final var queue_family_index =
             queue_info.queueFamilyIndex();
-          final VulkanQueueFamilyProperties family =
+          final var family =
             families.get(queue_family_index);
 
           VK10.vkGetDeviceQueue(
@@ -195,7 +181,7 @@ public final class VulkanLWJGLLogicalDevice
             queue_index,
             queue_buffer);
 
-          final VkQueue queue = new VkQueue(queue_buffer.get(0), this.device);
+          final var queue = new VkQueue(queue_buffer.get(0), this.device);
           this.queues.add(new VulkanLWJGLQueue(
             this, queue, family, queue_index, this.hostAllocatorProxy()));
         }
@@ -248,11 +234,11 @@ public final class VulkanLWJGLLogicalDevice
       LOG.debug("creating shader module: {} octets", Long.valueOf(create_info.size()));
     }
 
-    try (MemoryStack stack = this.stack_initial.push()) {
-      final VkShaderModuleCreateInfo vk_create_info =
+    try (var stack = this.stack_initial.push()) {
+      final var vk_create_info =
         VulkanLWJGLShaderModules.packShaderModuleCreateInfo(stack, create_info);
 
-      final long[] results = new long[1];
+      final var results = new long[1];
       VulkanChecks.checkReturnCode(
         VK10.vkCreateShaderModule(
           this.device,
@@ -261,7 +247,7 @@ public final class VulkanLWJGLLogicalDevice
           results),
         "vkCreateShaderModule");
 
-      final long shader_module = results[0];
+      final var shader_module = results[0];
       if (LOG.isTraceEnabled()) {
         LOG.trace("created shader module: 0x{}", Long.toUnsignedString(shader_module, 16));
       }
@@ -283,14 +269,14 @@ public final class VulkanLWJGLLogicalDevice
 
     this.checkNotClosed();
 
-    final VulkanLWJGLImage image =
+    final var image =
       VulkanLWJGLClassChecks.check(info.image(), VulkanLWJGLImage.class);
 
-    try (MemoryStack stack = this.stack_initial.push()) {
-      final VkImageViewCreateInfo create_info =
+    try (var stack = this.stack_initial.push()) {
+      final var create_info =
         VulkanLWJGLImageViews.packImageViewCreateInfo(stack, info, image);
 
-      final long[] view = new long[1];
+      final var view = new long[1];
       VulkanChecks.checkReturnCode(
         VK10.vkCreateImageView(
           this.device,
@@ -299,7 +285,7 @@ public final class VulkanLWJGLLogicalDevice
           view),
         "vkCreateImageView");
 
-      final long view_handle = view[0];
+      final var view_handle = view[0];
       if (LOG.isTraceEnabled()) {
         LOG.trace("created image view: 0x{}", Long.toUnsignedString(view_handle, 16));
       }
@@ -317,11 +303,11 @@ public final class VulkanLWJGLLogicalDevice
 
     this.checkNotClosed();
 
-    try (MemoryStack stack = this.stack_initial.push()) {
-      final VkPipelineLayoutCreateInfo create_info =
+    try (var stack = this.stack_initial.push()) {
+      final var create_info =
         VulkanLWJGLPipelineLayouts.packPipelineLayoutCreateInfo(stack, info);
 
-      final long[] layout = new long[1];
+      final var layout = new long[1];
       VulkanChecks.checkReturnCode(
         VK10.vkCreatePipelineLayout(
           this.device,
@@ -330,7 +316,7 @@ public final class VulkanLWJGLLogicalDevice
           layout),
         "vkCreatePipelineLayout");
 
-      final long layout_handle = layout[0];
+      final var layout_handle = layout[0];
       if (LOG.isTraceEnabled()) {
         LOG.trace("created pipeline layout: 0x{}", Long.toUnsignedString(layout_handle, 16));
       }
@@ -352,11 +338,11 @@ public final class VulkanLWJGLLogicalDevice
 
     this.checkNotClosed();
 
-    try (MemoryStack stack = this.stack_initial.push()) {
-      final VkRenderPassCreateInfo create_info =
+    try (var stack = this.stack_initial.push()) {
+      final var create_info =
         VulkanLWJGLRenderPasses.packRenderPassCreateInfo(stack, render_pass_create_info);
 
-      final long[] pass = new long[1];
+      final var pass = new long[1];
       VulkanChecks.checkReturnCode(
         VK10.vkCreateRenderPass(
           this.device,
@@ -365,7 +351,7 @@ public final class VulkanLWJGLLogicalDevice
           pass),
         "vkCreateRenderPass");
 
-      final long pass_handle = pass[0];
+      final var pass_handle = pass[0];
       if (LOG.isTraceEnabled()) {
         LOG.trace("created render pass: 0x{}", Long.toUnsignedString(pass_handle, 16));
       }
@@ -387,11 +373,11 @@ public final class VulkanLWJGLLogicalDevice
 
     this.checkNotClosed();
 
-    try (MemoryStack stack = this.stack_initial.push()) {
-      final VkGraphicsPipelineCreateInfo.Buffer infos =
+    try (var stack = this.stack_initial.push()) {
+      final var infos =
         VulkanLWJGLGraphicsPipelineCreateInfos.pack(stack, pipeline_infos);
 
-      final long[] pipes = new long[pipeline_infos.size()];
+      final var pipes = new long[pipeline_infos.size()];
       VulkanChecks.checkReturnCode(
         VK10.vkCreateGraphicsPipelines(
           this.device,
@@ -404,8 +390,8 @@ public final class VulkanLWJGLLogicalDevice
       final ArrayList<VulkanLWJGLPipeline> result_pipelines =
         new ArrayList<>(pipeline_infos.size());
 
-      for (int index = 0; index < pipeline_infos.size(); ++index) {
-        final long pipe = pipes[index];
+      for (var index = 0; index < pipeline_infos.size(); ++index) {
+        final var pipe = pipes[index];
         if (LOG.isTraceEnabled()) {
           LOG.trace("created pipeline: 0x{}", Long.toUnsignedString(pipe, 16));
         }
@@ -430,7 +416,7 @@ public final class VulkanLWJGLLogicalDevice
     this.checkNotClosed();
 
     try {
-      final List<VulkanLWJGLImageView> views =
+      final var views =
         create_info.attachments()
           .stream()
           .map(view -> {
@@ -442,14 +428,14 @@ public final class VulkanLWJGLLogicalDevice
           })
           .collect(Collectors.toList());
 
-      final VulkanLWJGLRenderPass pass =
+      final var pass =
         VulkanLWJGLClassChecks.check(create_info.renderPass(), VulkanLWJGLRenderPass.class);
 
-      try (MemoryStack stack = this.stack_initial.push()) {
-        final VkFramebufferCreateInfo info =
+      try (var stack = this.stack_initial.push()) {
+        final var info =
           VulkanLWJGLFramebufferCreateInfos.pack(stack, create_info, views, pass);
 
-        final long[] framebuffers = new long[1];
+        final var framebuffers = new long[1];
         VulkanChecks.checkReturnCode(
           VK10.vkCreateFramebuffer(
             this.device,
@@ -458,7 +444,7 @@ public final class VulkanLWJGLLogicalDevice
             framebuffers),
           "vkCreateFramebuffer");
 
-        final long handle = framebuffers[0];
+        final var handle = framebuffers[0];
         if (LOG.isTraceEnabled()) {
           LOG.trace("created framebuffer: 0x{}", Long.toUnsignedString(handle, 16));
         }
@@ -483,11 +469,11 @@ public final class VulkanLWJGLLogicalDevice
 
     this.checkNotClosed();
 
-    try (MemoryStack stack = this.stack_initial.push()) {
-      final VkCommandPoolCreateInfo packed =
+    try (var stack = this.stack_initial.push()) {
+      final var packed =
         VulkanLWJGLCommandPoolCreateInfos.pack(stack, create_info);
 
-      final long[] handles = new long[1];
+      final var handles = new long[1];
       VulkanChecks.checkReturnCode(
         VK10.vkCreateCommandPool(
           this.device,
@@ -496,7 +482,7 @@ public final class VulkanLWJGLLogicalDevice
           handles),
         "vkCreateCommandPool");
 
-      final long handle = handles[0];
+      final var handle = handles[0];
       if (LOG.isTraceEnabled()) {
         LOG.trace("created command pool: 0x{}", Long.toUnsignedString(handle, 16));
       }
@@ -514,15 +500,15 @@ public final class VulkanLWJGLLogicalDevice
 
     this.checkNotClosed();
 
-    final VulkanLWJGLCommandPool pool =
+    final var pool =
       VulkanLWJGLClassChecks.check(create_info.pool(), VulkanLWJGLCommandPool.class);
 
-    try (MemoryStack stack = this.stack_initial.push()) {
-      final VkCommandBufferAllocateInfo packed =
+    try (var stack = this.stack_initial.push()) {
+      final var packed =
         VulkanLWJGLCommandBufferCreateInfos.pack(stack, create_info, pool);
 
-      final int count = create_info.count();
-      final PointerBuffer buffers = stack.mallocPointer(count);
+      final var count = create_info.count();
+      final var buffers = stack.mallocPointer(count);
 
       VulkanChecks.checkReturnCode(
         VK10.vkAllocateCommandBuffers(this.device, packed, buffers),
@@ -531,15 +517,15 @@ public final class VulkanLWJGLLogicalDevice
       final List<VulkanCommandBufferType> results = new ArrayList<>(count);
 
       if (LOG.isTraceEnabled()) {
-        for (int index = 0; index < count; ++index) {
+        for (var index = 0; index < count; ++index) {
           LOG.trace("created command buffer: 0x{}", Long.toUnsignedString(buffers.get(index), 16));
         }
       }
 
-      for (int index = 0; index < count; ++index) {
-        final VkCommandBuffer handle =
+      for (var index = 0; index < count; ++index) {
+        final var handle =
           new VkCommandBuffer(buffers.get(index), this.device);
-        final VulkanLWJGLCommandBuffer buffer =
+        final var buffer =
           new VulkanLWJGLCommandBuffer(VULKAN_OWNED, handle, this.hostAllocatorProxy());
         results.add(buffer);
       }
@@ -557,11 +543,11 @@ public final class VulkanLWJGLLogicalDevice
 
     this.checkNotClosed();
 
-    try (MemoryStack stack = this.stack_initial.push()) {
-      final VkSemaphoreCreateInfo packed =
+    try (var stack = this.stack_initial.push()) {
+      final var packed =
         VulkanLWJGLSemaphoreCreateInfos.pack(stack, create_info);
 
-      final long[] semaphores = new long[1];
+      final var semaphores = new long[1];
 
       VulkanChecks.checkReturnCode(
         VK10.vkCreateSemaphore(
@@ -571,7 +557,7 @@ public final class VulkanLWJGLLogicalDevice
           semaphores),
         "vkCreateSemaphore");
 
-      final long handle = semaphores[0];
+      final var handle = semaphores[0];
       if (LOG.isTraceEnabled()) {
         LOG.trace("created semaphore: 0x{}", Long.toUnsignedString(handle, 16));
       }
@@ -588,11 +574,11 @@ public final class VulkanLWJGLLogicalDevice
 
     this.checkNotClosed();
 
-    try (MemoryStack stack = this.stack_initial.push()) {
-      final VkFenceCreateInfo packed =
+    try (var stack = this.stack_initial.push()) {
+      final var packed =
         VulkanLWJGLFenceCreateInfos.pack(stack, create_info);
 
-      final long[] fences = new long[1];
+      final var fences = new long[1];
 
       VulkanChecks.checkReturnCode(
         VK10.vkCreateFence(
@@ -602,7 +588,7 @@ public final class VulkanLWJGLLogicalDevice
           fences),
         "vkCreateFence");
 
-      final long handle = fences[0];
+      final var handle = fences[0];
       if (LOG.isTraceEnabled()) {
         LOG.trace("created semaphore: 0x{}", Long.toUnsignedString(handle, 16));
       }
@@ -618,10 +604,10 @@ public final class VulkanLWJGLLogicalDevice
 
     this.checkNotClosed();
 
-    try (MemoryStack stack = this.stack_initial.push()) {
-      final LongBuffer array = stack.mallocLong(fences.size());
-      for (int index = 0; index < fences.size(); ++index) {
-        final VulkanLWJGLFence fence =
+    try (var stack = this.stack_initial.push()) {
+      final var array = stack.mallocLong(fences.size());
+      for (var index = 0; index < fences.size(); ++index) {
+        final var fence =
           VulkanLWJGLClassChecks.check(fences.get(index), VulkanLWJGLFence.class);
         array.put(index, fence.handle());
       }
@@ -652,11 +638,11 @@ public final class VulkanLWJGLLogicalDevice
 
     this.checkNotClosed();
 
-    try (MemoryStack stack = this.stack_initial.push()) {
-      final VkBufferCreateInfo info =
+    try (var stack = this.stack_initial.push()) {
+      final var info =
         VulkanLWJGLBufferCreateInfos.packInfo(stack, create_info);
 
-      final long[] handles = new long[1];
+      final var handles = new long[1];
       VulkanChecks.checkReturnCode(
         VK10.vkCreateBuffer(
           this.device,
@@ -665,7 +651,7 @@ public final class VulkanLWJGLLogicalDevice
           handles),
         "vkCreateBuffer");
 
-      final long handle = handles[0];
+      final var handle = handles[0];
       if (LOG.isTraceEnabled()) {
         LOG.trace("created buffer: 0x{}", Long.toUnsignedString(handle, 16));
       }
@@ -682,11 +668,11 @@ public final class VulkanLWJGLLogicalDevice
 
     this.checkNotClosed();
 
-    final VulkanLWJGLBuffer cbuffer =
+    final var cbuffer =
       VulkanLWJGLClassChecks.check(buffer, VulkanLWJGLBuffer.class);
 
-    try (MemoryStack stack = this.stack_initial.push()) {
-      final VkMemoryRequirements info = VkMemoryRequirements.mallocStack(stack);
+    try (var stack = this.stack_initial.push()) {
+      final var info = VkMemoryRequirements.mallocStack(stack);
 
       VK10.vkGetBufferMemoryRequirements(this.device, cbuffer.handle(), info);
 
@@ -707,15 +693,15 @@ public final class VulkanLWJGLLogicalDevice
 
     this.checkNotClosed();
 
-    try (MemoryStack stack = this.stack_initial.push()) {
-      final VkMemoryAllocateInfo cinfo =
+    try (var stack = this.stack_initial.push()) {
+      final var cinfo =
         VkMemoryAllocateInfo.mallocStack(stack)
           .sType(VK10.VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO)
           .pNext(0L)
           .allocationSize(info.size())
           .memoryTypeIndex(info.memoryTypeIndex());
 
-      final long[] handles = new long[1];
+      final var handles = new long[1];
       VulkanChecks.checkReturnCode(
         VK10.vkAllocateMemory(
           this.device,
@@ -724,7 +710,7 @@ public final class VulkanLWJGLLogicalDevice
           handles),
         "vkAllocateMemory");
 
-      final long handle = handles[0];
+      final var handle = handles[0];
       if (LOG.isTraceEnabled()) {
         LOG.trace("allocated device memory: 0x{}", Long.toUnsignedString(handle, 16));
       }
@@ -747,9 +733,9 @@ public final class VulkanLWJGLLogicalDevice
     Objects.requireNonNull(buffer, "buffer");
     Objects.requireNonNull(device_memory, "device_memory");
 
-    final VulkanLWJGLBuffer cbuffer =
+    final var cbuffer =
       VulkanLWJGLClassChecks.check(buffer, VulkanLWJGLBuffer.class);
-    final VulkanLWJGLDeviceMemory cmemory =
+    final var cmemory =
       VulkanLWJGLClassChecks.check(device_memory, VulkanLWJGLDeviceMemory.class);
 
     VulkanChecks.checkReturnCode(
@@ -768,17 +754,17 @@ public final class VulkanLWJGLLogicalDevice
     Objects.requireNonNull(memory, "memory");
     Objects.requireNonNull(flags, "flags");
 
-    final VulkanLWJGLDeviceMemory cmemory =
+    final var cmemory =
       VulkanLWJGLClassChecks.check(memory, VulkanLWJGLDeviceMemory.class);
 
-    final int int_flags = VulkanEnumMaps.packValues(flags);
-    final long int_handle = cmemory.handle();
+    final var int_flags = VulkanEnumMaps.packValues(flags);
+    final var int_handle = cmemory.handle();
 
     VulkanChecks.checkReturnCode(
       VK10.vkMapMemory(this.device, int_handle, offset, size, int_flags, this.pointer_buffer),
       "vkMapMemory");
 
-    final long address = this.pointer_buffer.get(0);
+    final var address = this.pointer_buffer.get(0);
     if (LOG.isTraceEnabled()) {
       LOG.trace(
         "mapped memory: 0x{} -> 0x{}",

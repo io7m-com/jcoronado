@@ -55,7 +55,7 @@ public final class VulkanLWJGLCommandPool extends VulkanLWJGLHandle implements V
     if (o == null || !Objects.equals(this.getClass(), o.getClass())) {
       return false;
     }
-    final VulkanLWJGLCommandPool that = (VulkanLWJGLCommandPool) o;
+    final var that = (VulkanLWJGLCommandPool) o;
     return this.handle == that.handle;
   }
 

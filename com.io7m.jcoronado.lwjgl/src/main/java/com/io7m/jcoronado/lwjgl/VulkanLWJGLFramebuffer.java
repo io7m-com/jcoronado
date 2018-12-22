@@ -55,7 +55,7 @@ public final class VulkanLWJGLFramebuffer extends VulkanLWJGLHandle implements V
     if (o == null || !Objects.equals(this.getClass(), o.getClass())) {
       return false;
     }
-    final VulkanLWJGLFramebuffer that = (VulkanLWJGLFramebuffer) o;
+    final var that = (VulkanLWJGLFramebuffer) o;
     return this.handle == that.handle;
   }
 

@@ -17,25 +17,16 @@
 package com.io7m.jcoronado.tests.lwjgl;
 
 import com.io7m.jcoronado.api.VulkanFramebufferCreateInfo;
-import com.io7m.jcoronado.api.VulkanIncompatibleClassException;
-import com.io7m.jcoronado.api.VulkanPipelineShaderStageCreateInfo;
-import com.io7m.jcoronado.api.VulkanShaderStageFlag;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLFramebufferCreateInfos;
-import com.io7m.jcoronado.lwjgl.VulkanLWJGLImage;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLImageView;
-import com.io7m.jcoronado.lwjgl.VulkanLWJGLPipelineShaderStageCreateInfos;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLRenderPass;
-import com.io7m.jcoronado.lwjgl.VulkanLWJGLShaderModule;
 import mockit.Expectations;
 import mockit.Mocked;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.vulkan.VK10;
-import org.lwjgl.vulkan.VkFramebufferCreateInfo;
-import org.lwjgl.vulkan.VkPipelineShaderStageCreateInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -66,7 +57,7 @@ public final class VulkanLWJGLFramebufferCreateInfosTest
       this.result = Long.valueOf(0x200L);
     }};
 
-    final VulkanFramebufferCreateInfo info =
+    final var info =
       VulkanFramebufferCreateInfo.builder()
         .setRenderPass(render_pass)
         .setLayers(1)
@@ -75,7 +66,7 @@ public final class VulkanLWJGLFramebufferCreateInfosTest
         .addAttachments(image_view)
         .build();
 
-    final VkFramebufferCreateInfo packed =
+    final var packed =
       VulkanLWJGLFramebufferCreateInfos.pack(this.stack, info, List.of(image_view), render_pass);
 
     Assertions.assertAll(

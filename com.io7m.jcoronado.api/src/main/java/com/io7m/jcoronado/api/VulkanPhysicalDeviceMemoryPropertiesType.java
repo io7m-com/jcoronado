@@ -67,12 +67,12 @@ public interface VulkanPhysicalDeviceMemoryPropertiesType
     Objects.requireNonNull(requirements, "requirements");
     Objects.requireNonNull(flags, "flags");
 
-    final int type_filter = requirements.memoryTypeBits();
-    final List<VulkanMemoryType> types = this.types();
-    final int type_count = types.size();
-    for (int index = 0; index < type_count; ++index) {
-      final VulkanMemoryType type = types.get(index);
-      final int bit = 1 << index;
+    final var type_filter = requirements.memoryTypeBits();
+    final var types = this.types();
+    final var type_count = types.size();
+    for (var index = 0; index < type_count; ++index) {
+      final var type = types.get(index);
+      final var bit = 1 << index;
       if (((type_filter & bit) == bit) && (type.flags().containsAll(flags))) {
         return type;
       }

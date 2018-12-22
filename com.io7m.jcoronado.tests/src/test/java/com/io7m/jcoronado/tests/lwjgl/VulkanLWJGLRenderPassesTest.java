@@ -28,16 +28,11 @@ import com.io7m.jcoronado.api.VulkanSubpassDependency;
 import com.io7m.jcoronado.api.VulkanSubpassDescription;
 import com.io7m.jcoronado.api.VulkanSubpassDescriptionFlag;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLRenderPasses;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.vulkan.VK10;
-import org.lwjgl.vulkan.VkAttachmentDescription;
-import org.lwjgl.vulkan.VkRenderPassCreateInfo;
-import org.lwjgl.vulkan.VkSubpassDependency;
-import org.lwjgl.vulkan.VkSubpassDescription;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -69,7 +64,7 @@ public final class VulkanLWJGLRenderPassesTest
   @Test
   public void testPackRenderPassCreateInfo()
   {
-    final VulkanSubpassDependency subpass_dependency =
+    final var subpass_dependency =
       VulkanSubpassDependency.builder()
         .addDependencyFlags(VulkanDependencyFlag.values())
         .addDstAccessMask(VulkanAccessFlag.VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT)
@@ -80,7 +75,7 @@ public final class VulkanLWJGLRenderPassesTest
         .setDstSubpass(24)
         .build();
 
-    final VulkanAttachmentDescription attachment_0 =
+    final var attachment_0 =
       VulkanAttachmentDescription.builder()
         .setFinalLayout(VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL)
         .setInitialLayout(VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL)
@@ -93,31 +88,31 @@ public final class VulkanLWJGLRenderPassesTest
         .addFlags(VulkanAttachmentDescriptionFlag.values())
         .build();
 
-    final VulkanAttachmentReference reference_0 =
+    final var reference_0 =
       VulkanAttachmentReference.builder()
         .setAttachment(0)
         .setLayout(VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL)
         .build();
 
-    final VulkanAttachmentReference reference_1 =
+    final var reference_1 =
       VulkanAttachmentReference.builder()
         .setAttachment(1)
         .setLayout(VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL)
         .build();
 
-    final VulkanAttachmentReference reference_2 =
+    final var reference_2 =
       VulkanAttachmentReference.builder()
         .setAttachment(2)
         .setLayout(VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL)
         .build();
 
-    final VulkanAttachmentReference reference_3 =
+    final var reference_3 =
       VulkanAttachmentReference.builder()
         .setAttachment(3)
         .setLayout(VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL)
         .build();
 
-    final VulkanSubpassDescription subpass_0 =
+    final var subpass_0 =
       VulkanSubpassDescription.builder()
         .addColorAttachments(reference_0)
         .addFlags(VulkanSubpassDescriptionFlag.values())
@@ -128,7 +123,7 @@ public final class VulkanLWJGLRenderPassesTest
         .setPipelineBindPoint(VK_PIPELINE_BIND_POINT_GRAPHICS)
         .build();
 
-    final VulkanRenderPassCreateInfo info =
+    final var info =
       VulkanRenderPassCreateInfo.builder()
         .addSubpasses(subpass_0)
         .addAttachments(attachment_0)
@@ -136,7 +131,7 @@ public final class VulkanLWJGLRenderPassesTest
         .addDependencies(subpass_dependency)
         .build();
 
-    final VkRenderPassCreateInfo packed =
+    final var packed =
       VulkanLWJGLRenderPasses.packRenderPassCreateInfo(this.stack, info);
 
     Assertions.assertAll(
@@ -147,7 +142,7 @@ public final class VulkanLWJGLRenderPassesTest
         Assertions.assertEquals(0L, packed.pNext());
       },
       () -> {
-        final VkSubpassDescription.Buffer b = packed.pSubpasses();
+        final var b = packed.pSubpasses();
         Assertions.assertEquals(1, packed.subpassCount());
 
         Assertions.assertEquals(
@@ -172,11 +167,11 @@ public final class VulkanLWJGLRenderPassesTest
           b.pipelineBindPoint());
       },
       () -> {
-        final VkAttachmentDescription.Buffer b = packed.pAttachments();
+        final var b = packed.pAttachments();
         Assertions.assertEquals(1, packed.attachmentCount());
       },
       () -> {
-        final VkSubpassDependency.Buffer b = packed.pDependencies();
+        final var b = packed.pDependencies();
         Assertions.assertEquals(1, packed.dependencyCount());
       }
     );

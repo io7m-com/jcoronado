@@ -22,7 +22,6 @@ import org.lwjgl.system.MemoryStack;
 import org.lwjgl.vulkan.VkSpecializationInfo;
 import org.lwjgl.vulkan.VkSpecializationMapEntry;
 
-import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -72,20 +71,20 @@ public final class VulkanLWJGLSpecializationInfos
     Objects.requireNonNull(stack, "stack");
     Objects.requireNonNull(map, "map");
 
-    final List<VulkanSpecializationMapEntry> map_entries = map.entries();
+    final var map_entries = map.entries();
 
-    final VkSpecializationMapEntry.Buffer entry_buffer =
+    final var entry_buffer =
       VkSpecializationMapEntry.mallocStack(map_entries.size(), stack);
 
-    for (int index = 0; index < map_entries.size(); ++index) {
-      final VulkanSpecializationMapEntry source =
+    for (var index = 0; index < map_entries.size(); ++index) {
+      final var source =
         map_entries.get(index);
-      final VkSpecializationMapEntry target =
+      final var target =
         VkSpecializationMapEntry.create(entry_buffer.address(index));
       packEntryInto(source, target);
     }
 
-    final VkSpecializationInfo info = VkSpecializationInfo.mallocStack(stack);
+    final var info = VkSpecializationInfo.mallocStack(stack);
     info.pData(map.data());
     info.pMapEntries(entry_buffer);
     return info;

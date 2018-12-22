@@ -24,8 +24,6 @@ import com.io7m.jcoronado.api.VulkanClearValueType;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.vulkan.VkClearValue;
 
-import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
 import java.util.List;
 import java.util.Objects;
 
@@ -56,12 +54,12 @@ public final class VulkanLWJGLClearValues
     Objects.requireNonNull(stack, "stack");
     Objects.requireNonNull(values, "values");
 
-    final int count = values.size();
+    final var count = values.size();
 
-    final VkClearValue.Buffer target_values =
+    final var target_values =
       VkClearValue.mallocStack(values.size(), stack);
 
-    for (int index = 0; index < count; ++index) {
+    for (var index = 0; index < count; ++index) {
       packTo(values.get(index), target_values.get(index));
     }
 
@@ -74,7 +72,7 @@ public final class VulkanLWJGLClearValues
   {
     switch (clear.type()) {
       case DEPTH_STENCIL: {
-        final VulkanClearValueDepthStencil depth_stencil =
+        final var depth_stencil =
           (VulkanClearValueDepthStencil) clear;
 
         target.depthStencil().set(depth_stencil.depth(), depth_stencil.stencil());
@@ -82,10 +80,10 @@ public final class VulkanLWJGLClearValues
       }
 
       case COLOR_INTEGER_SIGNED: {
-        final VulkanClearValueColorIntegerSigned color =
+        final var color =
           (VulkanClearValueColorIntegerSigned) clear;
 
-        final IntBuffer ib = target.color().int32();
+        final var ib = target.color().int32();
         ib.put(0, color.red());
         ib.put(1, color.green());
         ib.put(2, color.blue());
@@ -94,10 +92,10 @@ public final class VulkanLWJGLClearValues
       }
 
       case COLOR_INTEGER_UNSIGNED: {
-        final VulkanClearValueColorIntegerUnsigned color =
+        final var color =
           (VulkanClearValueColorIntegerUnsigned) clear;
 
-        final IntBuffer ib = target.color().uint32();
+        final var ib = target.color().uint32();
         ib.put(0, color.red());
         ib.put(1, color.green());
         ib.put(2, color.blue());
@@ -106,10 +104,10 @@ public final class VulkanLWJGLClearValues
       }
 
       case COLOR_FLOATING_POINT: {
-        final VulkanClearValueColorFloatingPoint color =
+        final var color =
           (VulkanClearValueColorFloatingPoint) clear;
 
-        final FloatBuffer ib = target.color().float32();
+        final var ib = target.color().float32();
         ib.put(0, color.red());
         ib.put(1, color.green());
         ib.put(2, color.blue());

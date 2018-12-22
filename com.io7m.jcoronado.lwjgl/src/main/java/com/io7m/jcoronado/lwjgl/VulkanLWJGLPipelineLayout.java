@@ -56,7 +56,7 @@ public final class VulkanLWJGLPipelineLayout
     if (o == null || !Objects.equals(this.getClass(), o.getClass())) {
       return false;
     }
-    final VulkanLWJGLPipelineLayout that = (VulkanLWJGLPipelineLayout) o;
+    final var that = (VulkanLWJGLPipelineLayout) o;
     return this.handle == that.handle;
   }
 

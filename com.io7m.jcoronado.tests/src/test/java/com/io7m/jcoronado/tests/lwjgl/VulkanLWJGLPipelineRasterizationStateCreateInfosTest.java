@@ -21,7 +21,6 @@ import com.io7m.jcoronado.api.VulkanFrontFace;
 import com.io7m.jcoronado.api.VulkanPipelineRasterizationStateCreateInfo;
 import com.io7m.jcoronado.api.VulkanPolygonMode;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLPipelineRasterizationStateCreateInfos;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -51,7 +50,7 @@ public final class VulkanLWJGLPipelineRasterizationStateCreateInfosTest
   @Test
   public void testPipelineRasterizationStateCreateInfo()
   {
-    final VulkanPipelineRasterizationStateCreateInfo info =
+    final var info =
       VulkanPipelineRasterizationStateCreateInfo.builder()
         .setDepthBiasSlopeFactor(2.5f)
         .setDepthBiasClamp(3.0f)

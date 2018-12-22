@@ -45,10 +45,10 @@ public final class VulkanLWJGLPipelineLayouts
     final MemoryStack stack,
     final List<VulkanPushConstantRange> ranges)
   {
-    final VkPushConstantRange.Buffer buffer = VkPushConstantRange.mallocStack(ranges.size(), stack);
-    for (int index = 0; index < ranges.size(); ++index) {
-      final VulkanPushConstantRange source = ranges.get(index);
-      final VkPushConstantRange target = VkPushConstantRange.create(buffer.address(index));
+    final var buffer = VkPushConstantRange.mallocStack(ranges.size(), stack);
+    for (var index = 0; index < ranges.size(); ++index) {
+      final var source = ranges.get(index);
+      final var target = VkPushConstantRange.create(buffer.address(index));
       packPushConstantRangeInto(source, target);
     }
     return buffer;
@@ -83,7 +83,7 @@ public final class VulkanLWJGLPipelineLayouts
     Objects.requireNonNull(stack, "stack");
     Objects.requireNonNull(info, "info");
 
-    final VkPipelineLayoutCreateInfo buffer = VkPipelineLayoutCreateInfo.mallocStack(stack);
+    final var buffer = VkPipelineLayoutCreateInfo.mallocStack(stack);
     packPipelineLayoutCreateInfoInto(stack, info, buffer);
     return buffer;
   }
@@ -107,14 +107,14 @@ public final class VulkanLWJGLPipelineLayouts
     final List<VulkanDescriptorSetLayoutType> layouts)
     throws VulkanIncompatibleClassException
   {
-    final int count = layouts.size();
+    final var count = layouts.size();
     if (count == 0) {
       return null;
     }
 
-    final LongBuffer buffer = stack.mallocLong(count);
-    for (int index = 0; index < count; ++index) {
-      final VulkanLWJGLDescriptorSetLayout layout =
+    final var buffer = stack.mallocLong(count);
+    for (var index = 0; index < count; ++index) {
+      final var layout =
         VulkanLWJGLClassChecks.check(layouts.get(index), VulkanLWJGLDescriptorSetLayout.class);
       buffer.put(index, layout.handle());
     }

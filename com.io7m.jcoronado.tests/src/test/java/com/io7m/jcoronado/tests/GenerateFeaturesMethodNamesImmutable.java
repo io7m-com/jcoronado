@@ -1,7 +1,6 @@
 package com.io7m.jcoronado.tests;
 
 import com.io7m.jcoronado.api.VulkanPhysicalDeviceFeatures;
-import com.io7m.jcoronado.api.VulkanPhysicalDeviceLimits;
 
 import java.lang.reflect.Method;
 import java.util.Comparator;
@@ -26,8 +25,8 @@ public final class GenerateFeaturesMethodNamesImmutable
       .filter(m -> m.getName().startsWith("set"))
       .sorted(Comparator.comparing(Method::getName))
       .forEach(method -> {
-        final String name = method.getName();
-        String original =
+        final var name = method.getName();
+        var original =
           name.replaceFirst("set", "");
         original =
           Character.toLowerCase(original.charAt(0)) + original.substring(1);

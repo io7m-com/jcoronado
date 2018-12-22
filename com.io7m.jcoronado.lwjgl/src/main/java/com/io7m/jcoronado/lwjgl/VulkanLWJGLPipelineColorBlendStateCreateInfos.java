@@ -54,7 +54,7 @@ public final class VulkanLWJGLPipelineColorBlendStateCreateInfos
     Objects.requireNonNull(stack, "stack");
     Objects.requireNonNull(info, "info");
 
-    final VkPipelineColorBlendStateCreateInfo target =
+    final var target =
       VkPipelineColorBlendStateCreateInfo.mallocStack(stack);
 
     target
@@ -83,7 +83,7 @@ public final class VulkanLWJGLPipelineColorBlendStateCreateInfos
     final Optional<VulkanLogicOp> op_opt)
   {
     if (op_opt.isPresent()) {
-      final VulkanLogicOp logic = op_opt.get();
+      final var logic = op_opt.get();
       target.logicOpEnable(true);
       target.logicOp(logic.value());
     } else {

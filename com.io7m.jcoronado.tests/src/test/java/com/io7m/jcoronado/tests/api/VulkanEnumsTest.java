@@ -27,7 +27,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 public final class VulkanEnumsTest
 {
@@ -38,18 +37,18 @@ public final class VulkanEnumsTest
   @Test
   public void testEnumIntegerValues()
   {
-    final Reflections reflections = new Reflections("com.io7m.jcoronado");
+    final var reflections = new Reflections("com.io7m.jcoronado");
 
-    final Set<Class<? extends VulkanEnumIntegerType>> enums =
+    final var enums =
       reflections.getSubTypesOf(VulkanEnumIntegerType.class);
 
     final Collection<Executable> executables = new ArrayList<>();
 
-    for (final Class<? extends VulkanEnumIntegerType> c : enums) {
+    for (final var c : enums) {
       final List<VulkanEnumIntegerType> constants = List.of(c.getEnumConstants());
 
-      final HashSet<Integer> numbers = new HashSet<Integer>();
-      for (final VulkanEnumIntegerType constant : constants) {
+      final var numbers = new HashSet<Integer>();
+      for (final var constant : constants) {
         numbers.add(Integer.valueOf(constant.value()));
       }
 
@@ -74,18 +73,18 @@ public final class VulkanEnumsTest
   @Test
   public void testEnumBitmaskValues()
   {
-    final Reflections reflections = new Reflections("com.io7m.jcoronado");
+    final var reflections = new Reflections("com.io7m.jcoronado");
 
-    final Set<Class<? extends VulkanEnumBitmaskType>> enums =
+    final var enums =
       reflections.getSubTypesOf(VulkanEnumBitmaskType.class);
 
     final Collection<Executable> executables = new ArrayList<>();
 
-    for (final Class<? extends VulkanEnumBitmaskType> c : enums) {
+    for (final var c : enums) {
       final List<VulkanEnumBitmaskType> constants = List.of(c.getEnumConstants());
 
-      final HashSet<Integer> numbers = new HashSet<Integer>();
-      for (final VulkanEnumBitmaskType constant : constants) {
+      final var numbers = new HashSet<Integer>();
+      for (final var constant : constants) {
         numbers.add(Integer.valueOf(constant.value()));
       }
 

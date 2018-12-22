@@ -55,7 +55,7 @@ public final class VulkanLWJGLFence extends VulkanLWJGLHandle implements VulkanF
     if (o == null || !Objects.equals(this.getClass(), o.getClass())) {
       return false;
     }
-    final VulkanLWJGLFence that = (VulkanLWJGLFence) o;
+    final var that = (VulkanLWJGLFence) o;
     return this.handle == that.handle;
   }
 

@@ -20,15 +20,12 @@ import com.io7m.jcoronado.api.VulkanPipelineVertexInputStateCreateInfo;
 import com.io7m.jcoronado.api.VulkanVertexInputAttributeDescription;
 import com.io7m.jcoronado.api.VulkanVertexInputBindingDescription;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLPipelineVertexInputStateCreateInfos;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.vulkan.VK10;
 import org.lwjgl.vulkan.VkPipelineVertexInputStateCreateInfo;
-import org.lwjgl.vulkan.VkVertexInputAttributeDescription;
-import org.lwjgl.vulkan.VkVertexInputBindingDescription;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,16 +51,16 @@ public final class VulkanLWJGLPipelineVertexInputStateCreateInfosTest
   @Test
   public void testPipelineVertexInputStateCreateInfo()
   {
-    final VulkanVertexInputAttributeDescription desc_0 =
+    final var desc_0 =
       VulkanVertexInputAttributeDescription.of(0, 1, VK_FORMAT_B8G8R8A8_UNORM, 23);
-    final VulkanVertexInputAttributeDescription desc_1 =
+    final var desc_1 =
       VulkanVertexInputAttributeDescription.of(2, 3, VK_FORMAT_D16_UNORM, 26);
-    final VulkanVertexInputBindingDescription bind_0 =
+    final var bind_0 =
       VulkanVertexInputBindingDescription.of(3, 56, VK_VERTEX_INPUT_RATE_VERTEX);
-    final VulkanVertexInputBindingDescription bind_1 =
+    final var bind_1 =
       VulkanVertexInputBindingDescription.of(5, 57, VK_VERTEX_INPUT_RATE_INSTANCE);
 
-    final VulkanPipelineVertexInputStateCreateInfo info =
+    final var info =
       VulkanPipelineVertexInputStateCreateInfo.builder()
         .addVertexAttributeDescriptions(desc_0)
         .addVertexAttributeDescriptions(desc_1)
@@ -71,7 +68,7 @@ public final class VulkanLWJGLPipelineVertexInputStateCreateInfosTest
         .addVertexBindingDescriptions(bind_1)
         .build();
 
-    final VkPipelineVertexInputStateCreateInfo packed =
+    final var packed =
       VulkanLWJGLPipelineVertexInputStateCreateInfos.pack(this.stack, info);
 
     checkPacked(packed);
@@ -95,7 +92,7 @@ public final class VulkanLWJGLPipelineVertexInputStateCreateInfosTest
           2,
           packed.vertexAttributeDescriptionCount());
 
-        final VkVertexInputAttributeDescription.Buffer vps =
+        final var vps =
           packed.pVertexAttributeDescriptions();
 
         vps.position(0);
@@ -115,7 +112,7 @@ public final class VulkanLWJGLPipelineVertexInputStateCreateInfosTest
           2,
           packed.vertexBindingDescriptionCount());
 
-        final VkVertexInputBindingDescription.Buffer vps =
+        final var vps =
           packed.pVertexBindingDescriptions();
 
         vps.position(0);
@@ -134,11 +131,11 @@ public final class VulkanLWJGLPipelineVertexInputStateCreateInfosTest
   @Test
   public void testPipelineVertexInputStateCreateInfoEmpty()
   {
-    final VulkanPipelineVertexInputStateCreateInfo info =
+    final var info =
       VulkanPipelineVertexInputStateCreateInfo.builder()
         .build();
 
-    final VkPipelineVertexInputStateCreateInfo packed =
+    final var packed =
       VulkanLWJGLPipelineVertexInputStateCreateInfos.pack(this.stack, info);
 
     Assertions.assertAll(

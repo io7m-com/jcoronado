@@ -43,7 +43,6 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -65,11 +64,11 @@ public final class VulkanLWJGLExtKHRSurface implements VulkanExtKHRSurfaceType
   private static Set<VulkanCompositeAlphaFlagKHR> parseCompositeAlpha(
     final int value)
   {
-    final EnumSet<VulkanCompositeAlphaFlagKHR> results =
+    final var results =
       EnumSet.noneOf(VulkanCompositeAlphaFlagKHR.class);
 
-    for (final VulkanCompositeAlphaFlagKHR flag : VulkanCompositeAlphaFlagKHR.values()) {
-      final int fv = flag.value();
+    for (final var flag : VulkanCompositeAlphaFlagKHR.values()) {
+      final var fv = flag.value();
       if ((value & fv) == fv) {
         results.add(flag);
       }
@@ -81,11 +80,11 @@ public final class VulkanLWJGLExtKHRSurface implements VulkanExtKHRSurfaceType
   private static Set<VulkanImageUsageFlag> parseUsageFlags(
     final int value)
   {
-    final EnumSet<VulkanImageUsageFlag> results =
+    final var results =
       EnumSet.noneOf(VulkanImageUsageFlag.class);
 
-    for (final VulkanImageUsageFlag flag : VulkanImageUsageFlag.values()) {
-      final int fv = flag.value();
+    for (final var flag : VulkanImageUsageFlag.values()) {
+      final var fv = flag.value();
       if ((value & fv) == fv) {
         results.add(flag);
       }
@@ -97,11 +96,11 @@ public final class VulkanLWJGLExtKHRSurface implements VulkanExtKHRSurfaceType
   private static Set<VulkanSurfaceTransformFlagKHR> parseTransform(
     final int value)
   {
-    final EnumSet<VulkanSurfaceTransformFlagKHR> results =
+    final var results =
       EnumSet.noneOf(VulkanSurfaceTransformFlagKHR.class);
 
-    for (final VulkanSurfaceTransformFlagKHR flag : VulkanSurfaceTransformFlagKHR.values()) {
-      final int fv = flag.value();
+    for (final var flag : VulkanSurfaceTransformFlagKHR.values()) {
+      final var fv = flag.value();
       if ((value & fv) == fv) {
         results.add(flag);
       }
@@ -133,7 +132,7 @@ public final class VulkanLWJGLExtKHRSurface implements VulkanExtKHRSurfaceType
     final long window)
     throws VulkanException
   {
-    final VulkanLWJGLInstance instance_lwjgl =
+    final var instance_lwjgl =
       VulkanLWJGLClassChecks.check(instance, VulkanLWJGLInstance.class);
 
     if (window == 0L) {
@@ -142,7 +141,7 @@ public final class VulkanLWJGLExtKHRSurface implements VulkanExtKHRSurfaceType
 
     LOG.debug("creating surface for window 0x{}", Long.toUnsignedString(window, 16));
 
-    final long[] surface_holder = new long[1];
+    final var surface_holder = new long[1];
     VulkanChecks.checkReturnCode(
       GLFWVulkan.glfwCreateWindowSurface(
         instance_lwjgl.instance(), window, null, surface_holder),
@@ -162,18 +161,18 @@ public final class VulkanLWJGLExtKHRSurface implements VulkanExtKHRSurfaceType
     final VulkanKHRSurfaceType in_surface)
     throws VulkanException
   {
-    final VulkanLWJGLPhysicalDevice device =
+    final var device =
       VulkanLWJGLClassChecks.check(in_device, VulkanLWJGLPhysicalDevice.class);
-    final VulkanLWJGLExtKHRSurfaceValue surface =
+    final var surface =
       VulkanLWJGLClassChecks.check(in_surface, VulkanLWJGLExtKHRSurfaceValue.class);
 
     device.checkNotClosed();
 
-    final List<VulkanQueueFamilyProperties> queues = device.queueFamilies();
+    final var queues = device.queueFamilies();
     final List<VulkanQueueFamilyProperties> results = new ArrayList<>(queues.size());
 
-    final int[] supported = new int[1];
-    for (final VulkanQueueFamilyProperties queue : queues) {
+    final var supported = new int[1];
+    for (final var queue : queues) {
       supported[0] = 0;
       VulkanChecks.checkReturnCode(
         KHRSurface.vkGetPhysicalDeviceSurfaceSupportKHR(
@@ -196,16 +195,16 @@ public final class VulkanLWJGLExtKHRSurface implements VulkanExtKHRSurfaceType
     final VulkanKHRSurfaceType in_surface)
     throws VulkanException
   {
-    final VulkanLWJGLPhysicalDevice device =
+    final var device =
       VulkanLWJGLClassChecks.check(in_device, VulkanLWJGLPhysicalDevice.class);
-    final VulkanLWJGLExtKHRSurfaceValue surface =
+    final var surface =
       VulkanLWJGLClassChecks.check(in_surface, VulkanLWJGLExtKHRSurfaceValue.class);
 
     device.checkNotClosed();
 
     final List<VulkanSurfaceFormatKHR> results;
-    try (MemoryStack stack = this.stack_initial.push()) {
-      final int[] count = new int[1];
+    try (var stack = this.stack_initial.push()) {
+      final var count = new int[1];
 
       VulkanChecks.checkReturnCode(
         KHRSurface.vkGetPhysicalDeviceSurfaceFormatsKHR(
@@ -215,12 +214,12 @@ public final class VulkanLWJGLExtKHRSurface implements VulkanExtKHRSurfaceType
           null),
         "vkGetPhysicalDeviceSurfaceFormatsKHR");
 
-      final int format_count = count[0];
+      final var format_count = count[0];
       if (format_count == 0) {
         return List.of();
       }
 
-      final VkSurfaceFormatKHR.Buffer formats =
+      final var formats =
         VkSurfaceFormatKHR.mallocStack(format_count, stack);
 
       VulkanChecks.checkReturnCode(
@@ -232,12 +231,12 @@ public final class VulkanLWJGLExtKHRSurface implements VulkanExtKHRSurfaceType
         "vkGetPhysicalDeviceSurfaceFormatsKHR");
 
       results = new ArrayList<>(format_count);
-      for (int index = 0; index < format_count; ++index) {
+      for (var index = 0; index < format_count; ++index) {
         formats.position(index);
 
-        final Optional<VulkanFormat> format =
+        final var format =
           VulkanFormat.fromInteger(formats.format());
-        final Optional<VulkanColorSpaceKHR> space =
+        final var space =
           VulkanColorSpaceKHR.fromInteger(formats.colorSpace());
 
         if (format.isPresent() && space.isPresent()) {
@@ -255,16 +254,16 @@ public final class VulkanLWJGLExtKHRSurface implements VulkanExtKHRSurfaceType
     final VulkanKHRSurfaceType in_surface)
     throws VulkanException
   {
-    final VulkanLWJGLPhysicalDevice device =
+    final var device =
       VulkanLWJGLClassChecks.check(in_device, VulkanLWJGLPhysicalDevice.class);
-    final VulkanLWJGLExtKHRSurfaceValue surface =
+    final var surface =
       VulkanLWJGLClassChecks.check(in_surface, VulkanLWJGLExtKHRSurfaceValue.class);
 
     device.checkNotClosed();
 
-    try (MemoryStack stack = this.stack_initial.push()) {
+    try (var stack = this.stack_initial.push()) {
 
-      final VkSurfaceCapabilitiesKHR capabilities =
+      final var capabilities =
         VkSurfaceCapabilitiesKHR.mallocStack(stack);
 
       VulkanChecks.checkReturnCode(
@@ -294,14 +293,14 @@ public final class VulkanLWJGLExtKHRSurface implements VulkanExtKHRSurfaceType
     final VulkanKHRSurfaceType in_surface)
     throws VulkanException
   {
-    final VulkanLWJGLPhysicalDevice device =
+    final var device =
       VulkanLWJGLClassChecks.check(in_device, VulkanLWJGLPhysicalDevice.class);
-    final VulkanLWJGLExtKHRSurfaceValue surface =
+    final var surface =
       VulkanLWJGLClassChecks.check(in_surface, VulkanLWJGLExtKHRSurfaceValue.class);
 
     device.checkNotClosed();
 
-    final int[] count = new int[1];
+    final var count = new int[1];
     VulkanChecks.checkReturnCode(
       KHRSurface.vkGetPhysicalDeviceSurfacePresentModesKHR(
         device.device(),
@@ -310,12 +309,12 @@ public final class VulkanLWJGLExtKHRSurface implements VulkanExtKHRSurfaceType
         null),
       "vkGetPhysicalDeviceSurfacePresentModesKHR");
 
-    final int mode_count = count[0];
+    final var mode_count = count[0];
     if (mode_count == 0) {
       return List.of();
     }
 
-    final int[] modes = new int[mode_count];
+    final var modes = new int[mode_count];
     VulkanChecks.checkReturnCode(
       KHRSurface.vkGetPhysicalDeviceSurfacePresentModesKHR(
         device.device(),
@@ -325,7 +324,7 @@ public final class VulkanLWJGLExtKHRSurface implements VulkanExtKHRSurfaceType
       "vkGetPhysicalDeviceSurfacePresentModesKHR");
 
     final List<VulkanPresentModeKHR> results = new ArrayList<>(mode_count);
-    for (int index = 0; index < mode_count; ++index) {
+    for (var index = 0; index < mode_count; ++index) {
       VulkanPresentModeKHR.ofInteger(modes[index]).ifPresent(results::add);
     }
 
@@ -335,7 +334,7 @@ public final class VulkanLWJGLExtKHRSurface implements VulkanExtKHRSurfaceType
   static final class VulkanLWJGLExtKHRSurfaceValue
     implements VulkanExtKHRSurfaceType.VulkanKHRSurfaceType
   {
-    private long handle;
+    private final long handle;
 
     VulkanLWJGLExtKHRSurfaceValue(
       final long in_handle)

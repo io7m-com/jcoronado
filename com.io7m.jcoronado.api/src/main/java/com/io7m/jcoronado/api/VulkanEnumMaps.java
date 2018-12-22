@@ -42,8 +42,8 @@ public final class VulkanEnumMaps
   public static <T extends Enum<T> & VulkanEnumBitmaskType> int packValues(
     final Iterable<T> values)
   {
-    int result = 0;
-    for (final T constant : values) {
+    var result = 0;
+    for (final var constant : values) {
       result |= constant.value();
     }
     return result;
@@ -62,8 +62,8 @@ public final class VulkanEnumMaps
     final T[] values)
   {
     final HashMap<Integer, T> m = new HashMap<>(values.length);
-    for (final T value : values) {
-      final int vv = value.value();
+    for (final var value : values) {
+      final var vv = value.value();
       if (m.containsKey(Integer.valueOf(vv))) {
         throw new IllegalStateException("Duplicate integer value: " + vv);
       }

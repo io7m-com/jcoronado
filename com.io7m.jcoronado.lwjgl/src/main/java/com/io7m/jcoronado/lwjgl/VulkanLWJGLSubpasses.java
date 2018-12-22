@@ -51,12 +51,12 @@ public final class VulkanLWJGLSubpasses
     Objects.requireNonNull(stack, "stack");
     Objects.requireNonNull(dependencies, "dependencies");
 
-    final VkSubpassDependency.Buffer buffer =
+    final var buffer =
       VkSubpassDependency.mallocStack(dependencies.size(), stack);
 
-    for (int index = 0; index < dependencies.size(); ++index) {
-      final VulkanSubpassDependency source = dependencies.get(index);
-      final VkSubpassDependency target = VkSubpassDependency.create(buffer.address(index));
+    for (var index = 0; index < dependencies.size(); ++index) {
+      final var source = dependencies.get(index);
+      final var target = VkSubpassDependency.create(buffer.address(index));
       packSubpassDependencyInto(source, target);
     }
 

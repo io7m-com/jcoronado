@@ -25,7 +25,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.vulkan.VK10;
-import org.lwjgl.vulkan.VkCommandPoolCreateInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,13 +47,13 @@ public final class VulkanLWJGLCommandPoolCreateInfosTest
   @Test
   public void testCommandPoolCreateInfo()
   {
-    final VulkanCommandPoolCreateInfo info =
+    final var info =
       VulkanCommandPoolCreateInfo.builder()
         .addFlags(VulkanCommandPoolCreateFlag.values())
         .setQueueFamilyIndex(34)
         .build();
 
-    final VkCommandPoolCreateInfo packed =
+    final var packed =
       VulkanLWJGLCommandPoolCreateInfos.pack(this.stack, info);
 
     Assertions.assertAll(

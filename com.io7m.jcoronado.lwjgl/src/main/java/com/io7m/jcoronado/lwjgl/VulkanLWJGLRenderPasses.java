@@ -28,7 +28,6 @@ import org.lwjgl.vulkan.VkSubpassDescription;
 import java.nio.IntBuffer;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 /**
  * Functions to pack render passes.
@@ -70,11 +69,11 @@ public final class VulkanLWJGLRenderPasses
     final MemoryStack stack,
     final List<VulkanSubpassDescription> subpasses)
   {
-    final VkSubpassDescription.Buffer buffer =
+    final var buffer =
       VkSubpassDescription.mallocStack(subpasses.size(), stack);
 
-    for (int index = 0; index < subpasses.size(); ++index) {
-      final VulkanSubpassDescription description = subpasses.get(index);
+    for (var index = 0; index < subpasses.size(); ++index) {
+      final var description = subpasses.get(index);
 
       buffer.position(index)
         .flags(VulkanEnumMaps.packValues(description.flags()))
@@ -95,9 +94,9 @@ public final class VulkanLWJGLRenderPasses
     final VkSubpassDescription.Buffer buffer,
     final VulkanSubpassDescription description)
   {
-    final Optional<VulkanAttachmentReference> attach_opt = description.depthStencilAttachment();
+    final var attach_opt = description.depthStencilAttachment();
     if (attach_opt.isPresent()) {
-      final VulkanAttachmentReference attach = attach_opt.get();
+      final var attach = attach_opt.get();
       buffer.pDepthStencilAttachment(
         VulkanLWJGLAttachmentReferences.packAttachmentReference(stack, attach));
     } else {
@@ -162,8 +161,8 @@ public final class VulkanLWJGLRenderPasses
     final MemoryStack stack,
     final List<Integer> integers)
   {
-    final IntBuffer buffer = stack.mallocInt(integers.size());
-    for (int index = 0; index < integers.size(); ++index) {
+    final var buffer = stack.mallocInt(integers.size());
+    for (var index = 0; index < integers.size(); ++index) {
       buffer.put(index, integers.get(index).intValue());
     }
     return buffer;

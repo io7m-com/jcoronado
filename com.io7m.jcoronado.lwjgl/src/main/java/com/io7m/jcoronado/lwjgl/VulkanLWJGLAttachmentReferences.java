@@ -50,12 +50,12 @@ public final class VulkanLWJGLAttachmentReferences
     Objects.requireNonNull(stack, "stack");
     Objects.requireNonNull(references, "references");
 
-    final VkAttachmentReference.Buffer buffer =
+    final var buffer =
       VkAttachmentReference.mallocStack(references.size(), stack);
 
-    for (int index = 0; index < references.size(); ++index) {
-      final VulkanAttachmentReference source = references.get(index);
-      final VkAttachmentReference target =
+    for (var index = 0; index < references.size(); ++index) {
+      final var source = references.get(index);
+      final var target =
         VkAttachmentReference.create(buffer.address(index));
       packInto(source, target);
     }

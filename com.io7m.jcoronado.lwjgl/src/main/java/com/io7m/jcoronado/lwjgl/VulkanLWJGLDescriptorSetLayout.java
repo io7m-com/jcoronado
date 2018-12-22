@@ -55,7 +55,7 @@ public final class VulkanLWJGLDescriptorSetLayout
     if (o == null || !Objects.equals(this.getClass(), o.getClass())) {
       return false;
     }
-    final VulkanLWJGLDescriptorSetLayout that = (VulkanLWJGLDescriptorSetLayout) o;
+    final var that = (VulkanLWJGLDescriptorSetLayout) o;
     return this.handle == that.handle;
   }
 

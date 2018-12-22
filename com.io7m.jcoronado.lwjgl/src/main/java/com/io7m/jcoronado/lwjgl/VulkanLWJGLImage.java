@@ -50,7 +50,7 @@ public final class VulkanLWJGLImage extends VulkanLWJGLHandle implements VulkanI
     if (o == null || !Objects.equals(this.getClass(), o.getClass())) {
       return false;
     }
-    final VulkanLWJGLImage that = (VulkanLWJGLImage) o;
+    final var that = (VulkanLWJGLImage) o;
     return this.handle == that.handle;
   }
 

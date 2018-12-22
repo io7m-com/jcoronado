@@ -21,13 +21,11 @@ import com.io7m.jcoronado.api.VulkanLogicOp;
 import com.io7m.jcoronado.api.VulkanPipelineColorBlendAttachmentState;
 import com.io7m.jcoronado.api.VulkanPipelineColorBlendStateCreateInfo;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLPipelineColorBlendStateCreateInfos;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.vulkan.VK10;
-import org.lwjgl.vulkan.VkPipelineColorBlendAttachmentState;
 import org.lwjgl.vulkan.VkPipelineColorBlendStateCreateInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,7 +56,7 @@ public final class VulkanLWJGLPipelineColorBlendStateCreateInfosTest
   @Test
   public void testPipelineColorBlendStateCreateInfo()
   {
-    final VulkanPipelineColorBlendAttachmentState state =
+    final var state =
       VulkanPipelineColorBlendAttachmentState.builder()
         .setEnable(true)
         .setAlphaBlendOp(VK_BLEND_OP_ADD)
@@ -69,14 +67,14 @@ public final class VulkanLWJGLPipelineColorBlendStateCreateInfosTest
         .setSrcColorBlendFactor(VK_BLEND_FACTOR_CONSTANT_COLOR)
         .build();
 
-    final VulkanPipelineColorBlendStateCreateInfo info =
+    final var info =
       VulkanPipelineColorBlendStateCreateInfo.builder()
         .setLogicOp(VulkanLogicOp.VK_LOGIC_OP_AND_INVERTED)
         .setBlendConstants(VulkanBlendConstants.of(1.0f, 2.0f, 3.0f, 4.0f))
         .addAttachments(state)
         .build();
 
-    final VkPipelineColorBlendStateCreateInfo packed =
+    final var packed =
       VulkanLWJGLPipelineColorBlendStateCreateInfos.pack(this.stack, info);
 
     checkPacked(packed, true);
@@ -124,7 +122,7 @@ public final class VulkanLWJGLPipelineColorBlendStateCreateInfosTest
         Assertions.assertEquals(3.0f, packed.blendConstants().get(2), "constant b");
         Assertions.assertEquals(4.0f, packed.blendConstants().get(3), "constant a");
 
-        final VkPipelineColorBlendAttachmentState.Buffer attach = packed.pAttachments();
+        final var attach = packed.pAttachments();
         Assertions.assertEquals(VK_BLEND_OP_ADD.value(), attach.alphaBlendOp(), "alphaBlendOp");
         Assertions.assertEquals(
           VK_BLEND_OP_HSL_LUMINOSITY_EXT.value(),
@@ -153,7 +151,7 @@ public final class VulkanLWJGLPipelineColorBlendStateCreateInfosTest
   @Test
   public void testPipelineColorBlendStateCreateInfoNoLogic()
   {
-    final VulkanPipelineColorBlendAttachmentState state =
+    final var state =
       VulkanPipelineColorBlendAttachmentState.builder()
         .setEnable(true)
         .setAlphaBlendOp(VK_BLEND_OP_ADD)
@@ -164,14 +162,14 @@ public final class VulkanLWJGLPipelineColorBlendStateCreateInfosTest
         .setSrcColorBlendFactor(VK_BLEND_FACTOR_CONSTANT_COLOR)
         .build();
 
-    final VulkanPipelineColorBlendStateCreateInfo info =
+    final var info =
       VulkanPipelineColorBlendStateCreateInfo.builder()
         .setLogicOp(Optional.empty())
         .setBlendConstants(VulkanBlendConstants.of(1.0f, 2.0f, 3.0f, 4.0f))
         .addAttachments(state)
         .build();
 
-    final VkPipelineColorBlendStateCreateInfo packed =
+    final var packed =
       VulkanLWJGLPipelineColorBlendStateCreateInfos.pack(this.stack, info);
 
     checkPacked(packed, false);

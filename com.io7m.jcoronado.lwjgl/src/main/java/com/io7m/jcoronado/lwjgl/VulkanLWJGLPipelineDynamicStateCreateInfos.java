@@ -55,7 +55,7 @@ public final class VulkanLWJGLPipelineDynamicStateCreateInfos
     Objects.requireNonNull(stack, "stack");
     Objects.requireNonNull(info, "info");
 
-    final VkPipelineDynamicStateCreateInfo target =
+    final var target =
       VkPipelineDynamicStateCreateInfo.mallocStack(stack);
 
     return target
@@ -69,9 +69,9 @@ public final class VulkanLWJGLPipelineDynamicStateCreateInfos
     final MemoryStack stack,
     final List<VulkanDynamicState> states)
   {
-    final int count = states.size();
-    final IntBuffer buffer = stack.mallocInt(count);
-    for (int index = 0; index < count; ++index) {
+    final var count = states.size();
+    final var buffer = stack.mallocInt(count);
+    for (var index = 0; index < count; ++index) {
       buffer.put(index, states.get(index).value());
     }
     return buffer;

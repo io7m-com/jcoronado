@@ -96,7 +96,7 @@ public final class VulkanLWJGLImageViews
     Objects.requireNonNull(image, "image");
     Objects.requireNonNull(stack, "stack");
 
-    final VkImageViewCreateInfo target = VkImageViewCreateInfo.mallocStack(stack);
+    final var target = VkImageViewCreateInfo.mallocStack(stack);
     return packImageViewCreateInfoInto(stack, info, image, target);
   }
 

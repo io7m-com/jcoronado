@@ -54,7 +54,7 @@ public final class VulkanLayers
     Objects.requireNonNull(optional_layers, "optional_layers");
     Objects.requireNonNull(required_layers, "required_layers");
 
-    final Set<String> enable_layers =
+    final var enable_layers =
       required_layers.stream()
         .filter(available_layers::containsKey)
         .collect(Collectors.toSet());
@@ -62,19 +62,19 @@ public final class VulkanLayers
     enable_layers.addAll(optional_layers);
 
     if (enable_layers.size() < required_layers.size()) {
-      final Set<String> missing =
+      final var missing =
         required_layers.stream()
           .filter(name -> !enable_layers.contains(name))
           .collect(Collectors.toSet());
 
-      final StringBuilder builder = new StringBuilder(64);
-      final String separator = System.lineSeparator();
+      final var builder = new StringBuilder(64);
+      final var separator = System.lineSeparator();
       builder.append("Required layers are missing from the Vulkan implementation.")
         .append(separator)
         .append("  Missing:")
         .append(separator);
 
-      for (final String name : missing) {
+      for (final var name : missing) {
         builder.append("  ");
         builder.append(name);
         builder.append(separator);

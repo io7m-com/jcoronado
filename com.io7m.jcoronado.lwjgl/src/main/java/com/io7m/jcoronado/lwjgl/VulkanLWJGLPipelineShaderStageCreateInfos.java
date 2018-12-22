@@ -56,10 +56,10 @@ public final class VulkanLWJGLPipelineShaderStageCreateInfos
     Objects.requireNonNull(stack, "stack");
     Objects.requireNonNull(info, "info");
 
-    final VulkanLWJGLShaderModule module =
+    final var module =
       VulkanLWJGLClassChecks.check(info.module(), VulkanLWJGLShaderModule.class);
 
-    final VkPipelineShaderStageCreateInfo target =
+    final var target =
       VkPipelineShaderStageCreateInfo.mallocStack(stack);
 
     return packInto(stack, info, module, target);
@@ -101,15 +101,15 @@ public final class VulkanLWJGLPipelineShaderStageCreateInfos
     Objects.requireNonNull(stack, "stack");
     Objects.requireNonNull(stages, "stages");
 
-    final VkPipelineShaderStageCreateInfo.Buffer buffer =
+    final var buffer =
       VkPipelineShaderStageCreateInfo.mallocStack(stages.size(), stack);
 
-    for (int index = 0; index < stages.size(); ++index) {
-      final VulkanPipelineShaderStageCreateInfo source =
+    for (var index = 0; index < stages.size(); ++index) {
+      final var source =
         stages.get(index);
-      final VulkanLWJGLShaderModule module =
+      final var module =
         VulkanLWJGLClassChecks.check(source.module(), VulkanLWJGLShaderModule.class);
-      final VkPipelineShaderStageCreateInfo target =
+      final var target =
         VkPipelineShaderStageCreateInfo.create(buffer.address(index));
       packInto(stack, source, module, target);
     }

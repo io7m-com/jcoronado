@@ -28,15 +28,15 @@ public final class VulkanVersionsTest
   @Test
   public void testIdentity()
   {
-    for (int major = 0; major < 100; ++major) {
-      for (int minor = 0; minor < 100; ++minor) {
-        for (int patch = 0; patch < 100; ++patch) {
-          final int v = VulkanVersions.encode(major, minor, patch);
-          final VulkanVersion p = VulkanVersions.decode(v);
+    for (var major = 0; major < 100; ++major) {
+      for (var minor = 0; minor < 100; ++minor) {
+        for (var patch = 0; patch < 100; ++patch) {
+          final var v = VulkanVersions.encode(major, minor, patch);
+          final var p = VulkanVersions.decode(v);
           Assertions.assertEquals(p.major(), major);
           Assertions.assertEquals(p.minor(), minor);
           Assertions.assertEquals(p.patch(), patch);
-          final int q = VulkanVersions.encode(p);
+          final var q = VulkanVersions.encode(p);
           Assertions.assertEquals(v, q);
         }
       }
@@ -46,8 +46,8 @@ public final class VulkanVersionsTest
   @Test
   public void testCompare0()
   {
-    final VulkanVersion v0 = VulkanVersion.of(1, 0, 0);
-    final VulkanVersion v1 = VulkanVersion.of(2, 0, 0);
+    final var v0 = VulkanVersion.of(1, 0, 0);
+    final var v1 = VulkanVersion.of(2, 0, 0);
     Assertions.assertTrue(v0.compareTo(v1) < 0);
     Assertions.assertTrue(v1.compareTo(v0) > 0);
     Assertions.assertTrue(v0.compareTo(v0) == 0);
@@ -56,8 +56,8 @@ public final class VulkanVersionsTest
   @Test
   public void testCompare1()
   {
-    final VulkanVersion v0 = VulkanVersion.of(1, 0, 0);
-    final VulkanVersion v1 = VulkanVersion.of(1, 1, 0);
+    final var v0 = VulkanVersion.of(1, 0, 0);
+    final var v1 = VulkanVersion.of(1, 1, 0);
     Assertions.assertTrue(v0.compareTo(v1) < 0);
     Assertions.assertTrue(v1.compareTo(v0) > 0);
   }
@@ -65,8 +65,8 @@ public final class VulkanVersionsTest
   @Test
   public void testCompare2()
   {
-    final VulkanVersion v0 = VulkanVersion.of(1, 0, 0);
-    final VulkanVersion v1 = VulkanVersion.of(1, 0, 1);
+    final var v0 = VulkanVersion.of(1, 0, 0);
+    final var v1 = VulkanVersion.of(1, 0, 1);
     Assertions.assertTrue(v0.compareTo(v1) < 0);
     Assertions.assertTrue(v1.compareTo(v0) > 0);
   }
@@ -74,12 +74,12 @@ public final class VulkanVersionsTest
   @Test
   public void testToHumanString()
   {
-    final VulkanVersion v0 = VulkanVersion.of(1, 0, 0);
-    final VulkanVersion v1 = VulkanVersion.of(1, 1, 0);
-    final VulkanVersion v2 = VulkanVersion.of(1, 1, 1);
-    final VulkanVersion v3 = VulkanVersion.of(1, 0, 0);
-    final VulkanVersion v4 = VulkanVersion.of(1, 1, 0);
-    final VulkanVersion v5 = VulkanVersion.of(1, 1, 1);
+    final var v0 = VulkanVersion.of(1, 0, 0);
+    final var v1 = VulkanVersion.of(1, 1, 0);
+    final var v2 = VulkanVersion.of(1, 1, 1);
+    final var v3 = VulkanVersion.of(1, 0, 0);
+    final var v4 = VulkanVersion.of(1, 1, 0);
+    final var v5 = VulkanVersion.of(1, 1, 1);
 
     final HashSet<String> ss = new HashSet<>();
     ss.add(v0.toHumanString());

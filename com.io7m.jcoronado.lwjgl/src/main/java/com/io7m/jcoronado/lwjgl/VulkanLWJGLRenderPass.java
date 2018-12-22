@@ -55,7 +55,7 @@ public final class VulkanLWJGLRenderPass extends VulkanLWJGLHandle implements Vu
     if (o == null || !Objects.equals(this.getClass(), o.getClass())) {
       return false;
     }
-    final VulkanLWJGLRenderPass that = (VulkanLWJGLRenderPass) o;
+    final var that = (VulkanLWJGLRenderPass) o;
     return this.handle == that.handle;
   }
 

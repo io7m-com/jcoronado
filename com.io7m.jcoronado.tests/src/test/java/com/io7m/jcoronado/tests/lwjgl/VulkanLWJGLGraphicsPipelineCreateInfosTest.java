@@ -31,7 +31,6 @@ import com.io7m.jcoronado.api.VulkanPipelineCreateFlag;
 import com.io7m.jcoronado.api.VulkanPipelineDepthStencilStateCreateInfo;
 import com.io7m.jcoronado.api.VulkanPipelineDynamicStateCreateInfo;
 import com.io7m.jcoronado.api.VulkanPipelineInputAssemblyStateCreateInfo;
-import com.io7m.jcoronado.api.VulkanPipelineLayoutType;
 import com.io7m.jcoronado.api.VulkanPipelineMultisampleStateCreateInfo;
 import com.io7m.jcoronado.api.VulkanPipelineRasterizationStateCreateInfo;
 import com.io7m.jcoronado.api.VulkanPipelineShaderStageCreateInfo;
@@ -41,7 +40,6 @@ import com.io7m.jcoronado.api.VulkanPipelineVertexInputStateCreateInfo;
 import com.io7m.jcoronado.api.VulkanPipelineViewportStateCreateInfo;
 import com.io7m.jcoronado.api.VulkanPolygonMode;
 import com.io7m.jcoronado.api.VulkanRectangle2D;
-import com.io7m.jcoronado.api.VulkanRenderPassType;
 import com.io7m.jcoronado.api.VulkanSampleCountFlag;
 import com.io7m.jcoronado.api.VulkanShaderStageFlag;
 import com.io7m.jcoronado.api.VulkanStencilOpState;
@@ -49,17 +47,14 @@ import com.io7m.jcoronado.api.VulkanVertexInputAttributeDescription;
 import com.io7m.jcoronado.api.VulkanVertexInputBindingDescription;
 import com.io7m.jcoronado.api.VulkanViewport;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLGraphicsPipelineCreateInfos;
-import com.io7m.jcoronado.lwjgl.VulkanLWJGLPipelineColorBlendStateCreateInfos;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLPipelineLayout;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLRenderPass;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLShaderModule;
 import mockit.Expectations;
 import mockit.Mocked;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.lwjgl.system.MemoryStack;
-import org.lwjgl.vulkan.VkGraphicsPipelineCreateInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -122,7 +117,7 @@ public final class VulkanLWJGLGraphicsPipelineCreateInfosTest
       this.result = Long.valueOf(0x202L);
     }};
 
-    final VulkanPipelineColorBlendAttachmentState state =
+    final var state =
       VulkanPipelineColorBlendAttachmentState.builder()
         .setEnable(true)
         .setAlphaBlendOp(VK_BLEND_OP_ADD)
@@ -133,14 +128,14 @@ public final class VulkanLWJGLGraphicsPipelineCreateInfosTest
         .setSrcColorBlendFactor(VK_BLEND_FACTOR_CONSTANT_COLOR)
         .build();
 
-    final VulkanPipelineColorBlendStateCreateInfo color_info =
+    final var color_info =
       VulkanPipelineColorBlendStateCreateInfo.builder()
         .setLogicOp(VulkanLogicOp.VK_LOGIC_OP_AND_INVERTED)
         .setBlendConstants(VulkanBlendConstants.of(1.0f, 2.0f, 3.0f, 4.0f))
         .addAttachments(state)
         .build();
 
-    final VulkanStencilOpState front =
+    final var front =
       VulkanStencilOpState.of(
         VK_STENCIL_OP_KEEP,
         VK_STENCIL_OP_DECREMENT_AND_CLAMP,
@@ -150,7 +145,7 @@ public final class VulkanLWJGLGraphicsPipelineCreateInfosTest
         24,
         25);
 
-    final VulkanStencilOpState back =
+    final var back =
       VulkanStencilOpState.of(
         VK_STENCIL_OP_INVERT,
         VK_STENCIL_OP_REPLACE,
@@ -160,7 +155,7 @@ public final class VulkanLWJGLGraphicsPipelineCreateInfosTest
         34,
         35);
 
-    final VulkanPipelineDepthStencilStateCreateInfo depth_info =
+    final var depth_info =
       VulkanPipelineDepthStencilStateCreateInfo.builder()
         .setMinDepthBounds(2.4f)
         .setMaxDepthBounds(23.0f)
@@ -173,18 +168,18 @@ public final class VulkanLWJGLGraphicsPipelineCreateInfosTest
         .setBack(back)
         .build();
 
-    final VulkanPipelineDynamicStateCreateInfo dynamic_info =
+    final var dynamic_info =
       VulkanPipelineDynamicStateCreateInfo.builder()
         .addDynamicStates(VulkanDynamicState.values())
         .build();
 
-    final VulkanPipelineInputAssemblyStateCreateInfo input_info =
+    final var input_info =
       VulkanPipelineInputAssemblyStateCreateInfo.builder()
         .setPrimitiveRestartEnable(true)
         .setTopology(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST)
         .build();
 
-    final VulkanPipelineMultisampleStateCreateInfo multisample_info =
+    final var multisample_info =
       VulkanPipelineMultisampleStateCreateInfo.builder()
         .setAlphaToCoverageEnable(true)
         .setMinSampleShading(0.5f)
@@ -194,7 +189,7 @@ public final class VulkanLWJGLGraphicsPipelineCreateInfosTest
         .setSampleMask(new int[]{1, 2, 3})
         .build();
 
-    final VulkanPipelineRasterizationStateCreateInfo raster_info =
+    final var raster_info =
       VulkanPipelineRasterizationStateCreateInfo.builder()
         .setDepthBiasSlopeFactor(2.5f)
         .setDepthBiasClamp(3.0f)
@@ -208,35 +203,35 @@ public final class VulkanLWJGLGraphicsPipelineCreateInfosTest
         .setDepthClampEnable(true)
         .build();
 
-    final VulkanPipelineShaderStageCreateInfo shader_info_0 =
+    final var shader_info_0 =
       VulkanPipelineShaderStageCreateInfo.builder()
         .setShaderEntryPoint("main")
         .setModule(module)
         .setStage(VulkanShaderStageFlag.VK_SHADER_STAGE_VERTEX_BIT)
         .build();
 
-    final VulkanPipelineShaderStageCreateInfo shader_info_1 =
+    final var shader_info_1 =
       VulkanPipelineShaderStageCreateInfo.builder()
         .setShaderEntryPoint("main2")
         .setModule(module)
         .setStage(VulkanShaderStageFlag.VK_SHADER_STAGE_FRAGMENT_BIT)
         .build();
 
-    final VulkanPipelineTessellationStateCreateInfo tessellation_info =
+    final var tessellation_info =
       VulkanPipelineTessellationStateCreateInfo.builder()
         .setPatchControlPoints(3)
         .build();
 
-    final VulkanVertexInputAttributeDescription desc_0 =
+    final var desc_0 =
       VulkanVertexInputAttributeDescription.of(0, 1, VK_FORMAT_B8G8R8A8_UNORM, 23);
-    final VulkanVertexInputAttributeDescription desc_1 =
+    final var desc_1 =
       VulkanVertexInputAttributeDescription.of(2, 3, VK_FORMAT_D16_UNORM, 26);
-    final VulkanVertexInputBindingDescription bind_0 =
+    final var bind_0 =
       VulkanVertexInputBindingDescription.of(3, 56, VK_VERTEX_INPUT_RATE_VERTEX);
-    final VulkanVertexInputBindingDescription bind_1 =
+    final var bind_1 =
       VulkanVertexInputBindingDescription.of(5, 57, VK_VERTEX_INPUT_RATE_INSTANCE);
 
-    final VulkanPipelineVertexInputStateCreateInfo vertex_info =
+    final var vertex_info =
       VulkanPipelineVertexInputStateCreateInfo.builder()
         .addVertexAttributeDescriptions(desc_0)
         .addVertexAttributeDescriptions(desc_1)
@@ -244,17 +239,17 @@ public final class VulkanLWJGLGraphicsPipelineCreateInfosTest
         .addVertexBindingDescriptions(bind_1)
         .build();
 
-    final VulkanViewport viewport_0 =
+    final var viewport_0 =
       VulkanViewport.of(101.0f, 102.0f, 103.0f, 104.0f, 0.0f, 1.0f);
-    final VulkanViewport viewport_1 =
+    final var viewport_1 =
       VulkanViewport.of(105.0f, 106.0f, 107.0f, 108.0f, 0.0f, 1.0f);
 
-    final VulkanRectangle2D scissor_0 =
+    final var scissor_0 =
       VulkanRectangle2D.of(VulkanOffset2D.of(5, 17), VulkanExtent2D.of(23, 34));
-    final VulkanRectangle2D scissor_1 =
+    final var scissor_1 =
       VulkanRectangle2D.of(VulkanOffset2D.of(6, 18), VulkanExtent2D.of(25, 37));
 
-    final VulkanPipelineViewportStateCreateInfo viewport_info =
+    final var viewport_info =
       VulkanPipelineViewportStateCreateInfo.builder()
         .addViewports(viewport_0)
         .addViewports(viewport_1)
@@ -264,27 +259,27 @@ public final class VulkanLWJGLGraphicsPipelineCreateInfosTest
 
     final Set<VulkanPipelineCreateFlag> flags = Set.of();
 
-    final List<VulkanPipelineShaderStageCreateInfo> shader_infos =
+    final var shader_infos =
       List.of(shader_info_0, shader_info_1);
 
-    final Optional<VulkanPipelineTessellationStateCreateInfo> tess_opt =
+    final var tess_opt =
       Optional.of(tessellation_info);
-    final Optional<VulkanPipelineViewportStateCreateInfo> viewport_opt =
+    final var viewport_opt =
       Optional.of(viewport_info);
-    final Optional<VulkanPipelineMultisampleStateCreateInfo> multi_opt =
+    final var multi_opt =
       Optional.of(multisample_info);
-    final Optional<VulkanPipelineDepthStencilStateCreateInfo> depth_opt =
+    final var depth_opt =
       Optional.of(depth_info);
-    final Optional<VulkanPipelineColorBlendStateCreateInfo> color_opt =
+    final var color_opt =
       Optional.of(color_info);
-    final Optional<VulkanPipelineDynamicStateCreateInfo> dyn_opt =
+    final var dyn_opt =
       Optional.of(dynamic_info);
     final Optional<VulkanPipelineType> pipe_opt =
       Optional.empty();
-    final OptionalInt base_opt =
+    final var base_opt =
       OptionalInt.of(23);
 
-    final VulkanGraphicsPipelineCreateInfo info =
+    final var info =
       VulkanGraphicsPipelineCreateInfo.of(
         flags,
         shader_infos,
@@ -303,7 +298,7 @@ public final class VulkanLWJGLGraphicsPipelineCreateInfosTest
         pipe_opt,
         base_opt);
 
-    final VkGraphicsPipelineCreateInfo packed_0 =
+    final var packed_0 =
       VulkanLWJGLGraphicsPipelineCreateInfos.pack(this.stack, List.of(info)).get(0);
 
     VulkanLWJGLPipelineColorBlendStateCreateInfosTest.checkPacked(

@@ -20,7 +20,6 @@ import com.io7m.jcoronado.api.VulkanDestroyedException;
 import com.io7m.jcoronado.api.VulkanEnumMaps;
 import com.io7m.jcoronado.api.VulkanException;
 import com.io7m.jcoronado.api.VulkanExtensionProperties;
-import com.io7m.jcoronado.api.VulkanExtensionType;
 import com.io7m.jcoronado.api.VulkanInstanceType;
 import com.io7m.jcoronado.api.VulkanLayerProperties;
 import com.io7m.jcoronado.api.VulkanLogicalDeviceCreateInfo;
@@ -32,7 +31,6 @@ import com.io7m.jcoronado.api.VulkanPhysicalDeviceMemoryProperties;
 import com.io7m.jcoronado.api.VulkanPhysicalDeviceProperties;
 import com.io7m.jcoronado.api.VulkanPhysicalDeviceType;
 import com.io7m.jcoronado.api.VulkanQueueFamilyProperties;
-import org.lwjgl.PointerBuffer;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.vulkan.VK10;
 import org.lwjgl.vulkan.VkDevice;
@@ -45,7 +43,6 @@ import org.lwjgl.vulkan.VkPhysicalDeviceFeatures;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.nio.ByteBuffer;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -110,7 +107,7 @@ public final class VulkanLWJGLPhysicalDevice
     final VulkanLogicalDeviceCreateInfo info)
   {
     final VkPhysicalDeviceFeatures vk_features;
-    final Optional<VulkanPhysicalDeviceFeatures> features_opt = info.features();
+    final var features_opt = info.features();
     if (features_opt.isPresent()) {
       vk_features = VkPhysicalDeviceFeatures.callocStack(stack);
       packPhysicalDeviceFeatures(vk_features, features_opt.get());
@@ -190,12 +187,12 @@ public final class VulkanLWJGLPhysicalDevice
     final MemoryStack stack,
     final List<VulkanLogicalDeviceQueueCreateInfo> infos)
   {
-    final int queue_count = infos.size();
-    final VkDeviceQueueCreateInfo.Buffer vk_queue_buffer =
+    final var queue_count = infos.size();
+    final var vk_queue_buffer =
       VkDeviceQueueCreateInfo.callocStack(queue_count, stack);
 
-    for (int index = 0; index < queue_count; ++index) {
-      final VulkanLogicalDeviceQueueCreateInfo queue_info = infos.get(index);
+    for (var index = 0; index < queue_count; ++index) {
+      final var queue_info = infos.get(index);
       vk_queue_buffer.position(index);
       vk_queue_buffer.sType(VK10.VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO)
         .pNext(0L)
@@ -216,7 +213,7 @@ public final class VulkanLWJGLPhysicalDevice
     if (o == null || !Objects.equals(this.getClass(), o.getClass())) {
       return false;
     }
-    final VulkanLWJGLPhysicalDevice that = (VulkanLWJGLPhysicalDevice) o;
+    final var that = (VulkanLWJGLPhysicalDevice) o;
     return Objects.equals(this.device, that.device);
   }
 
@@ -264,10 +261,10 @@ public final class VulkanLWJGLPhysicalDevice
 
     this.checkNotClosed();
 
-    try (MemoryStack stack = this.stack_initial.push()) {
-      final int[] count = new int[1];
+    try (var stack = this.stack_initial.push()) {
+      final var count = new int[1];
 
-      final ByteBuffer layer_ptr =
+      final var layer_ptr =
         layer.map(stack::ASCII).orElse(null);
 
       checkReturnCode(
@@ -278,12 +275,12 @@ public final class VulkanLWJGLPhysicalDevice
           null),
         "vkEnumerateDeviceExtensionProperties");
 
-      final int size = count[0];
+      final var size = count[0];
       if (size == 0) {
         return Map.of();
       }
 
-      final VkExtensionProperties.Buffer device_extensions =
+      final var device_extensions =
         VkExtensionProperties.mallocStack(size, stack);
 
       checkReturnCode(
@@ -297,9 +294,9 @@ public final class VulkanLWJGLPhysicalDevice
       final HashMap<String, VulkanExtensionProperties> extensions =
         new HashMap<>(size);
 
-      for (int index = 0; index < size; ++index) {
+      for (var index = 0; index < size; ++index) {
         device_extensions.position(index);
-        final VulkanExtensionProperties extension =
+        final var extension =
           VulkanExtensionProperties.of(
             device_extensions.extensionNameString(),
             device_extensions.specVersion());
@@ -314,8 +311,8 @@ public final class VulkanLWJGLPhysicalDevice
   public Map<String, VulkanLayerProperties> layers()
     throws VulkanException
   {
-    try (MemoryStack stack = this.stack_initial.push()) {
-      final int[] count = new int[1];
+    try (var stack = this.stack_initial.push()) {
+      final var count = new int[1];
 
       checkReturnCode(
         VK10.vkEnumerateDeviceLayerProperties(
@@ -324,12 +321,12 @@ public final class VulkanLWJGLPhysicalDevice
           null),
         "vkEnumerateDeviceLayerProperties");
 
-      final int size = count[0];
+      final var size = count[0];
       if (size == 0) {
         return Map.of();
       }
 
-      final VkLayerProperties.Buffer layers_buffer =
+      final var layers_buffer =
         VkLayerProperties.mallocStack(size, stack);
 
       checkReturnCode(
@@ -340,10 +337,10 @@ public final class VulkanLWJGLPhysicalDevice
         "vkEnumerateDeviceLayerProperties");
 
       final HashMap<String, VulkanLayerProperties> layers = new HashMap<>(size);
-      for (int index = 0; index < size; ++index) {
+      for (var index = 0; index < size; ++index) {
         layers_buffer.position(index);
 
-        final VulkanLayerProperties layer =
+        final var layer =
           VulkanLayerProperties.of(
             layers_buffer.layerNameString(),
             layers_buffer.descriptionString(),
@@ -405,8 +402,8 @@ public final class VulkanLWJGLPhysicalDevice
 
     this.checkNotClosed();
 
-    final List<String> enabled_extensions = info.enabledExtensions();
-    final List<String> enabled_layers = info.enabledLayers();
+    final var enabled_extensions = info.enabledExtensions();
+    final var enabled_layers = info.enabledLayers();
 
     if (LOG.isDebugEnabled()) {
       LOG.debug("creating logical device");
@@ -414,19 +411,19 @@ public final class VulkanLWJGLPhysicalDevice
       enabled_layers.forEach(name -> LOG.debug("enabling layer: {}", name));
     }
 
-    try (MemoryStack stack = this.stack_initial.push()) {
-      final List<VulkanLogicalDeviceQueueCreateInfo> infos =
+    try (var stack = this.stack_initial.push()) {
+      final var infos =
         info.queueCreateInfos();
-      final VkDeviceQueueCreateInfo.Buffer vk_queue_buffer =
+      final var vk_queue_buffer =
         createQueueBuffer(stack, infos);
-      final PointerBuffer vk_enabled_layers =
+      final var vk_enabled_layers =
         VulkanStrings.stringsToPointerBuffer(stack, enabled_layers);
-      final PointerBuffer vk_enabled_extensions =
+      final var vk_enabled_extensions =
         VulkanStrings.stringsToPointerBuffer(stack, enabled_extensions);
-      final VkPhysicalDeviceFeatures vk_features =
+      final var vk_features =
         createPhysicalDeviceFeatures(stack, info);
 
-      final VkDeviceCreateInfo vk_device_create_info =
+      final var vk_device_create_info =
         VkDeviceCreateInfo.mallocStack(stack)
           .sType(VK10.VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO)
           .pNext(0L)
@@ -436,7 +433,7 @@ public final class VulkanLWJGLPhysicalDevice
           .ppEnabledExtensionNames(vk_enabled_extensions)
           .pEnabledFeatures(vk_features);
 
-      final PointerBuffer vk_logical_device_ptr = stack.mallocPointer(1);
+      final var vk_logical_device_ptr = stack.mallocPointer(1);
       checkReturnCode(
         VK10.vkCreateDevice(
           this.device,
@@ -445,15 +442,15 @@ public final class VulkanLWJGLPhysicalDevice
           vk_logical_device_ptr),
         "vkCreateDevice");
 
-      final VkDevice vk_logical_device =
+      final var vk_logical_device =
         new VkDevice(
           vk_logical_device_ptr.get(0),
           this.device,
           vk_device_create_info);
 
-      final VulkanLWJGLExtensionsRegistry registry =
+      final var registry =
         this.instance.extensionRegistry();
-      final Map<String, VulkanExtensionType> enabled =
+      final var enabled =
         registry.ofNames(enabled_extensions);
 
       return new VulkanLWJGLLogicalDevice(

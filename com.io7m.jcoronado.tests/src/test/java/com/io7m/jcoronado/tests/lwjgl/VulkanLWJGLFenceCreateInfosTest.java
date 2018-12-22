@@ -24,7 +24,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.vulkan.VK10;
-import org.lwjgl.vulkan.VkFenceCreateInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,12 +46,12 @@ public final class VulkanLWJGLFenceCreateInfosTest
   @Test
   public void testFenceCreateInfo()
   {
-    final VulkanFenceCreateInfo info =
+    final var info =
       VulkanFenceCreateInfo.builder()
         .addAllFlags(List.of(VulkanFenceCreateFlag.values()))
         .build();
 
-    final VkFenceCreateInfo packed =
+    final var packed =
       VulkanLWJGLFenceCreateInfos.pack(this.stack, info);
 
     Assertions.assertAll(

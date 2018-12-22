@@ -19,13 +19,10 @@ package com.io7m.jcoronado.tests.lwjgl;
 import com.io7m.jcoronado.api.VulkanSpecializationMap;
 import com.io7m.jcoronado.api.VulkanSpecializationMapEntry;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLSpecializationInfos;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.lwjgl.system.MemoryStack;
-import org.lwjgl.vulkan.VkSpecializationInfo;
-import org.lwjgl.vulkan.VkSpecializationMapEntry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,14 +45,14 @@ public final class VulkanLWJGLSpecializationInfosTest
   @Test
   public void testSpecializationInfo()
   {
-    final VulkanSpecializationMapEntry entry_0 =
+    final var entry_0 =
       VulkanSpecializationMapEntry.of(0, 23L, 36L);
-    final VulkanSpecializationMapEntry entry_1 =
+    final var entry_1 =
       VulkanSpecializationMapEntry.of(1, 12L, 23L);
-    final VulkanSpecializationMapEntry entry_2 =
+    final var entry_2 =
       VulkanSpecializationMapEntry.of(2, 7L, 6L);
 
-    final VulkanSpecializationMap map =
+    final var map =
       VulkanSpecializationMap.builder()
         .setData(ByteBuffer.allocateDirect(100))
         .addEntries(entry_0)
@@ -63,7 +60,7 @@ public final class VulkanLWJGLSpecializationInfosTest
         .addEntries(entry_2)
         .build();
 
-    final VkSpecializationInfo packed =
+    final var packed =
       VulkanLWJGLSpecializationInfos.pack(this.stack, map);
 
     Assertions.assertAll(
@@ -74,19 +71,19 @@ public final class VulkanLWJGLSpecializationInfosTest
         Assertions.assertEquals(3, packed.mapEntryCount());
       },
       () -> {
-        final VkSpecializationMapEntry.Buffer pe = packed.pMapEntries().position(0);
+        final var pe = packed.pMapEntries().position(0);
         Assertions.assertEquals(23, pe.offset());
         Assertions.assertEquals(36L, pe.size());
         Assertions.assertEquals(0, pe.constantID());
       },
       () -> {
-        final VkSpecializationMapEntry.Buffer pe = packed.pMapEntries().position(1);
+        final var pe = packed.pMapEntries().position(1);
         Assertions.assertEquals(12, pe.offset());
         Assertions.assertEquals(23L, pe.size());
         Assertions.assertEquals(1, pe.constantID());
       },
       () -> {
-        final VkSpecializationMapEntry.Buffer pe = packed.pMapEntries().position(2);
+        final var pe = packed.pMapEntries().position(2);
         Assertions.assertEquals(7, pe.offset());
         Assertions.assertEquals(6L, pe.size());
         Assertions.assertEquals(2, pe.constantID());
@@ -97,7 +94,7 @@ public final class VulkanLWJGLSpecializationInfosTest
   @Test
   public void testSpecializationInfoNull()
   {
-    final VkSpecializationInfo packed =
+    final var packed =
       VulkanLWJGLSpecializationInfos.packOptional(this.stack, Optional.empty());
 
     Assertions.assertEquals(null, packed);

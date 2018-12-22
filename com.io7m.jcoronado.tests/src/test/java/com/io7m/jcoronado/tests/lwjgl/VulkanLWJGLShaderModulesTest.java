@@ -19,13 +19,11 @@ package com.io7m.jcoronado.tests.lwjgl;
 import com.io7m.jcoronado.api.VulkanShaderModuleCreateFlag;
 import com.io7m.jcoronado.api.VulkanShaderModuleCreateInfo;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLShaderModules;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.vulkan.VK10;
-import org.lwjgl.vulkan.VkShaderModuleCreateInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,21 +45,21 @@ public final class VulkanLWJGLShaderModulesTest
   @Test
   public void testShaderModuleCreateInfo()
   {
-    final ByteBuffer data = ByteBuffer.allocateDirect(256);
-    for (int index = 0; index < 256; ++index) {
+    final var data = ByteBuffer.allocateDirect(256);
+    for (var index = 0; index < 256; ++index) {
       data.put(index, (byte) (index & 0xff));
     }
 
-    final long size = 256L;
+    final var size = 256L;
 
-    final VulkanShaderModuleCreateInfo info =
+    final var info =
       VulkanShaderModuleCreateInfo.builder()
         .addFlags(VulkanShaderModuleCreateFlag.values())
         .setData(data)
         .setSize(size)
         .build();
 
-    final VkShaderModuleCreateInfo packed =
+    final var packed =
       VulkanLWJGLShaderModules.packShaderModuleCreateInfo(this.stack, info);
 
     Assertions.assertAll(
@@ -82,8 +80,8 @@ public final class VulkanLWJGLShaderModulesTest
       },
 
       () -> {
-        final ByteBuffer pdata = packed.pCode();
-        for (int index = 0; index < 256; ++index) {
+        final var pdata = packed.pCode();
+        for (var index = 0; index < 256; ++index) {
           Assertions.assertEquals(index, (int) pdata.get(index) & 0xff);
         }
       });

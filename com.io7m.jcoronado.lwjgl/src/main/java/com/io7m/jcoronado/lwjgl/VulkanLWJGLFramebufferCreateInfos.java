@@ -74,9 +74,9 @@ public final class VulkanLWJGLFramebufferCreateInfos
     final MemoryStack stack,
     final List<VulkanLWJGLImageView> views)
   {
-    final LongBuffer buffer = stack.mallocLong(views.size());
-    for (int index = 0; index < views.size(); ++index) {
-      final VulkanLWJGLImageView view = views.get(index);
+    final var buffer = stack.mallocLong(views.size());
+    for (var index = 0; index < views.size(); ++index) {
+      final var view = views.get(index);
       buffer.put(index, view.handle());
     }
     return buffer;

@@ -36,12 +36,12 @@ final class VulkanLWJGLClassChecks
     Objects.requireNonNull(object, "object");
     Objects.requireNonNull(clazz, "clazz");
 
-    final Class<?> object_class = object.getClass();
+    final var object_class = object.getClass();
     if (Objects.equals(object_class, clazz)) {
       return (T) object;
     }
 
-    final String separator = System.lineSeparator();
+    final var separator = System.lineSeparator();
     throw new VulkanIncompatibleClassException(
       new StringBuilder(128)
         .append("Incompatible class.")

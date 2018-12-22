@@ -55,7 +55,7 @@ public final class VulkanLWJGLBuffer extends VulkanLWJGLHandle implements Vulkan
     if (o == null || !Objects.equals(this.getClass(), o.getClass())) {
       return false;
     }
-    final VulkanLWJGLBuffer that = (VulkanLWJGLBuffer) o;
+    final var that = (VulkanLWJGLBuffer) o;
     return this.handle == that.handle;
   }
 

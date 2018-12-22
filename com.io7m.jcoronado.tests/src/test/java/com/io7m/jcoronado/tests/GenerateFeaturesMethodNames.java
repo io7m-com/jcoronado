@@ -1,7 +1,6 @@
 package com.io7m.jcoronado.tests;
 
 import org.lwjgl.vulkan.VkPhysicalDeviceFeatures;
-import org.lwjgl.vulkan.VkPhysicalDeviceLimits;
 
 import java.lang.reflect.Method;
 import java.util.Comparator;

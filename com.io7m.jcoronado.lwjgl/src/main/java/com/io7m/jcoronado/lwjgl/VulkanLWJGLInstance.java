@@ -32,16 +32,13 @@ import com.io7m.jcoronado.api.VulkanPhysicalDeviceFeatures;
 import com.io7m.jcoronado.api.VulkanPhysicalDeviceLimits;
 import com.io7m.jcoronado.api.VulkanPhysicalDeviceMemoryProperties;
 import com.io7m.jcoronado.api.VulkanPhysicalDeviceProperties;
-import com.io7m.jcoronado.api.VulkanPhysicalDevicePropertiesType;
 import com.io7m.jcoronado.api.VulkanPhysicalDeviceType;
 import com.io7m.jcoronado.api.VulkanPointSizeRange;
 import com.io7m.jcoronado.api.VulkanQueueFamilyProperties;
 import com.io7m.jcoronado.api.VulkanQueueFamilyPropertyFlag;
-import com.io7m.jcoronado.api.VulkanVersion;
 import com.io7m.jcoronado.api.VulkanVersions;
 import com.io7m.jcoronado.api.VulkanViewportBoundsRange;
 import com.io7m.jcoronado.api.VulkanViewportDimensions;
-import org.lwjgl.PointerBuffer;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.vulkan.VK10;
 import org.lwjgl.vulkan.VkExtent3D;
@@ -105,28 +102,28 @@ public final class VulkanLWJGLInstance
     final VkPhysicalDevice vk_device)
   {
     final ArrayList<VulkanQueueFamilyProperties> families;
-    try (MemoryStack stack = stack_initial.push()) {
-      final int[] count = new int[1];
+    try (var stack = stack_initial.push()) {
+      final var count = new int[1];
 
       VK10.vkGetPhysicalDeviceQueueFamilyProperties(
         vk_device, count, null);
 
-      final int queue_family_count = count[0];
+      final var queue_family_count = count[0];
       if (queue_family_count == 0) {
         return List.of();
       }
 
-      final VkQueueFamilyProperties.Buffer vk_queue_families =
+      final var vk_queue_families =
         VkQueueFamilyProperties.mallocStack(queue_family_count, stack);
 
       VK10.vkGetPhysicalDeviceQueueFamilyProperties(
         vk_device, count, vk_queue_families);
 
       families = new ArrayList<>(queue_family_count);
-      for (int index = 0; index < queue_family_count; ++index) {
+      for (var index = 0; index < queue_family_count; ++index) {
         vk_queue_families.position(index);
 
-        final VulkanQueueFamilyProperties properties =
+        final var properties =
           VulkanQueueFamilyProperties.of(
             index,
             vk_queue_families.queueCount(),
@@ -153,10 +150,10 @@ public final class VulkanLWJGLInstance
   private static Set<VulkanQueueFamilyPropertyFlag> parseQueueFlags(
     final int input)
   {
-    final EnumSet<VulkanQueueFamilyPropertyFlag> results =
+    final var results =
       EnumSet.noneOf(VulkanQueueFamilyPropertyFlag.class);
-    for (final VulkanQueueFamilyPropertyFlag flag : VulkanQueueFamilyPropertyFlag.values()) {
-      final int value = flag.value();
+    for (final var flag : VulkanQueueFamilyPropertyFlag.values()) {
+      final var value = flag.value();
       if ((input & value) == value) {
         results.add(flag);
       }
@@ -168,21 +165,21 @@ public final class VulkanLWJGLInstance
     final VkPhysicalDeviceProperties vk_properties,
     final int index)
   {
-    final String device_name =
+    final var device_name =
       vk_properties.deviceNameString();
-    final VulkanPhysicalDevicePropertiesType.Type device_type =
+    final var device_type =
       VulkanPhysicalDeviceProperties.Type.ofInt(vk_properties.deviceType());
-    final int device_id =
+    final var device_id =
       vk_properties.deviceID();
-    final int device_vendor =
+    final var device_vendor =
       vk_properties.vendorID();
-    final int device_api =
+    final var device_api =
       vk_properties.apiVersion();
-    final int device_driver_version =
+    final var device_driver_version =
       vk_properties.driverVersion();
-    final VulkanVersion version =
+    final var version =
       VulkanVersions.decode(device_api);
-    final VulkanVersion driver_version =
+    final var driver_version =
       VulkanVersions.decode(device_driver_version);
 
     if (LOG.isDebugEnabled()) {
@@ -231,16 +228,16 @@ public final class VulkanLWJGLInstance
   parsePhysicalDeviceMemoryProperties(
     final VkPhysicalDeviceMemoryProperties vk_memory)
   {
-    final VulkanPhysicalDeviceMemoryProperties.Builder builder =
+    final var builder =
       VulkanPhysicalDeviceMemoryProperties.builder();
 
-    for (int index = 0; index < vk_memory.memoryHeapCount(); ++index) {
-      final VkMemoryHeap heap = vk_memory.memoryHeaps(index);
+    for (var index = 0; index < vk_memory.memoryHeapCount(); ++index) {
+      final var heap = vk_memory.memoryHeaps(index);
       builder.addHeaps(parseHeap(heap));
     }
 
-    for (int index = 0; index < vk_memory.memoryTypeCount(); ++index) {
-      final VkMemoryType type = vk_memory.memoryTypes(index);
+    for (var index = 0; index < vk_memory.memoryTypeCount(); ++index) {
+      final var type = vk_memory.memoryTypes(index);
       builder.addTypes(parseType(type));
     }
 
@@ -257,11 +254,11 @@ public final class VulkanLWJGLInstance
   private static Set<VulkanMemoryPropertyFlag> parseTypeFlags(
     final int flags)
   {
-    final EnumSet<VulkanMemoryPropertyFlag> values =
+    final var values =
       EnumSet.noneOf(VulkanMemoryPropertyFlag.class);
 
-    for (final VulkanMemoryPropertyFlag flag : VulkanMemoryPropertyFlag.values()) {
-      final int value = flag.value();
+    for (final var flag : VulkanMemoryPropertyFlag.values()) {
+      final var value = flag.value();
       if ((flags & value) == value) {
         values.add(flag);
       }
@@ -279,11 +276,11 @@ public final class VulkanLWJGLInstance
   private static Set<VulkanMemoryHeapFlag> parseHeapFlags(
     final int flags)
   {
-    final EnumSet<VulkanMemoryHeapFlag> values =
+    final var values =
       EnumSet.noneOf(VulkanMemoryHeapFlag.class);
 
-    for (final VulkanMemoryHeapFlag flag : VulkanMemoryHeapFlag.values()) {
-      final int value = flag.value();
+    for (final var flag : VulkanMemoryHeapFlag.values()) {
+      final var value = flag.value();
       if ((flags & value) == value) {
         values.add(flag);
       }
@@ -534,7 +531,7 @@ public final class VulkanLWJGLInstance
     if (o == null || !Objects.equals(this.getClass(), o.getClass())) {
       return false;
     }
-    final VulkanLWJGLInstance that = (VulkanLWJGLInstance) o;
+    final var that = (VulkanLWJGLInstance) o;
     return Objects.equals(this.instance, that.instance);
   }
 
@@ -572,7 +569,7 @@ public final class VulkanLWJGLInstance
       LOG.trace("destroying instance: {}", this);
     }
 
-    final VulkanLWJGLHostAllocatorProxy host_allocator = this.hostAllocatorProxy();
+    final var host_allocator = this.hostAllocatorProxy();
     VK10.vkDestroyInstance(this.instance, host_allocator.callbackBuffer());
     host_allocator.close();
   }
@@ -584,40 +581,40 @@ public final class VulkanLWJGLInstance
     this.checkNotClosed();
 
     final ArrayList<VulkanPhysicalDeviceType> devices;
-    try (MemoryStack stack = this.initial_stack.push()) {
-      final int[] count = new int[1];
+    try (var stack = this.initial_stack.push()) {
+      final var count = new int[1];
       VulkanChecks.checkReturnCode(
         VK10.vkEnumeratePhysicalDevices(this.instance, count, null),
         "vkEnumeratePhysicalDevices");
 
-      final int device_count = count[0];
+      final var device_count = count[0];
       if (device_count == 0) {
         return List.of();
       }
 
-      final PointerBuffer vk_physical_devices =
+      final var vk_physical_devices =
         stack.mallocPointer(device_count);
       VulkanChecks.checkReturnCode(
         VK10.vkEnumeratePhysicalDevices(
           this.instance, count, vk_physical_devices),
         "vkEnumeratePhysicalDevices");
 
-      final VkPhysicalDeviceFeatures vk_features =
+      final var vk_features =
         VkPhysicalDeviceFeatures.mallocStack(stack);
-      final VkPhysicalDeviceProperties vk_properties =
+      final var vk_properties =
         VkPhysicalDeviceProperties.mallocStack(stack);
-      final VkPhysicalDeviceMemoryProperties vk_memory =
+      final var vk_memory =
         VkPhysicalDeviceMemoryProperties.mallocStack(stack);
 
       devices = new ArrayList<>(device_count);
-      for (int index = 0; index < device_count; ++index) {
+      for (var index = 0; index < device_count; ++index) {
         vk_physical_devices.position(index);
 
-        final long device_ptr = vk_physical_devices.get();
-        final VkPhysicalDevice vk_device =
+        final var device_ptr = vk_physical_devices.get();
+        final var vk_device =
           new VkPhysicalDevice(device_ptr, this.instance);
 
-        final VulkanLWJGLPhysicalDevice device =
+        final var device =
           this.parsePhysicalDevice(
             stack,
             vk_device,
@@ -651,15 +648,15 @@ public final class VulkanLWJGLInstance
     VK10.vkGetPhysicalDeviceFeatures(vk_device, vk_features);
     VK10.vkGetPhysicalDeviceMemoryProperties(vk_device, vk_memory);
 
-    final VulkanPhysicalDeviceProperties properties =
+    final var properties =
       parsePhysicalDeviceProperties(vk_properties, index);
-    final VulkanPhysicalDeviceLimits limits =
+    final var limits =
       parsePhysicalDeviceLimits(vk_properties.limits());
-    final VulkanPhysicalDeviceFeatures features =
+    final var features =
       parsePhysicalDeviceFeatures(vk_features);
-    final VulkanPhysicalDeviceMemoryProperties memory =
+    final var memory =
       parsePhysicalDeviceMemoryProperties(vk_memory);
-    final List<VulkanQueueFamilyProperties> queue_families =
+    final var queue_families =
       parsePhysicalDeviceQueueFamilies(stack, vk_device);
 
     return new VulkanLWJGLPhysicalDevice(

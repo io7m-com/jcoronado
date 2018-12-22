@@ -89,7 +89,7 @@ public final class VulkanLWJGLQueue
     if (o == null || !Objects.equals(this.getClass(), o.getClass())) {
       return false;
     }
-    final VulkanLWJGLQueue that = (VulkanLWJGLQueue) o;
+    final var that = (VulkanLWJGLQueue) o;
     return this.queue_index == that.queue_index
       && Objects.equals(this.queue, that.queue)
       && Objects.equals(this.properties, that.properties);
@@ -156,9 +156,9 @@ public final class VulkanLWJGLQueue
       cfence = VK10.VK_NULL_HANDLE;
     }
 
-    try (MemoryStack stack = this.stack_initial.push()) {
-      final int size = submissions.size();
-      final VkSubmitInfo.Buffer infos = VkSubmitInfo.mallocStack(size, stack);
+    try (var stack = this.stack_initial.push()) {
+      final var size = submissions.size();
+      final var infos = VkSubmitInfo.mallocStack(size, stack);
       VulkanLWJGLSubmitInfos.packInfos(stack, submissions, infos);
       VulkanChecks.checkReturnCode(
         VK10.vkQueueSubmit(this.queue, infos, cfence),

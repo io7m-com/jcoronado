@@ -62,8 +62,8 @@ public final class VulkanLWJGLSubmitInfos
     Objects.requireNonNull(infos, "info");
     Objects.requireNonNull(buffer, "buffer");
 
-    for (int index = 0; index < infos.size(); ++index) {
-      final VulkanSubmitInfo info = infos.get(index);
+    for (var index = 0; index < infos.size(); ++index) {
+      final var info = infos.get(index);
       buffer.position(index)
         .pNext(0L)
         .sType(VK10.VK_STRUCTURE_TYPE_SUBMIT_INFO)
@@ -80,9 +80,9 @@ public final class VulkanLWJGLSubmitInfos
     final MemoryStack stack,
     final List<VulkanPipelineStageFlag> stages)
   {
-    final int count = stages.size();
-    final IntBuffer output_buffer = stack.mallocInt(count);
-    for (int index = 0; index < count; ++index) {
+    final var count = stages.size();
+    final var output_buffer = stack.mallocInt(count);
+    for (var index = 0; index < count; ++index) {
       output_buffer.put(index, stages.get(index).value());
     }
     return output_buffer;
@@ -93,10 +93,10 @@ public final class VulkanLWJGLSubmitInfos
     final List<VulkanSemaphoreType> semaphores)
     throws VulkanIncompatibleClassException
   {
-    final int count = semaphores.size();
-    final LongBuffer output_buffer = stack.mallocLong(count);
-    for (int index = 0; index < count; ++index) {
-      final VulkanLWJGLSemaphore semaphore =
+    final var count = semaphores.size();
+    final var output_buffer = stack.mallocLong(count);
+    for (var index = 0; index < count; ++index) {
+      final var semaphore =
         VulkanLWJGLClassChecks.check(semaphores.get(index), VulkanLWJGLSemaphore.class);
       output_buffer.put(index, semaphore.handle());
     }
@@ -108,10 +108,10 @@ public final class VulkanLWJGLSubmitInfos
     final List<VulkanCommandBufferType> command_buffers)
     throws VulkanIncompatibleClassException
   {
-    final int command_buffer_count = command_buffers.size();
-    final PointerBuffer output_buffer = stack.mallocPointer(command_buffer_count);
-    for (int index = 0; index < command_buffer_count; ++index) {
-      final VulkanLWJGLCommandBuffer command_buffer =
+    final var command_buffer_count = command_buffers.size();
+    final var output_buffer = stack.mallocPointer(command_buffer_count);
+    for (var index = 0; index < command_buffer_count; ++index) {
+      final var command_buffer =
         VulkanLWJGLClassChecks.check(command_buffers.get(index), VulkanLWJGLCommandBuffer.class);
       output_buffer.put(index, command_buffer.handle().address());
     }

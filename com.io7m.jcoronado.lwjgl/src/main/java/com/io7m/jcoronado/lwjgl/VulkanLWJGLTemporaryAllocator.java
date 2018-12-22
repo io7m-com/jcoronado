@@ -59,7 +59,7 @@ public final class VulkanLWJGLTemporaryAllocator implements VulkanTemporaryAlloc
   {
     Objects.requireNonNull(receiver, "receiver");
 
-    long address = 0L;
+    var address = 0L;
     try {
       address = this.alloc.aligned_alloc(alignment, size);
       if (address == 0L) {

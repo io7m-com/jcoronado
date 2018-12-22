@@ -16,7 +16,6 @@
 
 package com.io7m.jcoronado.tests.lwjgl;
 
-import com.io7m.jcoronado.api.VulkanQueueFamilyProperties;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLCommandBuffer;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLCommandPool;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLDescriptorSetLayout;
@@ -35,9 +34,6 @@ import com.io7m.jcoronado.lwjgl.VulkanLWJGLShaderModule;
 import mockit.Mocked;
 import nl.jqno.equalsverifier.EqualsVerifier;
 import org.junit.jupiter.api.Test;
-import org.lwjgl.vulkan.VkQueue;
-
-import java.lang.reflect.Constructor;
 
 public final class VulkanLWJGLEqualsTest
 {

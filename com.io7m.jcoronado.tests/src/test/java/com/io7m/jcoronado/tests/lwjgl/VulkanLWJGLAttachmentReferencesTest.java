@@ -19,12 +19,10 @@ package com.io7m.jcoronado.tests.lwjgl;
 import com.io7m.jcoronado.api.VulkanAttachmentReference;
 import com.io7m.jcoronado.api.VulkanImageLayout;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLAttachmentReferences;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.lwjgl.system.MemoryStack;
-import org.lwjgl.vulkan.VkAttachmentReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,32 +44,32 @@ public final class VulkanLWJGLAttachmentReferencesTest
   @Test
   public void testPackReferences()
   {
-    final VulkanAttachmentReference reference_0 =
+    final var reference_0 =
       VulkanAttachmentReference.builder()
         .setLayout(VulkanImageLayout.VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL)
         .setAttachment(0)
         .build();
 
-    final VulkanAttachmentReference reference_1 =
+    final var reference_1 =
       VulkanAttachmentReference.builder()
         .setLayout(VulkanImageLayout.VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL)
         .setAttachment(1)
         .build();
 
-    final VulkanAttachmentReference reference_2 =
+    final var reference_2 =
       VulkanAttachmentReference.builder()
         .setLayout(VulkanImageLayout.VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL)
         .setAttachment(2)
         .build();
 
-    final List<VulkanAttachmentReference> references =
+    final var references =
       List.of(reference_0, reference_1, reference_2);
 
-    final VkAttachmentReference.Buffer packed =
+    final var packed =
       VulkanLWJGLAttachmentReferences.packAttachmentReferences(this.stack, references);
 
-    for (int index = 0; index < 3; ++index) {
-      final int f_index = index;
+    for (var index = 0; index < 3; ++index) {
+      final var f_index = index;
 
       Assertions.assertAll(
         () -> {
