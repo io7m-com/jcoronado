@@ -28,13 +28,16 @@ import com.io7m.jcoronado.vma.VMAAllocationInfoType;
 import com.io7m.jcoronado.vma.VMAAllocationResult;
 import com.io7m.jcoronado.vma.VMAAllocationType;
 import com.io7m.jcoronado.vma.VMAAllocatorType;
+import com.io7m.jcoronado.vma.VMAMappedMemoryType;
 import org.lwjgl.system.MemoryStack;
+import org.lwjgl.system.MemoryUtil;
 import org.lwjgl.util.vma.Vma;
 import org.lwjgl.util.vma.VmaAllocationCreateInfo;
 import org.lwjgl.util.vma.VmaAllocationInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.nio.ByteBuffer;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -44,7 +47,7 @@ import static com.io7m.jcoronado.lwjgl.VulkanLWJGLHandle.Ownership.USER_OWNED;
  * @see "VmaAllocator"
  */
 
-public final class VMALWJGLAllocator implements VMAAllocatorType
+public final class VMALWJGLAllocator extends VulkanLWJGLHandle implements VMAAllocatorType
 {
   private static final Logger LOG = LoggerFactory.getLogger(VMALWJGLAllocator.class);
 
@@ -58,6 +61,8 @@ public final class VMALWJGLAllocator implements VMAAllocatorType
     final long in_allocator_address,
     final VulkanLWJGLHostAllocatorProxy in_host_allocator_proxy)
   {
+    super(USER_OWNED, in_host_allocator_proxy);
+
     this.device =
       Objects.requireNonNull(in_device, "device");
     this.host_allocator_proxy =
@@ -100,6 +105,22 @@ public final class VMALWJGLAllocator implements VMAAllocatorType
   private enum AllocatedItemKind
   {
     BUFFER
+  }
+
+  @Override
+  protected Logger logger()
+  {
+    return LOG;
+  }
+
+  @Override
+  protected void closeActual()
+  {
+    if (LOG.isTraceEnabled()) {
+      LOG.trace("destroying VMA allocator: {}", this);
+    }
+
+    Vma.vmaDestroyAllocator(this.allocator_address);
   }
 
   @Override
@@ -159,22 +180,61 @@ public final class VMALWJGLAllocator implements VMAAllocatorType
           .setSize(vk_allocation_info.size())
           .build();
 
+      final var vk_buffer_handle = vk_buffer.get(0);
+      final var vk_allocation_handle = vk_allocation.get(0);
+
       final var buffer =
         new VulkanLWJGLBuffer(
           USER_OWNED,
           this.device.device(),
-          vk_buffer.get(0),
+          vk_buffer_handle,
+          () -> this.destroyVmaBuffer(vk_buffer_handle, vk_allocation_handle),
           this.host_allocator_proxy);
 
       final var allocation =
         new VMALWJGLAllocation<>(
           this,
-          vk_allocation.get(0),
+          vk_allocation_handle,
           buffer,
           info,
           AllocatedItemKind.BUFFER);
 
       return VMAAllocationResult.of(allocation, buffer);
+    }
+  }
+
+  private void destroyVmaBuffer(
+    final long vk_buffer_handle,
+    final long vk_allocation_handle)
+  {
+    if (LOG.isTraceEnabled()) {
+      LOG.trace(
+        "Vma.vmaDestroyBuffer: 0x{} 0x{} 0x{}",
+        Long.toUnsignedString(this.allocator_address, 16),
+        Long.toUnsignedString(vk_buffer_handle, 16),
+        Long.toUnsignedString(vk_allocation_handle, 16));
+    }
+    Vma.vmaDestroyBuffer(this.allocator_address, vk_buffer_handle, vk_allocation_handle);
+  }
+
+  @Override
+  public VMAMappedMemoryType mapMemory(
+    final VMAAllocationType allocation)
+    throws VulkanException
+  {
+    Objects.requireNonNull(allocation, "allocation");
+
+    final VMALWJGLAllocation<?> lwjgl_allocation =
+      VulkanLWJGLClassChecks.check(allocation, VMALWJGLAllocation.class);
+
+    try (var stack = this.stack_initial.push()) {
+      final var ptr = stack.mallocPointer(1);
+
+      VulkanChecks.checkReturnCode(
+        Vma.vmaMapMemory(this.allocator_address, lwjgl_allocation.allocation, ptr),
+        "vmaMapMemory");
+
+      return new VMALWJGLMappedMemory(this, ptr.get(0), allocation.info().size());
     }
   }
 
@@ -278,6 +338,61 @@ public final class VMALWJGLAllocator implements VMAAllocatorType
           this.closed = true;
         }
       }
+    }
+  }
+
+  private static final class VMALWJGLMappedMemory
+    extends VulkanLWJGLHandle implements VMAMappedMemoryType
+  {
+    private final long address;
+    private final VMALWJGLAllocator allocator;
+    private boolean mapped;
+    private ByteBuffer buffer;
+
+    VMALWJGLMappedMemory(
+      final VMALWJGLAllocator in_allocator,
+      final long in_address,
+      final long in_size)
+    {
+      super(USER_OWNED, in_allocator.host_allocator_proxy);
+
+      this.allocator = Objects.requireNonNull(in_allocator, "allocator");
+      this.address = in_address;
+      this.mapped = true;
+      this.buffer = MemoryUtil.memByteBuffer(in_address, Math.toIntExact(in_size));
+    }
+
+    @Override
+    public boolean isMapped()
+    {
+      return this.mapped;
+    }
+
+    @Override
+    protected Logger logger()
+    {
+      return LOG;
+    }
+
+    @Override
+    protected void closeActual()
+    {
+      if (this.mapped) {
+        try {
+          if (LOG.isTraceEnabled()) {
+            LOG.trace("unmapping memory: 0x{}", Long.toUnsignedString(this.address, 16));
+          }
+          Vma.vmaUnmapMemory(this.allocator.allocator_address, this.address);
+        } finally {
+          this.mapped = false;
+        }
+      }
+    }
+
+    @Override
+    public ByteBuffer asByteBuffer()
+    {
+      return this.buffer;
     }
   }
 }

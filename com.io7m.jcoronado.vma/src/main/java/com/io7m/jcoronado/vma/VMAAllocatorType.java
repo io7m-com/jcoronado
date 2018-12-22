@@ -19,13 +19,24 @@ package com.io7m.jcoronado.vma;
 import com.io7m.jcoronado.api.VulkanBufferCreateInfo;
 import com.io7m.jcoronado.api.VulkanBufferType;
 import com.io7m.jcoronado.api.VulkanException;
+import com.io7m.jcoronado.api.VulkanHandleDispatchableType;
 
 /**
  * A configured VMA allocator.
  */
 
-public interface VMAAllocatorType
+public interface VMAAllocatorType extends VulkanHandleDispatchableType
 {
+  /**
+   * Destroy the allocator.
+   *
+   * @throws VulkanException On errors
+   */
+
+  @Override
+  void close()
+    throws VulkanException;
+
   /**
    * Allocate a buffer.
    *
@@ -40,5 +51,19 @@ public interface VMAAllocatorType
   VMAAllocationResult<VulkanBufferType> createBuffer(
     VMAAllocationCreateInfo alloc_create_info,
     VulkanBufferCreateInfo buffer_create_info)
+    throws VulkanException;
+
+  /**
+   * Map the memory associated with the given allocation.
+   *
+   * @param allocation The VMA allocation
+   *
+   * @return The memory, mapped
+   *
+   * @throws VulkanException On errors
+   */
+
+  VMAMappedMemoryType mapMemory(
+    VMAAllocationType allocation)
     throws VulkanException;
 }

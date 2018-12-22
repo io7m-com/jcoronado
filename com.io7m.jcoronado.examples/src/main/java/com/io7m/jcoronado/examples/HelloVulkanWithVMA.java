@@ -45,7 +45,6 @@ import com.io7m.jcoronado.api.VulkanLayers;
 import com.io7m.jcoronado.api.VulkanLogicalDeviceCreateInfo;
 import com.io7m.jcoronado.api.VulkanLogicalDeviceQueueCreateInfo;
 import com.io7m.jcoronado.api.VulkanLogicalDeviceType;
-import com.io7m.jcoronado.api.VulkanMemoryAllocateInfo;
 import com.io7m.jcoronado.api.VulkanMissingRequiredExtensionsException;
 import com.io7m.jcoronado.api.VulkanOffset2D;
 import com.io7m.jcoronado.api.VulkanPhysicalDeviceType;
@@ -90,6 +89,7 @@ import com.io7m.jcoronado.lwjgl.VMALWJGLAllocatorProvider;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLHostAllocatorJeMalloc;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLInstanceProvider;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLTemporaryAllocator;
+import com.io7m.jcoronado.vma.VMAAllocationCreateInfo;
 import com.io7m.jcoronado.vma.VMAAllocatorCreateInfo;
 import com.io7m.jmulticlose.core.CloseableCollection;
 import org.lwjgl.glfw.GLFW;
@@ -151,11 +151,12 @@ import static com.io7m.jcoronado.extensions.api.VulkanCompositeAlphaFlagKHR.VK_C
 import static com.io7m.jcoronado.extensions.api.VulkanPresentModeKHR.VK_PRESENT_MODE_FIFO_KHR;
 import static com.io7m.jcoronado.extensions.api.VulkanPresentModeKHR.VK_PRESENT_MODE_IMMEDIATE_KHR;
 import static com.io7m.jcoronado.extensions.api.VulkanPresentModeKHR.VK_PRESENT_MODE_MAILBOX_KHR;
+import static com.io7m.jcoronado.vma.VMAMemoryUsage.VMA_MEMORY_USAGE_GPU_ONLY;
 import static java.util.concurrent.TimeUnit.SECONDS;
 
-public final class HelloVulkan
+public final class HelloVulkanWithVMA
 {
-  private static final Logger LOG = LoggerFactory.getLogger(HelloVulkan.class);
+  private static final Logger LOG = LoggerFactory.getLogger(HelloVulkanWithVMA.class);
 
   private static final GLFWErrorCallback GLFW_ERROR_CALLBACK =
     GLFWErrorCallback.createPrint();
@@ -164,7 +165,7 @@ public final class HelloVulkan
   private static final int VERTEX_COLOR_SIZE = 3 * 4;
   private static final int VERTEX_SIZE = VERTEX_POSITION_SIZE + VERTEX_COLOR_SIZE;
 
-  private HelloVulkan()
+  private HelloVulkanWithVMA()
   {
 
   }
@@ -234,10 +235,10 @@ public final class HelloVulkan
       final var required_extensions =
         requiredGLFWExtensions();
 
-      available_extensions.forEach(HelloVulkan::showInstanceAvailableExtension);
-      available_layers.forEach(HelloVulkan::showInstanceAvailableLayer);
-      required_extensions.forEach(HelloVulkan::showInstanceRequiredExtension);
-      required_layers.forEach(HelloVulkan::showInstanceRequiredLayer);
+      available_extensions.forEach(HelloVulkanWithVMA::showInstanceAvailableExtension);
+      available_layers.forEach(HelloVulkanWithVMA::showInstanceAvailableLayer);
+      required_extensions.forEach(HelloVulkanWithVMA::showInstanceRequiredExtension);
+      required_layers.forEach(HelloVulkanWithVMA::showInstanceRequiredLayer);
 
       /*
        * Filter the available extensions and layers based on the requirements expressed above.
@@ -306,7 +307,7 @@ public final class HelloVulkan
       final var device_extensions =
         physical_device.extensions(Optional.empty());
 
-      device_extensions.forEach(HelloVulkan::showPhysicalDeviceAvailableExtension);
+      device_extensions.forEach(HelloVulkanWithVMA::showPhysicalDeviceAvailableExtension);
       if (!device_extensions.containsKey("VK_KHR_get_memory_requirements2")) {
         throw new VulkanMissingRequiredExtensionsException(
           Set.of("VK_KHR_get_memory_requirements2"),
@@ -385,6 +386,23 @@ public final class HelloVulkan
             .build()));
 
       LOG.debug("logical device: {}", device);
+
+      /*
+       * Create a VMA allocator provider.
+       */
+
+      final var vma_allocators = VMALWJGLAllocatorProvider.create();
+      LOG.debug(
+        "vma allocator provider: {} {}",
+        vma_allocators.providerName(),
+        vma_allocators.providerVersion());
+
+      final var vma_allocator =
+        resources.add(
+          vma_allocators.createAllocator(
+            VMAAllocatorCreateInfo.builder()
+              .setLogicalDevice(device)
+              .build()));
 
       /*
        * Find the graphics and presentation queues.
@@ -656,45 +674,25 @@ public final class HelloVulkan
           .setSharingMode(VK_SHARING_MODE_EXCLUSIVE)
           .build();
 
-      final var vertex_buffer =
-        resources.add(device.createBuffer(vertex_buffer_create_info));
-
-      final var vertex_buffer_requirements =
-        device.getBufferMemoryRequirements(vertex_buffer);
-
-      LOG.debug(
-        "buffer memory requirements: size {} alignment {} type 0x{}",
-        Long.valueOf(vertex_buffer_requirements.size()),
-        Long.valueOf(vertex_buffer_requirements.alignment()),
-        Integer.toUnsignedString(vertex_buffer_requirements.memoryTypeBits(), 16));
-
-      final var vertex_buffer_memory_type =
-        physical_device.memory()
-          .findSuitableMemoryType(
-            vertex_buffer_requirements,
-            Set.of(VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT));
-
-      LOG.debug("buffer memory type: {}", vertex_buffer_memory_type);
-
-      final var vertex_buffer_allocation =
-        VulkanMemoryAllocateInfo.builder()
-          .setMemoryTypeIndex(vertex_buffer_memory_type.heapIndex())
-          .setSize(vertex_buffer_requirements.size())
+      final var vma_alloc_create_info =
+        VMAAllocationCreateInfo.builder()
+          .setUsage(VMA_MEMORY_USAGE_GPU_ONLY)
+          .addRequiredFlags(VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT)
+          .setMemoryTypeBits(0L)
           .build();
 
-      final var vertex_buffer_memory =
-        resources.add(device.allocateMemory(vertex_buffer_allocation));
+      final var vma_result =
+        vma_allocator.createBuffer(vma_alloc_create_info, vertex_buffer_create_info);
 
-      device.bindBufferMemory(vertex_buffer, vertex_buffer_memory, 0L);
+      final var vertex_buffer =
+        resources.add(vma_result.result());
 
       /*
        * Populate vertex buffer by mapping the memory and writing to it. Closing the mapped
        * memory will automatically unmap it.
        */
 
-      try (var vertex_mapped =
-             device.mapMemory(vertex_buffer_memory, 0L, 3L * VERTEX_SIZE, Set.of())) {
-
+      try (var vertex_mapped = vma_allocator.mapMemory(vma_result.allocation())) {
         final var buffer = vertex_mapped.asByteBuffer();
         buffer.putFloat(0, 0.0f);
         buffer.putFloat(4, -0.5f);
@@ -934,7 +932,7 @@ public final class HelloVulkan
     final String name)
     throws IOException
   {
-    try (var input = HelloVulkan.class.getResourceAsStream(name)) {
+    try (var input = HelloVulkanWithVMA.class.getResourceAsStream(name)) {
       return input.readAllBytes();
     }
   }
@@ -1182,8 +1180,8 @@ public final class HelloVulkan
 
     try {
       return devices.stream()
-        .filter(HelloVulkan::physicalDeviceHasSwapChainExtension)
-        .filter(HelloVulkan::physicalDeviceHasGraphicsQueue)
+        .filter(HelloVulkanWithVMA::physicalDeviceHasSwapChainExtension)
+        .filter(HelloVulkanWithVMA::physicalDeviceHasGraphicsQueue)
         .filter(device -> physicalDeviceHasPresentationQueue(khr_surface_ext, surface, device))
         .findFirst();
     } catch (final VulkanUncheckedException e) {

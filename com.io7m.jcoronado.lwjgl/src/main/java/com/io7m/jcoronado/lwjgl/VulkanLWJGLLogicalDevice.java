@@ -639,15 +639,15 @@ public final class VulkanLWJGLLogicalDevice
     this.checkNotClosed();
 
     try (var stack = this.stack_initial.push()) {
-      final var info =
-        VulkanLWJGLBufferCreateInfos.packInfo(stack, create_info);
-
+      final var info = VulkanLWJGLBufferCreateInfos.packInfo(stack, create_info);
       final var handles = new long[1];
+      final var proxy = this.hostAllocatorProxy();
+
       VulkanChecks.checkReturnCode(
         VK10.vkCreateBuffer(
           this.device,
           info,
-          this.hostAllocatorProxy().callbackBuffer(),
+          proxy.callbackBuffer(),
           handles),
         "vkCreateBuffer");
 
@@ -655,8 +655,25 @@ public final class VulkanLWJGLLogicalDevice
       if (LOG.isTraceEnabled()) {
         LOG.trace("created buffer: 0x{}", Long.toUnsignedString(handle, 16));
       }
-      return new VulkanLWJGLBuffer(USER_OWNED, this.device, handle, this.hostAllocatorProxy());
+
+      return new VulkanLWJGLBuffer(
+        USER_OWNED,
+        this.device,
+        handle,
+        () -> this.destroyBuffer(proxy, handle),
+        proxy);
     }
+  }
+
+  private void destroyBuffer(
+    final VulkanLWJGLHostAllocatorProxy proxy,
+    final long handle)
+  {
+    if (LOG.isTraceEnabled()) {
+      LOG.trace("VK10.vkDestroyBuffer: 0x{}", Long.toUnsignedString(handle, 16));
+    }
+
+    VK10.vkDestroyBuffer(this.device, handle, proxy.callbackBuffer());
   }
 
   @Override

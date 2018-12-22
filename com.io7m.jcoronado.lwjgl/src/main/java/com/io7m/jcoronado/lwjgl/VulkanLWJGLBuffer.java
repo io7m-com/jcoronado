@@ -17,7 +17,6 @@
 package com.io7m.jcoronado.lwjgl;
 
 import com.io7m.jcoronado.api.VulkanBufferType;
-import org.lwjgl.vulkan.VK10;
 import org.lwjgl.vulkan.VkDevice;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,16 +33,19 @@ public final class VulkanLWJGLBuffer extends VulkanLWJGLHandle implements Vulkan
 
   private final long handle;
   private final VkDevice device;
+  private final Runnable deallocate;
 
   VulkanLWJGLBuffer(
     final Ownership ownership,
     final VkDevice in_device,
     final long in_handle,
+    final Runnable in_deallocate,
     final VulkanLWJGLHostAllocatorProxy in_host_allocator_proxy)
   {
     super(ownership, in_host_allocator_proxy);
     this.device = Objects.requireNonNull(in_device, "device");
     this.handle = in_handle;
+    this.deallocate = Objects.requireNonNull(in_deallocate, "deallocate");
   }
 
   @Override
@@ -87,10 +89,8 @@ public final class VulkanLWJGLBuffer extends VulkanLWJGLHandle implements Vulkan
     if (LOG.isTraceEnabled()) {
       LOG.trace("destroying buffer: {}", this);
     }
-    VK10.vkDestroyBuffer(
-      this.device,
-      this.handle,
-      this.hostAllocatorProxy().callbackBuffer());
+
+    this.deallocate.run();
   }
 
   long handle()
