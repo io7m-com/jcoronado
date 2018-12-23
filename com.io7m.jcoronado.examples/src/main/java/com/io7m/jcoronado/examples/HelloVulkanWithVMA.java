@@ -116,6 +116,7 @@ import static com.io7m.jcoronado.api.VulkanAttachmentLoadOp.VK_ATTACHMENT_LOAD_O
 import static com.io7m.jcoronado.api.VulkanAttachmentLoadOp.VK_ATTACHMENT_LOAD_OP_DONT_CARE;
 import static com.io7m.jcoronado.api.VulkanAttachmentStoreOp.VK_ATTACHMENT_STORE_OP_DONT_CARE;
 import static com.io7m.jcoronado.api.VulkanAttachmentStoreOp.VK_ATTACHMENT_STORE_OP_STORE;
+import static com.io7m.jcoronado.api.VulkanBufferUsageFlag.VK_BUFFER_USAGE_INDEX_BUFFER_BIT;
 import static com.io7m.jcoronado.api.VulkanBufferUsageFlag.VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
 import static com.io7m.jcoronado.api.VulkanCommandBufferLevel.VK_COMMAND_BUFFER_LEVEL_PRIMARY;
 import static com.io7m.jcoronado.api.VulkanCommandBufferUsageFlag.VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT;
@@ -132,7 +133,7 @@ import static com.io7m.jcoronado.api.VulkanImageLayout.VK_IMAGE_LAYOUT_PRESENT_S
 import static com.io7m.jcoronado.api.VulkanImageLayout.VK_IMAGE_LAYOUT_UNDEFINED;
 import static com.io7m.jcoronado.api.VulkanImageUsageFlag.VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
 import static com.io7m.jcoronado.api.VulkanImageViewKind.VK_IMAGE_VIEW_TYPE_2D;
-import static com.io7m.jcoronado.api.VulkanMemoryPropertyFlag.VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
+import static com.io7m.jcoronado.api.VulkanIndexType.VK_INDEX_TYPE_UINT16;
 import static com.io7m.jcoronado.api.VulkanMemoryPropertyFlag.VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT;
 import static com.io7m.jcoronado.api.VulkanPipelineBindPoint.VK_PIPELINE_BIND_POINT_GRAPHICS;
 import static com.io7m.jcoronado.api.VulkanPipelineStageFlag.VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
@@ -164,6 +165,35 @@ public final class HelloVulkanWithVMA
   private static final int VERTEX_POSITION_SIZE = 2 * 4;
   private static final int VERTEX_COLOR_SIZE = 3 * 4;
   private static final int VERTEX_SIZE = VERTEX_POSITION_SIZE + VERTEX_COLOR_SIZE;
+
+  private static final class Vertex
+  {
+    public final double x;
+    public final double y;
+    public final double r;
+    public final double g;
+    public final double b;
+
+    public Vertex(
+      final double in_x,
+      final double in_y,
+      final double in_r,
+      final double in_g,
+      final double in_b)
+    {
+      this.x = in_x;
+      this.y = in_y;
+      this.r = in_r;
+      this.g = in_g;
+      this.b = in_b;
+    }
+  }
+
+  private static final List<Vertex> VERTICES =
+    List.of(
+      new Vertex(0.0, -0.5, 1.0, 0.0, 0.0),
+      new Vertex(0.5, 0.5, 0.0, 1.0, 0.0),
+      new Vertex(-0.5, 0.5, 0.0, 0.0, 1.0));
 
   private HelloVulkanWithVMA()
   {
@@ -664,12 +694,12 @@ public final class HelloVulkanWithVMA
       }
 
       /*
-       * Create vertex buffers.
+       * Create vertex buffer.
        */
 
       final var vertex_buffer_create_info =
         VulkanBufferCreateInfo.builder()
-          .setSize(3L * VERTEX_SIZE)
+          .setSize(3L * (long) VERTEX_SIZE)
           .addUsageFlags(VK_BUFFER_USAGE_VERTEX_BUFFER_BIT)
           .setSharingMode(VK_SHARING_MODE_EXCLUSIVE)
           .build();
@@ -681,36 +711,73 @@ public final class HelloVulkanWithVMA
           .setMemoryTypeBits(0L)
           .build();
 
-      final var vma_result =
+      final var vma_vertex_buffer_result =
         vma_allocator.createBuffer(vma_alloc_create_info, vertex_buffer_create_info);
 
       final var vertex_buffer =
-        resources.add(vma_result.result());
+        resources.add(vma_vertex_buffer_result.result());
+
+      LOG.trace("allocated vertex buffer: {}", vertex_buffer);
 
       /*
        * Populate vertex buffer by mapping the memory and writing to it. Closing the mapped
        * memory will automatically unmap it.
        */
 
-      try (var vertex_mapped = vma_allocator.mapMemory(vma_result.allocation())) {
+      try (var vertex_mapped = vma_allocator.mapMemory(vma_vertex_buffer_result.allocation())) {
         final var buffer = vertex_mapped.asByteBuffer();
-        buffer.putFloat(0, 0.0f);
-        buffer.putFloat(4, -0.5f);
-        buffer.putFloat(8, 1.0f);
-        buffer.putFloat(12, 0.0f);
-        buffer.putFloat(16, 0.0f);
 
-        buffer.putFloat(20, 0.5f);
-        buffer.putFloat(24, 0.5f);
-        buffer.putFloat(28, 0.0f);
-        buffer.putFloat(32, 1.0f);
-        buffer.putFloat(36, 0.0f);
+        final var v0 = VERTICES.get(0);
+        buffer.putFloat(0, (float) v0.x);
+        buffer.putFloat(4, (float) v0.y);
+        buffer.putFloat(8, (float) v0.r);
+        buffer.putFloat(12, (float) v0.g);
+        buffer.putFloat(16, (float) v0.b);
 
-        buffer.putFloat(40, -0.5f);
-        buffer.putFloat(44, 0.5f);
-        buffer.putFloat(48, 0.0f);
-        buffer.putFloat(52, 0.0f);
-        buffer.putFloat(56, 1.0f);
+        final var v1 = VERTICES.get(1);
+        buffer.putFloat(20, (float) v1.x);
+        buffer.putFloat(24, (float) v1.y);
+        buffer.putFloat(28, (float) v1.r);
+        buffer.putFloat(32, (float) v1.g);
+        buffer.putFloat(36, (float) v1.b);
+
+        final var v2 = VERTICES.get(2);
+        buffer.putFloat(40, (float) v2.x);
+        buffer.putFloat(44, (float) v2.y);
+        buffer.putFloat(48, (float) v2.r);
+        buffer.putFloat(52, (float) v2.g);
+        buffer.putFloat(56, (float) v2.b);
+      }
+
+      /*
+       * Create index buffer.
+       */
+
+      final var index_buffer_create_info =
+        VulkanBufferCreateInfo.builder()
+          .setSize(3L * 2L)
+          .addUsageFlags(VK_BUFFER_USAGE_INDEX_BUFFER_BIT)
+          .setSharingMode(VK_SHARING_MODE_EXCLUSIVE)
+          .build();
+
+      final var vma_index_buffer_result =
+        vma_allocator.createBuffer(vma_alloc_create_info, index_buffer_create_info);
+
+      final var index_buffer =
+        resources.add(vma_index_buffer_result.result());
+
+      LOG.trace("allocated index buffer: {}", index_buffer);
+
+      /*
+       * Populate index buffer by mapping the memory and writing to it. Closing the mapped
+       * memory will automatically unmap it.
+       */
+
+      try (var index_mapped = vma_allocator.mapMemory(vma_index_buffer_result.allocation())) {
+        final var buffer = index_mapped.asByteBuffer();
+        buffer.putShort(0, (short) 0);
+        buffer.putShort(2, (short) 1);
+        buffer.putShort(4, (short) 2);
       }
 
       /*
@@ -779,7 +846,8 @@ public final class HelloVulkanWithVMA
         graphics_command_buffer.bindPipeline(VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline);
         graphics_command_buffer.bindVertexBuffers(
           0, 1, List.of(vertex_buffer), List.of(Long.valueOf(0L)));
-        graphics_command_buffer.draw(3, 1, 0, 0);
+        graphics_command_buffer.bindIndexBuffer(index_buffer, 0L, VK_INDEX_TYPE_UINT16);
+        graphics_command_buffer.drawIndexed(3, 1, 0, 0, 0);
         graphics_command_buffer.endRenderPass();
         graphics_command_buffer.endCommandBuffer();
       }

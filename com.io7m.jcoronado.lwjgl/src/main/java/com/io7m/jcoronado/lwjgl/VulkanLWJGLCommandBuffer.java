@@ -21,6 +21,7 @@ import com.io7m.jcoronado.api.VulkanChecks;
 import com.io7m.jcoronado.api.VulkanCommandBufferBeginInfo;
 import com.io7m.jcoronado.api.VulkanCommandBufferType;
 import com.io7m.jcoronado.api.VulkanException;
+import com.io7m.jcoronado.api.VulkanIndexType;
 import com.io7m.jcoronado.api.VulkanPipelineBindPoint;
 import com.io7m.jcoronado.api.VulkanPipelineType;
 import com.io7m.jcoronado.api.VulkanRenderPassBeginInfo;
@@ -184,6 +185,22 @@ public final class VulkanLWJGLCommandBuffer
   }
 
   @Override
+  public void bindIndexBuffer(
+    final VulkanBufferType buffer,
+    final long offset,
+    final VulkanIndexType index_type)
+    throws VulkanException
+  {
+    Objects.requireNonNull(buffer, "buffer");
+    Objects.requireNonNull(index_type, "index_type");
+
+    final var cbuffer =
+      VulkanLWJGLClassChecks.check(buffer, VulkanLWJGLBuffer.class);
+
+    VK10.vkCmdBindIndexBuffer(this.handle, cbuffer.handle(), offset, index_type.value());
+  }
+
+  @Override
   public void draw(
     final int vertex_count,
     final int instance_count,
@@ -191,6 +208,23 @@ public final class VulkanLWJGLCommandBuffer
     final int first_instance)
   {
     VK10.vkCmdDraw(this.handle, vertex_count, instance_count, first_vertex, first_instance);
+  }
+
+  @Override
+  public void drawIndexed(
+    final int vertex_count,
+    final int instance_count,
+    final int first_vertex,
+    final int vertex_offset,
+    final int first_instance)
+  {
+    VK10.vkCmdDrawIndexed(
+      this.handle,
+      vertex_count,
+      instance_count,
+      first_vertex,
+      vertex_offset,
+      first_instance);
   }
 
   @Override

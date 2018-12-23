@@ -84,6 +84,23 @@ public interface VulkanCommandBufferType extends VulkanHandleDispatchableType
     throws VulkanException;
 
   /**
+   * Bind index buffer to a command buffer.
+   *
+   * @param buffer     The index buffer
+   * @param offset     The starting offset in bytes within buffer used in index buffer address
+   *                   calculations
+   * @param index_type The type of indices
+   *
+   * @throws VulkanException On errors
+   */
+
+  void bindIndexBuffer(
+    VulkanBufferType buffer,
+    long offset,
+    VulkanIndexType index_type)
+    throws VulkanException;
+
+  /**
    * Draw primitives.
    *
    * @param vertex_count   The number of vertices to draw.
@@ -98,6 +115,27 @@ public interface VulkanCommandBufferType extends VulkanHandleDispatchableType
     int vertex_count,
     int instance_count,
     int first_vertex,
+    int first_instance)
+    throws VulkanException;
+
+  /**
+   * Draw primitives using an index buffer.
+   *
+   * @param vertex_count   The number of vertices to draw.
+   * @param instance_count The number of instances to draw.
+   * @param first_vertex   The index of the first vertex to draw.
+   * @param vertex_offset  The value added to the vertex index before indexing into the vertex
+   *                       buffer.
+   * @param first_instance The instance ID of the first instance to draw.
+   *
+   * @throws VulkanException On errors
+   */
+
+  void drawIndexed(
+    int vertex_count,
+    int instance_count,
+    int first_vertex,
+    int vertex_offset,
     int first_instance)
     throws VulkanException;
 
