@@ -192,8 +192,7 @@ public interface VulkanPhysicalDeviceLimitsType
    * @return the maximum number of input attachments that can be included in descriptor bindings in
    * a pipeline layout across all pipeline shader stages and descriptor set numbers. Descriptors
    * with a type of VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT count against this limit. Only descriptors
-   * in descriptor set layouts created without the
-   * VK_DESCRIPTOR_SET_LAYOUT_CREATE_UPDATE_AFTER_BIND_POOL_BIT_EXT
+   * in descriptor set layouts created without the VK_DESCRIPTOR_SET_LAYOUT_CREATE_UPDATE_AFTER_BIND_POOL_BIT_EXT
    * bit set count against this limit.
    */
 
@@ -205,8 +204,7 @@ public interface VulkanPhysicalDeviceLimitsType
    * pipeline layout across all pipeline shader stages and descriptor set numbers. Descriptors with
    * a type of VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE, or
    * VK_DESCRIPTOR_TYPE_UNIFORM_TEXEL_BUFFER count against this limit. Only descriptors in
-   * descriptor set layouts created without the
-   * VK_DESCRIPTOR_SET_LAYOUT_CREATE_UPDATE_AFTER_BIND_POOL_BIT_EXT
+   * descriptor set layouts created without the VK_DESCRIPTOR_SET_LAYOUT_CREATE_UPDATE_AFTER_BIND_POOL_BIT_EXT
    * bit set count against this limit.
    */
 
@@ -229,8 +227,7 @@ public interface VulkanPhysicalDeviceLimitsType
    * @return the maximum number of dynamic storage buffers that can be included in descriptor
    * bindings in a pipeline layout across all pipeline shader stages and descriptor set numbers.
    * Descriptors with a type of VK_DESCRIPTOR_TYPE_STORAGE_BUFFER_DYNAMIC count against this limit.
-   * Only descriptors in descriptor set layouts created without the
-   * VK_DESCRIPTOR_SET_LAYOUT_CREATE_UPDATE_AFTER_BIND_POOL_BIT_EXT
+   * Only descriptors in descriptor set layouts created without the VK_DESCRIPTOR_SET_LAYOUT_CREATE_UPDATE_AFTER_BIND_POOL_BIT_EXT
    * bit set count against this limit.
    */
 
@@ -265,8 +262,7 @@ public interface VulkanPhysicalDeviceLimitsType
    * @return the maximum number of dynamic uniform buffers that can be included in descriptor
    * bindings in a pipeline layout across all pipeline shader stages and descriptor set numbers.
    * Descriptors with a type of VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC count against this limit.
-   * Only descriptors in descriptor set layouts created without the
-   * VK_DESCRIPTOR_SET_LAYOUT_CREATE_UPDATE_AFTER_BIND_POOL_BIT_EXT
+   * Only descriptors in descriptor set layouts created without the VK_DESCRIPTOR_SET_LAYOUT_CREATE_UPDATE_AFTER_BIND_POOL_BIT_EXT
    * bit set count against this limit.
    */
 

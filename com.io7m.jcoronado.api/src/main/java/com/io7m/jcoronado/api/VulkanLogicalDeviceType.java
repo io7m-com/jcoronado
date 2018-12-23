@@ -319,7 +319,7 @@ public interface VulkanLogicalDeviceType extends VulkanHandleDispatchableType
    */
 
   void resetFences(
-    List<VulkanFenceType> fences)
+    List<@VulkanExternallySynchronizedType VulkanFenceType> fences)
     throws VulkanException;
 
   /**
@@ -387,7 +387,7 @@ public interface VulkanLogicalDeviceType extends VulkanHandleDispatchableType
    */
 
   void bindBufferMemory(
-    VulkanBufferType buffer,
+    @VulkanExternallySynchronizedType VulkanBufferType buffer,
     VulkanDeviceMemoryType device_memory,
     long offset)
     throws VulkanException;
@@ -407,7 +407,7 @@ public interface VulkanLogicalDeviceType extends VulkanHandleDispatchableType
    */
 
   VulkanMappedMemoryType mapMemory(
-    VulkanDeviceMemoryType memory,
+    @VulkanExternallySynchronizedType VulkanDeviceMemoryType memory,
     long offset,
     long size,
     Set<VulkanMemoryMapFlag> flags)

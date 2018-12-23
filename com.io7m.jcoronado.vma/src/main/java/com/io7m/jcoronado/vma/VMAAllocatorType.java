@@ -28,16 +28,6 @@ import com.io7m.jcoronado.api.VulkanHandleDispatchableType;
 public interface VMAAllocatorType extends VulkanHandleDispatchableType
 {
   /**
-   * Destroy the allocator.
-   *
-   * @throws VulkanException On errors
-   */
-
-  @Override
-  void close()
-    throws VulkanException;
-
-  /**
    * Allocate a buffer.
    *
    * @param alloc_create_info  The allocation creation info

@@ -49,9 +49,10 @@ public interface VulkanQueueType extends VulkanHandleDispatchableType
    * @throws VulkanException On errors
    */
 
+  @VulkanExternallySynchronizedType
   void submit(
     List<VulkanSubmitInfo> submissions,
-    Optional<VulkanFenceType> fence)
+    @VulkanExternallySynchronizedType Optional<VulkanFenceType> fence)
     throws VulkanException;
 
   /**
@@ -60,6 +61,7 @@ public interface VulkanQueueType extends VulkanHandleDispatchableType
    * @throws VulkanException On errors
    */
 
+  @VulkanExternallySynchronizedType
   void waitIdle()
     throws VulkanException;
 

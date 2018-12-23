@@ -32,6 +32,7 @@ public interface VulkanCommandBufferType extends VulkanHandleDispatchableType
    * @throws VulkanException On errors
    */
 
+  @VulkanExternallySynchronizedType
   void beginCommandBuffer(
     VulkanCommandBufferBeginInfo info)
     throws VulkanException;
@@ -45,6 +46,7 @@ public interface VulkanCommandBufferType extends VulkanHandleDispatchableType
    * @throws VulkanException On errors
    */
 
+  @VulkanExternallySynchronizedType
   void beginRenderPass(
     VulkanRenderPassBeginInfo info,
     VulkanSubpassContents contents)
@@ -59,6 +61,7 @@ public interface VulkanCommandBufferType extends VulkanHandleDispatchableType
    * @throws VulkanException On errors
    */
 
+  @VulkanExternallySynchronizedType
   void bindPipeline(
     VulkanPipelineBindPoint bind_point,
     VulkanPipelineType pipeline)
@@ -76,6 +79,7 @@ public interface VulkanCommandBufferType extends VulkanHandleDispatchableType
    * @throws VulkanException On errors
    */
 
+  @VulkanExternallySynchronizedType
   void bindVertexBuffers(
     int first_binding,
     int binding_count,
@@ -94,6 +98,7 @@ public interface VulkanCommandBufferType extends VulkanHandleDispatchableType
    * @throws VulkanException On errors
    */
 
+  @VulkanExternallySynchronizedType
   void bindIndexBuffer(
     VulkanBufferType buffer,
     long offset,
@@ -111,6 +116,7 @@ public interface VulkanCommandBufferType extends VulkanHandleDispatchableType
    * @throws VulkanException On errors
    */
 
+  @VulkanExternallySynchronizedType
   void draw(
     int vertex_count,
     int instance_count,
@@ -131,6 +137,7 @@ public interface VulkanCommandBufferType extends VulkanHandleDispatchableType
    * @throws VulkanException On errors
    */
 
+  @VulkanExternallySynchronizedType
   void drawIndexed(
     int vertex_count,
     int instance_count,
@@ -145,6 +152,7 @@ public interface VulkanCommandBufferType extends VulkanHandleDispatchableType
    * @throws VulkanException On errors
    */
 
+  @VulkanExternallySynchronizedType
   void endRenderPass()
     throws VulkanException;
 
@@ -154,6 +162,7 @@ public interface VulkanCommandBufferType extends VulkanHandleDispatchableType
    * @throws VulkanException On errors
    */
 
+  @VulkanExternallySynchronizedType
   void endCommandBuffer()
     throws VulkanException;
 }

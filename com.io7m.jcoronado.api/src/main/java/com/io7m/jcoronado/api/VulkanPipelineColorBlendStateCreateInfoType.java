@@ -41,7 +41,6 @@ public interface VulkanPipelineColorBlendStateCreateInfoType
   Optional<VulkanLogicOp> logicOp();
 
   /**
-   *
    * @return The creation flags
    */
 

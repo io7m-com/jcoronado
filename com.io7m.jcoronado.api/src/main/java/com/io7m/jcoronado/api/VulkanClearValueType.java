@@ -28,6 +28,12 @@ import org.immutables.value.Value;
 public interface VulkanClearValueType
 {
   /**
+   * @return The type of value
+   */
+
+  Type type();
+
+  /**
    * The actual type of clea value.
    */
 
@@ -57,12 +63,6 @@ public interface VulkanClearValueType
 
     COLOR_FLOATING_POINT
   }
-
-  /**
-   * @return The type of value
-   */
-
-  Type type();
 
   /**
    * A depth/stencil value.

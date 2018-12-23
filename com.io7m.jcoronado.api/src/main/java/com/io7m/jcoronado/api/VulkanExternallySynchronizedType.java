@@ -16,20 +16,27 @@
 
 package com.io7m.jcoronado.api;
 
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Target;
+
 /**
- * The base type of Vulkan handles.
+ * An annotation that indicates that external synchronization is required.
+ *
+ * If applied to a method, this indicates that the method needs external synchronization.
+ *
+ * If applied to a method parameter, this indicates that the parameter needs external
+ * synchronization.
+ *
+ * @see "Vulkan: A Specification 1.0, Section 2.6 - Threading Behavior"
  */
 
-public interface VulkanHandleType extends AutoCloseable
+@Target({
+  ElementType.PARAMETER,
+  ElementType.TYPE_PARAMETER,
+  ElementType.METHOD,
+  ElementType.TYPE_USE
+})
+public @interface VulkanExternallySynchronizedType
 {
-  /**
-   * Destroy the object.
-   *
-   * @throws VulkanException On errors
-   */
-
-  @VulkanExternallySynchronizedType
-  @Override
-  void close()
-    throws VulkanException;
+  // No extra data
 }
