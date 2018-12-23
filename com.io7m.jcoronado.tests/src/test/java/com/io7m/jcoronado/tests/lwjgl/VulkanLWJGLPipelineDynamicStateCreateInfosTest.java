@@ -17,6 +17,7 @@
 package com.io7m.jcoronado.tests.lwjgl;
 
 import com.io7m.jcoronado.api.VulkanDynamicState;
+import com.io7m.jcoronado.api.VulkanException;
 import com.io7m.jcoronado.api.VulkanPipelineDynamicStateCreateInfo;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLPipelineDynamicStateCreateInfos;
 import org.junit.jupiter.api.Assertions;
@@ -49,6 +50,7 @@ public final class VulkanLWJGLPipelineDynamicStateCreateInfosTest
 
   @Test
   public void testPipelineDynamicStateCreateInfo()
+    throws VulkanException
   {
     final var info =
       VulkanPipelineDynamicStateCreateInfo.builder()

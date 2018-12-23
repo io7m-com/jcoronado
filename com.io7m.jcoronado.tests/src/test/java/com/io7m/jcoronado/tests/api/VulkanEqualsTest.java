@@ -20,6 +20,16 @@ import com.io7m.jcoronado.api.VulkanApplicationInfo;
 import com.io7m.jcoronado.api.VulkanAttachmentDescription;
 import com.io7m.jcoronado.api.VulkanAttachmentReference;
 import com.io7m.jcoronado.api.VulkanBlendConstants;
+import com.io7m.jcoronado.api.VulkanClearValueColorFloatingPoint;
+import com.io7m.jcoronado.api.VulkanClearValueColorIntegerSigned;
+import com.io7m.jcoronado.api.VulkanClearValueColorIntegerUnsigned;
+import com.io7m.jcoronado.api.VulkanClearValueDepthStencil;
+import com.io7m.jcoronado.api.VulkanComputeWorkGroupCount;
+import com.io7m.jcoronado.api.VulkanComputeWorkGroupSize;
+import com.io7m.jcoronado.api.VulkanDescriptorPoolCreateInfo;
+import com.io7m.jcoronado.api.VulkanDescriptorPoolSize;
+import com.io7m.jcoronado.api.VulkanDescriptorSetLayoutBinding;
+import com.io7m.jcoronado.api.VulkanDescriptorSetLayoutCreateInfo;
 import com.io7m.jcoronado.api.VulkanExtensionProperties;
 import com.io7m.jcoronado.api.VulkanExtent2D;
 import com.io7m.jcoronado.api.VulkanExtent3D;
@@ -333,6 +343,85 @@ public final class VulkanEqualsTest
         "waitStageMasks",
         "commandBuffers",
         "signalSemaphores")
+      .verify();
+  }
+
+  @Test
+  public void testDescriptorSetLayoutCreateInfo()
+  {
+    EqualsVerifier.forClass(VulkanDescriptorSetLayoutCreateInfo.class)
+      .withNonnullFields(
+        "flags",
+        "bindings")
+      .verify();
+  }
+
+  @Test
+  public void testDescriptorSetLayoutBinding()
+  {
+    EqualsVerifier.forClass(VulkanDescriptorSetLayoutBinding.class)
+      .withNonnullFields(
+        "descriptorType",
+        "stageFlags",
+        "immutableSamplers")
+      .verify();
+  }
+
+  @Test
+  public void testDescriptorPoolCreateInfo()
+  {
+    EqualsVerifier.forClass(VulkanDescriptorPoolCreateInfo.class)
+      .withNonnullFields("flags", "poolSizes")
+      .verify();
+  }
+
+  @Test
+  public void testDescriptorPoolSize()
+  {
+    EqualsVerifier.forClass(VulkanDescriptorPoolSize.class)
+      .withNonnullFields("type")
+      .verify();
+  }
+
+  @Test
+  public void testClearValueColorFloatingPoint()
+  {
+    EqualsVerifier.forClass(VulkanClearValueColorFloatingPoint.class)
+      .verify();
+  }
+
+  @Test
+  public void testClearValueColorIntegerUnsigned()
+  {
+    EqualsVerifier.forClass(VulkanClearValueColorIntegerUnsigned.class)
+      .verify();
+  }
+
+  @Test
+  public void testClearValueColorIntegerSigned()
+  {
+    EqualsVerifier.forClass(VulkanClearValueColorIntegerSigned.class)
+      .verify();
+  }
+
+  @Test
+  public void testClearValueDepthStencil()
+  {
+    EqualsVerifier.forClass(VulkanClearValueDepthStencil.class)
+      .verify();
+  }
+
+  @Test
+  public void testComputeWorkGroupCount()
+  {
+    EqualsVerifier.forClass(VulkanComputeWorkGroupCount.class)
+      .verify();
+  }
+
+  @Test
+  public void testComputeWorkGroupSize()
+  {
+    EqualsVerifier.forClass(VulkanComputeWorkGroupSize.class)
       .verify();
   }
 }

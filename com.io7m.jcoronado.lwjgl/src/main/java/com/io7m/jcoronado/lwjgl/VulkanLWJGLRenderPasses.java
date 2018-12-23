@@ -18,6 +18,7 @@ package com.io7m.jcoronado.lwjgl;
 
 import com.io7m.jcoronado.api.VulkanAttachmentReference;
 import com.io7m.jcoronado.api.VulkanEnumMaps;
+import com.io7m.jcoronado.api.VulkanException;
 import com.io7m.jcoronado.api.VulkanRenderPassCreateInfo;
 import com.io7m.jcoronado.api.VulkanSubpassDescription;
 import org.lwjgl.system.MemoryStack;
@@ -47,11 +48,14 @@ public final class VulkanLWJGLRenderPasses
    * @param info  An info structure
    *
    * @return A packed structure
+   *
+   * @throws VulkanException On errors
    */
 
   public static VkRenderPassCreateInfo packRenderPassCreateInfo(
     final MemoryStack stack,
     final VulkanRenderPassCreateInfo info)
+    throws VulkanException
   {
     Objects.requireNonNull(stack, "stack");
     Objects.requireNonNull(info, "info");
@@ -68,6 +72,7 @@ public final class VulkanLWJGLRenderPasses
   private static VkSubpassDescription.Buffer packSubpasses(
     final MemoryStack stack,
     final List<VulkanSubpassDescription> subpasses)
+    throws VulkanException
   {
     final var buffer =
       VkSubpassDescription.mallocStack(subpasses.size(), stack);
@@ -121,6 +126,7 @@ public final class VulkanLWJGLRenderPasses
     final MemoryStack stack,
     final VkSubpassDescription.Buffer buffer,
     final List<Integer> preserve)
+    throws VulkanException
   {
     if (preserve.size() > 0) {
       buffer.pPreserveAttachments(packPreserveAttachments(stack, preserve));
@@ -160,11 +166,8 @@ public final class VulkanLWJGLRenderPasses
   private static IntBuffer packPreserveAttachments(
     final MemoryStack stack,
     final List<Integer> integers)
+    throws VulkanException
   {
-    final var buffer = stack.mallocInt(integers.size());
-    for (var index = 0; index < integers.size(); ++index) {
-      buffer.put(index, integers.get(index).intValue());
-    }
-    return buffer;
+    return VulkanLWJGLIntegerArrays.packIntsOrNull(stack, integers, Integer::intValue);
   }
 }

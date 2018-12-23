@@ -23,6 +23,12 @@ import com.io7m.jcoronado.api.VulkanCommandBufferCreateInfo;
 import com.io7m.jcoronado.api.VulkanCommandBufferType;
 import com.io7m.jcoronado.api.VulkanCommandPoolCreateInfo;
 import com.io7m.jcoronado.api.VulkanCommandPoolType;
+import com.io7m.jcoronado.api.VulkanDescriptorPoolCreateInfo;
+import com.io7m.jcoronado.api.VulkanDescriptorPoolType;
+import com.io7m.jcoronado.api.VulkanDescriptorSetAllocateInfo;
+import com.io7m.jcoronado.api.VulkanDescriptorSetLayoutCreateInfo;
+import com.io7m.jcoronado.api.VulkanDescriptorSetLayoutType;
+import com.io7m.jcoronado.api.VulkanDescriptorSetType;
 import com.io7m.jcoronado.api.VulkanDestroyedException;
 import com.io7m.jcoronado.api.VulkanDeviceMemoryType;
 import com.io7m.jcoronado.api.VulkanEnumMaps;
@@ -326,6 +332,111 @@ public final class VulkanLWJGLLogicalDevice
         this.device,
         layout_handle,
         this.hostAllocatorProxy());
+    }
+  }
+
+  @Override
+  public VulkanDescriptorSetLayoutType createDescriptorSetLayout(
+    final VulkanDescriptorSetLayoutCreateInfo info)
+    throws VulkanException
+  {
+    Objects.requireNonNull(info, "info");
+
+    this.checkNotClosed();
+
+    try (var stack = this.stack_initial.push()) {
+      final var create_info =
+        VulkanLWJGLDescriptorSetLayouts.packDescriptorSetLayoutCreateInfo(stack, info);
+
+      final var layout = new long[1];
+      VulkanChecks.checkReturnCode(
+        VK10.vkCreateDescriptorSetLayout(
+          this.device,
+          create_info,
+          this.hostAllocatorProxy().callbackBuffer(),
+          layout),
+        "vkCreateDescriptorSetLayout");
+
+      final var layout_handle = layout[0];
+      if (LOG.isTraceEnabled()) {
+        LOG.trace("created descriptor set layout: 0x{}", Long.toUnsignedString(layout_handle, 16));
+      }
+
+      return new VulkanLWJGLDescriptorSetLayout(
+        this.device,
+        layout_handle,
+        this.hostAllocatorProxy());
+    }
+  }
+
+  @Override
+  public VulkanDescriptorPoolType createDescriptorPool(
+    final VulkanDescriptorPoolCreateInfo info)
+    throws VulkanException
+  {
+    Objects.requireNonNull(info, "info");
+
+    this.checkNotClosed();
+
+    try (var stack = this.stack_initial.push()) {
+      final var create_info =
+        VulkanLWJGLDescriptorPoolCreateInfos.packDescriptorPoolCreateInfo(stack, info);
+
+      final var layout = new long[1];
+      VulkanChecks.checkReturnCode(
+        VK10.vkCreateDescriptorPool(
+          this.device,
+          create_info,
+          this.hostAllocatorProxy().callbackBuffer(),
+          layout),
+        "vkCreateDescriptorPool");
+
+      final var layout_handle = layout[0];
+      if (LOG.isTraceEnabled()) {
+        LOG.trace("created descriptor pool: 0x{}", Long.toUnsignedString(layout_handle, 16));
+      }
+
+      return new VulkanLWJGLDescriptorPool(
+        USER_OWNED,
+        this.device,
+        layout_handle,
+        this.hostAllocatorProxy());
+    }
+  }
+
+  @Override
+  public List<VulkanDescriptorSetType> allocateDescriptorSets(
+    final VulkanDescriptorSetAllocateInfo info)
+    throws VulkanException
+  {
+    Objects.requireNonNull(info, "info");
+
+    this.checkNotClosed();
+
+    try (var stack = this.stack_initial.push()) {
+      final var alloc_info =
+        VulkanLWJGLDescriptorSetAllocateInfos.packDescriptorSetAllocateInfo(stack, info);
+
+      final var count = info.setLayouts().size();
+      final var handles = stack.mallocLong(count);
+
+      VulkanChecks.checkReturnCode(
+        VK10.vkAllocateDescriptorSets(
+          this.device,
+          alloc_info,
+          handles),
+        "vkAllocateDescriptorSets");
+
+      if (LOG.isTraceEnabled()) {
+        LOG.trace("allocated {} descriptor sets", Integer.valueOf(count));
+      }
+
+      final ArrayList<VulkanDescriptorSetType> results = new ArrayList<>(count);
+      for (var index = 0; index < count; ++index) {
+        results.add(new VulkanLWJGLDescriptorSet(
+          this.device, handles.get(index), this.hostAllocatorProxy()));
+      }
+      return results;
     }
   }
 

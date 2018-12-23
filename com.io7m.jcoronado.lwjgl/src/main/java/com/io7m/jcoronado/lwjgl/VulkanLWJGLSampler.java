@@ -16,7 +16,7 @@
 
 package com.io7m.jcoronado.lwjgl;
 
-import com.io7m.jcoronado.api.VulkanDescriptorSetLayoutType;
+import com.io7m.jcoronado.api.VulkanSamplerType;
 import org.lwjgl.vulkan.VK10;
 import org.lwjgl.vulkan.VkDevice;
 import org.slf4j.Logger;
@@ -25,23 +25,23 @@ import org.slf4j.LoggerFactory;
 import java.util.Objects;
 
 /**
- * LWJGL {@code VkDescriptorSetLayout}
+ * A sampler.
  */
 
-public final class VulkanLWJGLDescriptorSetLayout
-  extends VulkanLWJGLHandle implements VulkanDescriptorSetLayoutType
+public final class VulkanLWJGLSampler extends VulkanLWJGLHandle implements VulkanSamplerType
 {
-  private static final Logger LOG = LoggerFactory.getLogger(VulkanLWJGLDescriptorSetLayout.class);
+  private static final Logger LOG = LoggerFactory.getLogger(VulkanLWJGLSampler.class);
 
   private final long handle;
   private final VkDevice device;
 
-  VulkanLWJGLDescriptorSetLayout(
+  VulkanLWJGLSampler(
+    final Ownership ownership,
     final VkDevice in_device,
     final long in_handle,
     final VulkanLWJGLHostAllocatorProxy in_host_allocator_proxy)
   {
-    super(Ownership.USER_OWNED, in_host_allocator_proxy);
+    super(ownership, in_host_allocator_proxy);
     this.device = Objects.requireNonNull(in_device, "device");
     this.handle = in_handle;
   }
@@ -55,7 +55,7 @@ public final class VulkanLWJGLDescriptorSetLayout
     if (o == null || !Objects.equals(this.getClass(), o.getClass())) {
       return false;
     }
-    final var that = (VulkanLWJGLDescriptorSetLayout) o;
+    final var that = (VulkanLWJGLSampler) o;
     return this.handle == that.handle;
   }
 
@@ -69,7 +69,7 @@ public final class VulkanLWJGLDescriptorSetLayout
   public String toString()
   {
     return new StringBuilder(32)
-      .append("[VulkanLWJGLDescriptorSetLayout 0x")
+      .append("[VulkanLWJGLSampler 0x")
       .append(Long.toUnsignedString(this.handle, 16))
       .append("]")
       .toString();
@@ -85,10 +85,9 @@ public final class VulkanLWJGLDescriptorSetLayout
   protected void closeActual()
   {
     if (LOG.isTraceEnabled()) {
-      LOG.trace("destroying descriptor set layout: {}", this);
+      LOG.trace("destroying sampler: {}", this);
     }
-    VK10.vkDestroyDescriptorSetLayout(
-      this.device, this.handle, this.hostAllocatorProxy().callbackBuffer());
+    VK10.vkDestroySampler(this.device, this.handle, this.hostAllocatorProxy().callbackBuffer());
   }
 
   /**

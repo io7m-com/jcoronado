@@ -21,20 +21,28 @@
       <Class name="com.io7m.jcoronado.api.VulkanAttachmentReference"/>
       <Class name="com.io7m.jcoronado.api.VulkanBlendConstants"/>
       <Class name="com.io7m.jcoronado.api.VulkanBufferCreateInfo"/>
-      <Class name="com.io7m.jcoronado.api.VulkanClearValueDepthStencil"/>
       <Class name="com.io7m.jcoronado.api.VulkanClearValueColorFloatingPoint"/>
       <Class name="com.io7m.jcoronado.api.VulkanClearValueColorIntegerSigned"/>
       <Class name="com.io7m.jcoronado.api.VulkanClearValueColorIntegerUnsigned"/>
+      <Class name="com.io7m.jcoronado.api.VulkanClearValueDepthStencil"/>
+      <Class name="com.io7m.jcoronado.api.VulkanCommandBufferBeginInfo"/>
       <Class name="com.io7m.jcoronado.api.VulkanCommandBufferCreateInfo"/>
       <Class name="com.io7m.jcoronado.api.VulkanCommandPoolCreateInfo"/>
       <Class name="com.io7m.jcoronado.api.VulkanComponentMapping"/>
       <Class name="com.io7m.jcoronado.api.VulkanComputeWorkGroupCount"/>
       <Class name="com.io7m.jcoronado.api.VulkanComputeWorkGroupSize"/>
+      <Class name="com.io7m.jcoronado.api.VulkanDescriptorPoolCreateInfo"/>
+      <Class name="com.io7m.jcoronado.api.VulkanDescriptorPoolSize"/>
+      <Class name="com.io7m.jcoronado.api.VulkanDescriptorSetAllocateInfo"/>
+      <Class name="com.io7m.jcoronado.api.VulkanDescriptorSetLayoutBinding"/>
+      <Class name="com.io7m.jcoronado.api.VulkanDescriptorSetLayoutCreateInfo"/>
       <Class name="com.io7m.jcoronado.api.VulkanExtensionProperties"/>
       <Class name="com.io7m.jcoronado.api.VulkanExtent2D"/>
       <Class name="com.io7m.jcoronado.api.VulkanExtent3D"/>
+      <Class name="com.io7m.jcoronado.api.VulkanFenceCreateInfo"/>
       <Class name="com.io7m.jcoronado.api.VulkanFramebufferCreateInfo"/>
       <Class name="com.io7m.jcoronado.api.VulkanGraphicsPipelineCreateInfo"/>
+      <Class name="com.io7m.jcoronado.api.VulkanHostAllocatorCallbacks"/>
       <Class name="com.io7m.jcoronado.api.VulkanImageSubresourceRange"/>
       <Class name="com.io7m.jcoronado.api.VulkanImageViewCreateInfo"/>
       <Class name="com.io7m.jcoronado.api.VulkanInstanceCreateInfo"/>
@@ -42,7 +50,9 @@
       <Class name="com.io7m.jcoronado.api.VulkanLineWidthRange"/>
       <Class name="com.io7m.jcoronado.api.VulkanLogicalDeviceCreateInfo"/>
       <Class name="com.io7m.jcoronado.api.VulkanLogicalDeviceQueueCreateInfo"/>
+      <Class name="com.io7m.jcoronado.api.VulkanMemoryAllocateInfo"/>
       <Class name="com.io7m.jcoronado.api.VulkanMemoryHeap"/>
+      <Class name="com.io7m.jcoronado.api.VulkanMemoryRequirements"/>
       <Class name="com.io7m.jcoronado.api.VulkanMemoryType"/>
       <Class name="com.io7m.jcoronado.api.VulkanOffset2D"/>
       <Class name="com.io7m.jcoronado.api.VulkanOffset3D"/>
@@ -66,7 +76,9 @@
       <Class name="com.io7m.jcoronado.api.VulkanPushConstantRange"/>
       <Class name="com.io7m.jcoronado.api.VulkanQueueFamilyProperties"/>
       <Class name="com.io7m.jcoronado.api.VulkanRectangle2D"/>
+      <Class name="com.io7m.jcoronado.api.VulkanRenderPassBeginInfo"/>
       <Class name="com.io7m.jcoronado.api.VulkanRenderPassCreateInfo"/>
+      <Class name="com.io7m.jcoronado.api.VulkanSemaphoreCreateInfo"/>
       <Class name="com.io7m.jcoronado.api.VulkanShaderModuleCreateInfo"/>
       <Class name="com.io7m.jcoronado.api.VulkanSpecializationMap"/>
       <Class name="com.io7m.jcoronado.api.VulkanSpecializationMapEntry"/>
@@ -122,6 +134,14 @@
     <And>
       <Class name="com.io7m.jcoronado.lwjgl.VulkanLWJGLLogicalDevice"/>
       <Method name="createFramebuffer"/>
+      <Bug pattern="LEST_LOST_EXCEPTION_STACK_TRACE"/>
+    </And>
+  </Match>
+
+  <Match>
+    <And>
+      <Class name="com.io7m.jcoronado.lwjgl.VulkanLWJGLPipelineDynamicStateCreateInfos"/>
+      <Method name="packOptional"/>
       <Bug pattern="LEST_LOST_EXCEPTION_STACK_TRACE"/>
     </And>
   </Match>

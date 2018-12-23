@@ -17,6 +17,7 @@
 package com.io7m.jcoronado.lwjgl;
 
 import com.io7m.jcoronado.api.VulkanCommandBufferType;
+import com.io7m.jcoronado.api.VulkanException;
 import com.io7m.jcoronado.api.VulkanIncompatibleClassException;
 import com.io7m.jcoronado.api.VulkanPipelineStageFlag;
 import com.io7m.jcoronado.api.VulkanSemaphoreType;
@@ -50,13 +51,14 @@ public final class VulkanLWJGLSubmitInfos
    * @param buffer A buffer
    *
    * @throws VulkanIncompatibleClassException On incompatible classes
+   * @throws VulkanException                  On errors
    */
 
   public static void packInfos(
     final MemoryStack stack,
     final List<VulkanSubmitInfo> infos,
     final VkSubmitInfo.Buffer buffer)
-    throws VulkanIncompatibleClassException
+    throws VulkanException
   {
     Objects.requireNonNull(stack, "stack");
     Objects.requireNonNull(infos, "info");
@@ -79,42 +81,33 @@ public final class VulkanLWJGLSubmitInfos
   private static IntBuffer packWaitStages(
     final MemoryStack stack,
     final List<VulkanPipelineStageFlag> stages)
+    throws VulkanException
   {
-    final var count = stages.size();
-    final var output_buffer = stack.mallocInt(count);
-    for (var index = 0; index < count; ++index) {
-      output_buffer.put(index, stages.get(index).value());
-    }
-    return output_buffer;
+    return VulkanLWJGLIntegerArrays.packIntsOrNull(stack, stages, VulkanPipelineStageFlag::value);
   }
 
   private static LongBuffer packSemaphores(
     final MemoryStack stack,
     final List<VulkanSemaphoreType> semaphores)
-    throws VulkanIncompatibleClassException
+    throws VulkanException
   {
-    final var count = semaphores.size();
-    final var output_buffer = stack.mallocLong(count);
-    for (var index = 0; index < count; ++index) {
-      final var semaphore =
-        VulkanLWJGLClassChecks.check(semaphores.get(index), VulkanLWJGLSemaphore.class);
-      output_buffer.put(index, semaphore.handle());
-    }
-    return output_buffer;
+    return VulkanLWJGLIntegerArrays.packLongsOrNull(
+      stack,
+      semaphores,
+      semaphore -> VulkanLWJGLClassChecks.check(semaphore, VulkanLWJGLSemaphore.class).handle());
   }
 
   private static PointerBuffer packCommandBuffers(
     final MemoryStack stack,
     final List<VulkanCommandBufferType> command_buffers)
-    throws VulkanIncompatibleClassException
+    throws VulkanException
   {
-    final var command_buffer_count = command_buffers.size();
-    final var output_buffer = stack.mallocPointer(command_buffer_count);
-    for (var index = 0; index < command_buffer_count; ++index) {
-      final var command_buffer =
-        VulkanLWJGLClassChecks.check(command_buffers.get(index), VulkanLWJGLCommandBuffer.class);
-      output_buffer.put(index, command_buffer.handle().address());
-    }
-    return output_buffer;
+    return VulkanLWJGLIntegerArrays.packPointersOrNull(
+      stack,
+      command_buffers,
+      command_buffer ->
+        VulkanLWJGLClassChecks.check(command_buffer, VulkanLWJGLCommandBuffer.class)
+          .handle()
+          .address());
   }
 }

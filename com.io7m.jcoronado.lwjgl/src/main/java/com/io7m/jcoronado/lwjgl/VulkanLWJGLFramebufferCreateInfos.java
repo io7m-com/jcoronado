@@ -17,12 +17,12 @@
 package com.io7m.jcoronado.lwjgl;
 
 import com.io7m.jcoronado.api.VulkanEnumMaps;
+import com.io7m.jcoronado.api.VulkanException;
 import com.io7m.jcoronado.api.VulkanFramebufferCreateInfo;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.vulkan.VK10;
 import org.lwjgl.vulkan.VkFramebufferCreateInfo;
 
-import java.nio.LongBuffer;
 import java.util.List;
 import java.util.Objects;
 
@@ -46,6 +46,8 @@ public final class VulkanLWJGLFramebufferCreateInfos
    * @param pass  A render pass
    *
    * @return A packed structure
+   *
+   * @throws VulkanException On errors
    */
 
   public static VkFramebufferCreateInfo pack(
@@ -53,6 +55,7 @@ public final class VulkanLWJGLFramebufferCreateInfos
     final VulkanFramebufferCreateInfo info,
     final List<VulkanLWJGLImageView> views,
     final VulkanLWJGLRenderPass pass)
+    throws VulkanException
   {
     Objects.requireNonNull(stack, "stack");
     Objects.requireNonNull(info, "create_info");
@@ -64,21 +67,12 @@ public final class VulkanLWJGLFramebufferCreateInfos
       .pNext(0L)
       .flags(VulkanEnumMaps.packValues(info.flags()))
       .renderPass(pass.handle())
-      .pAttachments(packAttachments(stack, views))
+      .pAttachments(VulkanLWJGLIntegerArrays.packLongsOrNull(
+        stack,
+        views,
+        VulkanLWJGLImageView::handle))
       .height(info.height())
       .width(info.width())
       .layers(info.layers());
-  }
-
-  private static LongBuffer packAttachments(
-    final MemoryStack stack,
-    final List<VulkanLWJGLImageView> views)
-  {
-    final var buffer = stack.mallocLong(views.size());
-    for (var index = 0; index < views.size(); ++index) {
-      final var view = views.get(index);
-      buffer.put(index, view.handle());
-    }
-    return buffer;
   }
 }

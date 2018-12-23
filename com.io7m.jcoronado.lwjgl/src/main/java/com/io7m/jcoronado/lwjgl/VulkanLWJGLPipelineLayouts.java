@@ -18,6 +18,7 @@ package com.io7m.jcoronado.lwjgl;
 
 import com.io7m.jcoronado.api.VulkanDescriptorSetLayoutType;
 import com.io7m.jcoronado.api.VulkanEnumMaps;
+import com.io7m.jcoronado.api.VulkanException;
 import com.io7m.jcoronado.api.VulkanIncompatibleClassException;
 import com.io7m.jcoronado.api.VulkanPipelineLayoutCreateInfo;
 import com.io7m.jcoronado.api.VulkanPushConstantRange;
@@ -73,12 +74,13 @@ public final class VulkanLWJGLPipelineLayouts
    * @return A packed structure
    *
    * @throws VulkanIncompatibleClassException If an incompatible class is specified
+   * @throws VulkanException                  On errors
    */
 
   public static VkPipelineLayoutCreateInfo packPipelineLayoutCreateInfo(
     final MemoryStack stack,
     final VulkanPipelineLayoutCreateInfo info)
-    throws VulkanIncompatibleClassException
+    throws VulkanException
   {
     Objects.requireNonNull(stack, "stack");
     Objects.requireNonNull(info, "info");
@@ -92,7 +94,7 @@ public final class VulkanLWJGLPipelineLayouts
     final MemoryStack stack,
     final VulkanPipelineLayoutCreateInfo info,
     final VkPipelineLayoutCreateInfo buffer)
-    throws VulkanIncompatibleClassException
+    throws VulkanException
   {
     return buffer
       .sType(VK10.VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO)
@@ -105,19 +107,13 @@ public final class VulkanLWJGLPipelineLayouts
   private static LongBuffer packSetLayouts(
     final MemoryStack stack,
     final List<VulkanDescriptorSetLayoutType> layouts)
-    throws VulkanIncompatibleClassException
+    throws VulkanException
   {
-    final var count = layouts.size();
-    if (count == 0) {
-      return null;
-    }
-
-    final var buffer = stack.mallocLong(count);
-    for (var index = 0; index < count; ++index) {
-      final var layout =
-        VulkanLWJGLClassChecks.check(layouts.get(index), VulkanLWJGLDescriptorSetLayout.class);
-      buffer.put(index, layout.handle());
-    }
-    return buffer;
+    return VulkanLWJGLIntegerArrays.packLongsOrNull(
+      stack,
+      layouts,
+      layout -> VulkanLWJGLClassChecks.check(
+        layout,
+        VulkanLWJGLDescriptorSetLayout.class).handle());
   }
 }

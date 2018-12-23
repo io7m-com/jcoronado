@@ -21,6 +21,7 @@ import com.io7m.jcoronado.api.VulkanAttachmentDescription;
 import com.io7m.jcoronado.api.VulkanAttachmentDescriptionFlag;
 import com.io7m.jcoronado.api.VulkanAttachmentReference;
 import com.io7m.jcoronado.api.VulkanDependencyFlag;
+import com.io7m.jcoronado.api.VulkanException;
 import com.io7m.jcoronado.api.VulkanPipelineStageFlag;
 import com.io7m.jcoronado.api.VulkanRenderPassCreateFlag;
 import com.io7m.jcoronado.api.VulkanRenderPassCreateInfo;
@@ -63,6 +64,7 @@ public final class VulkanLWJGLRenderPassesTest
 
   @Test
   public void testPackRenderPassCreateInfo()
+    throws VulkanException
   {
     final var subpass_dependency =
       VulkanSubpassDependency.builder()

@@ -153,6 +153,48 @@ public interface VulkanLogicalDeviceType extends VulkanHandleDispatchableType
     throws VulkanException;
 
   /**
+   * Create a descriptor set layout.
+   *
+   * @param info The descriptor set layout creation info
+   *
+   * @return A descriptor set layout
+   *
+   * @throws VulkanException On errors
+   */
+
+  VulkanDescriptorSetLayoutType createDescriptorSetLayout(
+    VulkanDescriptorSetLayoutCreateInfo info)
+    throws VulkanException;
+
+  /**
+   * Create a descriptor pool.
+   *
+   * @param info The descriptor pool creation info
+   *
+   * @return A descriptor pool
+   *
+   * @throws VulkanException On errors
+   */
+
+  VulkanDescriptorPoolType createDescriptorPool(
+    VulkanDescriptorPoolCreateInfo info)
+    throws VulkanException;
+
+  /**
+   * Allocate descriptor sets.
+   *
+   * @param info The descriptor set allocation info
+   *
+   * @return A list of descriptor sets
+   *
+   * @throws VulkanException On errors
+   */
+
+  List<VulkanDescriptorSetType> allocateDescriptorSets(
+    VulkanDescriptorSetAllocateInfo info)
+    throws VulkanException;
+
+  /**
    * Create a render pass.
    *
    * @param render_pass_create_info The render pass creation info
@@ -370,4 +412,5 @@ public interface VulkanLogicalDeviceType extends VulkanHandleDispatchableType
     long size,
     Set<VulkanMemoryMapFlag> flags)
     throws VulkanException;
+
 }

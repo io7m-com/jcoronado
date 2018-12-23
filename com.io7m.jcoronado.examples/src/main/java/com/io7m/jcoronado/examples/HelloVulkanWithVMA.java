@@ -27,6 +27,12 @@ import com.io7m.jcoronado.api.VulkanCommandBufferCreateInfo;
 import com.io7m.jcoronado.api.VulkanCommandBufferType;
 import com.io7m.jcoronado.api.VulkanCommandPoolCreateInfo;
 import com.io7m.jcoronado.api.VulkanComponentMapping;
+import com.io7m.jcoronado.api.VulkanDescriptorPoolCreateInfo;
+import com.io7m.jcoronado.api.VulkanDescriptorPoolSize;
+import com.io7m.jcoronado.api.VulkanDescriptorSetAllocateInfo;
+import com.io7m.jcoronado.api.VulkanDescriptorSetLayoutBinding;
+import com.io7m.jcoronado.api.VulkanDescriptorSetLayoutCreateInfo;
+import com.io7m.jcoronado.api.VulkanDescriptorSetLayoutType;
 import com.io7m.jcoronado.api.VulkanException;
 import com.io7m.jcoronado.api.VulkanExtensionProperties;
 import com.io7m.jcoronado.api.VulkanExtensions;
@@ -109,6 +115,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static com.io7m.jcoronado.api.VulkanAccessFlag.VK_ACCESS_COLOR_ATTACHMENT_READ_BIT;
 import static com.io7m.jcoronado.api.VulkanAccessFlag.VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
@@ -122,6 +129,7 @@ import static com.io7m.jcoronado.api.VulkanCommandBufferLevel.VK_COMMAND_BUFFER_
 import static com.io7m.jcoronado.api.VulkanCommandBufferUsageFlag.VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT;
 import static com.io7m.jcoronado.api.VulkanComponentSwizzle.VK_COMPONENT_SWIZZLE_IDENTITY;
 import static com.io7m.jcoronado.api.VulkanCullModeFlag.VK_CULL_MODE_BACK_BIT;
+import static com.io7m.jcoronado.api.VulkanDescriptorType.VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
 import static com.io7m.jcoronado.api.VulkanFormat.VK_FORMAT_B8G8R8A8_UNORM;
 import static com.io7m.jcoronado.api.VulkanFormat.VK_FORMAT_R32G32B32_SFLOAT;
 import static com.io7m.jcoronado.api.VulkanFormat.VK_FORMAT_R32G32_SFLOAT;
@@ -418,7 +426,7 @@ public final class HelloVulkanWithVMA
       LOG.debug("logical device: {}", device);
 
       /*
-       * Create a VMA allocator provider.
+       * Create a VMA allocator.
        */
 
       final var vma_allocators = VMALWJGLAllocatorProvider.create();
@@ -480,9 +488,53 @@ public final class HelloVulkanWithVMA
        */
 
       final var data = readShaderModule("shaders.spv");
+      final var shaders = resources.add(createShaderModule(device, alloc, data));
 
-      final var shaders =
-        resources.add(createShaderModule(device, alloc, data));
+      /*
+       * Configure descriptor sets for the shader.
+       */
+
+      final var descriptor_set_layout_binding =
+        VulkanDescriptorSetLayoutBinding.builder()
+          .setBinding(0)
+          .setDescriptorType(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER)
+          .setDescriptorCount(1)
+          .addStageFlags(VK_SHADER_STAGE_VERTEX_BIT)
+          .build();
+
+      final var descriptor_set_layout_create_info =
+        VulkanDescriptorSetLayoutCreateInfo.builder()
+          .addBindings(descriptor_set_layout_binding)
+          .build();
+
+      final var descriptor_set_layout =
+        resources.add(device.createDescriptorSetLayout(descriptor_set_layout_create_info));
+
+      final var descriptor_pool_uniform_buffer =
+        VulkanDescriptorPoolSize.of(
+          VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
+          swap_chain.images().size());
+
+      final var descriptor_pool_create_info =
+        VulkanDescriptorPoolCreateInfo.builder()
+          .setMaxSets(swap_chain.images().size())
+          .addPoolSizes(descriptor_pool_uniform_buffer)
+          .build();
+
+      final var descriptor_pool =
+        resources.add(device.createDescriptorPool(descriptor_pool_create_info));
+
+      final var descriptor_set_layouts =
+        IntStream.range(0, swap_chain.images().size())
+          .mapToObj(ignore -> descriptor_set_layout)
+          .collect(Collectors.toList());
+
+      final var descriptor_sets =
+        device.allocateDescriptorSets(
+          VulkanDescriptorSetAllocateInfo.builder()
+            .setSetLayouts(descriptor_set_layouts)
+            .setDescriptorPool(descriptor_pool)
+            .build());
 
       /*
        * Configure the render pass.

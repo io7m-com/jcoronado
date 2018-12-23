@@ -55,9 +55,7 @@ public final class VulkanLWJGLClearValues
     Objects.requireNonNull(values, "values");
 
     final var count = values.size();
-
-    final var target_values =
-      VkClearValue.mallocStack(values.size(), stack);
+    final var target_values = VkClearValue.mallocStack(values.size(), stack);
 
     for (var index = 0; index < count; ++index) {
       packTo(values.get(index), target_values.get(index));

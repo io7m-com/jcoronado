@@ -17,6 +17,7 @@
 package com.io7m.jcoronado.lwjgl;
 
 import com.io7m.jcoronado.api.VulkanEnumMaps;
+import com.io7m.jcoronado.api.VulkanException;
 import com.io7m.jcoronado.api.VulkanGraphicsPipelineCreateInfo;
 import com.io7m.jcoronado.api.VulkanIncompatibleClassException;
 import org.lwjgl.system.MemoryStack;
@@ -46,12 +47,13 @@ public final class VulkanLWJGLGraphicsPipelineCreateInfos
    * @return A packed list of structures
    *
    * @throws VulkanIncompatibleClassException If one or more incompatible classes were specified
+   * @throws VulkanException                  On errors
    */
 
   public static VkGraphicsPipelineCreateInfo.Buffer pack(
     final MemoryStack stack,
     final List<VulkanGraphicsPipelineCreateInfo> pipeline_infos)
-    throws VulkanIncompatibleClassException
+    throws VulkanException
   {
     Objects.requireNonNull(pipeline_infos, "pipeline_infos");
 
@@ -59,10 +61,8 @@ public final class VulkanLWJGLGraphicsPipelineCreateInfos
       VkGraphicsPipelineCreateInfo.mallocStack(pipeline_infos.size(), stack);
 
     for (var index = 0; index < pipeline_infos.size(); ++index) {
-      final var source =
-        pipeline_infos.get(index);
-      final var target =
-        VkGraphicsPipelineCreateInfo.create(buffer.address(index));
+      final var source = pipeline_infos.get(index);
+      final var target = VkGraphicsPipelineCreateInfo.create(buffer.address(index));
       packInto(stack, source, target);
     }
 
@@ -73,7 +73,7 @@ public final class VulkanLWJGLGraphicsPipelineCreateInfos
     final MemoryStack stack,
     final VulkanGraphicsPipelineCreateInfo source,
     final VkGraphicsPipelineCreateInfo target)
-    throws VulkanIncompatibleClassException
+    throws VulkanException
   {
     target
       .pNext(0L)
@@ -129,8 +129,7 @@ public final class VulkanLWJGLGraphicsPipelineCreateInfos
     final VkGraphicsPipelineCreateInfo target)
     throws VulkanIncompatibleClassException
   {
-    final var rpl =
-      VulkanLWJGLClassChecks.check(source.renderPass(), VulkanLWJGLRenderPass.class);
+    final var rpl = VulkanLWJGLClassChecks.check(source.renderPass(), VulkanLWJGLRenderPass.class);
     target.renderPass(rpl.handle());
   }
 
@@ -151,8 +150,7 @@ public final class VulkanLWJGLGraphicsPipelineCreateInfos
   {
     final var bp = source.basePipeline();
     if (bp.isPresent()) {
-      final var bppl =
-        VulkanLWJGLClassChecks.check(bp.get(), VulkanLWJGLPipeline.class);
+      final var bppl = VulkanLWJGLClassChecks.check(bp.get(), VulkanLWJGLPipeline.class);
       target.basePipelineHandle(bppl.handle());
     }
   }

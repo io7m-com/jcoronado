@@ -74,12 +74,10 @@ public final class VulkanLWJGLPipelineVertexInputStateCreateInfos
       return null;
     }
 
-    final var buffer =
-      VkVertexInputBindingDescription.mallocStack(descs_count, stack);
+    final var buffer = VkVertexInputBindingDescription.mallocStack(descs_count, stack);
     for (var index = 0; index < descs_count; ++index) {
       final var source = descs.get(index);
-      final var target =
-        VkVertexInputBindingDescription.create(buffer.address(index));
+      final var target = VkVertexInputBindingDescription.create(buffer.address(index));
       packVertexInputBindingDescriptionInto(source, target);
     }
     return buffer;
@@ -108,8 +106,7 @@ public final class VulkanLWJGLPipelineVertexInputStateCreateInfos
       VkVertexInputAttributeDescription.mallocStack(descs_count, stack);
     for (var index = 0; index < descs_count; ++index) {
       final var source = descs.get(index);
-      final var target =
-        VkVertexInputAttributeDescription.create(buffer.address(index));
+      final var target = VkVertexInputAttributeDescription.create(buffer.address(index));
       packVertexInputAttributeDescriptionInto(source, target);
     }
     return buffer;

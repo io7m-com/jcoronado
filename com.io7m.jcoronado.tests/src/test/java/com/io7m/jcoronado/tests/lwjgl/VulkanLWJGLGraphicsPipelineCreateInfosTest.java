@@ -19,6 +19,7 @@ package com.io7m.jcoronado.tests.lwjgl;
 import com.io7m.jcoronado.api.VulkanBlendConstants;
 import com.io7m.jcoronado.api.VulkanCullModeFlag;
 import com.io7m.jcoronado.api.VulkanDynamicState;
+import com.io7m.jcoronado.api.VulkanException;
 import com.io7m.jcoronado.api.VulkanExtent2D;
 import com.io7m.jcoronado.api.VulkanFrontFace;
 import com.io7m.jcoronado.api.VulkanGraphicsPipelineCreateInfo;
@@ -103,7 +104,7 @@ public final class VulkanLWJGLGraphicsPipelineCreateInfosTest
     final @Mocked VulkanLWJGLShaderModule module,
     final @Mocked VulkanLWJGLPipelineLayout layout,
     final @Mocked VulkanLWJGLRenderPass render_pass)
-    throws VulkanIncompatibleClassException
+    throws VulkanException
   {
     new Expectations()
     {{

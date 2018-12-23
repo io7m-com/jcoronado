@@ -16,13 +16,39 @@
 
 package com.io7m.jcoronado.api;
 
+import com.io7m.immutables.styles.ImmutablesStyleType;
+import org.immutables.value.Value;
+
+import java.util.List;
+import java.util.Set;
+
 /**
- * A descriptor set layout.
- *
- * @see "VkDescriptorSetLayout"
+ * @see "VkDescriptorPoolCreateInfo"
  */
 
-public interface VulkanDescriptorSetLayoutType extends VulkanHandleNonDispatchableType
+@ImmutablesStyleType
+@Value.Immutable
+public interface VulkanDescriptorPoolCreateInfoType
 {
+  /**
+   * @return The flags specifying certain supported operations on the pool.
+   */
 
+  @Value.Parameter
+  Set<VulkanDescriptorPoolCreateFlag> flags();
+
+  /**
+   * @return The maximum number of descriptor sets that can be allocated from the pool.
+   */
+
+  @Value.Parameter
+  int maxSets();
+
+  /**
+   * @return An array of structures each containing a descriptor type and number of descriptors of
+   * that type to be allocated in the pool.
+   */
+
+  @Value.Parameter
+  List<VulkanDescriptorPoolSize> poolSizes();
 }

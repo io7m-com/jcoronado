@@ -55,8 +55,7 @@ public final class VulkanLWJGLAttachmentReferences
 
     for (var index = 0; index < references.size(); ++index) {
       final var source = references.get(index);
-      final var target =
-        VkAttachmentReference.create(buffer.address(index));
+      final var target = VkAttachmentReference.create(buffer.address(index));
       packInto(source, target);
     }
     return buffer;

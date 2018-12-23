@@ -18,6 +18,7 @@ package com.io7m.jcoronado.lwjgl;
 
 import com.io7m.jcoronado.api.VulkanBufferCreateInfo;
 import com.io7m.jcoronado.api.VulkanEnumMaps;
+import com.io7m.jcoronado.api.VulkanException;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.vulkan.VK10;
 import org.lwjgl.vulkan.VkBufferCreateInfo;
@@ -44,11 +45,14 @@ public final class VulkanLWJGLBufferCreateInfos
    * @param info  The info
    *
    * @return A packed info
+   *
+   * @throws VulkanException On errors
    */
 
   public static VkBufferCreateInfo packInfo(
     final MemoryStack stack,
     final VulkanBufferCreateInfo info)
+    throws VulkanException
   {
     Objects.requireNonNull(stack, "stack");
     Objects.requireNonNull(info, "info");
@@ -66,14 +70,8 @@ public final class VulkanLWJGLBufferCreateInfos
   private static IntBuffer packQueueFamilies(
     final MemoryStack stack,
     final List<Integer> integers)
+    throws VulkanException
   {
-    final var size = integers.size();
-    if (size > 0) {
-      final var buffer = stack.mallocInt(size);
-      for (var index = 0; index < size; ++index) {
-        buffer.put(index, integers.get(index).intValue());
-      }
-    }
-    return null;
+    return VulkanLWJGLIntegerArrays.packIntsOrNull(stack, integers, Integer::intValue);
   }
 }

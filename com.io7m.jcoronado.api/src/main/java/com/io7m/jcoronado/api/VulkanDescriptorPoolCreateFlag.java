@@ -17,12 +17,30 @@
 package com.io7m.jcoronado.api;
 
 /**
- * A descriptor set layout.
- *
- * @see "VkDescriptorSetLayout"
+ * Flags specifying certain supported operations on a descriptor pool
  */
 
-public interface VulkanDescriptorSetLayoutType extends VulkanHandleNonDispatchableType
+public enum VulkanDescriptorPoolCreateFlag implements VulkanEnumBitmaskType
 {
+  /**
+   * Specifies that descriptor sets can return their individual allocations to the pool, i.e. all of
+   * vkAllocateDescriptorSets, vkFreeDescriptorSets, and vkResetDescriptorPool are allowed.
+   * Otherwise, descriptor sets allocated from the pool must not be individually freed back to the
+   * pool, i.e. only vkAllocateDescriptorSets and vkResetDescriptorPool are allowed.
+   */
 
+  VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT(0x00000001);
+
+  private final int value;
+
+  VulkanDescriptorPoolCreateFlag(final int i)
+  {
+    this.value = i;
+  }
+
+  @Override
+  public int value()
+  {
+    return this.value;
+  }
 }

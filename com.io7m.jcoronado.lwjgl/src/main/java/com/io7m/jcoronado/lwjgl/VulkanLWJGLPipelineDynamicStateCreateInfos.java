@@ -18,7 +18,9 @@ package com.io7m.jcoronado.lwjgl;
 
 import com.io7m.jcoronado.api.VulkanDynamicState;
 import com.io7m.jcoronado.api.VulkanEnumMaps;
+import com.io7m.jcoronado.api.VulkanException;
 import com.io7m.jcoronado.api.VulkanPipelineDynamicStateCreateInfo;
+import com.io7m.jcoronado.api.VulkanUncheckedException;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.vulkan.VK10;
 import org.lwjgl.vulkan.VkPipelineDynamicStateCreateInfo;
@@ -46,11 +48,14 @@ public final class VulkanLWJGLPipelineDynamicStateCreateInfos
    * @param info  A structure
    *
    * @return A packed structure
+   *
+   * @throws VulkanException On errors
    */
 
   public static VkPipelineDynamicStateCreateInfo pack(
     final MemoryStack stack,
     final VulkanPipelineDynamicStateCreateInfo info)
+    throws VulkanException
   {
     Objects.requireNonNull(stack, "stack");
     Objects.requireNonNull(info, "info");
@@ -68,13 +73,9 @@ public final class VulkanLWJGLPipelineDynamicStateCreateInfos
   private static IntBuffer packStates(
     final MemoryStack stack,
     final List<VulkanDynamicState> states)
+    throws VulkanException
   {
-    final var count = states.size();
-    final var buffer = stack.mallocInt(count);
-    for (var index = 0; index < count; ++index) {
-      buffer.put(index, states.get(index).value());
-    }
-    return buffer;
+    return VulkanLWJGLIntegerArrays.packIntsOrNull(stack, states, VulkanDynamicState::value);
   }
 
   /**
@@ -84,15 +85,28 @@ public final class VulkanLWJGLPipelineDynamicStateCreateInfos
    * @param info  A structure
    *
    * @return A packed structure (or null)
+   *
+   * @throws VulkanException On errors
    */
 
   public static VkPipelineDynamicStateCreateInfo packOptional(
     final MemoryStack stack,
     final Optional<VulkanPipelineDynamicStateCreateInfo> info)
+    throws VulkanException
   {
     Objects.requireNonNull(stack, "stack");
     Objects.requireNonNull(info, "info");
 
-    return info.map(iinfo -> pack(stack, iinfo)).orElse(null);
+    try {
+      return info.map(iinfo -> {
+        try {
+          return pack(stack, iinfo);
+        } catch (VulkanException e) {
+          throw new VulkanUncheckedException(e);
+        }
+      }).orElse(null);
+    } catch (final VulkanUncheckedException e) {
+      throw e.getCause();
+    }
   }
 }

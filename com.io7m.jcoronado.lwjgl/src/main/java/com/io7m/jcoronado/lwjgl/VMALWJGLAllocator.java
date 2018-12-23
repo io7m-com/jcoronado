@@ -102,11 +102,6 @@ public final class VMALWJGLAllocator extends VulkanLWJGLHandle implements VMAAll
       .toString();
   }
 
-  private enum AllocatedItemKind
-  {
-    BUFFER
-  }
-
   @Override
   protected Logger logger()
   {
@@ -249,6 +244,11 @@ public final class VMALWJGLAllocator extends VulkanLWJGLHandle implements VMAAll
     }
 
     Vma.vmaDestroyBuffer(this.allocator_address, buffer_handle, alloc_handle);
+  }
+
+  private enum AllocatedItemKind
+  {
+    BUFFER
   }
 
   private static final class VMALWJGLAllocation<T> implements VMAAllocationType

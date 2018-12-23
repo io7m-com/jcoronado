@@ -17,12 +17,27 @@
 package com.io7m.jcoronado.api;
 
 /**
- * A descriptor set layout.
- *
- * @see "VkDescriptorSetLayout"
+ * Flags specifying descriptor set layout properties.
  */
 
-public interface VulkanDescriptorSetLayoutType extends VulkanHandleNonDispatchableType
+public enum VulkanDescriptorSetLayoutCreateFlag implements VulkanEnumBitmaskType
 {
+  /**
+   * No flags set.
+   */
 
+  VK_DESCRIPTOR_SET_LAYOUT_CREATE_NONE(0x0);
+
+  private final int value;
+
+  VulkanDescriptorSetLayoutCreateFlag(final int i)
+  {
+    this.value = i;
+  }
+
+  @Override
+  public int value()
+  {
+    return this.value;
+  }
 }

@@ -16,6 +16,7 @@
 
 package com.io7m.jcoronado.tests.lwjgl;
 
+import com.io7m.jcoronado.api.VulkanException;
 import com.io7m.jcoronado.api.VulkanFramebufferCreateInfo;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLFramebufferCreateInfos;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLImageView;
@@ -50,6 +51,7 @@ public final class VulkanLWJGLFramebufferCreateInfosTest
   public void testFramebufferCreateInfo(
     final @Mocked VulkanLWJGLRenderPass render_pass,
     final @Mocked VulkanLWJGLImageView image_view)
+    throws VulkanException
   {
     new Expectations()
     {{

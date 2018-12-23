@@ -16,13 +16,32 @@
 
 package com.io7m.jcoronado.api;
 
+import com.io7m.immutables.styles.ImmutablesStyleType;
+import org.immutables.value.Value;
+
+import java.util.List;
+import java.util.Set;
+
 /**
- * A descriptor set layout.
- *
- * @see "VkDescriptorSetLayout"
+ * @see "VkDescriptorSetLayoutCreateInfo"
  */
 
-public interface VulkanDescriptorSetLayoutType extends VulkanHandleNonDispatchableType
+@ImmutablesStyleType
+@Value.Immutable
+public interface VulkanDescriptorSetLayoutCreateInfoType
 {
+  /**
+   * @return A bitmask of VulkanDescriptorSetLayoutCreateFlag values specifying options for
+   * descriptor set layout creation.
+   */
 
+  @Value.Parameter
+  Set<VulkanDescriptorSetLayoutCreateFlag> flags();
+
+  /**
+   * @return An array of VulkanDescriptorSetLayoutBinding structures.
+   */
+
+  @Value.Parameter
+  List<VulkanDescriptorSetLayoutBinding> bindings();
 }
