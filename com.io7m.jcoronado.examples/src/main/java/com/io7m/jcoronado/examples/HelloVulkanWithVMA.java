@@ -694,7 +694,7 @@ public final class HelloVulkanWithVMA
       }
 
       /*
-       * Create vertex buffer.
+       * Create a vertex buffer.
        */
 
       final var vertex_buffer_create_info =
