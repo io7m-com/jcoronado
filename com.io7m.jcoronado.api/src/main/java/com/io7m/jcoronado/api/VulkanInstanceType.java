@@ -20,6 +20,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * An initialized instance.
@@ -35,8 +37,21 @@ public interface VulkanInstanceType extends VulkanHandleDispatchableType
    * @throws VulkanException On errors
    */
 
-  List<VulkanPhysicalDeviceType> physicalDevices()
+  Stream<VulkanPhysicalDeviceType> enumeratePhysicalDevices()
     throws VulkanException;
+
+  /**
+   * @return The available physical devices
+   *
+   * @throws VulkanException On errors
+   */
+
+  default List<VulkanPhysicalDeviceType> physicalDevices()
+    throws VulkanException
+  {
+    return this.enumeratePhysicalDevices()
+      .collect(Collectors.toList());
+  }
 
   /**
    * @return The enabled extensions for the instance

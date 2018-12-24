@@ -63,6 +63,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Stream;
 
 /**
  * LWJGL {@link VkInstance}
@@ -575,7 +576,7 @@ public final class VulkanLWJGLInstance
   }
 
   @Override
-  public List<VulkanPhysicalDeviceType> physicalDevices()
+  public Stream<VulkanPhysicalDeviceType> enumeratePhysicalDevices()
     throws VulkanException
   {
     this.checkNotClosed();
@@ -589,7 +590,7 @@ public final class VulkanLWJGLInstance
 
       final var device_count = count[0];
       if (device_count == 0) {
-        return List.of();
+        return Stream.empty();
       }
 
       final var vk_physical_devices =
@@ -611,8 +612,7 @@ public final class VulkanLWJGLInstance
         vk_physical_devices.position(index);
 
         final var device_ptr = vk_physical_devices.get();
-        final var vk_device =
-          new VkPhysicalDevice(device_ptr, this.instance);
+        final var vk_device = new VkPhysicalDevice(device_ptr, this.instance);
 
         final var device =
           this.parsePhysicalDevice(
@@ -627,7 +627,7 @@ public final class VulkanLWJGLInstance
       }
     }
 
-    return devices;
+    return devices.stream();
   }
 
   @Override
