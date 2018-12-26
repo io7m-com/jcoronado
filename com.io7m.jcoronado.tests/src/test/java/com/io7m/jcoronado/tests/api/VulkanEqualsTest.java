@@ -16,412 +16,109 @@
 
 package com.io7m.jcoronado.tests.api;
 
-import com.io7m.jcoronado.api.VulkanApplicationInfo;
-import com.io7m.jcoronado.api.VulkanAttachmentDescription;
-import com.io7m.jcoronado.api.VulkanAttachmentReference;
-import com.io7m.jcoronado.api.VulkanBlendConstants;
-import com.io7m.jcoronado.api.VulkanClearValueColorFloatingPoint;
-import com.io7m.jcoronado.api.VulkanClearValueColorIntegerSigned;
-import com.io7m.jcoronado.api.VulkanClearValueColorIntegerUnsigned;
-import com.io7m.jcoronado.api.VulkanClearValueDepthStencil;
-import com.io7m.jcoronado.api.VulkanComputeWorkGroupCount;
-import com.io7m.jcoronado.api.VulkanComputeWorkGroupSize;
-import com.io7m.jcoronado.api.VulkanDescriptorPoolCreateInfo;
-import com.io7m.jcoronado.api.VulkanDescriptorPoolSize;
-import com.io7m.jcoronado.api.VulkanDescriptorSetLayoutBinding;
-import com.io7m.jcoronado.api.VulkanDescriptorSetLayoutCreateInfo;
-import com.io7m.jcoronado.api.VulkanExtensionProperties;
-import com.io7m.jcoronado.api.VulkanExtent2D;
-import com.io7m.jcoronado.api.VulkanExtent3D;
-import com.io7m.jcoronado.api.VulkanGraphicsPipelineCreateInfo;
-import com.io7m.jcoronado.api.VulkanImageSubresourceRange;
-import com.io7m.jcoronado.api.VulkanImageViewCreateInfo;
-import com.io7m.jcoronado.api.VulkanInstanceCreateInfo;
-import com.io7m.jcoronado.api.VulkanLayerProperties;
-import com.io7m.jcoronado.api.VulkanLineWidthRange;
-import com.io7m.jcoronado.api.VulkanLogicalDeviceCreateInfo;
-import com.io7m.jcoronado.api.VulkanLogicalDeviceQueueCreateInfo;
-import com.io7m.jcoronado.api.VulkanMemoryHeap;
-import com.io7m.jcoronado.api.VulkanMemoryType;
-import com.io7m.jcoronado.api.VulkanOffset2D;
-import com.io7m.jcoronado.api.VulkanOffset3D;
-import com.io7m.jcoronado.api.VulkanPhysicalDeviceFeatures;
-import com.io7m.jcoronado.api.VulkanPhysicalDeviceLimits;
-import com.io7m.jcoronado.api.VulkanPhysicalDeviceMemoryProperties;
-import com.io7m.jcoronado.api.VulkanPhysicalDeviceProperties;
-import com.io7m.jcoronado.api.VulkanPipelineColorBlendAttachmentState;
-import com.io7m.jcoronado.api.VulkanPipelineColorBlendStateCreateInfo;
-import com.io7m.jcoronado.api.VulkanPipelineDepthStencilStateCreateInfo;
-import com.io7m.jcoronado.api.VulkanSemaphoreCreateInfo;
-import com.io7m.jcoronado.api.VulkanSubmitInfo;
+import com.io7m.jcoronado.api.VulkanPipelineMultisampleStateCreateInfoType;
 import nl.jqno.equalsverifier.EqualsVerifier;
+import org.immutables.value.Value;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.function.Executable;
+import org.reflections.Reflections;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public final class VulkanEqualsTest
 {
-  @Test
-  public void testApplicationInfo()
-  {
-    EqualsVerifier.forClass(VulkanApplicationInfo.class)
-      .withNonnullFields(
-        "applicationName",
-        "engineName")
-      .verify();
-  }
+  private static final Logger LOG = LoggerFactory.getLogger(VulkanEqualsTest.class);
 
   @Test
-  public void testAttachmentDescription()
+  public void testEqualsReflectively()
   {
-    EqualsVerifier.forClass(VulkanAttachmentDescription.class)
-      .withNonnullFields(
-        "flags",
-        "format",
-        "samples",
-        "loadOp",
-        "storeOp",
-        "stencilLoadOp",
-        "stencilStoreOp",
-        "finalLayout",
-        "initialLayout")
-      .verify();
+    final var reflections = new Reflections("com.io7m.jcoronado");
+    final var types = reflections.getTypesAnnotatedWith(Value.Immutable.class);
+
+    Assertions.assertTrue(types.size() > 30, "At least 30 subtypes must exist");
+
+    final Collection<Executable> executables = new ArrayList<>();
+
+    for (final var type : types) {
+      if (!type.isInterface()) {
+        continue;
+      }
+
+      final var subtypes =
+        reflections.getSubTypesOf(type);
+
+      final var names =
+        Stream.of(type.getMethods())
+          .filter(VulkanEqualsTest::isAttribute)
+          .map(Method::getName)
+          .collect(Collectors.toList());
+
+      for (final var subtype : subtypes) {
+        final Executable task = () -> {
+          final var name_array = new String[names.size()];
+          names.toArray(name_array);
+
+          LOG.debug("checking: {}: names: {}", subtype.getCanonicalName(), names);
+
+          try {
+            EqualsVerifier.forClass(subtype)
+              .withNonnullFields(name_array)
+              .verify();
+          } catch (final AssertionError e) {
+            checkTypeException(type, subtype, e);
+          }
+        };
+
+        executables.add(task);
+      }
+    }
+
+    Assertions.assertAll(executables);
   }
 
-  @Test
-  public void testAttachmentReference()
+  private static void checkTypeException(
+    final Class<?> type,
+    final Class<?> subtype,
+    final AssertionError e)
   {
-    EqualsVerifier.forClass(VulkanAttachmentReference.class)
-      .withNonnullFields("layout")
-      .verify();
+    if (Objects.equals(type, VulkanPipelineMultisampleStateCreateInfoType.class)) {
+      if (e.getMessage().contains("sampleMask")) {
+        LOG.error("{}: {}: applying exception for comparison failure: ", type, subtype, e);
+        return;
+      }
+    }
+
+    throw e;
   }
 
-  @Test
-  public void testBlendConstants()
+  private static boolean isAttribute(final Method m)
   {
-    EqualsVerifier.forClass(VulkanBlendConstants.class)
-      .verify();
-  }
+    if (Objects.equals(m.getDeclaringClass(), Object.class)) {
+      return false;
+    }
 
-  @Test
-  public void testExtensionProperties()
-  {
-    EqualsVerifier.forClass(VulkanExtensionProperties.class)
-      .withNonnullFields("name")
-      .verify();
-  }
+    if (m.isDefault()) {
+      final var ignore_names =
+        Set.of(
+          "compareTo",
+          "checkPreconditions",
+          "findSuitableMemoryType",
+          "toHumanString",
+          "type");
 
-  @Test
-  public void testExtent2D()
-  {
-    EqualsVerifier.forClass(VulkanExtent2D.class)
-      .verify();
-  }
+      return !ignore_names.contains(m.getName());
+    }
 
-  @Test
-  public void testExtent3D()
-  {
-    EqualsVerifier.forClass(VulkanExtent3D.class)
-      .verify();
-  }
-
-  @Test
-  public void testGraphicsPipelineCreateInfo()
-  {
-    EqualsVerifier.forClass(VulkanGraphicsPipelineCreateInfo.class)
-      .withNonnullFields(
-        "flags",
-        "stages",
-        "layout",
-        "renderPass",
-        "rasterizationState",
-        "inputAssemblyState",
-        "vertexInputState")
-      .verify();
-  }
-
-  @Test
-  public void testImageSubresourceRange()
-  {
-    EqualsVerifier.forClass(VulkanImageSubresourceRange.class)
-      .withNonnullFields("flags")
-      .verify();
-  }
-
-  @Test
-  public void testImageViewCreateInfo()
-  {
-    EqualsVerifier.forClass(VulkanImageViewCreateInfo.class)
-      .withNonnullFields(
-        "components",
-        "subresourceRange",
-        "flags",
-        "image",
-        "viewType",
-        "format")
-      .verify();
-  }
-
-  @Test
-  public void testInstanceCreateInfo()
-  {
-    EqualsVerifier.forClass(VulkanInstanceCreateInfo.class)
-      .withNonnullFields(
-        "applicationInfo",
-        "enabledExtensions",
-        "enabledLayers")
-      .verify();
-  }
-
-  @Test
-  public void testLayerProperties()
-  {
-    EqualsVerifier.forClass(VulkanLayerProperties.class)
-      .withNonnullFields(
-        "name",
-        "description")
-      .verify();
-  }
-
-  @Test
-  public void testLineWidthRange()
-  {
-    EqualsVerifier.forClass(VulkanLineWidthRange.class)
-      .verify();
-  }
-
-  @Test
-  public void testLogicalDeviceCreateInfo()
-  {
-    EqualsVerifier.forClass(VulkanLogicalDeviceCreateInfo.class)
-      .withNonnullFields(
-        "flags",
-        "queueCreateInfos",
-        "enabledLayers",
-        "enabledExtensions",
-        "features")
-      .verify();
-  }
-
-  @Test
-  public void testLogicalDeviceQueueCreateInfo()
-  {
-    EqualsVerifier.forClass(VulkanLogicalDeviceQueueCreateInfo.class)
-      .withNonnullFields(
-        "flags",
-        "queuePriorities")
-      .verify();
-  }
-
-  @Test
-  public void testMemoryHeapType()
-  {
-    EqualsVerifier.forClass(VulkanMemoryHeap.class)
-      .withNonnullFields(
-        "flags")
-      .verify();
-  }
-
-  @Test
-  public void testMemoryType()
-  {
-    EqualsVerifier.forClass(VulkanMemoryType.class)
-      .withNonnullFields(
-        "flags")
-      .verify();
-  }
-
-  @Test
-  public void testOffset2D()
-  {
-    EqualsVerifier.forClass(VulkanOffset2D.class)
-      .verify();
-  }
-
-  @Test
-  public void testOffset3D()
-  {
-    EqualsVerifier.forClass(VulkanOffset3D.class)
-      .verify();
-  }
-
-  @Test
-  public void testPhysicalDeviceFeatures()
-  {
-    EqualsVerifier.forClass(VulkanPhysicalDeviceFeatures.class)
-      .verify();
-  }
-
-  @Test
-  public void testPhysicalDeviceLimits()
-  {
-    EqualsVerifier.forClass(VulkanPhysicalDeviceLimits.class)
-      .withNonnullFields(
-        "lineWidthRange",
-        "maxComputeWorkGroupCount",
-        "maxComputeWorkGroupSize",
-        "maxViewportDimensions",
-        "viewportBoundsRange",
-        "pointSizeRange")
-      .verify();
-  }
-
-  @Test
-  public void testPhysicalDeviceMemoryProperties()
-  {
-    EqualsVerifier.forClass(VulkanPhysicalDeviceMemoryProperties.class)
-      .withNonnullFields(
-        "heaps",
-        "types")
-      .verify();
-  }
-
-  @Test
-  public void testPhysicalDeviceProperties()
-  {
-    EqualsVerifier.forClass(VulkanPhysicalDeviceProperties.class)
-      .withNonnullFields(
-        "name",
-        "type",
-        "apiVersion",
-        "driverVersion")
-      .verify();
-  }
-
-  @Test
-  public void testPipelineColorBlendAttachmentState()
-  {
-    EqualsVerifier.forClass(VulkanPipelineColorBlendAttachmentState.class)
-      .withNonnullFields(
-        "colorWriteMask",
-        "srcColorBlendFactor",
-        "dstColorBlendFactor",
-        "srcAlphaBlendFactor",
-        "dstAlphaBlendFactor",
-        "alphaBlendOp",
-        "colorBlendOp")
-      .verify();
-  }
-
-  @Test
-  public void testPipelineColorBlendStateCreateInfo()
-  {
-    EqualsVerifier.forClass(VulkanPipelineColorBlendStateCreateInfo.class)
-      .withNonnullFields(
-        "logicOp",
-        "flags",
-        "attachments",
-        "blendConstants")
-      .verify();
-  }
-
-  @Test
-  public void testPipelineDepthStencilStateCreateInfo()
-  {
-    EqualsVerifier.forClass(VulkanPipelineDepthStencilStateCreateInfo.class)
-      .withNonnullFields(
-        "depthCompareOp",
-        "flags",
-        "front",
-        "back")
-      .verify();
-  }
-
-  @Test
-  public void testSemaphoreCreateInfo()
-  {
-    EqualsVerifier.forClass(VulkanSemaphoreCreateInfo.class)
-      .withNonnullFields(
-        "flags")
-      .verify();
-  }
-
-  @Test
-  public void testSubmitInfo()
-  {
-    EqualsVerifier.forClass(VulkanSubmitInfo.class)
-      .withNonnullFields(
-        "waitSemaphores",
-        "waitStageMasks",
-        "commandBuffers",
-        "signalSemaphores")
-      .verify();
-  }
-
-  @Test
-  public void testDescriptorSetLayoutCreateInfo()
-  {
-    EqualsVerifier.forClass(VulkanDescriptorSetLayoutCreateInfo.class)
-      .withNonnullFields(
-        "flags",
-        "bindings")
-      .verify();
-  }
-
-  @Test
-  public void testDescriptorSetLayoutBinding()
-  {
-    EqualsVerifier.forClass(VulkanDescriptorSetLayoutBinding.class)
-      .withNonnullFields(
-        "descriptorType",
-        "stageFlags",
-        "immutableSamplers")
-      .verify();
-  }
-
-  @Test
-  public void testDescriptorPoolCreateInfo()
-  {
-    EqualsVerifier.forClass(VulkanDescriptorPoolCreateInfo.class)
-      .withNonnullFields("flags", "poolSizes")
-      .verify();
-  }
-
-  @Test
-  public void testDescriptorPoolSize()
-  {
-    EqualsVerifier.forClass(VulkanDescriptorPoolSize.class)
-      .withNonnullFields("type")
-      .verify();
-  }
-
-  @Test
-  public void testClearValueColorFloatingPoint()
-  {
-    EqualsVerifier.forClass(VulkanClearValueColorFloatingPoint.class)
-      .verify();
-  }
-
-  @Test
-  public void testClearValueColorIntegerUnsigned()
-  {
-    EqualsVerifier.forClass(VulkanClearValueColorIntegerUnsigned.class)
-      .verify();
-  }
-
-  @Test
-  public void testClearValueColorIntegerSigned()
-  {
-    EqualsVerifier.forClass(VulkanClearValueColorIntegerSigned.class)
-      .verify();
-  }
-
-  @Test
-  public void testClearValueDepthStencil()
-  {
-    EqualsVerifier.forClass(VulkanClearValueDepthStencil.class)
-      .verify();
-  }
-
-  @Test
-  public void testComputeWorkGroupCount()
-  {
-    EqualsVerifier.forClass(VulkanComputeWorkGroupCount.class)
-      .verify();
-  }
-
-  @Test
-  public void testComputeWorkGroupSize()
-  {
-    EqualsVerifier.forClass(VulkanComputeWorkGroupSize.class)
-      .verify();
+    return (m.getModifiers() & Modifier.ABSTRACT) == Modifier.ABSTRACT;
   }
 }

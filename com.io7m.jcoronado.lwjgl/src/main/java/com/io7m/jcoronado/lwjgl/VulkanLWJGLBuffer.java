@@ -93,7 +93,11 @@ public final class VulkanLWJGLBuffer extends VulkanLWJGLHandle implements Vulkan
     this.deallocate.run();
   }
 
-  long handle()
+  /**
+   * @return The underlying Vulkan handle
+   */
+
+  public long handle()
   {
     return this.handle;
   }

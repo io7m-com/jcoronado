@@ -51,7 +51,7 @@ public final class VulkanLWJGLDescriptorSetAllocateInfos
    * @throws VulkanException On errors
    */
 
-  public static VkDescriptorSetAllocateInfo packDescriptorSetAllocateInfo(
+  public static VkDescriptorSetAllocateInfo pack(
     final MemoryStack stack,
     final VulkanDescriptorSetAllocateInfo info)
     throws VulkanException

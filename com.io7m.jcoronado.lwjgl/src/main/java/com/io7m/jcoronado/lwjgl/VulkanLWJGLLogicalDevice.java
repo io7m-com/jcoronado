@@ -417,7 +417,7 @@ public final class VulkanLWJGLLogicalDevice
 
     try (var stack = this.stack_initial.push()) {
       final var alloc_info =
-        VulkanLWJGLDescriptorSetAllocateInfos.packDescriptorSetAllocateInfo(stack, info);
+        VulkanLWJGLDescriptorSetAllocateInfos.pack(stack, info);
 
       final var count = info.setLayouts().size();
       final var handles = stack.mallocLong(count);
