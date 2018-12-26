@@ -17,11 +17,7 @@
 package com.io7m.jcoronado.tests.lwjgl;
 
 import com.io7m.jcoronado.api.VulkanDescriptorSetLayoutBinding;
-import com.io7m.jcoronado.api.VulkanDescriptorSetLayoutCreateInfo;
-import com.io7m.jcoronado.api.VulkanDescriptorType;
-import com.io7m.jcoronado.api.VulkanSamplerType;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLDescriptorSetLayoutBindings;
-import com.io7m.jcoronado.lwjgl.VulkanLWJGLDescriptorSetLayouts;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLSampler;
 import mockit.Expectations;
 import mockit.Mocked;
@@ -66,7 +62,7 @@ public final class VulkanLWJGLDescriptorSetLayoutBindingsTest
         List.of());
 
     final var packed =
-      VulkanLWJGLDescriptorSetLayoutBindings.packDescriptorSetLayoutBinding(this.stack, binding);
+      VulkanLWJGLDescriptorSetLayoutBindings.pack(this.stack, binding);
 
     Assertions.assertAll(
       () -> {
@@ -122,7 +118,7 @@ public final class VulkanLWJGLDescriptorSetLayoutBindingsTest
         List.of(sampler_0, sampler_1, sampler_2));
 
     final var packed =
-      VulkanLWJGLDescriptorSetLayoutBindings.packDescriptorSetLayoutBinding(this.stack, binding);
+      VulkanLWJGLDescriptorSetLayoutBindings.pack(this.stack, binding);
 
     Assertions.assertAll(
       () -> {

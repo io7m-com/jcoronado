@@ -60,7 +60,7 @@ public final class VulkanLWJGLDescriptorSetAllocateInfos
     Objects.requireNonNull(info, "info");
 
     final var buffer = VkDescriptorSetAllocateInfo.mallocStack(stack);
-    packDescriptorSetAllocateInfoInto(stack, info, buffer);
+    packInto(stack, info, buffer);
     return buffer;
   }
 
@@ -76,7 +76,7 @@ public final class VulkanLWJGLDescriptorSetAllocateInfos
    * @throws VulkanException On errors
    */
 
-  public static VkDescriptorSetAllocateInfo packDescriptorSetAllocateInfoInto(
+  public static VkDescriptorSetAllocateInfo packInto(
     final MemoryStack stack,
     final VulkanDescriptorSetAllocateInfo info,
     final VkDescriptorSetAllocateInfo buffer)

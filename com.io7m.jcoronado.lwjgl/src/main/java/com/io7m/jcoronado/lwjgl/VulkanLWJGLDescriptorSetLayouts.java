@@ -93,7 +93,7 @@ public final class VulkanLWJGLDescriptorSetLayouts
       final var source = bindings.get(index);
       final var target = vk_bindings.get(index);
       VulkanLWJGLDescriptorSetLayoutBindings
-        .packDescriptorSetLayoutBindingInto(stack, source, target);
+        .packInto(stack, source, target);
     }
 
     return vk_bindings;

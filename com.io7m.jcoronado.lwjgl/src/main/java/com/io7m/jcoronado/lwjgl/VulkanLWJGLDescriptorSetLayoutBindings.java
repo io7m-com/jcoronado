@@ -24,6 +24,8 @@ import org.lwjgl.vulkan.VkDescriptorSetLayoutBinding;
 
 import java.util.Objects;
 
+import static com.io7m.jcoronado.lwjgl.VulkanLWJGLClassChecks.checkInstanceOf;
+
 /**
  * Functions to pack descriptor set layout bindings.
  */
@@ -46,7 +48,7 @@ public final class VulkanLWJGLDescriptorSetLayoutBindings
    * @throws VulkanException On errors
    */
 
-  public static VkDescriptorSetLayoutBinding packDescriptorSetLayoutBinding(
+  public static VkDescriptorSetLayoutBinding pack(
     final MemoryStack stack,
     final VulkanDescriptorSetLayoutBinding binding)
     throws VulkanException
@@ -55,7 +57,7 @@ public final class VulkanLWJGLDescriptorSetLayoutBindings
     Objects.requireNonNull(binding, "binding");
 
     final var buffer = VkDescriptorSetLayoutBinding.mallocStack(stack);
-    packDescriptorSetLayoutBindingInto(stack, binding, buffer);
+    packInto(stack, binding, buffer);
     return buffer;
   }
 
@@ -71,7 +73,7 @@ public final class VulkanLWJGLDescriptorSetLayoutBindings
    * @throws VulkanException On errors
    */
 
-  public static VkDescriptorSetLayoutBinding packDescriptorSetLayoutBindingInto(
+  public static VkDescriptorSetLayoutBinding packInto(
     final MemoryStack stack,
     final VulkanDescriptorSetLayoutBinding source,
     final VkDescriptorSetLayoutBinding target)
@@ -89,9 +91,7 @@ public final class VulkanLWJGLDescriptorSetLayoutBindings
       VulkanLWJGLIntegerArrays.packLongsOrNull(
         stack,
         source.immutableSamplers(),
-        sampler -> VulkanLWJGLClassChecks.checkInstanceOf(
-          sampler,
-          VulkanLWJGLSampler.class).handle());
+        sampler -> checkInstanceOf(sampler, VulkanLWJGLSampler.class).handle());
 
     final var stage_flags =
       VulkanEnumMaps.packValues(source.stageFlags());
