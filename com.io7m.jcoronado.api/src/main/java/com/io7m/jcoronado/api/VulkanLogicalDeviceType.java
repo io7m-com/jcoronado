@@ -195,6 +195,22 @@ public interface VulkanLogicalDeviceType extends VulkanHandleDispatchableType
     throws VulkanException;
 
   /**
+   * Update the contents of a descriptor set object.
+   *
+   * @param descriptor_writes An array of VulkanWriteDescriptorSet structures describing the
+   *                          descriptor sets to write to
+   * @param descriptor_copies An array of VulkanCopyDescriptorSet structures describing the
+   *                          descriptor sets to copy between.
+   *
+   * @throws VulkanException On errors
+   */
+
+  void updateDescriptorSets(
+    List<VulkanWriteDescriptorSet> descriptor_writes,
+    List<VulkanCopyDescriptorSet> descriptor_copies)
+    throws VulkanException;
+
+  /**
    * Create a render pass.
    *
    * @param render_pass_create_info The render pass creation info
@@ -412,5 +428,6 @@ public interface VulkanLogicalDeviceType extends VulkanHandleDispatchableType
     long size,
     Set<VulkanMemoryMapFlag> flags)
     throws VulkanException;
+
 
 }

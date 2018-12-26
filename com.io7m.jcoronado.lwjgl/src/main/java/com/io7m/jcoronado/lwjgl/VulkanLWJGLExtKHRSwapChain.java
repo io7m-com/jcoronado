@@ -83,7 +83,7 @@ public final class VulkanLWJGLExtKHRSwapChain implements VulkanExtKHRSwapChainTy
     return swap_chain.map(chain -> {
       try {
         return Long.valueOf(
-          VulkanLWJGLClassChecks.check(chain, VulkanLWJGLKHRSwapChain.class).chain());
+          VulkanLWJGLClassChecks.checkInstanceOf(chain, VulkanLWJGLKHRSwapChain.class).chain());
       } catch (VulkanIncompatibleClassException e) {
         throw new VulkanUncheckedException(e);
       }
@@ -105,7 +105,7 @@ public final class VulkanLWJGLExtKHRSwapChain implements VulkanExtKHRSwapChainTy
     return VulkanLWJGLIntegerArrays.packLongsOrNull(
       stack,
       semaphores,
-      value -> VulkanLWJGLClassChecks.check(value, VulkanLWJGLSemaphore.class).handle());
+      value -> VulkanLWJGLClassChecks.checkInstanceOf(value, VulkanLWJGLSemaphore.class).handle());
   }
 
   private static IntBuffer packImageIndices(
@@ -124,7 +124,9 @@ public final class VulkanLWJGLExtKHRSwapChain implements VulkanExtKHRSwapChainTy
     return VulkanLWJGLIntegerArrays.packLongsOrNull(
       stack,
       swap_chains,
-      value -> VulkanLWJGLClassChecks.check(value, VulkanLWJGLKHRSwapChain.class).chain());
+      value -> VulkanLWJGLClassChecks.checkInstanceOf(
+        value,
+        VulkanLWJGLKHRSwapChain.class).chain());
   }
 
   @Override
@@ -175,7 +177,7 @@ public final class VulkanLWJGLExtKHRSwapChain implements VulkanExtKHRSwapChainTy
     final long semaphore_handle;
     if (semaphore != null) {
       semaphore_handle =
-        VulkanLWJGLClassChecks.check(semaphore, VulkanLWJGLSemaphore.class).handle();
+        VulkanLWJGLClassChecks.checkInstanceOf(semaphore, VulkanLWJGLSemaphore.class).handle();
     } else {
       semaphore_handle = VK10.VK_NULL_HANDLE;
     }
@@ -183,7 +185,7 @@ public final class VulkanLWJGLExtKHRSwapChain implements VulkanExtKHRSwapChainTy
     final long fence_handle;
     if (fence != null) {
       fence_handle =
-        VulkanLWJGLClassChecks.check(fence, VulkanLWJGLFence.class).handle();
+        VulkanLWJGLClassChecks.checkInstanceOf(fence, VulkanLWJGLFence.class).handle();
     } else {
       fence_handle = VK10.VK_NULL_HANDLE;
     }
@@ -239,12 +241,12 @@ public final class VulkanLWJGLExtKHRSwapChain implements VulkanExtKHRSwapChainTy
     Objects.requireNonNull(info, "info");
 
     final var device =
-      VulkanLWJGLClassChecks.check(in_device, VulkanLWJGLLogicalDevice.class);
+      VulkanLWJGLClassChecks.checkInstanceOf(in_device, VulkanLWJGLLogicalDevice.class);
 
     Objects.requireNonNull(info, "info");
 
     final var surface =
-      VulkanLWJGLClassChecks.check(
+      VulkanLWJGLClassChecks.checkInstanceOf(
         info.surface(),
         VulkanLWJGLExtKHRSurface.VulkanLWJGLExtKHRSurfaceValue.class);
 
@@ -289,7 +291,7 @@ public final class VulkanLWJGLExtKHRSwapChain implements VulkanExtKHRSwapChainTy
     throws VulkanException
   {
     final var queue =
-      VulkanLWJGLClassChecks.check(in_queue, VulkanLWJGLQueue.class);
+      VulkanLWJGLClassChecks.checkInstanceOf(in_queue, VulkanLWJGLQueue.class);
 
     Objects.requireNonNull(present_info, "present_info");
 

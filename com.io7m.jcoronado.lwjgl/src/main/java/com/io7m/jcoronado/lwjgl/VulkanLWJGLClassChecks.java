@@ -28,7 +28,7 @@ final class VulkanLWJGLClassChecks
   }
 
   @SuppressWarnings("unchecked")
-  public static <T> T check(
+  public static <T> T checkInstanceOf(
     final Object object,
     final Class<T> clazz)
     throws VulkanIncompatibleClassException

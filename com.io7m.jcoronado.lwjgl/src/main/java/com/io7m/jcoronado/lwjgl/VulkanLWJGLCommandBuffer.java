@@ -20,9 +20,12 @@ import com.io7m.jcoronado.api.VulkanBufferType;
 import com.io7m.jcoronado.api.VulkanChecks;
 import com.io7m.jcoronado.api.VulkanCommandBufferBeginInfo;
 import com.io7m.jcoronado.api.VulkanCommandBufferType;
+import com.io7m.jcoronado.api.VulkanDescriptorSetType;
 import com.io7m.jcoronado.api.VulkanException;
+import com.io7m.jcoronado.api.VulkanExternallySynchronizedType;
 import com.io7m.jcoronado.api.VulkanIndexType;
 import com.io7m.jcoronado.api.VulkanPipelineBindPoint;
+import com.io7m.jcoronado.api.VulkanPipelineLayoutType;
 import com.io7m.jcoronado.api.VulkanPipelineType;
 import com.io7m.jcoronado.api.VulkanRenderPassBeginInfo;
 import com.io7m.jcoronado.api.VulkanSubpassContents;
@@ -34,6 +37,10 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Objects;
+
+import static com.io7m.jcoronado.lwjgl.VulkanLWJGLClassChecks.checkInstanceOf;
+import static com.io7m.jcoronado.lwjgl.VulkanLWJGLIntegerArrays.packIntsOrNull;
+import static com.io7m.jcoronado.lwjgl.VulkanLWJGLIntegerArrays.packLongs;
 
 /**
  * LWJGL {@link VulkanCommandBufferType}.
@@ -127,9 +134,9 @@ public final class VulkanLWJGLCommandBuffer
     Objects.requireNonNull(contents, "contents");
 
     final var render_pass =
-      VulkanLWJGLClassChecks.check(info.renderPass(), VulkanLWJGLRenderPass.class);
+      checkInstanceOf(info.renderPass(), VulkanLWJGLRenderPass.class);
     final var framebuffer =
-      VulkanLWJGLClassChecks.check(info.framebuffer(), VulkanLWJGLFramebuffer.class);
+      checkInstanceOf(info.framebuffer(), VulkanLWJGLFramebuffer.class);
 
     try (var stack = this.stack_initial.push()) {
       final var packed =
@@ -149,7 +156,7 @@ public final class VulkanLWJGLCommandBuffer
     Objects.requireNonNull(pipeline, "pipeline");
 
     final var pipe =
-      VulkanLWJGLClassChecks.check(pipeline, VulkanLWJGLPipeline.class);
+      checkInstanceOf(pipeline, VulkanLWJGLPipeline.class);
 
     VK10.vkCmdBindPipeline(this.handle, bind_point.value(), pipe.handle());
   }
@@ -173,7 +180,7 @@ public final class VulkanLWJGLCommandBuffer
 
       for (var index = 0; index < buffers_size; ++index) {
         final var cbuffer =
-          VulkanLWJGLClassChecks.check(buffers.get(index), VulkanLWJGLBuffer.class);
+          checkInstanceOf(buffers.get(index), VulkanLWJGLBuffer.class);
         lbuffers.put(index, cbuffer.handle());
       }
       for (var index = 0; index < offsets_size; ++index) {
@@ -194,10 +201,39 @@ public final class VulkanLWJGLCommandBuffer
     Objects.requireNonNull(buffer, "buffer");
     Objects.requireNonNull(index_type, "index_type");
 
-    final var cbuffer =
-      VulkanLWJGLClassChecks.check(buffer, VulkanLWJGLBuffer.class);
+    final var cbuffer = checkInstanceOf(buffer, VulkanLWJGLBuffer.class);
 
     VK10.vkCmdBindIndexBuffer(this.handle, cbuffer.handle(), offset, index_type.value());
+  }
+
+  @Override
+  public @VulkanExternallySynchronizedType void bindDescriptorSets(
+    final VulkanPipelineBindPoint pipeline_bind_point,
+    final VulkanPipelineLayoutType layout,
+    final int first_set,
+    final List<VulkanDescriptorSetType> descriptor_sets,
+    final List<Integer> dynamic_offsets)
+    throws VulkanException
+  {
+    Objects.requireNonNull(pipeline_bind_point, "pipeline_bind_point");
+    Objects.requireNonNull(layout, "layout");
+    Objects.requireNonNull(descriptor_sets, "descriptor_sets");
+    Objects.requireNonNull(dynamic_offsets, "dynamic_offsets");
+
+    final var clayout = checkInstanceOf(layout, VulkanLWJGLPipelineLayout.class);
+
+    try (var stack = this.stack_initial.push()) {
+      VK10.vkCmdBindDescriptorSets(
+        this.handle,
+        pipeline_bind_point.value(),
+        clayout.handle(),
+        first_set,
+        packLongs(
+          stack,
+          descriptor_sets,
+          value -> checkInstanceOf(value, VulkanLWJGLDescriptorSet.class).handle()),
+        packIntsOrNull(stack, dynamic_offsets, Integer::intValue));
+    }
   }
 
   @Override

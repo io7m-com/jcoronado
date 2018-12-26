@@ -129,7 +129,9 @@ public final class VulkanLWJGLGraphicsPipelineCreateInfos
     final VkGraphicsPipelineCreateInfo target)
     throws VulkanIncompatibleClassException
   {
-    final var rpl = VulkanLWJGLClassChecks.check(source.renderPass(), VulkanLWJGLRenderPass.class);
+    final var rpl = VulkanLWJGLClassChecks.checkInstanceOf(
+      source.renderPass(),
+      VulkanLWJGLRenderPass.class);
     target.renderPass(rpl.handle());
   }
 
@@ -139,7 +141,7 @@ public final class VulkanLWJGLGraphicsPipelineCreateInfos
     throws VulkanIncompatibleClassException
   {
     final var layout_l =
-      VulkanLWJGLClassChecks.check(source.layout(), VulkanLWJGLPipelineLayout.class);
+      VulkanLWJGLClassChecks.checkInstanceOf(source.layout(), VulkanLWJGLPipelineLayout.class);
     target.layout(layout_l.handle());
   }
 
@@ -150,7 +152,7 @@ public final class VulkanLWJGLGraphicsPipelineCreateInfos
   {
     final var bp = source.basePipeline();
     if (bp.isPresent()) {
-      final var bppl = VulkanLWJGLClassChecks.check(bp.get(), VulkanLWJGLPipeline.class);
+      final var bppl = VulkanLWJGLClassChecks.checkInstanceOf(bp.get(), VulkanLWJGLPipeline.class);
       target.basePipelineHandle(bppl.handle());
     }
   }

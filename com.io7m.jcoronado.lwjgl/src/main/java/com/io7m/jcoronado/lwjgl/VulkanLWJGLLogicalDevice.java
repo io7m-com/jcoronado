@@ -23,6 +23,7 @@ import com.io7m.jcoronado.api.VulkanCommandBufferCreateInfo;
 import com.io7m.jcoronado.api.VulkanCommandBufferType;
 import com.io7m.jcoronado.api.VulkanCommandPoolCreateInfo;
 import com.io7m.jcoronado.api.VulkanCommandPoolType;
+import com.io7m.jcoronado.api.VulkanCopyDescriptorSet;
 import com.io7m.jcoronado.api.VulkanDescriptorPoolCreateInfo;
 import com.io7m.jcoronado.api.VulkanDescriptorPoolType;
 import com.io7m.jcoronado.api.VulkanDescriptorSetAllocateInfo;
@@ -60,6 +61,7 @@ import com.io7m.jcoronado.api.VulkanSemaphoreType;
 import com.io7m.jcoronado.api.VulkanShaderModuleCreateInfo;
 import com.io7m.jcoronado.api.VulkanShaderModuleType;
 import com.io7m.jcoronado.api.VulkanUncheckedException;
+import com.io7m.jcoronado.api.VulkanWriteDescriptorSet;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.vulkan.VK10;
@@ -276,7 +278,7 @@ public final class VulkanLWJGLLogicalDevice
     this.checkNotClosed();
 
     final var image =
-      VulkanLWJGLClassChecks.check(info.image(), VulkanLWJGLImage.class);
+      VulkanLWJGLClassChecks.checkInstanceOf(info.image(), VulkanLWJGLImage.class);
 
     try (var stack = this.stack_initial.push()) {
       final var create_info =
@@ -441,6 +443,27 @@ public final class VulkanLWJGLLogicalDevice
   }
 
   @Override
+  public void updateDescriptorSets(
+    final List<VulkanWriteDescriptorSet> descriptor_writes,
+    final List<VulkanCopyDescriptorSet> descriptor_copies)
+    throws VulkanException
+  {
+    Objects.requireNonNull(descriptor_writes, "descriptor_writes");
+    Objects.requireNonNull(descriptor_copies, "descriptor_copies");
+
+    this.checkNotClosed();
+
+    try (var stack = this.stack_initial.push()) {
+      final var writes =
+        VulkanLWJGLWriteDescriptorSets.packList(stack, descriptor_writes);
+      final var copies =
+        VulkanLWJGLCopyDescriptorSets.packList(stack, descriptor_copies);
+
+      VK10.vkUpdateDescriptorSets(this.device, writes, copies);
+    }
+  }
+
+  @Override
   public VulkanRenderPassType createRenderPass(
     final VulkanRenderPassCreateInfo render_pass_create_info)
     throws VulkanException
@@ -532,7 +555,7 @@ public final class VulkanLWJGLLogicalDevice
           .stream()
           .map(view -> {
             try {
-              return VulkanLWJGLClassChecks.check(view, VulkanLWJGLImageView.class);
+              return VulkanLWJGLClassChecks.checkInstanceOf(view, VulkanLWJGLImageView.class);
             } catch (VulkanIncompatibleClassException e) {
               throw new VulkanUncheckedException(e);
             }
@@ -540,7 +563,9 @@ public final class VulkanLWJGLLogicalDevice
           .collect(Collectors.toList());
 
       final var pass =
-        VulkanLWJGLClassChecks.check(create_info.renderPass(), VulkanLWJGLRenderPass.class);
+        VulkanLWJGLClassChecks.checkInstanceOf(
+          create_info.renderPass(),
+          VulkanLWJGLRenderPass.class);
 
       try (var stack = this.stack_initial.push()) {
         final var info =
@@ -612,7 +637,7 @@ public final class VulkanLWJGLLogicalDevice
     this.checkNotClosed();
 
     final var pool =
-      VulkanLWJGLClassChecks.check(create_info.pool(), VulkanLWJGLCommandPool.class);
+      VulkanLWJGLClassChecks.checkInstanceOf(create_info.pool(), VulkanLWJGLCommandPool.class);
 
     try (var stack = this.stack_initial.push()) {
       final var packed =
@@ -719,7 +744,7 @@ public final class VulkanLWJGLLogicalDevice
       final var array = stack.mallocLong(fences.size());
       for (var index = 0; index < fences.size(); ++index) {
         final var fence =
-          VulkanLWJGLClassChecks.check(fences.get(index), VulkanLWJGLFence.class);
+          VulkanLWJGLClassChecks.checkInstanceOf(fences.get(index), VulkanLWJGLFence.class);
         array.put(index, fence.handle());
       }
 
@@ -797,7 +822,7 @@ public final class VulkanLWJGLLogicalDevice
     this.checkNotClosed();
 
     final var cbuffer =
-      VulkanLWJGLClassChecks.check(buffer, VulkanLWJGLBuffer.class);
+      VulkanLWJGLClassChecks.checkInstanceOf(buffer, VulkanLWJGLBuffer.class);
 
     try (var stack = this.stack_initial.push()) {
       final var info = VkMemoryRequirements.mallocStack(stack);
@@ -862,9 +887,9 @@ public final class VulkanLWJGLLogicalDevice
     Objects.requireNonNull(device_memory, "device_memory");
 
     final var cbuffer =
-      VulkanLWJGLClassChecks.check(buffer, VulkanLWJGLBuffer.class);
+      VulkanLWJGLClassChecks.checkInstanceOf(buffer, VulkanLWJGLBuffer.class);
     final var cmemory =
-      VulkanLWJGLClassChecks.check(device_memory, VulkanLWJGLDeviceMemory.class);
+      VulkanLWJGLClassChecks.checkInstanceOf(device_memory, VulkanLWJGLDeviceMemory.class);
 
     VulkanChecks.checkReturnCode(
       VK10.vkBindBufferMemory(this.device, cbuffer.handle(), cmemory.handle(), offset),
@@ -883,7 +908,7 @@ public final class VulkanLWJGLLogicalDevice
     Objects.requireNonNull(flags, "flags");
 
     final var cmemory =
-      VulkanLWJGLClassChecks.check(memory, VulkanLWJGLDeviceMemory.class);
+      VulkanLWJGLClassChecks.checkInstanceOf(memory, VulkanLWJGLDeviceMemory.class);
 
     final var int_flags = VulkanEnumMaps.packValues(flags);
     final var int_handle = cmemory.handle();

@@ -21,18 +21,19 @@ import com.io7m.jcoronado.api.VulkanApplicationInfo;
 import com.io7m.jcoronado.api.VulkanAttachmentDescription;
 import com.io7m.jcoronado.api.VulkanAttachmentReference;
 import com.io7m.jcoronado.api.VulkanBufferCreateInfo;
+import com.io7m.jcoronado.api.VulkanBufferType;
 import com.io7m.jcoronado.api.VulkanClearValueColorFloatingPoint;
 import com.io7m.jcoronado.api.VulkanCommandBufferBeginInfo;
 import com.io7m.jcoronado.api.VulkanCommandBufferCreateInfo;
 import com.io7m.jcoronado.api.VulkanCommandBufferType;
 import com.io7m.jcoronado.api.VulkanCommandPoolCreateInfo;
 import com.io7m.jcoronado.api.VulkanComponentMapping;
+import com.io7m.jcoronado.api.VulkanDescriptorBufferInfo;
 import com.io7m.jcoronado.api.VulkanDescriptorPoolCreateInfo;
 import com.io7m.jcoronado.api.VulkanDescriptorPoolSize;
 import com.io7m.jcoronado.api.VulkanDescriptorSetAllocateInfo;
 import com.io7m.jcoronado.api.VulkanDescriptorSetLayoutBinding;
 import com.io7m.jcoronado.api.VulkanDescriptorSetLayoutCreateInfo;
-import com.io7m.jcoronado.api.VulkanDescriptorSetLayoutType;
 import com.io7m.jcoronado.api.VulkanException;
 import com.io7m.jcoronado.api.VulkanExtensionProperties;
 import com.io7m.jcoronado.api.VulkanExtensions;
@@ -83,6 +84,7 @@ import com.io7m.jcoronado.api.VulkanVersions;
 import com.io7m.jcoronado.api.VulkanVertexInputAttributeDescription;
 import com.io7m.jcoronado.api.VulkanVertexInputBindingDescription;
 import com.io7m.jcoronado.api.VulkanViewport;
+import com.io7m.jcoronado.api.VulkanWriteDescriptorSet;
 import com.io7m.jcoronado.extensions.api.VulkanExtKHRSurfaceType;
 import com.io7m.jcoronado.extensions.api.VulkanExtKHRSwapChainType;
 import com.io7m.jcoronado.extensions.api.VulkanExtKHRSwapChainType.VulkanKHRSwapChainType;
@@ -124,6 +126,7 @@ import static com.io7m.jcoronado.api.VulkanAttachmentLoadOp.VK_ATTACHMENT_LOAD_O
 import static com.io7m.jcoronado.api.VulkanAttachmentStoreOp.VK_ATTACHMENT_STORE_OP_DONT_CARE;
 import static com.io7m.jcoronado.api.VulkanAttachmentStoreOp.VK_ATTACHMENT_STORE_OP_STORE;
 import static com.io7m.jcoronado.api.VulkanBufferUsageFlag.VK_BUFFER_USAGE_INDEX_BUFFER_BIT;
+import static com.io7m.jcoronado.api.VulkanBufferUsageFlag.VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT;
 import static com.io7m.jcoronado.api.VulkanBufferUsageFlag.VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
 import static com.io7m.jcoronado.api.VulkanCommandBufferLevel.VK_COMMAND_BUFFER_LEVEL_PRIMARY;
 import static com.io7m.jcoronado.api.VulkanCommandBufferUsageFlag.VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT;
@@ -491,6 +494,48 @@ public final class HelloVulkanWithVMA
       final var shaders = resources.add(createShaderModule(device, alloc, data));
 
       /*
+       * Allocate one uniform buffer per frame.
+       */
+
+      final var vma_alloc_create_info =
+        VMAAllocationCreateInfo.builder()
+          .setUsage(VMA_MEMORY_USAGE_GPU_ONLY)
+          .addRequiredFlags(VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT)
+          .setMemoryTypeBits(0L)
+          .build();
+
+      final var uniform_buffer_size = 4L;
+
+      final var uniform_buffer_create_info =
+        VulkanBufferCreateInfo.builder()
+          .setSize(uniform_buffer_size)
+          .addUsageFlags(VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT)
+          .setSharingMode(VK_SHARING_MODE_EXCLUSIVE)
+          .build();
+
+      final var uniform_buffers = new ArrayList<VulkanBufferType>(swap_chain.images().size());
+      for (var index = 0; index < swap_chain.images().size(); ++index) {
+        final var vma_uniform_buffer_result =
+          vma_allocator.createBuffer(vma_alloc_create_info, uniform_buffer_create_info);
+
+        final var uniform_buffer =
+          resources.add(vma_uniform_buffer_result.result());
+
+        LOG.trace("allocated uniform buffer: {}", uniform_buffer);
+        uniform_buffers.add(uniform_buffer);
+
+        /*
+         * Populate uniform buffer by mapping the memory and writing to it. Closing the mapped
+         * memory will automatically unmap it.
+         */
+
+        try (var uniform_map = vma_allocator.mapMemory(vma_uniform_buffer_result.allocation())) {
+          final var buffer = uniform_map.asByteBuffer();
+          buffer.putFloat(0, 1.0f);
+        }
+      }
+
+      /*
        * Configure descriptor sets for the shader.
        */
 
@@ -499,7 +544,7 @@ public final class HelloVulkanWithVMA
           .setBinding(0)
           .setDescriptorType(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER)
           .setDescriptorCount(1)
-          .addStageFlags(VK_SHADER_STAGE_VERTEX_BIT)
+          .addStageFlags(VK_SHADER_STAGE_FRAGMENT_BIT)
           .build();
 
       final var descriptor_set_layout_create_info =
@@ -535,6 +580,28 @@ public final class HelloVulkanWithVMA
             .setSetLayouts(descriptor_set_layouts)
             .setDescriptorPool(descriptor_pool)
             .build());
+
+      for (var index = 0; index < swap_chain.images().size(); ++index) {
+        final var buffer_info =
+          VulkanDescriptorBufferInfo.builder()
+            .setBuffer(uniform_buffers.get(index))
+            .setOffset(0L)
+            .setRange(uniform_buffer_size)
+            .build();
+
+        final var descriptor_set_write =
+          VulkanWriteDescriptorSet.builder()
+            .setDestinationBinding(0)
+            .setDestinationArrayElement(0)
+            .setDestinationSet(descriptor_sets.get(index))
+            .setDescriptorType(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER)
+            .setDescriptorCount(1)
+            .addBufferInfos(buffer_info)
+            .build();
+
+        LOG.trace("updating descriptor set {}", Integer.valueOf(index));
+        device.updateDescriptorSets(List.of(descriptor_set_write), List.of());
+      }
 
       /*
        * Configure the render pass.
@@ -614,7 +681,7 @@ public final class HelloVulkanWithVMA
         VulkanPipelineShaderStageCreateInfo.builder()
           .setStage(VK_SHADER_STAGE_FRAGMENT_BIT)
           .setModule(shaders)
-          .setShaderEntryPoint("R3_clip_triangle_frag_main")
+          .setShaderEntryPoint("R3_clip_triangle_frag_ub_main")
           .build();
 
       final var vertex_binding_description =
@@ -691,6 +758,7 @@ public final class HelloVulkanWithVMA
 
       final var pipeline_layout_info =
         VulkanPipelineLayoutCreateInfo.builder()
+          .addSetLayouts(descriptor_set_layout)
           .build();
 
       final var pipeline_layout =
@@ -754,13 +822,6 @@ public final class HelloVulkanWithVMA
           .setSize(3L * (long) VERTEX_SIZE)
           .addUsageFlags(VK_BUFFER_USAGE_VERTEX_BUFFER_BIT)
           .setSharingMode(VK_SHARING_MODE_EXCLUSIVE)
-          .build();
-
-      final var vma_alloc_create_info =
-        VMAAllocationCreateInfo.builder()
-          .setUsage(VMA_MEMORY_USAGE_GPU_ONLY)
-          .addRequiredFlags(VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT)
-          .setMemoryTypeBits(0L)
           .build();
 
       final var vma_vertex_buffer_result =
@@ -899,6 +960,12 @@ public final class HelloVulkanWithVMA
         graphics_command_buffer.bindVertexBuffers(
           0, 1, List.of(vertex_buffer), List.of(Long.valueOf(0L)));
         graphics_command_buffer.bindIndexBuffer(index_buffer, 0L, VK_INDEX_TYPE_UINT16);
+        graphics_command_buffer.bindDescriptorSets(
+          VK_PIPELINE_BIND_POINT_GRAPHICS,
+          pipeline_layout,
+          0,
+          List.of(descriptor_sets.get(index)),
+          List.of());
         graphics_command_buffer.drawIndexed(3, 1, 0, 0, 0);
         graphics_command_buffer.endRenderPass();
         graphics_command_buffer.endCommandBuffer();

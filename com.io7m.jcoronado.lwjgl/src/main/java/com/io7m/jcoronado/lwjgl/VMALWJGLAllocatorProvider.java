@@ -78,11 +78,13 @@ public final class VMALWJGLAllocatorProvider implements VMAAllocatorProviderType
     Objects.requireNonNull(info, "info");
 
     final var device =
-      VulkanLWJGLClassChecks.check(info.logicalDevice(), VulkanLWJGLLogicalDevice.class);
+      VulkanLWJGLClassChecks.checkInstanceOf(info.logicalDevice(), VulkanLWJGLLogicalDevice.class);
     final var phys_device =
-      VulkanLWJGLClassChecks.check(device.physicalDevice(), VulkanLWJGLPhysicalDevice.class);
+      VulkanLWJGLClassChecks.checkInstanceOf(
+        device.physicalDevice(),
+        VulkanLWJGLPhysicalDevice.class);
     final var instance =
-      VulkanLWJGLClassChecks.check(phys_device.instance(), VulkanLWJGLInstance.class);
+      VulkanLWJGLClassChecks.checkInstanceOf(phys_device.instance(), VulkanLWJGLInstance.class);
 
     try (var stack = this.initial_stack.push()) {
       final var functions = VmaVulkanFunctions.mallocStack(stack);

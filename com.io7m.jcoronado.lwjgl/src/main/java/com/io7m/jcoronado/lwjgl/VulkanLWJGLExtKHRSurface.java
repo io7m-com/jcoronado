@@ -133,7 +133,7 @@ public final class VulkanLWJGLExtKHRSurface implements VulkanExtKHRSurfaceType
     throws VulkanException
   {
     final var instance_lwjgl =
-      VulkanLWJGLClassChecks.check(instance, VulkanLWJGLInstance.class);
+      VulkanLWJGLClassChecks.checkInstanceOf(instance, VulkanLWJGLInstance.class);
 
     if (window == 0L) {
       throw new NullPointerException("Window address is 0x0");
@@ -162,9 +162,9 @@ public final class VulkanLWJGLExtKHRSurface implements VulkanExtKHRSurfaceType
     throws VulkanException
   {
     final var device =
-      VulkanLWJGLClassChecks.check(in_device, VulkanLWJGLPhysicalDevice.class);
+      VulkanLWJGLClassChecks.checkInstanceOf(in_device, VulkanLWJGLPhysicalDevice.class);
     final var surface =
-      VulkanLWJGLClassChecks.check(in_surface, VulkanLWJGLExtKHRSurfaceValue.class);
+      VulkanLWJGLClassChecks.checkInstanceOf(in_surface, VulkanLWJGLExtKHRSurfaceValue.class);
 
     device.checkNotClosed();
 
@@ -196,9 +196,9 @@ public final class VulkanLWJGLExtKHRSurface implements VulkanExtKHRSurfaceType
     throws VulkanException
   {
     final var device =
-      VulkanLWJGLClassChecks.check(in_device, VulkanLWJGLPhysicalDevice.class);
+      VulkanLWJGLClassChecks.checkInstanceOf(in_device, VulkanLWJGLPhysicalDevice.class);
     final var surface =
-      VulkanLWJGLClassChecks.check(in_surface, VulkanLWJGLExtKHRSurfaceValue.class);
+      VulkanLWJGLClassChecks.checkInstanceOf(in_surface, VulkanLWJGLExtKHRSurfaceValue.class);
 
     device.checkNotClosed();
 
@@ -255,9 +255,9 @@ public final class VulkanLWJGLExtKHRSurface implements VulkanExtKHRSurfaceType
     throws VulkanException
   {
     final var device =
-      VulkanLWJGLClassChecks.check(in_device, VulkanLWJGLPhysicalDevice.class);
+      VulkanLWJGLClassChecks.checkInstanceOf(in_device, VulkanLWJGLPhysicalDevice.class);
     final var surface =
-      VulkanLWJGLClassChecks.check(in_surface, VulkanLWJGLExtKHRSurfaceValue.class);
+      VulkanLWJGLClassChecks.checkInstanceOf(in_surface, VulkanLWJGLExtKHRSurfaceValue.class);
 
     device.checkNotClosed();
 
@@ -294,9 +294,9 @@ public final class VulkanLWJGLExtKHRSurface implements VulkanExtKHRSurfaceType
     throws VulkanException
   {
     final var device =
-      VulkanLWJGLClassChecks.check(in_device, VulkanLWJGLPhysicalDevice.class);
+      VulkanLWJGLClassChecks.checkInstanceOf(in_device, VulkanLWJGLPhysicalDevice.class);
     final var surface =
-      VulkanLWJGLClassChecks.check(in_surface, VulkanLWJGLExtKHRSurfaceValue.class);
+      VulkanLWJGLClassChecks.checkInstanceOf(in_surface, VulkanLWJGLExtKHRSurfaceValue.class);
 
     device.checkNotClosed();
 

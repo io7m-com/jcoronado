@@ -94,7 +94,9 @@ public final class VulkanLWJGLSubmitInfos
     return VulkanLWJGLIntegerArrays.packLongsOrNull(
       stack,
       semaphores,
-      semaphore -> VulkanLWJGLClassChecks.check(semaphore, VulkanLWJGLSemaphore.class).handle());
+      semaphore -> VulkanLWJGLClassChecks.checkInstanceOf(
+        semaphore,
+        VulkanLWJGLSemaphore.class).handle());
   }
 
   private static PointerBuffer packCommandBuffers(
@@ -106,7 +108,7 @@ public final class VulkanLWJGLSubmitInfos
       stack,
       command_buffers,
       command_buffer ->
-        VulkanLWJGLClassChecks.check(command_buffer, VulkanLWJGLCommandBuffer.class)
+        VulkanLWJGLClassChecks.checkInstanceOf(command_buffer, VulkanLWJGLCommandBuffer.class)
           .handle()
           .address());
   }

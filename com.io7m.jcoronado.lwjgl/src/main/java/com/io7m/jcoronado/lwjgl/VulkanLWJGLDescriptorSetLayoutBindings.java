@@ -89,7 +89,9 @@ public final class VulkanLWJGLDescriptorSetLayoutBindings
       VulkanLWJGLIntegerArrays.packLongsOrNull(
         stack,
         source.immutableSamplers(),
-        sampler -> VulkanLWJGLClassChecks.check(sampler, VulkanLWJGLSampler.class).handle());
+        sampler -> VulkanLWJGLClassChecks.checkInstanceOf(
+          sampler,
+          VulkanLWJGLSampler.class).handle());
 
     final var stage_flags =
       VulkanEnumMaps.packValues(source.stageFlags());

@@ -31,6 +31,9 @@
       <Class name="com.io7m.jcoronado.api.VulkanComponentMapping"/>
       <Class name="com.io7m.jcoronado.api.VulkanComputeWorkGroupCount"/>
       <Class name="com.io7m.jcoronado.api.VulkanComputeWorkGroupSize"/>
+      <Class name="com.io7m.jcoronado.api.VulkanCopyDescriptorSet"/>
+      <Class name="com.io7m.jcoronado.api.VulkanDescriptorBufferInfo"/>
+      <Class name="com.io7m.jcoronado.api.VulkanDescriptorImageInfo"/>
       <Class name="com.io7m.jcoronado.api.VulkanDescriptorPoolCreateInfo"/>
       <Class name="com.io7m.jcoronado.api.VulkanDescriptorPoolSize"/>
       <Class name="com.io7m.jcoronado.api.VulkanDescriptorSetAllocateInfo"/>
@@ -92,6 +95,7 @@
       <Class name="com.io7m.jcoronado.api.VulkanViewport"/>
       <Class name="com.io7m.jcoronado.api.VulkanViewportBoundsRange"/>
       <Class name="com.io7m.jcoronado.api.VulkanViewportDimensions"/>
+      <Class name="com.io7m.jcoronado.api.VulkanWriteDescriptorSet"/>
     </Or>
   </Match>
 

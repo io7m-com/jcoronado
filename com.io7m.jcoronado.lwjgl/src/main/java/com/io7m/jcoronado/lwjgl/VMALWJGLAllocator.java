@@ -220,7 +220,7 @@ public final class VMALWJGLAllocator extends VulkanLWJGLHandle implements VMAAll
     Objects.requireNonNull(allocation, "allocation");
 
     final VMALWJGLAllocation<?> lwjgl_allocation =
-      VulkanLWJGLClassChecks.check(allocation, VMALWJGLAllocation.class);
+      VulkanLWJGLClassChecks.checkInstanceOf(allocation, VMALWJGLAllocation.class);
 
     try (var stack = this.stack_initial.push()) {
       final var ptr = stack.mallocPointer(1);

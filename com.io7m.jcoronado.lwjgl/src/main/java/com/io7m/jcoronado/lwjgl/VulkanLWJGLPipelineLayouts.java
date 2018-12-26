@@ -112,7 +112,7 @@ public final class VulkanLWJGLPipelineLayouts
     return VulkanLWJGLIntegerArrays.packLongsOrNull(
       stack,
       layouts,
-      layout -> VulkanLWJGLClassChecks.check(
+      layout -> VulkanLWJGLClassChecks.checkInstanceOf(
         layout,
         VulkanLWJGLDescriptorSetLayout.class).handle());
   }

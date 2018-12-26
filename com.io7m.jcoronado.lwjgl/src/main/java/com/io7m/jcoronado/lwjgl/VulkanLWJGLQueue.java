@@ -151,7 +151,7 @@ public final class VulkanLWJGLQueue
 
     final long cfence;
     if (fence.isPresent()) {
-      cfence = VulkanLWJGLClassChecks.check(fence.get(), VulkanLWJGLFence.class).handle();
+      cfence = VulkanLWJGLClassChecks.checkInstanceOf(fence.get(), VulkanLWJGLFence.class).handle();
     } else {
       cfence = VK10.VK_NULL_HANDLE;
     }

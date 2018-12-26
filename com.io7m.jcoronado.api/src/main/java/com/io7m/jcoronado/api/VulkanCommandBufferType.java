@@ -106,6 +106,27 @@ public interface VulkanCommandBufferType extends VulkanHandleDispatchableType
     throws VulkanException;
 
   /**
+   * Bind descriptor sets to a command buffer.
+   *
+   * @param pipeline_bind_point The pipeline bind point
+   * @param layout              The pipeline layout
+   * @param first_set           The set number of the first descriptor set to be bound
+   * @param descriptor_sets     The descriptor sets
+   * @param dynamic_offsets     An array of dynamic offsets
+   *
+   * @throws VulkanException On errors
+   */
+
+  @VulkanExternallySynchronizedType
+  void bindDescriptorSets(
+    VulkanPipelineBindPoint pipeline_bind_point,
+    VulkanPipelineLayoutType layout,
+    int first_set,
+    List<VulkanDescriptorSetType> descriptor_sets,
+    List<Integer> dynamic_offsets)
+    throws VulkanException;
+
+  /**
    * Draw primitives.
    *
    * @param vertex_count   The number of vertices to draw.
