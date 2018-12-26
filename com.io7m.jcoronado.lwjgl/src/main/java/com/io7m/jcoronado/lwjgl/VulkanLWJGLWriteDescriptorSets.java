@@ -18,8 +18,8 @@ package com.io7m.jcoronado.lwjgl;
 
 import com.io7m.jcoronado.api.VulkanBufferViewType;
 import com.io7m.jcoronado.api.VulkanException;
+import com.io7m.jcoronado.api.VulkanIncompatibleClassException;
 import com.io7m.jcoronado.api.VulkanWriteDescriptorSet;
-import com.io7m.junreachable.UnimplementedCodeException;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.vulkan.VK10;
 import org.lwjgl.vulkan.VkWriteDescriptorSet;
@@ -90,15 +90,17 @@ public final class VulkanLWJGLWriteDescriptorSets
     final var dst_set =
       checkInstanceOf(source.destinationSet(), VulkanLWJGLDescriptorSet.class);
 
+    final var buffer_infos = source.bufferInfos();
+    final var image_infos = source.imageInfos();
+    final var texel_views = source.texelBufferViews();
+
     return target
       .sType(VK10.VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET)
       .pNext(0L)
-      .pBufferInfo(packListOrNull(stack, source.bufferInfos()))
-      .pImageInfo(packListOrNull(stack, source.imageInfos()))
+      .pBufferInfo(packListOrNull(stack, buffer_infos))
+      .pImageInfo(packListOrNull(stack, image_infos))
       .pTexelBufferView(packLongsOrNull(
-        stack,
-        source.texelBufferViews(),
-        VulkanLWJGLWriteDescriptorSets::viewHandle))
+        stack, texel_views, VulkanLWJGLWriteDescriptorSets::viewHandle))
       .descriptorType(source.descriptorType().value())
       .dstArrayElement(source.destinationArrayElement())
       .dstBinding(source.destinationBinding())
@@ -132,9 +134,8 @@ public final class VulkanLWJGLWriteDescriptorSets
   }
 
   private static long viewHandle(final VulkanBufferViewType value)
+    throws VulkanIncompatibleClassException
   {
-    Objects.requireNonNull(value, "value");
-
-    throw new UnimplementedCodeException();
+    return checkInstanceOf(value, VulkanLWJGLBufferView.class).handle();
   }
 }
