@@ -36,6 +36,7 @@ import org.lwjgl.system.MemoryUtil;
 import org.lwjgl.util.vma.Vma;
 import org.lwjgl.util.vma.VmaAllocationCreateInfo;
 import org.lwjgl.util.vma.VmaAllocationInfo;
+import org.lwjgl.vulkan.VK10;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -325,7 +326,8 @@ public final class VMALWJGLAllocator extends VulkanLWJGLHandle implements VMAAll
         Vma.vmaMapMemory(this.allocator_address, lwjgl_allocation.allocation, ptr),
         "vmaMapMemory");
 
-      return new VMALWJGLMappedMemory(this, ptr.get(0), allocation.info().size());
+      return new VMALWJGLMappedMemory(
+        this, lwjgl_allocation, ptr.get(0), allocation.info().size());
     }
   }
 
@@ -460,17 +462,21 @@ public final class VMALWJGLAllocator extends VulkanLWJGLHandle implements VMAAll
   {
     private final long address;
     private final VMALWJGLAllocator allocator;
+    private final VMALWJGLAllocation<?> allocation;
     private boolean mapped;
     private ByteBuffer buffer;
 
     VMALWJGLMappedMemory(
       final VMALWJGLAllocator in_allocator,
+      final VMALWJGLAllocation<?> in_allocation,
       final long in_address,
       final long in_size)
     {
       super(USER_OWNED, in_allocator.host_allocator_proxy);
 
       this.allocator = Objects.requireNonNull(in_allocator, "allocator");
+      this.allocation = Objects.requireNonNull(in_allocation, "allocation");
+
       this.address = in_address;
       this.mapped = true;
       this.buffer = MemoryUtil.memByteBuffer(in_address, Math.toIntExact(in_size));
@@ -480,6 +486,26 @@ public final class VMALWJGLAllocator extends VulkanLWJGLHandle implements VMAAll
     public boolean isMapped()
     {
       return this.mapped;
+    }
+
+    @Override
+    public void flushRange(
+      final long offset,
+      final long size)
+    {
+      if (this.mapped) {
+        Vma.vmaFlushAllocation(
+          this.allocator.allocator_address,
+          this.allocation.allocation,
+          offset,
+          size);
+      }
+    }
+
+    @Override
+    public void flush()
+    {
+      this.flushRange(0L, VK10.VK_WHOLE_SIZE);
     }
 
     @Override

@@ -16,6 +16,7 @@
 
 package com.io7m.jcoronado.lwjgl;
 
+import com.io7m.jcoronado.api.VulkanException;
 import com.io7m.jcoronado.api.VulkanMappedMemoryType;
 import org.lwjgl.system.MemoryUtil;
 import org.lwjgl.vulkan.VK10;
@@ -38,16 +39,19 @@ public final class VulkanLWJGLMappedMemory implements VulkanMappedMemoryType
   private final VkDevice device;
   private final ByteBuffer buffer;
   private final VulkanLWJGLDeviceMemory memory;
+  private final VulkanLWJGLFlushRangedFunctionType flush;
   private boolean mapped;
 
   VulkanLWJGLMappedMemory(
     final VkDevice in_device,
     final VulkanLWJGLDeviceMemory in_cmemory,
+    final VulkanLWJGLFlushRangedFunctionType flush_callback,
     final long in_address,
     final long in_size)
   {
     this.device = Objects.requireNonNull(in_device, "device");
     this.memory = Objects.requireNonNull(in_cmemory, "memory");
+    this.flush = Objects.requireNonNull(flush_callback, "flush_callback");
     this.mapped = true;
     this.buffer = MemoryUtil.memByteBuffer(in_address, Math.toIntExact(in_size));
   }
@@ -56,6 +60,26 @@ public final class VulkanLWJGLMappedMemory implements VulkanMappedMemoryType
   public boolean isMapped()
   {
     return false;
+  }
+
+  @Override
+  public void flushRange(
+    final long offset,
+    final long size)
+    throws VulkanException
+  {
+    if (this.mapped) {
+      this.flush.flushRange(this.memory, offset, size);
+    }
+  }
+
+  @Override
+  public void flush()
+    throws VulkanException
+  {
+    if (this.mapped) {
+      this.flush.flushRange(this.memory, 0L, VK10.VK_WHOLE_SIZE);
+    }
   }
 
   @Override

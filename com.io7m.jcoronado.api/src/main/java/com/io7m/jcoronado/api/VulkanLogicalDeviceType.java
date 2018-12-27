@@ -148,6 +148,35 @@ public interface VulkanLogicalDeviceType extends VulkanHandleDispatchableType
   }
 
   /**
+   * Flush mapped memory ranges.
+   *
+   * @param ranges The ranges
+   *
+   * @throws VulkanException On errors
+   */
+
+  @VulkanAPIFunctionType(vulkanFunction = "vkFlushMappedMemoryRanges")
+  void flushMappedMemoryRanges(
+    List<VulkanMappedMemoryRange> ranges)
+    throws VulkanException;
+
+  /**
+   * Flush mapped memory ranges.
+   *
+   * @param range The range
+   *
+   * @throws VulkanException On errors
+   */
+
+  @VulkanAPIFunctionType(vulkanFunction = "vkFlushMappedMemoryRanges")
+  default void flushMappedMemoryRange(
+    final VulkanMappedMemoryRange range)
+    throws VulkanException
+  {
+    this.flushMappedMemoryRanges(List.of(Objects.requireNonNull(range, "range")));
+  }
+
+  /**
    * Create a pipeline layout.
    *
    * @param info The pipeline layout creation info

@@ -50,6 +50,7 @@ import com.io7m.jcoronado.api.VulkanImageViewType;
 import com.io7m.jcoronado.api.VulkanIncompatibleClassException;
 import com.io7m.jcoronado.api.VulkanLogicalDeviceCreateInfo;
 import com.io7m.jcoronado.api.VulkanLogicalDeviceType;
+import com.io7m.jcoronado.api.VulkanMappedMemoryRange;
 import com.io7m.jcoronado.api.VulkanMappedMemoryType;
 import com.io7m.jcoronado.api.VulkanMemoryAllocateInfo;
 import com.io7m.jcoronado.api.VulkanMemoryMapFlag;
@@ -305,6 +306,24 @@ public final class VulkanLWJGLLogicalDevice
       }
 
       return new VulkanLWJGLImageView(this.device, view_handle, this.hostAllocatorProxy());
+    }
+  }
+
+  @Override
+  public void flushMappedMemoryRanges(
+    final List<VulkanMappedMemoryRange> ranges)
+    throws VulkanException
+  {
+    Objects.requireNonNull(ranges, "ranges");
+
+    this.checkNotClosed();
+
+    try (var stack = this.stack_initial.push()) {
+      VulkanChecks.checkReturnCode(
+        VK10.vkFlushMappedMemoryRanges(
+          this.device,
+          VulkanLWJGLMappedMemoryRanges.packList(stack, ranges)),
+        "vkFlushMappedMemoryRanges");
     }
   }
 
@@ -1020,7 +1039,13 @@ public final class VulkanLWJGLLogicalDevice
         Long.toUnsignedString(address, 16));
     }
 
-    return new VulkanLWJGLMappedMemory(this.device, cmemory, address, size);
+    return new VulkanLWJGLMappedMemory(
+      this.device,
+      cmemory,
+      (map_mem, map_off, map_size) ->
+        this.flushMappedMemoryRange(VulkanMappedMemoryRange.of(map_mem, map_off, map_size)),
+      address,
+      size);
   }
 
   @Override

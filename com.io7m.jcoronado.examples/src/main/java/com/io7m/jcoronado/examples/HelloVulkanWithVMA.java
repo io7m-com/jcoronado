@@ -977,6 +977,7 @@ public final class HelloVulkanWithVMA
 
     try (var map = vma_allocator.mapMemory(staging_buffer_result.allocation())) {
       final var bytes = map.asByteBuffer();
+      map.flush();
     }
 
     return staging_buffer_result;
@@ -1299,11 +1300,13 @@ public final class HelloVulkanWithVMA
      * memory will automatically unmap it.
      */
 
-    try (var index_mapped = vma_allocator.mapMemory(vma_index_buffer_result.allocation())) {
-      final var buffer = index_mapped.asByteBuffer();
+    try (var map = vma_allocator.mapMemory(vma_index_buffer_result.allocation())) {
+      final var buffer = map.asByteBuffer();
       buffer.putShort(0, (short) 0);
       buffer.putShort(2, (short) 1);
       buffer.putShort(4, (short) 2);
+
+      map.flush();
     }
     return index_buffer;
   }
@@ -1344,8 +1347,8 @@ public final class HelloVulkanWithVMA
      * memory will automatically unmap it.
      */
 
-    try (var vertex_mapped = vma_allocator.mapMemory(vma_vertex_buffer_result.allocation())) {
-      final var buffer = vertex_mapped.asByteBuffer();
+    try (var map = vma_allocator.mapMemory(vma_vertex_buffer_result.allocation())) {
+      final var buffer = map.asByteBuffer();
 
       final var v0 = VERTICES.get(0);
       buffer.putFloat(0, (float) v0.x);
@@ -1367,6 +1370,8 @@ public final class HelloVulkanWithVMA
       buffer.putFloat(48, (float) v2.r);
       buffer.putFloat(52, (float) v2.g);
       buffer.putFloat(56, (float) v2.b);
+
+      map.flush();
     }
     return vertex_buffer;
   }
@@ -1411,9 +1416,10 @@ public final class HelloVulkanWithVMA
        * memory will automatically unmap it.
        */
 
-      try (var uniform_map = vma_allocator.mapMemory(vma_uniform_buffer_result.allocation())) {
-        final var buffer = uniform_map.asByteBuffer();
+      try (var map = vma_allocator.mapMemory(vma_uniform_buffer_result.allocation())) {
+        final var buffer = map.asByteBuffer();
         buffer.putFloat(0, 1.0f);
+        map.flush();
       }
     }
     return uniform_buffers;

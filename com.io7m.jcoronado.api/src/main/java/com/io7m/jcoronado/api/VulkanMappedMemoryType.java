@@ -31,6 +31,33 @@ public interface VulkanMappedMemoryType extends AutoCloseable
   boolean isMapped();
 
   /**
+   * Flush the given memory range.
+   *
+   * @param offset The offset
+   * @param size   The size
+   *
+   * @throws VulkanException On errors
+   * @see VulkanLogicalDeviceType#flushMappedMemoryRange(VulkanMappedMemoryRange)
+   */
+
+  @VulkanAPIFunctionType(vulkanFunction = "vkFlushMappedMemoryRanges")
+  void flushRange(
+    long offset,
+    long size)
+    throws VulkanException;
+
+  /**
+   * Flush this mapped memory.
+   *
+   * @throws VulkanException On errors
+   * @see VulkanLogicalDeviceType#flushMappedMemoryRange(VulkanMappedMemoryRange)
+   */
+
+  @VulkanAPIFunctionType(vulkanFunction = "vkFlushMappedMemoryRanges")
+  void flush()
+    throws VulkanException;
+
+  /**
    * Unmap the memory.
    *
    * @throws VulkanException On errors

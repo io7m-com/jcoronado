@@ -59,6 +59,7 @@
       <Class name="com.io7m.jcoronado.api.VulkanLineWidthRange"/>
       <Class name="com.io7m.jcoronado.api.VulkanLogicalDeviceCreateInfo"/>
       <Class name="com.io7m.jcoronado.api.VulkanLogicalDeviceQueueCreateInfo"/>
+      <Class name="com.io7m.jcoronado.api.VulkanMappedMemoryRange"/>
       <Class name="com.io7m.jcoronado.api.VulkanMemoryAllocateInfo"/>
       <Class name="com.io7m.jcoronado.api.VulkanMemoryBarrier"/>
       <Class name="com.io7m.jcoronado.api.VulkanMemoryHeap"/>
