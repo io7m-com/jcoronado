@@ -118,6 +118,7 @@ public interface VulkanPhysicalDeviceType extends VulkanHandleDispatchableType
    */
 
   @VulkanAPIFunctionType(vulkanFunction = "vkCreateDevice")
+  @VulkanAPIFunctionType(vulkanFunction = "vkGetDeviceQueue")
   VulkanLogicalDeviceType createLogicalDevice(
     VulkanLogicalDeviceCreateInfo info)
     throws VulkanException;
