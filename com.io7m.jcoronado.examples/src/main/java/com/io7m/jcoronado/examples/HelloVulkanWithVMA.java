@@ -783,19 +783,18 @@ public final class HelloVulkanWithVMA
 
   private static void copyBufferToImage(
     final VulkanLogicalDeviceType device,
-    final VulkanQueueType graphics_queue,
-    final VulkanCommandPoolType transfer_command_pool,
+    final VulkanQueueType queue,
+    final VulkanCommandPoolType command_pool,
     final VulkanBufferType source,
     final VulkanImageType target,
     final int texture_width,
     final int texture_height)
     throws VulkanException
   {
-    try (var transfer_command_buffer =
-           device.createCommandBuffer(transfer_command_pool, VK_COMMAND_BUFFER_LEVEL_PRIMARY)) {
-      transfer_command_buffer.beginCommandBuffer(VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT);
+    try (var commands = device.createCommandBuffer(command_pool, VK_COMMAND_BUFFER_LEVEL_PRIMARY)) {
+      commands.beginCommandBuffer(VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT);
 
-      transfer_command_buffer.copyBufferToImage(
+      commands.copyBufferToImage(
         source,
         target,
         VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
@@ -814,22 +813,21 @@ public final class HelloVulkanWithVMA
                       .build())
                   .build()));
 
-      transfer_command_buffer.endCommandBuffer();
+      commands.endCommandBuffer();
 
       LOG.trace("submitting image copy");
-      graphics_queue.submit(
-        List.of(VulkanSubmitInfo.builder()
-                  .addCommandBuffers(transfer_command_buffer)
-                  .build()));
+      queue.submit(List.of(VulkanSubmitInfo.builder()
+                             .addCommandBuffers(commands)
+                             .build()));
 
       LOG.trace("submitting waiting for image copy");
-      graphics_queue.waitIdle();
+      queue.waitIdle();
     }
   }
 
   private static void transitionImageLayout(
     final VulkanLogicalDeviceType device,
-    final VulkanQueueType graphics_queue,
+    final VulkanQueueType queue,
     final VulkanCommandPoolType command_pool,
     final VulkanImageType image,
     final VulkanImageLayout old_layout,
@@ -871,10 +869,10 @@ public final class HelloVulkanWithVMA
       throw new UnsupportedOperationException("Unsupported layout transition");
     }
 
-    try (var command_buffer = device.createCommandBuffer(command_pool, VK_COMMAND_BUFFER_LEVEL_PRIMARY)) {
-      command_buffer.beginCommandBuffer(VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT);
+    try (var commands = device.createCommandBuffer(command_pool, VK_COMMAND_BUFFER_LEVEL_PRIMARY)) {
+      commands.beginCommandBuffer(VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT);
 
-      command_buffer.pipelineBarrier(
+      commands.pipelineBarrier(
         source_stage,
         target_stage,
         Set.of(),
@@ -882,16 +880,15 @@ public final class HelloVulkanWithVMA
         List.of(),
         List.of(barrier_builder.build()));
 
-      command_buffer.endCommandBuffer();
+      commands.endCommandBuffer();
 
       LOG.trace("submitting image transition {} -> {} barrier", old_layout, new_layout);
-      graphics_queue.submit(
-        List.of(VulkanSubmitInfo.builder()
-                  .addCommandBuffers(command_buffer)
-                  .build()));
+      queue.submit(List.of(VulkanSubmitInfo.builder()
+                             .addCommandBuffers(commands)
+                             .build()));
 
       LOG.trace("waiting for image transition barrier");
-      graphics_queue.waitIdle();
+      queue.waitIdle();
     }
   }
 
