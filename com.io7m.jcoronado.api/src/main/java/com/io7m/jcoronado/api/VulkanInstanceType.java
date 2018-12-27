@@ -31,6 +31,11 @@ import java.util.stream.Stream;
 
 public interface VulkanInstanceType extends VulkanHandleDispatchableType
 {
+  @VulkanAPIFunctionType(vulkanFunction = "vkDestroyInstance")
+  @Override
+  @VulkanExternallySynchronizedType void close()
+    throws VulkanException;
+
   /**
    * @return The available physical devices
    *

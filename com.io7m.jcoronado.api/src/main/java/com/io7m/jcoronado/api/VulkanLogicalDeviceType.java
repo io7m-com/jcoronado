@@ -30,6 +30,11 @@ import java.util.Set;
 
 public interface VulkanLogicalDeviceType extends VulkanHandleDispatchableType
 {
+  @VulkanAPIFunctionType(vulkanFunction = "vkDestroyDevice")
+  @Override
+  @VulkanExternallySynchronizedType void close()
+    throws VulkanException;
+
   /**
    * @return The physical device to which this logical device belongs
    */
