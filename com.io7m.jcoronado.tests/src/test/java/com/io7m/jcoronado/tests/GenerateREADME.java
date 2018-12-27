@@ -54,8 +54,8 @@ public final class GenerateREADME
         .thenComparing(Method::getName));
 
     System.out.println("## Functions");
-    System.out.println("|jcoronado|Vulkan|");
-    System.out.println("------------------");
+    System.out.println("| jcoronado | Vulkan |");
+    System.out.println("|-----------|--------|");
 
     for (final var method : methods2) {
       final var full_name = method.getDeclaringClass().getCanonicalName() + "." + method.getName();
@@ -91,7 +91,7 @@ public final class GenerateREADME
     final VulkanAPIFunctionType annotation)
   {
     System.out.printf(
-      "|%s.%s|[%s](%s)|\n",
+      "| %s.%s | [%s](%s) |\n",
       method.getDeclaringClass().getName(),
       method.getName(),
       annotation.vulkanFunction(),
@@ -107,8 +107,8 @@ public final class GenerateREADME
     types.sort(Comparator.comparing(Class::getName));
 
     System.out.println("## Structs");
-    System.out.println("|jcoronado|Vulkan|");
-    System.out.println("------------------");
+    System.out.println("| jcoronado | Vulkan |");
+    System.out.println("|-----------|--------|");
 
     for (final var type : types) {
       if (!type.isInterface()) {
@@ -132,7 +132,7 @@ public final class GenerateREADME
     final VulkanAPIStructType annotation)
   {
     System.out.printf(
-      "|%s|[%s](%s)|\n",
+      "| %s| [%s](%s) |\n",
       type.getName(),
       annotation.vulkanStruct(),
       apiStructURI(annotation));
@@ -147,8 +147,8 @@ public final class GenerateREADME
     types.sort(Comparator.comparing(Class::getName));
 
     System.out.println("## Enums");
-    System.out.println("|jcoronado|Vulkan|");
-    System.out.println("------------------");
+    System.out.println("| jcoronado | Vulkan |");
+    System.out.println("|-----------|--------|");
 
     for (final var type : types) {
       final var annotation = type.getAnnotation(VulkanAPIEnumType.class);
@@ -168,7 +168,7 @@ public final class GenerateREADME
     final VulkanAPIEnumType annotation)
   {
     System.out.printf(
-      "|%s|[%s](%s)|\n",
+      "| %s | [%s](%s) |\n",
       type.getName(),
       annotation.vulkanEnum(),
       apiEnumURI(annotation));
@@ -232,14 +232,5 @@ public final class GenerateREADME
         throw new IllegalStateException("Unrecognized API: " + api);
       }
     }
-  }
-
-  private static String apiURI(
-    final String name)
-  {
-    return String.format(
-      "%s/%s.html",
-      "https://www.khronos.org/registry/vulkan/specs/1.1-extensions/man/html",
-      name);
   }
 }
