@@ -27,6 +27,7 @@ import java.util.Set;
  * @see "VkImageViewCreateInfo"
  */
 
+@VulkanAPIStructType(vulkanStruct = "VkImageViewCreateInfo")
 @ImmutablesStyleType
 @Value.Immutable
 public interface VulkanImageViewCreateInfoType

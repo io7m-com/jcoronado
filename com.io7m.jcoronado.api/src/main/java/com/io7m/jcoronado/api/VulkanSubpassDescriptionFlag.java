@@ -21,8 +21,11 @@ package com.io7m.jcoronado.api;
  *
  * Vulkan 1.1 specification: "VkSubpassDescriptionFlagBits is a bitmask type for setting a mask, but
  * is currently reserved for future use."
+ *
+ * @see "VkSubpassDescriptionFlagBits"
  */
 
+@VulkanAPIEnumType(vulkanEnum = "VkSubpassDescriptionFlagBits")
 public enum VulkanSubpassDescriptionFlag implements VulkanEnumBitmaskType
 {
   /**

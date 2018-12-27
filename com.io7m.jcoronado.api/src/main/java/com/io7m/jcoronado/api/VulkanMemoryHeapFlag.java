@@ -20,6 +20,7 @@ package com.io7m.jcoronado.api;
  * @see "VkMemoryHeapFlagBits"
  */
 
+@VulkanAPIEnumType(vulkanEnum = "VkMemoryHeapFlagBits")
 public enum VulkanMemoryHeapFlag implements VulkanEnumBitmaskType
 {
   /**

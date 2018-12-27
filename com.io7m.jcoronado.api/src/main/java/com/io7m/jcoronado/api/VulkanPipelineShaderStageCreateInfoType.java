@@ -26,6 +26,7 @@ import java.util.Set;
  * @see "VkPipelineShaderStageCreateInfo"
  */
 
+@VulkanAPIStructType(vulkanStruct = "VkPipelineShaderStageCreateInfo")
 @ImmutablesStyleType
 @Value.Immutable
 public interface VulkanPipelineShaderStageCreateInfoType

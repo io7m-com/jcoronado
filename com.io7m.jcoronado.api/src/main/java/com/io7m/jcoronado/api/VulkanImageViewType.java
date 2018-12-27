@@ -24,5 +24,8 @@ package com.io7m.jcoronado.api;
 
 public interface VulkanImageViewType extends VulkanHandleNonDispatchableType
 {
-
+  @VulkanAPIFunctionType(vulkanFunction = "vkDestroyImageView")
+  @Override
+  @VulkanExternallySynchronizedType void close()
+    throws VulkanException;
 }

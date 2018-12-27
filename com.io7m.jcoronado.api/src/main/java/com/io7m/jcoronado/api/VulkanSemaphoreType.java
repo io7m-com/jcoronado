@@ -24,6 +24,9 @@ package com.io7m.jcoronado.api;
 
 public interface VulkanSemaphoreType extends VulkanHandleNonDispatchableType
 {
-
+  @VulkanAPIFunctionType(vulkanFunction = "vkDestroySemaphore")
+  @Override
+  @VulkanExternallySynchronizedType void close()
+    throws VulkanException;
 }
 

@@ -22,6 +22,9 @@ package com.io7m.jcoronado.api;
 
 public interface VulkanDeviceMemoryType extends VulkanHandleNonDispatchableType
 {
-
+  @VulkanAPIFunctionType(vulkanFunction = "vkFreeMemory")
+  @Override
+  @VulkanExternallySynchronizedType void close()
+    throws VulkanException;
 }
 

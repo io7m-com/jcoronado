@@ -17,9 +17,10 @@
 package com.io7m.jcoronado.api;
 
 /**
- * @see "VkImageUsageFlags"
+ * @see "VkSharingMode"
  */
 
+@VulkanAPIEnumType(vulkanEnum = "VkSharingMode")
 public enum VulkanSharingMode implements VulkanEnumIntegerType
 {
   /**

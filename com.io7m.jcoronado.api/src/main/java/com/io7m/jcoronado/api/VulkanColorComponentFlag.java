@@ -20,6 +20,7 @@ package com.io7m.jcoronado.api;
  * @see "VkColorComponentFlags"
  */
 
+@VulkanAPIEnumType(vulkanEnum = "VkColorComponentFlags")
 public enum VulkanColorComponentFlag implements VulkanEnumBitmaskType
 {
   /**

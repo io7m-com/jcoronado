@@ -37,6 +37,7 @@ package com.io7m.jcoronado.api;
  * @see "VkLogicOp"
  */
 
+@VulkanAPIEnumType(vulkanEnum = "VkLogicOp")
 public enum VulkanLogicOp implements VulkanEnumIntegerType
 {
   /**

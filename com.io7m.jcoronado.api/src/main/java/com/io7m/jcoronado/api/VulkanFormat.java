@@ -25,6 +25,7 @@ import java.util.Optional;
  * @see "VkFormat"
  */
 
+@VulkanAPIEnumType(vulkanEnum = "VkFormat")
 public enum VulkanFormat implements VulkanEnumIntegerType
 {
   /**

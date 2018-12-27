@@ -87,6 +87,7 @@ public interface VulkanLogicalDeviceType extends VulkanHandleDispatchableType
    * @throws VulkanException On errors
    */
 
+  @VulkanAPIFunctionType(vulkanFunction = "vkCreateShaderModule")
   VulkanShaderModuleType createShaderModule(
     VulkanShaderModuleCreateInfo create_info)
     throws VulkanException;
@@ -101,6 +102,7 @@ public interface VulkanLogicalDeviceType extends VulkanHandleDispatchableType
    * @throws VulkanException On errors
    */
 
+  @VulkanAPIFunctionType(vulkanFunction = "vkCreateImageView")
   VulkanImageViewType createImageView(
     VulkanImageViewCreateInfo info)
     throws VulkanException;
@@ -148,6 +150,7 @@ public interface VulkanLogicalDeviceType extends VulkanHandleDispatchableType
    * @throws VulkanException On errors
    */
 
+  @VulkanAPIFunctionType(vulkanFunction = "vkCreatePipelineLayout")
   VulkanPipelineLayoutType createPipelineLayout(
     VulkanPipelineLayoutCreateInfo info)
     throws VulkanException;
@@ -162,6 +165,7 @@ public interface VulkanLogicalDeviceType extends VulkanHandleDispatchableType
    * @throws VulkanException On errors
    */
 
+  @VulkanAPIFunctionType(vulkanFunction = "vkCreateDescriptorSetLayout")
   VulkanDescriptorSetLayoutType createDescriptorSetLayout(
     VulkanDescriptorSetLayoutCreateInfo info)
     throws VulkanException;
@@ -176,6 +180,7 @@ public interface VulkanLogicalDeviceType extends VulkanHandleDispatchableType
    * @throws VulkanException On errors
    */
 
+  @VulkanAPIFunctionType(vulkanFunction = "vkCreateDescriptorPool")
   VulkanDescriptorPoolType createDescriptorPool(
     VulkanDescriptorPoolCreateInfo info)
     throws VulkanException;
@@ -190,6 +195,7 @@ public interface VulkanLogicalDeviceType extends VulkanHandleDispatchableType
    * @throws VulkanException On errors
    */
 
+  @VulkanAPIFunctionType(vulkanFunction = "vkAllocateDescriptorSets")
   List<VulkanDescriptorSetType> allocateDescriptorSets(
     VulkanDescriptorSetAllocateInfo info)
     throws VulkanException;
@@ -205,6 +211,7 @@ public interface VulkanLogicalDeviceType extends VulkanHandleDispatchableType
    * @throws VulkanException On errors
    */
 
+  @VulkanAPIFunctionType(vulkanFunction = "vkUpdateDescriptorSets")
   void updateDescriptorSets(
     List<VulkanWriteDescriptorSet> descriptor_writes,
     List<VulkanCopyDescriptorSet> descriptor_copies)
@@ -220,6 +227,7 @@ public interface VulkanLogicalDeviceType extends VulkanHandleDispatchableType
    * @throws VulkanException On errors
    */
 
+  @VulkanAPIFunctionType(vulkanFunction = "vkCreateRenderPass")
   VulkanRenderPassType createRenderPass(
     VulkanRenderPassCreateInfo render_pass_create_info)
     throws VulkanException;
@@ -234,6 +242,7 @@ public interface VulkanLogicalDeviceType extends VulkanHandleDispatchableType
    * @throws VulkanException On errors
    */
 
+  @VulkanAPIFunctionType(vulkanFunction = "vkCreateGraphicsPipelines")
   default VulkanPipelineType createPipeline(
     final VulkanGraphicsPipelineCreateInfo pipeline_info)
     throws VulkanException
@@ -252,6 +261,7 @@ public interface VulkanLogicalDeviceType extends VulkanHandleDispatchableType
    * @throws VulkanException On errors
    */
 
+  @VulkanAPIFunctionType(vulkanFunction = "vkCreateGraphicsPipelines")
   List<VulkanPipelineType> createPipelines(
     List<VulkanGraphicsPipelineCreateInfo> pipeline_infos)
     throws VulkanException;
@@ -266,6 +276,7 @@ public interface VulkanLogicalDeviceType extends VulkanHandleDispatchableType
    * @throws VulkanException On errors
    */
 
+  @VulkanAPIFunctionType(vulkanFunction = "vkCreateFramebuffer")
   VulkanFramebufferType createFramebuffer(
     VulkanFramebufferCreateInfo create_info)
     throws VulkanException;
@@ -280,6 +291,7 @@ public interface VulkanLogicalDeviceType extends VulkanHandleDispatchableType
    * @throws VulkanException On errors
    */
 
+  @VulkanAPIFunctionType(vulkanFunction = "vkCreateCommandPool")
   VulkanCommandPoolType createCommandPool(
     VulkanCommandPoolCreateInfo create_info)
     throws VulkanException;
@@ -294,9 +306,36 @@ public interface VulkanLogicalDeviceType extends VulkanHandleDispatchableType
    * @throws VulkanException On errors
    */
 
+  @VulkanAPIFunctionType(vulkanFunction = "vkAllocateCommandBuffers")
   List<VulkanCommandBufferType> createCommandBuffers(
     VulkanCommandBufferCreateInfo create_info)
     throws VulkanException;
+
+  /**
+   * Create a command buffer.
+   *
+   * @param pool  The command buffer pool
+   * @param level The command buffer level
+   *
+   * @return A command buffer
+   *
+   * @throws VulkanException On errors
+   */
+
+  @VulkanAPIFunctionType(vulkanFunction = "vkAllocateCommandBuffers")
+  default VulkanCommandBufferType createCommandBuffer(
+    final VulkanCommandPoolType pool,
+    final VulkanCommandBufferLevel level)
+    throws VulkanException
+  {
+    return this.createCommandBuffers(
+      VulkanCommandBufferCreateInfo.builder()
+        .setPool(pool)
+        .setLevel(level)
+        .setCount(1)
+        .build())
+      .get(0);
+  }
 
   /**
    * Create a semaphore.
@@ -308,6 +347,7 @@ public interface VulkanLogicalDeviceType extends VulkanHandleDispatchableType
    * @throws VulkanException On errors
    */
 
+  @VulkanAPIFunctionType(vulkanFunction = "vkCreateSemaphore")
   VulkanSemaphoreType createSemaphore(
     VulkanSemaphoreCreateInfo create_info)
     throws VulkanException;
@@ -322,6 +362,7 @@ public interface VulkanLogicalDeviceType extends VulkanHandleDispatchableType
    * @throws VulkanException On errors
    */
 
+  @VulkanAPIFunctionType(vulkanFunction = "vkCreateFence")
   VulkanFenceType createFence(
     VulkanFenceCreateInfo create_info)
     throws VulkanException;
@@ -334,6 +375,7 @@ public interface VulkanLogicalDeviceType extends VulkanHandleDispatchableType
    * @throws VulkanException On errors
    */
 
+  @VulkanAPIFunctionType(vulkanFunction = "vkResetFences")
   void resetFences(
     List<@VulkanExternallySynchronizedType VulkanFenceType> fences)
     throws VulkanException;
@@ -344,6 +386,7 @@ public interface VulkanLogicalDeviceType extends VulkanHandleDispatchableType
    * @throws VulkanException On errors
    */
 
+  @VulkanAPIFunctionType(vulkanFunction = "vkDeviceWaitIdle")
   void waitIdle()
     throws VulkanException;
 
@@ -357,6 +400,7 @@ public interface VulkanLogicalDeviceType extends VulkanHandleDispatchableType
    * @throws VulkanException On errors
    */
 
+  @VulkanAPIFunctionType(vulkanFunction = "vkCreateBuffer")
   VulkanBufferType createBuffer(
     VulkanBufferCreateInfo create_info)
     throws VulkanException;
@@ -371,6 +415,7 @@ public interface VulkanLogicalDeviceType extends VulkanHandleDispatchableType
    * @throws VulkanException On errors
    */
 
+  @VulkanAPIFunctionType(vulkanFunction = "vkGetBufferMemoryRequirements")
   VulkanMemoryRequirements getBufferMemoryRequirements(
     VulkanBufferType buffer)
     throws VulkanException;
@@ -385,6 +430,7 @@ public interface VulkanLogicalDeviceType extends VulkanHandleDispatchableType
    * @throws VulkanException On errors
    */
 
+  @VulkanAPIFunctionType(vulkanFunction = "vkAllocateMemory")
   VulkanDeviceMemoryType allocateMemory(
     VulkanMemoryAllocateInfo info)
     throws VulkanException;
@@ -402,6 +448,7 @@ public interface VulkanLogicalDeviceType extends VulkanHandleDispatchableType
    * @throws VulkanException On errors
    */
 
+  @VulkanAPIFunctionType(vulkanFunction = "vkBindBufferMemory")
   void bindBufferMemory(
     @VulkanExternallySynchronizedType VulkanBufferType buffer,
     VulkanDeviceMemoryType device_memory,
@@ -422,12 +469,12 @@ public interface VulkanLogicalDeviceType extends VulkanHandleDispatchableType
    * @throws VulkanException On errors
    */
 
+  @VulkanAPIFunctionType(vulkanFunction = "vkMapMemory")
   VulkanMappedMemoryType mapMemory(
     @VulkanExternallySynchronizedType VulkanDeviceMemoryType memory,
     long offset,
     long size,
     Set<VulkanMemoryMapFlag> flags)
     throws VulkanException;
-
 
 }

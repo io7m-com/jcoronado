@@ -22,6 +22,7 @@ package com.io7m.jcoronado.api;
  * @see "VkImageAspectFlagBits"
  */
 
+@VulkanAPIEnumType(vulkanEnum = "VkImageAspectFlagBits")
 public enum VulkanImageAspectFlag implements VulkanEnumBitmaskType
 {
   /**

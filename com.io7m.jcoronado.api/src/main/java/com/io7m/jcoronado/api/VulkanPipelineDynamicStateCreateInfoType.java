@@ -28,6 +28,7 @@ import java.util.Set;
  * @see "VkPipelineDynamicStateCreateInfo"
  */
 
+@VulkanAPIStructType(vulkanStruct = "VkPipelineDynamicStateCreateInfo")
 @ImmutablesStyleType
 @Value.Immutable
 public interface VulkanPipelineDynamicStateCreateInfoType

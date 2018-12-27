@@ -18,8 +18,11 @@ package com.io7m.jcoronado.api;
 
 /**
  * Flags specifying certain supported operations on a descriptor pool
+ *
+ * @see "VkDescriptorPoolCreateFlagBits"
  */
 
+@VulkanAPIEnumType(vulkanEnum = "VkDescriptorPoolCreateFlagBits")
 public enum VulkanDescriptorPoolCreateFlag implements VulkanEnumBitmaskType
 {
   /**

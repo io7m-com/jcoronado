@@ -20,6 +20,7 @@ package com.io7m.jcoronado.api;
  * @see "VkStencilOp"
  */
 
+@VulkanAPIEnumType(vulkanEnum = "VkStencilOp")
 public enum VulkanStencilOp implements VulkanEnumIntegerType
 {
   /**

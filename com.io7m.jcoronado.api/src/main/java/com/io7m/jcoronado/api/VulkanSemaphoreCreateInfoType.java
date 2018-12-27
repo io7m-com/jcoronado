@@ -27,6 +27,7 @@ import java.util.Set;
  * @see "VkSemaphoreCreateInfo"
  */
 
+@VulkanAPIStructType(vulkanStruct = "VkSemaphoreCreateInfo")
 @ImmutablesStyleType
 @Value.Immutable
 public interface VulkanSemaphoreCreateInfoType

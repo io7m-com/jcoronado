@@ -23,6 +23,7 @@ package com.io7m.jcoronado.api;
  * currently reserved for future use."
  */
 
+@VulkanAPIEnumType(vulkanEnum = "VkMemoryMapFlags")
 public enum VulkanMemoryMapFlag implements VulkanEnumBitmaskType
 {
   /**

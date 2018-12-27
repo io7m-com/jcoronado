@@ -21,8 +21,11 @@ import org.immutables.value.Value;
 
 /**
  * The features supported by a physical device.
+ *
+ * @see "VkPhysicalDeviceFeatures"
  */
 
+@VulkanAPIStructType(vulkanStruct = "VkPhysicalDeviceFeatures")
 @ImmutablesStyleType
 @Value.Immutable
 public interface VulkanPhysicalDeviceFeaturesType

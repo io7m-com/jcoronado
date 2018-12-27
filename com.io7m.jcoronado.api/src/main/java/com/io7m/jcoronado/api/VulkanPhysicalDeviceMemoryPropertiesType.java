@@ -29,6 +29,7 @@ import java.util.Set;
  * @see "VkPhysicalDeviceMemoryProperties"
  */
 
+@VulkanAPIStructType(vulkanStruct = "VkPhysicalDeviceMemoryProperties")
 @ImmutablesStyleType
 @Value.Immutable
 public interface VulkanPhysicalDeviceMemoryPropertiesType

@@ -25,6 +25,7 @@ import org.immutables.value.Value;
  * @see "VkPipelineColorBlendAttachmentState"
  */
 
+@VulkanAPIStructType(vulkanStruct = "VkPipelineColorBlendAttachmentState")
 @ImmutablesStyleType
 @Value.Immutable
 public interface VulkanBlendConstantsType

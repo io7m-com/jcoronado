@@ -28,6 +28,7 @@ import java.util.Set;
  * @see "VkRenderPassCreateInfo"
  */
 
+@VulkanAPIStructType(vulkanStruct = "VkRenderPassCreateInfo")
 @ImmutablesStyleType
 @Value.Immutable
 public interface VulkanRenderPassCreateInfoType

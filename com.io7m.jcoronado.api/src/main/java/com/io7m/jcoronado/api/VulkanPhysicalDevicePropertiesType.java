@@ -25,6 +25,7 @@ import org.immutables.value.Value;
  * @see "VkPhysicalDeviceProperties"
  */
 
+@VulkanAPIStructType(vulkanStruct = "VkPhysicalDeviceProperties")
 @ImmutablesStyleType
 @Value.Immutable
 public interface VulkanPhysicalDevicePropertiesType

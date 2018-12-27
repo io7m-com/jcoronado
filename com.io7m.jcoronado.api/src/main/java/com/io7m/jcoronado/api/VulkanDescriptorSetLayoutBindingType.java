@@ -28,6 +28,7 @@ import java.util.Set;
  * @see "VkDescriptorSetLayoutBinding"
  */
 
+@VulkanAPIStructType(vulkanStruct = "VkDescriptorSetLayoutBinding")
 @ImmutablesStyleType
 @Value.Immutable
 public interface VulkanDescriptorSetLayoutBindingType

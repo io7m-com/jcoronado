@@ -21,8 +21,11 @@ package com.io7m.jcoronado.api;
  *
  * Vulkan 1.1 specification: "VkDeviceCreateFlags is a bitmask type for setting a mask, but is
  * currently reserved for future use."
+ *
+ * @see "VkDeviceCreateFlags"
  */
 
+@VulkanAPIEnumType(vulkanEnum = "VkDeviceCreateFlags")
 public enum VulkanLogicalDeviceCreateFlag implements VulkanEnumBitmaskType
 {
   /**

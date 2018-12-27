@@ -25,6 +25,7 @@ import java.util.List;
  * @see "VkWriteDescriptorSet"
  */
 
+@VulkanAPIStructType(vulkanStruct = "VkWriteDescriptorSet")
 @ImmutablesStyleType
 @Value.Immutable
 public interface VulkanWriteDescriptorSetType

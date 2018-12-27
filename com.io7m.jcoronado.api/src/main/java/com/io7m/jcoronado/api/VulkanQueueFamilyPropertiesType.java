@@ -23,8 +23,11 @@ import java.util.Set;
 
 /**
  * The properties of a queue family.
+ *
+ * @see "VkQueueFamilyProperties"
  */
 
+@VulkanAPIStructType(vulkanStruct = "VkQueueFamilyProperties")
 @ImmutablesStyleType
 @Value.Immutable
 public interface VulkanQueueFamilyPropertiesType

@@ -22,6 +22,7 @@ package com.io7m.jcoronado.api;
  * @see "VkDynamicState"
  */
 
+@VulkanAPIEnumType(vulkanEnum = "VkDynamicState")
 public enum VulkanDynamicState implements VulkanEnumIntegerType
 {
   /**

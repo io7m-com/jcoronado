@@ -17,6 +17,8 @@
 package com.io7m.jcoronado.api;
 
 import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
@@ -36,6 +38,8 @@ import java.lang.annotation.Target;
   ElementType.METHOD,
   ElementType.TYPE_USE
 })
+
+@Retention(RetentionPolicy.CLASS)
 public @interface VulkanExternallySynchronizedType
 {
   // No extra data

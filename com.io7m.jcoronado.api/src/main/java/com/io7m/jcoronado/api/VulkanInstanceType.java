@@ -37,6 +37,7 @@ public interface VulkanInstanceType extends VulkanHandleDispatchableType
    * @throws VulkanException On errors
    */
 
+  @VulkanAPIFunctionType(vulkanFunction = "vkEnumeratePhysicalDevices")
   Stream<VulkanPhysicalDeviceType> enumeratePhysicalDevices()
     throws VulkanException;
 
@@ -46,6 +47,7 @@ public interface VulkanInstanceType extends VulkanHandleDispatchableType
    * @throws VulkanException On errors
    */
 
+  @VulkanAPIFunctionType(vulkanFunction = "vkEnumeratePhysicalDevices")
   default List<VulkanPhysicalDeviceType> physicalDevices()
     throws VulkanException
   {

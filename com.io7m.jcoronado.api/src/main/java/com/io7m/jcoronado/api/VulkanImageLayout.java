@@ -20,6 +20,7 @@ package com.io7m.jcoronado.api;
  * @see "VkImageLayout"
  */
 
+@VulkanAPIEnumType(vulkanEnum = "VkImageLayout")
 public enum VulkanImageLayout implements VulkanEnumIntegerType
 {
   /**

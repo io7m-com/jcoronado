@@ -20,6 +20,7 @@ package com.io7m.jcoronado.api;
  * @see "VkPolygonMode"
  */
 
+@VulkanAPIEnumType(vulkanEnum = "VkPolygonMode")
 public enum VulkanPolygonMode implements VulkanEnumIntegerType
 {
   /**

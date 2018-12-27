@@ -22,6 +22,7 @@ package com.io7m.jcoronado.api;
  * @see "VkPipelineCreateFlagBits"
  */
 
+@VulkanAPIEnumType(vulkanEnum = "VkPipelineCreateFlagBits")
 public enum VulkanPipelineCreateFlag implements VulkanEnumBitmaskType
 {
   /**

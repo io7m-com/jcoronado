@@ -42,6 +42,7 @@ public interface VulkanPhysicalDeviceType extends VulkanHandleDispatchableType
    * @throws VulkanException On errors
    */
 
+  @VulkanAPIFunctionType(vulkanFunction = "vkEnumerateDeviceExtensionProperties")
   Map<String, VulkanExtensionProperties> extensions(
     Optional<String> layer)
     throws VulkanException;
@@ -52,6 +53,7 @@ public interface VulkanPhysicalDeviceType extends VulkanHandleDispatchableType
    * @throws VulkanException On errors
    */
 
+  @VulkanAPIFunctionType(vulkanFunction = "vkEnumerateDeviceLayerProperties")
   Map<String, VulkanLayerProperties> layers()
     throws VulkanException;
 
@@ -61,6 +63,7 @@ public interface VulkanPhysicalDeviceType extends VulkanHandleDispatchableType
    * @throws VulkanException On errors
    */
 
+  @VulkanAPIFunctionType(vulkanFunction = "vkGetPhysicalDeviceProperties")
   VulkanPhysicalDeviceProperties properties()
     throws VulkanException;
 
@@ -70,6 +73,7 @@ public interface VulkanPhysicalDeviceType extends VulkanHandleDispatchableType
    * @throws VulkanException On errors
    */
 
+  @VulkanAPIFunctionType(vulkanFunction = "vkGetPhysicalDeviceProperties")
   VulkanPhysicalDeviceLimits limits()
     throws VulkanException;
 
@@ -79,6 +83,7 @@ public interface VulkanPhysicalDeviceType extends VulkanHandleDispatchableType
    * @throws VulkanException On errors
    */
 
+  @VulkanAPIFunctionType(vulkanFunction = "vkGetPhysicalDeviceFeatures")
   VulkanPhysicalDeviceFeatures features()
     throws VulkanException;
 
@@ -88,6 +93,7 @@ public interface VulkanPhysicalDeviceType extends VulkanHandleDispatchableType
    * @throws VulkanException On errors
    */
 
+  @VulkanAPIFunctionType(vulkanFunction = "vkGetPhysicalDeviceMemoryProperties")
   VulkanPhysicalDeviceMemoryProperties memory()
     throws VulkanException;
 
@@ -97,6 +103,7 @@ public interface VulkanPhysicalDeviceType extends VulkanHandleDispatchableType
    * @throws VulkanException On errors
    */
 
+  @VulkanAPIFunctionType(vulkanFunction = "vkGetPhysicalDeviceQueueFamilyProperties")
   List<VulkanQueueFamilyProperties> queueFamilies()
     throws VulkanException;
 
@@ -110,6 +117,7 @@ public interface VulkanPhysicalDeviceType extends VulkanHandleDispatchableType
    * @throws VulkanException On errors
    */
 
+  @VulkanAPIFunctionType(vulkanFunction = "vkCreateDevice")
   VulkanLogicalDeviceType createLogicalDevice(
     VulkanLogicalDeviceCreateInfo info)
     throws VulkanException;

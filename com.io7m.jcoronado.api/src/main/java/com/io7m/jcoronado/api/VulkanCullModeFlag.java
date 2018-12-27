@@ -20,6 +20,7 @@ package com.io7m.jcoronado.api;
  * @see "VkCullModeFlagBits"
  */
 
+@VulkanAPIEnumType(vulkanEnum = "VkCullModeFlagBits")
 public enum VulkanCullModeFlag implements VulkanEnumBitmaskType
 {
   /**

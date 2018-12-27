@@ -23,6 +23,7 @@ import org.immutables.value.Value;
  * @see "VkDescriptorPoolSize"
  */
 
+@VulkanAPIStructType(vulkanStruct = "VkDescriptorPoolSize")
 @ImmutablesStyleType
 @Value.Immutable
 public interface VulkanDescriptorPoolSizeType

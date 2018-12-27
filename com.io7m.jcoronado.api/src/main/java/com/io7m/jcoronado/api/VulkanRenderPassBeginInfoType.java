@@ -27,6 +27,7 @@ import java.util.List;
  * @see "VkRenderPassBeginInfo"
  */
 
+@VulkanAPIStructType(vulkanStruct = "VkRenderPassBeginInfo")
 @ImmutablesStyleType
 @Value.Immutable
 public interface VulkanRenderPassBeginInfoType

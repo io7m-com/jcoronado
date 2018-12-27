@@ -21,6 +21,7 @@ package com.io7m.jcoronado.api;
  * is currently reserved for future use."
  */
 
+@VulkanAPIEnumType(vulkanEnum = "VkPipelineLayoutCreateFlags")
 public enum VulkanPipelineLayoutCreateFlag implements VulkanEnumBitmaskType
 {
   /**

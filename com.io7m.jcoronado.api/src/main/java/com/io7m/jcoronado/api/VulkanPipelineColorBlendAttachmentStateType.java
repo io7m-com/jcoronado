@@ -28,6 +28,7 @@ import java.util.Set;
  * @see "VkPipelineColorBlendAttachmentState"
  */
 
+@VulkanAPIStructType(vulkanStruct = "VkPipelineColorBlendAttachmentState")
 @ImmutablesStyleType
 @Value.Immutable
 public interface VulkanPipelineColorBlendAttachmentStateType

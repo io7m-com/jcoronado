@@ -20,6 +20,7 @@ package com.io7m.jcoronado.api;
  * @see "VkAttachmentLoadOp"
  */
 
+@VulkanAPIEnumType(vulkanEnum = "VkAttachmentLoadOp")
 public enum VulkanAttachmentLoadOp implements VulkanEnumIntegerType
 {
   /**

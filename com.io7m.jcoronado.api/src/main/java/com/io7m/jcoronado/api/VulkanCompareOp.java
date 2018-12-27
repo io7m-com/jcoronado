@@ -20,6 +20,7 @@ package com.io7m.jcoronado.api;
  * @see "VkCompareOp"
  */
 
+@VulkanAPIEnumType(vulkanEnum = "VkCompareOp")
 public enum VulkanCompareOp implements VulkanEnumIntegerType
 {
   /**

@@ -21,6 +21,7 @@ package com.io7m.jcoronado.api;
  * currently reserved for future use."
  */
 
+@VulkanAPIEnumType(vulkanEnum = "VkRenderPassCreateFlags")
 public enum VulkanRenderPassCreateFlag implements VulkanEnumBitmaskType
 {
   /**

@@ -18,8 +18,11 @@ package com.io7m.jcoronado.api;
 
 /**
  * Bitmask specifying sample counts supported for an image used for storage operations.
+ *
+ * @see "VkSampleCountFlagBits"
  */
 
+@VulkanAPIEnumType(vulkanEnum = "VkSampleCountFlagBits")
 public enum VulkanSampleCountFlag implements VulkanEnumBitmaskType
 {
   /**

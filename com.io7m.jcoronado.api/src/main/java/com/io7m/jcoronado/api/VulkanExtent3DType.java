@@ -26,6 +26,7 @@ import org.immutables.value.Value;
  * @see "VkExtent3D"
  */
 
+@VulkanAPIStructType(vulkanStruct = "VkExtent3D")
 @ImmutablesStyleType
 @Value.Immutable
 public interface VulkanExtent3DType

@@ -20,6 +20,7 @@ package com.io7m.jcoronado.api;
  * @see "VkImageUsageFlags"
  */
 
+@VulkanAPIEnumType(vulkanEnum = "VkImageUsageFlags")
 public enum VulkanImageUsageFlag implements VulkanEnumBitmaskType
 {
   /**

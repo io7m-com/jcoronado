@@ -23,6 +23,7 @@ import org.immutables.value.Value;
  * @see "VkDescriptorBufferInfo"
  */
 
+@VulkanAPIStructType(vulkanStruct = "VkDescriptorBufferInfo")
 @ImmutablesStyleType
 @Value.Immutable
 public interface VulkanDescriptorBufferInfoType

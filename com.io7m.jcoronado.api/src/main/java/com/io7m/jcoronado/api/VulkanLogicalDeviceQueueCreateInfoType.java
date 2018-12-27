@@ -27,6 +27,7 @@ import java.util.Set;
  * @see "VkDeviceQueueCreateInfo"
  */
 
+@VulkanAPIStructType(vulkanStruct = "VkDeviceQueueCreateInfo")
 @ImmutablesStyleType
 @Value.Immutable
 public interface VulkanLogicalDeviceQueueCreateInfoType

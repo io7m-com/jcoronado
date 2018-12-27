@@ -28,6 +28,7 @@ import org.immutables.value.Value;
  * @see "VkPhysicalDeviceLimits"
  */
 
+@VulkanAPIStructType(vulkanStruct = "VkPhysicalDeviceLimits")
 @ImmutablesStyleType
 @Value.Immutable
 public interface VulkanComputeWorkGroupCountType

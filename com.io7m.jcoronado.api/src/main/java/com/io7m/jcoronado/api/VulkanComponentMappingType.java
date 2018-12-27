@@ -25,6 +25,7 @@ import org.immutables.value.Value;
  * @see "VkComponentMapping"
  */
 
+@VulkanAPIStructType(vulkanStruct = "VkComponentMapping")
 @ImmutablesStyleType
 @Value.Immutable
 public interface VulkanComponentMappingType

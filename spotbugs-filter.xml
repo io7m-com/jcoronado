@@ -20,7 +20,10 @@
       <Class name="com.io7m.jcoronado.api.VulkanAttachmentDescription"/>
       <Class name="com.io7m.jcoronado.api.VulkanAttachmentReference"/>
       <Class name="com.io7m.jcoronado.api.VulkanBlendConstants"/>
+      <Class name="com.io7m.jcoronado.api.VulkanBufferCopy"/>
       <Class name="com.io7m.jcoronado.api.VulkanBufferCreateInfo"/>
+      <Class name="com.io7m.jcoronado.api.VulkanBufferImageCopy"/>
+      <Class name="com.io7m.jcoronado.api.VulkanBufferMemoryBarrier"/>
       <Class name="com.io7m.jcoronado.api.VulkanClearValueColorFloatingPoint"/>
       <Class name="com.io7m.jcoronado.api.VulkanClearValueColorIntegerSigned"/>
       <Class name="com.io7m.jcoronado.api.VulkanClearValueColorIntegerUnsigned"/>
@@ -46,6 +49,9 @@
       <Class name="com.io7m.jcoronado.api.VulkanFramebufferCreateInfo"/>
       <Class name="com.io7m.jcoronado.api.VulkanGraphicsPipelineCreateInfo"/>
       <Class name="com.io7m.jcoronado.api.VulkanHostAllocatorCallbacks"/>
+      <Class name="com.io7m.jcoronado.api.VulkanImageCreateInfo"/>
+      <Class name="com.io7m.jcoronado.api.VulkanImageMemoryBarrier"/>
+      <Class name="com.io7m.jcoronado.api.VulkanImageSubresourceLayers"/>
       <Class name="com.io7m.jcoronado.api.VulkanImageSubresourceRange"/>
       <Class name="com.io7m.jcoronado.api.VulkanImageViewCreateInfo"/>
       <Class name="com.io7m.jcoronado.api.VulkanInstanceCreateInfo"/>
@@ -54,6 +60,7 @@
       <Class name="com.io7m.jcoronado.api.VulkanLogicalDeviceCreateInfo"/>
       <Class name="com.io7m.jcoronado.api.VulkanLogicalDeviceQueueCreateInfo"/>
       <Class name="com.io7m.jcoronado.api.VulkanMemoryAllocateInfo"/>
+      <Class name="com.io7m.jcoronado.api.VulkanMemoryBarrier"/>
       <Class name="com.io7m.jcoronado.api.VulkanMemoryHeap"/>
       <Class name="com.io7m.jcoronado.api.VulkanMemoryRequirements"/>
       <Class name="com.io7m.jcoronado.api.VulkanMemoryType"/>

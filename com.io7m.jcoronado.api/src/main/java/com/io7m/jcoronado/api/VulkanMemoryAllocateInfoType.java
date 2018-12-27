@@ -23,6 +23,7 @@ import org.immutables.value.Value;
  * @see "VkMemoryAllocateInfo"
  */
 
+@VulkanAPIStructType(vulkanStruct = "VkMemoryAllocateInfo")
 @ImmutablesStyleType
 @Value.Immutable
 public interface VulkanMemoryAllocateInfoType

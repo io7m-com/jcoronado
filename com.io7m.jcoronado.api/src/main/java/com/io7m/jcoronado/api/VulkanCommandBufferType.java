@@ -17,6 +17,7 @@
 package com.io7m.jcoronado.api;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * @see "VkCommandBuffer"
@@ -32,10 +33,45 @@ public interface VulkanCommandBufferType extends VulkanHandleDispatchableType
    * @throws VulkanException On errors
    */
 
+  @VulkanAPIFunctionType(vulkanFunction = "vkBeginCommandBuffer")
   @VulkanExternallySynchronizedType
   void beginCommandBuffer(
     VulkanCommandBufferBeginInfo info)
     throws VulkanException;
+
+  /**
+   * Begin a command buffer.
+   *
+   * @param flags The usage flags
+   *
+   * @throws VulkanException On errors
+   */
+
+  @VulkanAPIFunctionType(vulkanFunction = "vkBeginCommandBuffer")
+  @VulkanExternallySynchronizedType
+  default void beginCommandBuffer(
+    final Set<VulkanCommandBufferUsageFlag> flags)
+    throws VulkanException
+  {
+    this.beginCommandBuffer(VulkanCommandBufferBeginInfo.of(flags));
+  }
+
+  /**
+   * Begin a command buffer.
+   *
+   * @param flags The usage flags
+   *
+   * @throws VulkanException On errors
+   */
+
+  @VulkanAPIFunctionType(vulkanFunction = "vkBeginCommandBuffer")
+  @VulkanExternallySynchronizedType
+  default void beginCommandBuffer(
+    final VulkanCommandBufferUsageFlag... flags)
+    throws VulkanException
+  {
+    this.beginCommandBuffer(VulkanCommandBufferBeginInfo.of(Set.of(flags)));
+  }
 
   /**
    * Specify how commands in the first subpass of a render pass are provided.
@@ -46,6 +82,7 @@ public interface VulkanCommandBufferType extends VulkanHandleDispatchableType
    * @throws VulkanException On errors
    */
 
+  @VulkanAPIFunctionType(vulkanFunction = "vkCmdBeginRenderPass")
   @VulkanExternallySynchronizedType
   void beginRenderPass(
     VulkanRenderPassBeginInfo info,
@@ -61,6 +98,7 @@ public interface VulkanCommandBufferType extends VulkanHandleDispatchableType
    * @throws VulkanException On errors
    */
 
+  @VulkanAPIFunctionType(vulkanFunction = "vkCmdBindPipeline")
   @VulkanExternallySynchronizedType
   void bindPipeline(
     VulkanPipelineBindPoint bind_point,
@@ -79,6 +117,7 @@ public interface VulkanCommandBufferType extends VulkanHandleDispatchableType
    * @throws VulkanException On errors
    */
 
+  @VulkanAPIFunctionType(vulkanFunction = "vkCmdBindVertexBuffers")
   @VulkanExternallySynchronizedType
   void bindVertexBuffers(
     int first_binding,
@@ -98,6 +137,7 @@ public interface VulkanCommandBufferType extends VulkanHandleDispatchableType
    * @throws VulkanException On errors
    */
 
+  @VulkanAPIFunctionType(vulkanFunction = "vkCmdBindIndexBuffer")
   @VulkanExternallySynchronizedType
   void bindIndexBuffer(
     VulkanBufferType buffer,
@@ -117,6 +157,7 @@ public interface VulkanCommandBufferType extends VulkanHandleDispatchableType
    * @throws VulkanException On errors
    */
 
+  @VulkanAPIFunctionType(vulkanFunction = "vkCmdBindDescriptorSets")
   @VulkanExternallySynchronizedType
   void bindDescriptorSets(
     VulkanPipelineBindPoint pipeline_bind_point,
@@ -124,6 +165,64 @@ public interface VulkanCommandBufferType extends VulkanHandleDispatchableType
     int first_set,
     List<VulkanDescriptorSetType> descriptor_sets,
     List<Integer> dynamic_offsets)
+    throws VulkanException;
+
+  /**
+   * Copy data between buffer regions.
+   *
+   * @param source  The source buffer
+   * @param target  The target buffer
+   * @param regions The list of regions to be copied
+   *
+   * @throws VulkanException On errors
+   */
+
+  @VulkanAPIFunctionType(vulkanFunction = "vkCmdCopyBuffer")
+  @VulkanExternallySynchronizedType
+  void copyBuffer(
+    VulkanBufferType source,
+    VulkanBufferType target,
+    List<VulkanBufferCopy> regions)
+    throws VulkanException;
+
+  /**
+   * Copy data from an image to a buffer.
+   *
+   * @param source_image  The source image
+   * @param source_layout The source layout
+   * @param target_buffer The target buffer
+   * @param regions       The list of regions to be copied
+   *
+   * @throws VulkanException On errors
+   */
+
+  @VulkanAPIFunctionType(vulkanFunction = "vkCmdCopyImageToBuffer")
+  @VulkanExternallySynchronizedType
+  void copyImageToBuffer(
+    VulkanImageType source_image,
+    VulkanImageLayout source_layout,
+    VulkanBufferType target_buffer,
+    List<VulkanBufferImageCopy> regions)
+    throws VulkanException;
+
+  /**
+   * Copy data from a buffer to an image.
+   *
+   * @param source_buffer       The source buffer
+   * @param target_image        The target image
+   * @param target_image_layout The target image layout
+   * @param regions             The list of regions to be copied
+   *
+   * @throws VulkanException On errors
+   */
+
+  @VulkanAPIFunctionType(vulkanFunction = "vkCmdCopyBufferToImage")
+  @VulkanExternallySynchronizedType
+  void copyBufferToImage(
+    VulkanBufferType source_buffer,
+    VulkanImageType target_image,
+    VulkanImageLayout target_image_layout,
+    List<VulkanBufferImageCopy> regions)
     throws VulkanException;
 
   /**
@@ -137,6 +236,7 @@ public interface VulkanCommandBufferType extends VulkanHandleDispatchableType
    * @throws VulkanException On errors
    */
 
+  @VulkanAPIFunctionType(vulkanFunction = "vkCmdDraw")
   @VulkanExternallySynchronizedType
   void draw(
     int vertex_count,
@@ -158,6 +258,7 @@ public interface VulkanCommandBufferType extends VulkanHandleDispatchableType
    * @throws VulkanException On errors
    */
 
+  @VulkanAPIFunctionType(vulkanFunction = "vkCmdDrawIndexed")
   @VulkanExternallySynchronizedType
   void drawIndexed(
     int vertex_count,
@@ -173,8 +274,34 @@ public interface VulkanCommandBufferType extends VulkanHandleDispatchableType
    * @throws VulkanException On errors
    */
 
+  @VulkanAPIFunctionType(vulkanFunction = "vkCmdEndRenderPass")
   @VulkanExternallySynchronizedType
   void endRenderPass()
+    throws VulkanException;
+
+  /**
+   * Insert a memory dependency.
+   *
+   * @param source_stage_mask      The source stage mask
+   * @param target_stage_mask      The target state mask
+   * @param dependency_flags       Flags specifying how execution and memory dependencies are
+   *                               formed.
+   * @param memory_barriers        A list of memory barriers
+   * @param buffer_memory_barriers A list of buffer memory barriers
+   * @param image_memory_barriers  A list of image memory barriers
+   *
+   * @throws VulkanException On errors
+   */
+
+  @VulkanAPIFunctionType(vulkanFunction = "vkCmdPipelineBarrier")
+  @VulkanExternallySynchronizedType
+  void pipelineBarrier(
+    Set<VulkanPipelineStageFlag> source_stage_mask,
+    Set<VulkanPipelineStageFlag> target_stage_mask,
+    Set<VulkanDependencyFlag> dependency_flags,
+    List<VulkanMemoryBarrier> memory_barriers,
+    List<VulkanBufferMemoryBarrier> buffer_memory_barriers,
+    List<VulkanImageMemoryBarrier> image_memory_barriers)
     throws VulkanException;
 
   /**
@@ -183,6 +310,7 @@ public interface VulkanCommandBufferType extends VulkanHandleDispatchableType
    * @throws VulkanException On errors
    */
 
+  @VulkanAPIFunctionType(vulkanFunction = "vkEndCommandBuffer")
   @VulkanExternallySynchronizedType
   void endCommandBuffer()
     throws VulkanException;

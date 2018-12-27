@@ -22,5 +22,8 @@ package com.io7m.jcoronado.api;
 
 public interface VulkanShaderModuleType extends VulkanHandleNonDispatchableType
 {
-
+  @VulkanAPIFunctionType(vulkanFunction = "vkDestroyShaderModule")
+  @Override
+  @VulkanExternallySynchronizedType void close()
+    throws VulkanException;
 }

@@ -18,8 +18,11 @@ package com.io7m.jcoronado.api;
 
 /**
  * Supported primitive topologies.
+ *
+ * @see "VkPrimitiveTopology"
  */
 
+@VulkanAPIEnumType(vulkanEnum = "VkPrimitiveTopology")
 public enum VulkanPrimitiveTopology implements VulkanEnumIntegerType
 {
   /**

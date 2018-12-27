@@ -22,6 +22,7 @@ package com.io7m.jcoronado.api;
  * @see "VkCommandPoolCreateFlags"
  */
 
+@VulkanAPIEnumType(vulkanEnum = "VkCommandPoolCreateFlags")
 public enum VulkanCommandPoolCreateFlag implements VulkanEnumBitmaskType
 {
   /**

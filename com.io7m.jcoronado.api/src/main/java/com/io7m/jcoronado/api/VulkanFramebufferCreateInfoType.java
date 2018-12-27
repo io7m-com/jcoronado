@@ -28,6 +28,7 @@ import java.util.Set;
  * @see "VkFramebufferCreateInfo"
  */
 
+@VulkanAPIStructType(vulkanStruct = "VkFramebufferCreateInfo")
 @ImmutablesStyleType
 @Value.Immutable
 public interface VulkanFramebufferCreateInfoType

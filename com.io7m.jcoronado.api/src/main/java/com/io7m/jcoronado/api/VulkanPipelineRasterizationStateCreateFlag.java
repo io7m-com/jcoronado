@@ -21,6 +21,7 @@ package com.io7m.jcoronado.api;
  * setting a mask, but is currently reserved for future use."
  */
 
+@VulkanAPIEnumType(vulkanEnum = "VulkanPipelineRasterizationStateCreateFlag")
 public enum VulkanPipelineRasterizationStateCreateFlag implements VulkanEnumBitmaskType
 {
   /**

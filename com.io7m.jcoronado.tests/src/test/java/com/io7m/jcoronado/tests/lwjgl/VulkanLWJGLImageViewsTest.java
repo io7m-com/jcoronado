@@ -70,7 +70,7 @@ public final class VulkanLWJGLImageViewsTest
 
     final var subresource_range =
       VulkanImageSubresourceRange.builder()
-        .addFlags(VulkanImageAspectFlag.values())
+        .addAspectMask(VulkanImageAspectFlag.values())
         .setBaseArrayLayer(3)
         .setBaseMipLevel(2)
         .setLayerCount(4)

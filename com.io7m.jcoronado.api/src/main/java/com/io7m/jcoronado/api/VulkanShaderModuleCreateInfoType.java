@@ -28,6 +28,7 @@ import java.util.Set;
  * @see "VkShaderModuleCreateInfo"
  */
 
+@VulkanAPIStructType(vulkanStruct = "VkShaderModuleCreateInfo")
 @ImmutablesStyleType
 @Value.Immutable
 public interface VulkanShaderModuleCreateInfoType

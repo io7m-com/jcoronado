@@ -24,6 +24,9 @@ package com.io7m.jcoronado.api;
 
 public interface VulkanFenceType extends VulkanHandleNonDispatchableType
 {
-
+  @VulkanAPIFunctionType(vulkanFunction = "vkDestroyFence")
+  @Override
+  @VulkanExternallySynchronizedType void close()
+    throws VulkanException;
 }
 

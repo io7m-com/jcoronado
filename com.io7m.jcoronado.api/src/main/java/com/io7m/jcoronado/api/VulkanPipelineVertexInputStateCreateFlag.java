@@ -23,6 +23,7 @@ package com.io7m.jcoronado.api;
  * but is currently reserved for future use."
  */
 
+@VulkanAPIEnumType(vulkanEnum = "VkPipelineVertexInputStateCreate")
 public enum VulkanPipelineVertexInputStateCreateFlag implements VulkanEnumBitmaskType
 {
   /**

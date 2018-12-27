@@ -20,6 +20,7 @@ package com.io7m.jcoronado.api;
  * Flags specified when creating fences.
  */
 
+@VulkanAPIEnumType(vulkanEnum = "VkFenceCreateFlagBits")
 public enum VulkanFenceCreateFlag implements VulkanEnumBitmaskType
 {
   /**

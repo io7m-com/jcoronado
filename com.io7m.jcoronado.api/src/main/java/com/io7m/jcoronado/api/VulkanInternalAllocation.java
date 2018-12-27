@@ -22,6 +22,7 @@ package com.io7m.jcoronado.api;
  * @see "VkInternalAllocationType"
  */
 
+@VulkanAPIEnumType(vulkanEnum = "VkInternalAllocationType")
 public enum VulkanInternalAllocation implements VulkanEnumIntegerType
 {
   /**

@@ -27,6 +27,7 @@ import java.util.Set;
  * @see "VkImageSubresourceRange"
  */
 
+@VulkanAPIStructType(vulkanStruct = "VkImageSubresourceRange")
 @ImmutablesStyleType
 @Value.Immutable
 public interface VulkanImageSubresourceRangeType
@@ -36,7 +37,7 @@ public interface VulkanImageSubresourceRangeType
    */
 
   @Value.Parameter
-  Set<VulkanImageAspectFlag> flags();
+  Set<VulkanImageAspectFlag> aspectMask();
 
   /**
    * @return The first mipmap level accessible to the view.

@@ -20,6 +20,7 @@ package com.io7m.jcoronado.api;
  * @see "VkAttachmentDescriptionFlags"
  */
 
+@VulkanAPIEnumType(vulkanEnum = "VkAttachmentDescriptionFlags")
 public enum VulkanAttachmentDescriptionFlag implements VulkanEnumBitmaskType
 {
   /**

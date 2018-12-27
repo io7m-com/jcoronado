@@ -27,6 +27,7 @@ import java.util.Set;
  * @see "VkFenceCreateInfo"
  */
 
+@VulkanAPIStructType(vulkanStruct = "VkFenceCreateInfo")
 @ImmutablesStyleType
 @Value.Immutable
 public interface VulkanFenceCreateInfoType

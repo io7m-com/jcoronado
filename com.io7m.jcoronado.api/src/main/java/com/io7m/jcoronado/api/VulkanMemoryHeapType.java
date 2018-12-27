@@ -27,6 +27,7 @@ import java.util.Set;
  * @see "VkMemoryHeap"
  */
 
+@VulkanAPIStructType(vulkanStruct = "VkMemoryHeap")
 @ImmutablesStyleType
 @Value.Immutable
 public interface VulkanMemoryHeapType

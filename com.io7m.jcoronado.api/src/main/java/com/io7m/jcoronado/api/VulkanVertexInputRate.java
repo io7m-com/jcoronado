@@ -20,6 +20,7 @@ package com.io7m.jcoronado.api;
  * @see "VkVertexInputRate"
  */
 
+@VulkanAPIEnumType(vulkanEnum = "VkVertexInputRate")
 public enum VulkanVertexInputRate implements VulkanEnumIntegerType
 {
   /**

@@ -21,9 +21,12 @@ import org.immutables.value.Value;
 
 /**
  * The limits of a physical device.
+ *
+ * @see "VkPhysicalDeviceLimits"
  */
 
 // CHECKSTYLE:OFF
+@VulkanAPIStructType(vulkanStruct = "VkPhysicalDeviceLimits")
 @ImmutablesStyleType
 @Value.Immutable
 public interface VulkanPhysicalDeviceLimitsType

@@ -22,5 +22,8 @@ package com.io7m.jcoronado.api;
 
 public interface VulkanRenderPassType extends VulkanHandleNonDispatchableType
 {
-
+  @VulkanAPIFunctionType(vulkanFunction = "vkDestroyRenderPass")
+  @Override
+  @VulkanExternallySynchronizedType void close()
+    throws VulkanException;
 }

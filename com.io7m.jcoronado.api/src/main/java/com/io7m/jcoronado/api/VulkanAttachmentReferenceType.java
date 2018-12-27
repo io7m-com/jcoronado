@@ -25,6 +25,7 @@ import org.immutables.value.Value;
  * @see "VkAttachmentReference"
  */
 
+@VulkanAPIStructType(vulkanStruct = "VkAttachmentReference")
 @ImmutablesStyleType
 @Value.Immutable
 public interface VulkanAttachmentReferenceType

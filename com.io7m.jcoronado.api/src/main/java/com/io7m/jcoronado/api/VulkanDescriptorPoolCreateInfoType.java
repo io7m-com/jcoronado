@@ -26,6 +26,7 @@ import java.util.Set;
  * @see "VkDescriptorPoolCreateInfo"
  */
 
+@VulkanAPIStructType(vulkanStruct = "VkDescriptorPoolCreateInfo")
 @ImmutablesStyleType
 @Value.Immutable
 public interface VulkanDescriptorPoolCreateInfoType

@@ -22,6 +22,7 @@ package com.io7m.jcoronado.api;
  * @see "VkCommandBufferUsageFlags"
  */
 
+@VulkanAPIEnumType(vulkanEnum = "VkCommandBufferUsageFlags")
 public enum VulkanCommandBufferUsageFlag implements VulkanEnumBitmaskType
 {
   /**

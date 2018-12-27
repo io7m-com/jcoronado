@@ -22,6 +22,9 @@ package com.io7m.jcoronado.api;
 
 public interface VulkanCommandPoolType extends VulkanHandleNonDispatchableType
 {
-
+  @VulkanAPIFunctionType(vulkanFunction = "vkDestroyCommandPool")
+  @Override
+  @VulkanExternallySynchronizedType void close()
+    throws VulkanException;
 }
 

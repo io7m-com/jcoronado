@@ -25,6 +25,7 @@ import org.immutables.value.Value;
  * @see "VkCommandBufferAllocateInfo"
  */
 
+@VulkanAPIStructType(vulkanStruct = "VkCommandBufferAllocateInfo")
 @ImmutablesStyleType
 @Value.Immutable
 public interface VulkanCommandBufferCreateInfoType

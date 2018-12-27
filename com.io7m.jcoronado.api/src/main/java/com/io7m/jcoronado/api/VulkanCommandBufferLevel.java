@@ -20,6 +20,7 @@ package com.io7m.jcoronado.api;
  * @see "VkCommandBufferLevel"
  */
 
+@VulkanAPIEnumType(vulkanEnum = "VkCommandBufferLevel")
 public enum VulkanCommandBufferLevel implements VulkanEnumIntegerType
 {
   /**

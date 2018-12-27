@@ -21,8 +21,11 @@ import org.immutables.value.Value;
 
 /**
  * Structure specifying a viewport.
+ *
+ * @see "VkViewport"
  */
 
+@VulkanAPIStructType(vulkanStruct = "VkViewport")
 @ImmutablesStyleType
 @Value.Immutable
 public interface VulkanViewportType

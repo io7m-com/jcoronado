@@ -20,6 +20,7 @@ package com.io7m.jcoronado.api;
  * @see "VkBlendOp"
  */
 
+@VulkanAPIEnumType(vulkanEnum = "VkBlendOp")
 public enum VulkanBlendOp implements VulkanEnumIntegerType
 {
   /**

@@ -27,6 +27,7 @@ import java.util.Set;
  * @see "VkPipelineTessellationStateCreateInfo"
  */
 
+@VulkanAPIStructType(vulkanStruct = "VkPipelineTessellationStateCreateInfo")
 @ImmutablesStyleType
 @Value.Immutable
 public interface VulkanPipelineTessellationStateCreateInfoType

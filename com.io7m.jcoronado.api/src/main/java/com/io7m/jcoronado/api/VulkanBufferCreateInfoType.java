@@ -28,6 +28,7 @@ import java.util.Set;
  * @see "VkBufferCreateInfo"
  */
 
+@VulkanAPIStructType(vulkanStruct = "VkBufferCreateInfo")
 @ImmutablesStyleType
 @Value.Immutable
 public interface VulkanBufferCreateInfoType

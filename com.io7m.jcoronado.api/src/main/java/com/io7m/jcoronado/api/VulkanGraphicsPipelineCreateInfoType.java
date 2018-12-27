@@ -30,6 +30,7 @@ import java.util.Set;
  * @see "VkGraphicsPipelineCreateInfo"
  */
 
+@VulkanAPIStructType(vulkanStruct = "VkGraphicsPipelineCreateInfo")
 @ImmutablesStyleType
 @Value.Immutable
 public interface VulkanGraphicsPipelineCreateInfoType

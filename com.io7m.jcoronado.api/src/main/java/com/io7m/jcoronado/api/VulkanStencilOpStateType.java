@@ -23,6 +23,7 @@ import org.immutables.value.Value;
  * @see "VkStencilOpState"
  */
 
+@VulkanAPIStructType(vulkanStruct = "VkStencilOpState")
 @ImmutablesStyleType
 @Value.Immutable
 public interface VulkanStencilOpStateType

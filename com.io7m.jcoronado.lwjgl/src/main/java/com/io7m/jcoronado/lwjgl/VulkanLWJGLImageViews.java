@@ -51,7 +51,7 @@ public final class VulkanLWJGLImageViews
     final VkImageSubresourceRange target)
   {
     return target
-      .aspectMask(VulkanEnumMaps.packValues(source.flags()))
+      .aspectMask(VulkanEnumMaps.packValues(source.aspectMask()))
       .baseArrayLayer(source.baseArrayLayer())
       .baseMipLevel(source.baseMipLevel())
       .layerCount(source.layerCount())

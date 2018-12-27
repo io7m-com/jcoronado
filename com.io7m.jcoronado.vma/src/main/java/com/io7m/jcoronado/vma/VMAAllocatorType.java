@@ -20,6 +20,8 @@ import com.io7m.jcoronado.api.VulkanBufferCreateInfo;
 import com.io7m.jcoronado.api.VulkanBufferType;
 import com.io7m.jcoronado.api.VulkanException;
 import com.io7m.jcoronado.api.VulkanHandleDispatchableType;
+import com.io7m.jcoronado.api.VulkanImageCreateInfo;
+import com.io7m.jcoronado.api.VulkanImageType;
 
 /**
  * A configured VMA allocator.
@@ -41,6 +43,22 @@ public interface VMAAllocatorType extends VulkanHandleDispatchableType
   VMAAllocationResult<VulkanBufferType> createBuffer(
     VMAAllocationCreateInfo alloc_create_info,
     VulkanBufferCreateInfo buffer_create_info)
+    throws VulkanException;
+
+  /**
+   * Allocate an image.
+   *
+   * @param alloc_create_info The allocation creation info
+   * @param image_create_info The image creation info
+   *
+   * @return An allocation
+   *
+   * @throws VulkanException On errors
+   */
+
+  VMAAllocationResult<VulkanImageType> createImage(
+    VMAAllocationCreateInfo alloc_create_info,
+    VulkanImageCreateInfo image_create_info)
     throws VulkanException;
 
   /**

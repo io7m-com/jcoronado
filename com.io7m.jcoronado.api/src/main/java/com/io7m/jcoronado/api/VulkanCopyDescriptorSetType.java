@@ -23,6 +23,7 @@ import org.immutables.value.Value;
  * @see "VkCopyDescriptorSet"
  */
 
+@VulkanAPIStructType(vulkanStruct = "VkCopyDescriptorSet")
 @ImmutablesStyleType
 @Value.Immutable
 public interface VulkanCopyDescriptorSetType

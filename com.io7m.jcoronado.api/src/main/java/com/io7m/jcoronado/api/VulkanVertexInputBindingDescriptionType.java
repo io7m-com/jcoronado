@@ -25,6 +25,7 @@ import org.immutables.value.Value;
  * @see "VkVertexInputBindingDescription"
  */
 
+@VulkanAPIStructType(vulkanStruct = "VkVertexInputBindingDescription")
 @ImmutablesStyleType
 @Value.Immutable
 public interface VulkanVertexInputBindingDescriptionType

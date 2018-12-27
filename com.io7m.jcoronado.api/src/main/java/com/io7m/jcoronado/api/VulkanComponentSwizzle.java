@@ -22,6 +22,7 @@ package com.io7m.jcoronado.api;
  * @see "VkComponentSwizzle"
  */
 
+@VulkanAPIEnumType(vulkanEnum = "VkComponentSwizzle")
 public enum VulkanComponentSwizzle implements VulkanEnumIntegerType
 {
   /**

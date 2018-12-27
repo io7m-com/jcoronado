@@ -25,6 +25,7 @@ import org.immutables.value.Value;
  * @see "VkRect2D"
  */
 
+@VulkanAPIStructType(vulkanStruct = "VkRect2D")
 @ImmutablesStyleType
 @Value.Immutable
 public interface VulkanRectangle2DType

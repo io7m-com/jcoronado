@@ -23,6 +23,7 @@ import org.immutables.value.Value;
  * @see "VkSpecializationMapEntry"
  */
 
+@VulkanAPIStructType(vulkanStruct = "VkSpecializationMapEntry")
 @ImmutablesStyleType
 @Value.Immutable
 public interface VulkanSpecializationMapEntryType

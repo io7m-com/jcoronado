@@ -27,6 +27,7 @@ import java.util.Set;
  * @see "VkSubpassDependency"
  */
 
+@VulkanAPIStructType(vulkanStruct = "VkSubpassDependency")
 @ImmutablesStyleType
 @Value.Immutable
 public interface VulkanSubpassDependencyType

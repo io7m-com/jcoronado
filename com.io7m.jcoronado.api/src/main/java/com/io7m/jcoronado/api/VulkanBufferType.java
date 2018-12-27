@@ -22,6 +22,10 @@ package com.io7m.jcoronado.api;
 
 public interface VulkanBufferType extends VulkanHandleNonDispatchableType
 {
-
+  @VulkanAPIFunctionType(vulkanFunction = "vkDestroyBuffer")
+  @VulkanAPIFunctionType(vulkanFunction = "vmaDestroyBuffer")
+  @Override
+  @VulkanExternallySynchronizedType void close()
+    throws VulkanException;
 }
 

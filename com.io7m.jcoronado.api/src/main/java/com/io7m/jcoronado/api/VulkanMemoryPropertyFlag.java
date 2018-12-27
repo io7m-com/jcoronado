@@ -22,6 +22,7 @@ package com.io7m.jcoronado.api;
  * @see "VkMemoryPropertyFlagBits"
  */
 
+@VulkanAPIEnumType(vulkanEnum = "VkMemoryPropertyFlagBits")
 public enum VulkanMemoryPropertyFlag implements VulkanEnumBitmaskType
 {
   /**

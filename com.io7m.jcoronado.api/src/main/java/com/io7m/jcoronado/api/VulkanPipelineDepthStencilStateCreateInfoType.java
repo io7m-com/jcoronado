@@ -27,6 +27,7 @@ import java.util.Set;
  * @see "VkPipelineDepthStencilStateCreateInfo"
  */
 
+@VulkanAPIStructType(vulkanStruct = "VkPipelineDepthStencilStateCreateInfo")
 @ImmutablesStyleType
 @Value.Immutable
 public interface VulkanPipelineDepthStencilStateCreateInfoType

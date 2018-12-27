@@ -163,7 +163,14 @@ public final class VulkanLWJGLExtKHRSwapChain implements VulkanExtKHRSwapChainTy
       "vkGetSwapchainImagesKHR");
 
     return LongStream.of(images)
-      .mapToObj(image -> new VulkanLWJGLImage(VULKAN_OWNED, image, host_allocator_proxy))
+      .mapToObj(image ->
+                  new VulkanLWJGLImage(
+                    VULKAN_OWNED,
+                    chain.device.device(),
+                    image,
+                    () -> {
+                    },
+                    host_allocator_proxy))
       .collect(Collectors.toList());
   }
 

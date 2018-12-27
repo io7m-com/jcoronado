@@ -25,6 +25,7 @@ import org.immutables.value.Value;
  * @see "VkAllocationCallbacks"
  */
 
+@VulkanAPIStructType(vulkanStruct = "VkAllocationCallbacks")
 @ImmutablesStyleType
 @Value.Immutable
 public interface VulkanHostAllocatorCallbacksType

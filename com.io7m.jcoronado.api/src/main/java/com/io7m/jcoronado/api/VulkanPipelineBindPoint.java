@@ -22,6 +22,7 @@ package com.io7m.jcoronado.api;
  * @see "VkPipelineBindPoint"
  */
 
+@VulkanAPIEnumType(vulkanEnum = "VkPipelineBindPoint")
 public enum VulkanPipelineBindPoint implements VulkanEnumBitmaskType
 {
   /**

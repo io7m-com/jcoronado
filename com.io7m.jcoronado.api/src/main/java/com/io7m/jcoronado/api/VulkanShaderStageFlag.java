@@ -20,6 +20,7 @@ package com.io7m.jcoronado.api;
  * @see "VkShaderStageFlagBits"
  */
 
+@VulkanAPIEnumType(vulkanEnum = "VkShaderStageFlagBits")
 public enum VulkanShaderStageFlag implements VulkanEnumBitmaskType
 {
   /**

@@ -22,6 +22,7 @@ package com.io7m.jcoronado.api;
  * @see "VkQueueFlagBits"
  */
 
+@VulkanAPIEnumType(vulkanEnum = "VkQueueFlagBits")
 public enum VulkanQueueFamilyPropertyFlag implements VulkanEnumBitmaskType
 {
   /**

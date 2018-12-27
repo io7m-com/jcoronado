@@ -25,6 +25,7 @@ import org.immutables.value.Value;
  * @see "VkExtensionProperties"
  */
 
+@VulkanAPIStructType(vulkanStruct = "VkExtensionProperties")
 @ImmutablesStyleType
 @Value.Immutable
 public interface VulkanExtensionPropertiesType

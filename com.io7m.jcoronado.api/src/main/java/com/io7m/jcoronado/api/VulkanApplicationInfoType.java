@@ -25,6 +25,7 @@ import org.immutables.value.Value;
  * @see "VkApplicationInfo"
  */
 
+@VulkanAPIStructType(vulkanStruct = "VkApplicationInfo")
 @ImmutablesStyleType
 @Value.Immutable
 public interface VulkanApplicationInfoType

@@ -26,6 +26,7 @@ import java.util.Set;
  * @see "VkPipelineRasterizationStateCreateInfo"
  */
 
+@VulkanAPIStructType(vulkanStruct = "VkPipelineRasterizationStateCreateInfo")
 @ImmutablesStyleType
 @Value.Immutable
 public interface VulkanPipelineRasterizationStateCreateInfoType

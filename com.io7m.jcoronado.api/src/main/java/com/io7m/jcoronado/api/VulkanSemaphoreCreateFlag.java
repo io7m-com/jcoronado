@@ -21,8 +21,11 @@ package com.io7m.jcoronado.api;
  *
  * Vulkan 1.1 specification: "VkSemaphoreCreateFlags is a bitmask type for setting a mask, but is
  * currently reserved for future use."
+ *
+ * @see "VkSemaphoreCreateFlags"
  */
 
+@VulkanAPIEnumType(vulkanEnum = "VkSemaphoreCreateFlags")
 public enum VulkanSemaphoreCreateFlag implements VulkanEnumBitmaskType
 {
   /**

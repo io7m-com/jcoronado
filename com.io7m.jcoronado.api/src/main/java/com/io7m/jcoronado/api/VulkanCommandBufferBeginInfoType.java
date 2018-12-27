@@ -27,6 +27,7 @@ import java.util.Set;
  * @see "VkCommandBufferBeginInfo"
  */
 
+@VulkanAPIStructType(vulkanStruct = "VkCommandBufferBeginInfo")
 @ImmutablesStyleType
 @Value.Immutable
 public interface VulkanCommandBufferBeginInfoType

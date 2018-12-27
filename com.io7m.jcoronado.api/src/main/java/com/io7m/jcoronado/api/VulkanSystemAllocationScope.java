@@ -22,6 +22,7 @@ package com.io7m.jcoronado.api;
  * @see "VkSystemAllocationScope"
  */
 
+@VulkanAPIEnumType(vulkanEnum = "VkSystemAllocationScope")
 public enum VulkanSystemAllocationScope implements VulkanEnumIntegerType
 {
   /**

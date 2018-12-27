@@ -21,8 +21,11 @@ package com.io7m.jcoronado.api;
  *
  * Vulkan 1.1 specification: "VulkanShaderModuleCreateFlag is a bitmask type for setting a mask, but
  * is currently reserved for future use."
+ *
+ * @see "VkShaderModuleCreateFlag"
  */
 
+@VulkanAPIEnumType(vulkanEnum = "VkShaderModuleCreateFlag")
 public enum VulkanShaderModuleCreateFlag implements VulkanEnumBitmaskType
 {
   /**

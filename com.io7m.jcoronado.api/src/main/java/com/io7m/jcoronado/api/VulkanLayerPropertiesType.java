@@ -25,6 +25,7 @@ import org.immutables.value.Value;
  * @see "VkLayerProperties"
  */
 
+@VulkanAPIStructType(vulkanStruct = "VkLayerProperties")
 @ImmutablesStyleType
 @Value.Immutable
 public interface VulkanLayerPropertiesType

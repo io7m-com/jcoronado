@@ -27,6 +27,7 @@ import java.util.Set;
  * @see "VkPushConstantRange"
  */
 
+@VulkanAPIStructType(vulkanStruct = "VkPushConstantRange")
 @ImmutablesStyleType
 @Value.Immutable
 public interface VulkanPushConstantRangeType

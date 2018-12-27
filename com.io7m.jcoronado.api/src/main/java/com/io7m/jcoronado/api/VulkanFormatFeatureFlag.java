@@ -20,6 +20,7 @@ package com.io7m.jcoronado.api;
  * @see "VkFormatFeatureFlagBits"
  */
 
+@VulkanAPIEnumType(vulkanEnum = "VkFormatFeatureFlagBits")
 public enum VulkanFormatFeatureFlag implements VulkanEnumBitmaskType
 {
   /**

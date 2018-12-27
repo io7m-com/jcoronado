@@ -18,8 +18,6 @@ package com.io7m.jcoronado.tests.lwjgl;
 
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLCommandBuffer;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLCommandPool;
-import com.io7m.jcoronado.lwjgl.VulkanLWJGLDescriptorPoolCreateInfos;
-import com.io7m.jcoronado.lwjgl.VulkanLWJGLDescriptorPoolSizes;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLDescriptorSetLayout;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLFramebuffer;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLImage;
@@ -79,7 +77,7 @@ public final class VulkanLWJGLEqualsTest
   public void testVulkanLWJGLImage()
   {
     EqualsVerifier.forClass(VulkanLWJGLImage.class)
-      .withIgnoredFields("ownership", "closed", "host_allocator_proxy")
+      .withIgnoredFields("ownership", "device", "deallocate", "closed", "host_allocator_proxy")
       .withNonnullFields("handle")
       .verify();
   }

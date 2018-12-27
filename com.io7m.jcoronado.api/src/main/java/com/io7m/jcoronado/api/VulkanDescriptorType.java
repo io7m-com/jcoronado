@@ -22,6 +22,7 @@ package com.io7m.jcoronado.api;
  * @see "VkDescriptorType"
  */
 
+@VulkanAPIEnumType(vulkanEnum = "VkDescriptorType")
 public enum VulkanDescriptorType implements VulkanEnumIntegerType
 {
   /**

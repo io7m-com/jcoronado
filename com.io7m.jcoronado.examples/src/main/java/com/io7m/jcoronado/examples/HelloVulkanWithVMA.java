@@ -21,12 +21,14 @@ import com.io7m.jcoronado.api.VulkanApplicationInfo;
 import com.io7m.jcoronado.api.VulkanAttachmentDescription;
 import com.io7m.jcoronado.api.VulkanAttachmentReference;
 import com.io7m.jcoronado.api.VulkanBufferCreateInfo;
+import com.io7m.jcoronado.api.VulkanBufferImageCopy;
 import com.io7m.jcoronado.api.VulkanBufferType;
 import com.io7m.jcoronado.api.VulkanClearValueColorFloatingPoint;
 import com.io7m.jcoronado.api.VulkanCommandBufferBeginInfo;
 import com.io7m.jcoronado.api.VulkanCommandBufferCreateInfo;
 import com.io7m.jcoronado.api.VulkanCommandBufferType;
 import com.io7m.jcoronado.api.VulkanCommandPoolCreateInfo;
+import com.io7m.jcoronado.api.VulkanCommandPoolType;
 import com.io7m.jcoronado.api.VulkanComponentMapping;
 import com.io7m.jcoronado.api.VulkanDescriptorBufferInfo;
 import com.io7m.jcoronado.api.VulkanDescriptorPoolCreateInfo;
@@ -34,15 +36,25 @@ import com.io7m.jcoronado.api.VulkanDescriptorPoolSize;
 import com.io7m.jcoronado.api.VulkanDescriptorSetAllocateInfo;
 import com.io7m.jcoronado.api.VulkanDescriptorSetLayoutBinding;
 import com.io7m.jcoronado.api.VulkanDescriptorSetLayoutCreateInfo;
+import com.io7m.jcoronado.api.VulkanDescriptorSetLayoutType;
+import com.io7m.jcoronado.api.VulkanDescriptorSetType;
 import com.io7m.jcoronado.api.VulkanException;
 import com.io7m.jcoronado.api.VulkanExtensionProperties;
 import com.io7m.jcoronado.api.VulkanExtensions;
 import com.io7m.jcoronado.api.VulkanExtent2D;
+import com.io7m.jcoronado.api.VulkanExtent3D;
 import com.io7m.jcoronado.api.VulkanFramebufferCreateInfo;
 import com.io7m.jcoronado.api.VulkanFramebufferType;
 import com.io7m.jcoronado.api.VulkanGraphicsPipelineCreateInfo;
+import com.io7m.jcoronado.api.VulkanImageCreateInfo;
+import com.io7m.jcoronado.api.VulkanImageKind;
+import com.io7m.jcoronado.api.VulkanImageLayout;
+import com.io7m.jcoronado.api.VulkanImageMemoryBarrier;
+import com.io7m.jcoronado.api.VulkanImageSubresourceLayers;
 import com.io7m.jcoronado.api.VulkanImageSubresourceRange;
+import com.io7m.jcoronado.api.VulkanImageTiling;
 import com.io7m.jcoronado.api.VulkanImageType;
+import com.io7m.jcoronado.api.VulkanImageUsageFlag;
 import com.io7m.jcoronado.api.VulkanImageViewCreateFlag;
 import com.io7m.jcoronado.api.VulkanImageViewCreateInfo;
 import com.io7m.jcoronado.api.VulkanImageViewType;
@@ -54,20 +66,25 @@ import com.io7m.jcoronado.api.VulkanLogicalDeviceQueueCreateInfo;
 import com.io7m.jcoronado.api.VulkanLogicalDeviceType;
 import com.io7m.jcoronado.api.VulkanMissingRequiredExtensionsException;
 import com.io7m.jcoronado.api.VulkanOffset2D;
+import com.io7m.jcoronado.api.VulkanOffset3D;
 import com.io7m.jcoronado.api.VulkanPhysicalDeviceType;
 import com.io7m.jcoronado.api.VulkanPipelineColorBlendAttachmentState;
 import com.io7m.jcoronado.api.VulkanPipelineColorBlendStateCreateInfo;
 import com.io7m.jcoronado.api.VulkanPipelineInputAssemblyStateCreateInfo;
 import com.io7m.jcoronado.api.VulkanPipelineLayoutCreateInfo;
+import com.io7m.jcoronado.api.VulkanPipelineLayoutType;
 import com.io7m.jcoronado.api.VulkanPipelineMultisampleStateCreateInfo;
 import com.io7m.jcoronado.api.VulkanPipelineRasterizationStateCreateInfo;
 import com.io7m.jcoronado.api.VulkanPipelineShaderStageCreateInfo;
+import com.io7m.jcoronado.api.VulkanPipelineStageFlag;
+import com.io7m.jcoronado.api.VulkanPipelineType;
 import com.io7m.jcoronado.api.VulkanPipelineVertexInputStateCreateInfo;
 import com.io7m.jcoronado.api.VulkanPipelineViewportStateCreateInfo;
 import com.io7m.jcoronado.api.VulkanQueueType;
 import com.io7m.jcoronado.api.VulkanRectangle2D;
 import com.io7m.jcoronado.api.VulkanRenderPassBeginInfo;
 import com.io7m.jcoronado.api.VulkanRenderPassCreateInfo;
+import com.io7m.jcoronado.api.VulkanRenderPassType;
 import com.io7m.jcoronado.api.VulkanResourceException;
 import com.io7m.jcoronado.api.VulkanSemaphoreCreateInfo;
 import com.io7m.jcoronado.api.VulkanSemaphoreType;
@@ -98,8 +115,11 @@ import com.io7m.jcoronado.lwjgl.VulkanLWJGLHostAllocatorJeMalloc;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLInstanceProvider;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLTemporaryAllocator;
 import com.io7m.jcoronado.vma.VMAAllocationCreateInfo;
+import com.io7m.jcoronado.vma.VMAAllocationResult;
 import com.io7m.jcoronado.vma.VMAAllocatorCreateInfo;
+import com.io7m.jcoronado.vma.VMAAllocatorType;
 import com.io7m.jmulticlose.core.CloseableCollection;
+import com.io7m.jmulticlose.core.CloseableCollectionType;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWVulkan;
@@ -121,14 +141,18 @@ import java.util.stream.IntStream;
 
 import static com.io7m.jcoronado.api.VulkanAccessFlag.VK_ACCESS_COLOR_ATTACHMENT_READ_BIT;
 import static com.io7m.jcoronado.api.VulkanAccessFlag.VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
+import static com.io7m.jcoronado.api.VulkanAccessFlag.VK_ACCESS_SHADER_READ_BIT;
+import static com.io7m.jcoronado.api.VulkanAccessFlag.VK_ACCESS_TRANSFER_WRITE_BIT;
 import static com.io7m.jcoronado.api.VulkanAttachmentLoadOp.VK_ATTACHMENT_LOAD_OP_CLEAR;
 import static com.io7m.jcoronado.api.VulkanAttachmentLoadOp.VK_ATTACHMENT_LOAD_OP_DONT_CARE;
 import static com.io7m.jcoronado.api.VulkanAttachmentStoreOp.VK_ATTACHMENT_STORE_OP_DONT_CARE;
 import static com.io7m.jcoronado.api.VulkanAttachmentStoreOp.VK_ATTACHMENT_STORE_OP_STORE;
 import static com.io7m.jcoronado.api.VulkanBufferUsageFlag.VK_BUFFER_USAGE_INDEX_BUFFER_BIT;
+import static com.io7m.jcoronado.api.VulkanBufferUsageFlag.VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
 import static com.io7m.jcoronado.api.VulkanBufferUsageFlag.VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT;
 import static com.io7m.jcoronado.api.VulkanBufferUsageFlag.VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
 import static com.io7m.jcoronado.api.VulkanCommandBufferLevel.VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+import static com.io7m.jcoronado.api.VulkanCommandBufferUsageFlag.VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
 import static com.io7m.jcoronado.api.VulkanCommandBufferUsageFlag.VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT;
 import static com.io7m.jcoronado.api.VulkanComponentSwizzle.VK_COMPONENT_SWIZZLE_IDENTITY;
 import static com.io7m.jcoronado.api.VulkanCullModeFlag.VK_CULL_MODE_BACK_BIT;
@@ -136,18 +160,25 @@ import static com.io7m.jcoronado.api.VulkanDescriptorType.VK_DESCRIPTOR_TYPE_UNI
 import static com.io7m.jcoronado.api.VulkanFormat.VK_FORMAT_B8G8R8A8_UNORM;
 import static com.io7m.jcoronado.api.VulkanFormat.VK_FORMAT_R32G32B32_SFLOAT;
 import static com.io7m.jcoronado.api.VulkanFormat.VK_FORMAT_R32G32_SFLOAT;
+import static com.io7m.jcoronado.api.VulkanFormat.VK_FORMAT_R8G8B8A8_UNORM;
 import static com.io7m.jcoronado.api.VulkanFormat.VK_FORMAT_UNDEFINED;
 import static com.io7m.jcoronado.api.VulkanFrontFace.VK_FRONT_FACE_CLOCKWISE;
 import static com.io7m.jcoronado.api.VulkanImageAspectFlag.VK_IMAGE_ASPECT_COLOR_BIT;
 import static com.io7m.jcoronado.api.VulkanImageLayout.VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
 import static com.io7m.jcoronado.api.VulkanImageLayout.VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
+import static com.io7m.jcoronado.api.VulkanImageLayout.VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+import static com.io7m.jcoronado.api.VulkanImageLayout.VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
 import static com.io7m.jcoronado.api.VulkanImageLayout.VK_IMAGE_LAYOUT_UNDEFINED;
 import static com.io7m.jcoronado.api.VulkanImageUsageFlag.VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
 import static com.io7m.jcoronado.api.VulkanImageViewKind.VK_IMAGE_VIEW_TYPE_2D;
 import static com.io7m.jcoronado.api.VulkanIndexType.VK_INDEX_TYPE_UINT16;
+import static com.io7m.jcoronado.api.VulkanMemoryPropertyFlag.VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
 import static com.io7m.jcoronado.api.VulkanMemoryPropertyFlag.VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT;
 import static com.io7m.jcoronado.api.VulkanPipelineBindPoint.VK_PIPELINE_BIND_POINT_GRAPHICS;
 import static com.io7m.jcoronado.api.VulkanPipelineStageFlag.VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+import static com.io7m.jcoronado.api.VulkanPipelineStageFlag.VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT;
+import static com.io7m.jcoronado.api.VulkanPipelineStageFlag.VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT;
+import static com.io7m.jcoronado.api.VulkanPipelineStageFlag.VK_PIPELINE_STAGE_TRANSFER_BIT;
 import static com.io7m.jcoronado.api.VulkanPolygonMode.VK_POLYGON_MODE_FILL;
 import static com.io7m.jcoronado.api.VulkanPrimitiveTopology.VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
 import static com.io7m.jcoronado.api.VulkanQueueFamilyPropertyFlag.VK_QUEUE_GRAPHICS_BIT;
@@ -163,6 +194,7 @@ import static com.io7m.jcoronado.extensions.api.VulkanCompositeAlphaFlagKHR.VK_C
 import static com.io7m.jcoronado.extensions.api.VulkanPresentModeKHR.VK_PRESENT_MODE_FIFO_KHR;
 import static com.io7m.jcoronado.extensions.api.VulkanPresentModeKHR.VK_PRESENT_MODE_IMMEDIATE_KHR;
 import static com.io7m.jcoronado.extensions.api.VulkanPresentModeKHR.VK_PRESENT_MODE_MAILBOX_KHR;
+import static com.io7m.jcoronado.vma.VMAMemoryUsage.VMA_MEMORY_USAGE_CPU_ONLY;
 import static com.io7m.jcoronado.vma.VMAMemoryUsage.VMA_MEMORY_USAGE_GPU_ONLY;
 import static java.util.concurrent.TimeUnit.SECONDS;
 
@@ -176,6 +208,7 @@ public final class HelloVulkanWithVMA
   private static final int VERTEX_POSITION_SIZE = 2 * 4;
   private static final int VERTEX_COLOR_SIZE = 3 * 4;
   private static final int VERTEX_SIZE = VERTEX_POSITION_SIZE + VERTEX_COLOR_SIZE;
+  private static final long UNIFORM_BUFFER_SIZE = 4L;
 
   private static final class Vertex
   {
@@ -249,9 +282,7 @@ public final class HelloVulkanWithVMA
     final Supplier<VulkanException> exception_supplier =
       () -> new VulkanResourceException("Could not close one or more resources.");
 
-    try (var resources =
-           CloseableCollection.create(exception_supplier)) {
-
+    try (var resources = CloseableCollection.create(exception_supplier)) {
       final var window = createWindow();
 
       /*
@@ -288,15 +319,10 @@ public final class HelloVulkanWithVMA
 
       final var enable_extensions =
         VulkanExtensions.filterRequiredExtensions(
-          available_extensions,
-          Set.of(),
-          required_extensions);
-
+          available_extensions, Set.of(), required_extensions);
       final var enable_layers =
         VulkanLayers.filterRequiredLayers(
-          available_layers,
-          Set.of(),
-          required_layers);
+          available_layers, Set.of(), required_layers);
 
       /*
        * Create a new instance.
@@ -345,9 +371,7 @@ public final class HelloVulkanWithVMA
        * Require the VK_KHR_get_memory_requirements2 extension in order to use VMA.
        */
 
-      final var device_extensions =
-        physical_device.extensions(Optional.empty());
-
+      final var device_extensions = physical_device.extensions(Optional.empty());
       device_extensions.forEach(HelloVulkanWithVMA::showPhysicalDeviceAvailableExtension);
       if (!device_extensions.containsKey("VK_KHR_get_memory_requirements2")) {
         throw new VulkanMissingRequiredExtensionsException(
@@ -376,6 +400,8 @@ public final class HelloVulkanWithVMA
       /*
        * We know that the selected physical device has a graphics queue family, and a queue
        * family for presentation. We don't know if these are the same queue families or not.
+       * The VK_QUEUE_GRAPHICS_BIT implies VK_QUEUE_TRANSFER_BIT, so just searching for
+       * VK_QUEUE_GRAPHICS_BIT is enough for both.
        */
 
       final var graphics_queue_props =
@@ -487,274 +513,67 @@ public final class HelloVulkanWithVMA
           .collect(Collectors.toList());
 
       /*
-       * Load a shader module.
+       * Create a command pools and buffers. If the graphics and presentation queues are separate,
+       * then separate command pools are required. A separate command buffer pool is created for
+       * transfer commands because those commands are short-lived.
        */
 
-      final var data = readShaderModule("shaders.spv");
-      final var shaders = resources.add(createShaderModule(device, alloc, data));
+      final var graphics_pool_info =
+        VulkanCommandPoolCreateInfo.builder()
+          .setQueueFamilyIndex(graphics_queue.queueIndex())
+          .build();
+
+      final var graphics_command_pool =
+        resources.add(device.createCommandPool(graphics_pool_info));
+
+      final var graphics_command_buffer_count =
+        swap_chain.images().size();
+
+      final var graphics_command_buffer_info =
+        VulkanCommandBufferCreateInfo.builder()
+          .setCount(graphics_command_buffer_count)
+          .setLevel(VK_COMMAND_BUFFER_LEVEL_PRIMARY)
+          .setPool(graphics_command_pool)
+          .build();
+
+      final var graphics_command_buffers =
+        device.createCommandBuffers(graphics_command_buffer_info);
+
+      final var transfer_pool_info =
+        VulkanCommandPoolCreateInfo.builder()
+          .setQueueFamilyIndex(graphics_queue.queueIndex())
+          .build();
+
+      final var transfer_command_pool =
+        resources.add(device.createCommandPool(transfer_pool_info));
+
+      /*
+       * Create and upload textures.
+       */
+
+      createTextures(resources, device, vma_allocator, graphics_queue, transfer_command_pool);
 
       /*
        * Allocate one uniform buffer per frame.
        */
 
-      final var vma_alloc_create_info =
-        VMAAllocationCreateInfo.builder()
-          .setUsage(VMA_MEMORY_USAGE_GPU_ONLY)
-          .addRequiredFlags(VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT)
-          .setMemoryTypeBits(0L)
-          .build();
+      final var uniform_buffers = createUniformBuffers(resources, vma_allocator, swap_chain);
 
-      final var uniform_buffer_size = 4L;
+      /*
+       * Load a shader module.
+       */
 
-      final var uniform_buffer_create_info =
-        VulkanBufferCreateInfo.builder()
-          .setSize(uniform_buffer_size)
-          .addUsageFlags(VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT)
-          .setSharingMode(VK_SHARING_MODE_EXCLUSIVE)
-          .build();
-
-      final var uniform_buffers = new ArrayList<VulkanBufferType>(swap_chain.images().size());
-      for (var index = 0; index < swap_chain.images().size(); ++index) {
-        final var vma_uniform_buffer_result =
-          vma_allocator.createBuffer(vma_alloc_create_info, uniform_buffer_create_info);
-
-        final var uniform_buffer =
-          resources.add(vma_uniform_buffer_result.result());
-
-        LOG.trace("allocated uniform buffer: {}", uniform_buffer);
-        uniform_buffers.add(uniform_buffer);
-
-        /*
-         * Populate uniform buffer by mapping the memory and writing to it. Closing the mapped
-         * memory will automatically unmap it.
-         */
-
-        try (var uniform_map = vma_allocator.mapMemory(vma_uniform_buffer_result.allocation())) {
-          final var buffer = uniform_map.asByteBuffer();
-          buffer.putFloat(0, 1.0f);
-        }
-      }
+      final var shaders =
+        resources.add(createShaderModule(device, alloc, readShaderModule("shaders.spv")));
 
       /*
        * Configure descriptor sets for the shader.
        */
 
-      final var descriptor_set_layout_binding =
-        VulkanDescriptorSetLayoutBinding.builder()
-          .setBinding(0)
-          .setDescriptorType(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER)
-          .setDescriptorCount(1)
-          .addStageFlags(VK_SHADER_STAGE_FRAGMENT_BIT)
-          .build();
-
-      final var descriptor_set_layout_create_info =
-        VulkanDescriptorSetLayoutCreateInfo.builder()
-          .addBindings(descriptor_set_layout_binding)
-          .build();
-
       final var descriptor_set_layout =
-        resources.add(device.createDescriptorSetLayout(descriptor_set_layout_create_info));
-
-      final var descriptor_pool_uniform_buffer =
-        VulkanDescriptorPoolSize.of(
-          VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
-          swap_chain.images().size());
-
-      final var descriptor_pool_create_info =
-        VulkanDescriptorPoolCreateInfo.builder()
-          .setMaxSets(swap_chain.images().size())
-          .addPoolSizes(descriptor_pool_uniform_buffer)
-          .build();
-
-      final var descriptor_pool =
-        resources.add(device.createDescriptorPool(descriptor_pool_create_info));
-
-      final var descriptor_set_layouts =
-        IntStream.range(0, swap_chain.images().size())
-          .mapToObj(ignore -> descriptor_set_layout)
-          .collect(Collectors.toList());
-
+        createDescriptorSetLayout(resources, device);
       final var descriptor_sets =
-        device.allocateDescriptorSets(
-          VulkanDescriptorSetAllocateInfo.builder()
-            .setSetLayouts(descriptor_set_layouts)
-            .setDescriptorPool(descriptor_pool)
-            .build());
-
-      for (var index = 0; index < swap_chain.images().size(); ++index) {
-        final var buffer_info =
-          VulkanDescriptorBufferInfo.builder()
-            .setBuffer(uniform_buffers.get(index))
-            .setOffset(0L)
-            .setRange(uniform_buffer_size)
-            .build();
-
-        final var descriptor_set_write =
-          VulkanWriteDescriptorSet.builder()
-            .setDestinationBinding(0)
-            .setDestinationArrayElement(0)
-            .setDestinationSet(descriptor_sets.get(index))
-            .setDescriptorType(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER)
-            .setDescriptorCount(1)
-            .addBufferInfos(buffer_info)
-            .build();
-
-        LOG.trace("updating descriptor set {}", Integer.valueOf(index));
-        device.updateDescriptorSets(List.of(descriptor_set_write), List.of());
-      }
-
-      /*
-       * Configure the render pass.
-       *
-       * This specifies that:
-       *
-       * We don't want multisampling.
-       *
-       * Reads from the image attachment should behave as if the attachment has been cleared before
-       * rendering.
-       *
-       * Writes to the image attachment should be stored in the image.
-       *
-       * We don't care about reads or writes to the stencil buffer.
-       *
-       * We don't care about the initial layout of the image.
-       *
-       * The final layout of the image must be something usable for presentation to the screen.
-       */
-
-      final var color_attachment_description =
-        VulkanAttachmentDescription.builder()
-          .setFormat(surface_format.format())
-          .setSamples(VK_SAMPLE_COUNT_1_BIT)
-          .setLoadOp(VK_ATTACHMENT_LOAD_OP_CLEAR)
-          .setStoreOp(VK_ATTACHMENT_STORE_OP_STORE)
-          .setStencilLoadOp(VK_ATTACHMENT_LOAD_OP_DONT_CARE)
-          .setStencilStoreOp(VK_ATTACHMENT_STORE_OP_DONT_CARE)
-          .setInitialLayout(VK_IMAGE_LAYOUT_UNDEFINED)
-          .setFinalLayout(VK_IMAGE_LAYOUT_PRESENT_SRC_KHR)
-          .build();
-
-      final var color_attachment_reference =
-        VulkanAttachmentReference.builder()
-          .setAttachment(0)
-          .setLayout(VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL)
-          .build();
-
-      final var subpass_description =
-        VulkanSubpassDescription.builder()
-          .setPipelineBindPoint(VK_PIPELINE_BIND_POINT_GRAPHICS)
-          .addColorAttachments(color_attachment_reference)
-          .build();
-
-      final var subpass_dependency =
-        VulkanSubpassDependency.builder()
-          .setSrcSubpass(VulkanSubpassDependencyType.EXTERNAL)
-          .addSrcStageMask(VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT)
-          .setDstSubpass(0)
-          .addDstStageMask(VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT)
-          .addDstAccessMask(VK_ACCESS_COLOR_ATTACHMENT_READ_BIT)
-          .addDstAccessMask(VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT)
-          .build();
-
-      final var render_pass_create_info =
-        VulkanRenderPassCreateInfo.builder()
-          .addAttachments(color_attachment_description)
-          .addSubpasses(subpass_description)
-          .addDependencies(subpass_dependency)
-          .build();
-
-      final var render_pass =
-        resources.add(device.createRenderPass(render_pass_create_info));
-
-      /*
-       * Configure the rendering pipeline.
-       */
-
-      final var vertex_stage_info =
-        VulkanPipelineShaderStageCreateInfo.builder()
-          .setStage(VK_SHADER_STAGE_VERTEX_BIT)
-          .setModule(shaders)
-          .setShaderEntryPoint("R3_clip_triangle_vert_main")
-          .build();
-
-      final var fragment_stage_info =
-        VulkanPipelineShaderStageCreateInfo.builder()
-          .setStage(VK_SHADER_STAGE_FRAGMENT_BIT)
-          .setModule(shaders)
-          .setShaderEntryPoint("R3_clip_triangle_frag_ub_main")
-          .build();
-
-      final var vertex_binding_description =
-        VulkanVertexInputBindingDescription.builder()
-          .setBinding(0)
-          .setInputRate(VK_VERTEX_INPUT_RATE_VERTEX)
-          .setStride(VERTEX_SIZE)
-          .build();
-
-      final var vertex_position_attribute =
-        VulkanVertexInputAttributeDescription.builder()
-          .setBinding(0)
-          .setLocation(0)
-          .setFormat(VK_FORMAT_R32G32_SFLOAT)
-          .setOffset(0)
-          .build();
-
-      final var vertex_color_attribute =
-        VulkanVertexInputAttributeDescription.builder()
-          .setBinding(0)
-          .setLocation(1)
-          .setFormat(VK_FORMAT_R32G32B32_SFLOAT)
-          .setOffset(VERTEX_POSITION_SIZE)
-          .build();
-
-      final var vertex_input_info =
-        VulkanPipelineVertexInputStateCreateInfo.builder()
-          .addVertexBindingDescriptions(vertex_binding_description)
-          .addVertexAttributeDescriptions(vertex_position_attribute)
-          .addVertexAttributeDescriptions(vertex_color_attribute)
-          .build();
-
-      final var input_assembly_info =
-        VulkanPipelineInputAssemblyStateCreateInfo.builder()
-          .setTopology(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST)
-          .setPrimitiveRestartEnable(false)
-          .build();
-
-      final var viewport_state_info =
-        VulkanPipelineViewportStateCreateInfo.builder()
-          .addScissors(VulkanRectangle2D.of(VulkanOffset2D.of(0, 0), surface_extent))
-          .addViewports(VulkanViewport.of(
-            0.0f,
-            0.0f,
-            (float) surface_extent.width(),
-            (float) surface_extent.height(),
-            0.0f,
-            1.0f))
-          .build();
-
-      final var rasterizer =
-        VulkanPipelineRasterizationStateCreateInfo.builder()
-          .setCullMode(EnumSet.of(VK_CULL_MODE_BACK_BIT))
-          .setDepthBiasClamp(0.0f)
-          .setDepthBiasConstantFactor(0.0f)
-          .setDepthBiasEnable(false)
-          .setDepthBiasSlopeFactor(0.0f)
-          .setDepthClampEnable(false)
-          .setFrontFace(VK_FRONT_FACE_CLOCKWISE)
-          .setLineWidth(1.0f)
-          .setPolygonMode(VK_POLYGON_MODE_FILL)
-          .setRasterizerDiscardEnable(false)
-          .build();
-
-      final var blend_state =
-        VulkanPipelineColorBlendAttachmentState.builder()
-          .setEnable(false)
-          .build();
-
-      final var color_blending =
-        VulkanPipelineColorBlendStateCreateInfo.builder()
-          .addAttachments(blend_state)
-          .build();
+        createDescriptorSets(resources, device, swap_chain, uniform_buffers, descriptor_set_layout);
 
       final var pipeline_layout_info =
         VulkanPipelineLayoutCreateInfo.builder()
@@ -764,32 +583,24 @@ public final class HelloVulkanWithVMA
       final var pipeline_layout =
         resources.add(device.createPipelineLayout(pipeline_layout_info));
 
-      final var multisample =
-        VulkanPipelineMultisampleStateCreateInfo.builder()
-          .setAlphaToCoverageEnable(false)
-          .setAlphaToOneEnable(false)
-          .setMinSampleShading(1.0f)
-          .setRasterizationSamples(VK_SAMPLE_COUNT_1_BIT)
-          .setSampleShadingEnable(false)
-          .build();
+      /*
+       * Create a render pass.
+       */
 
-      final var pipeline_info =
-        VulkanGraphicsPipelineCreateInfo.builder()
-          .addStages(fragment_stage_info)
-          .addStages(vertex_stage_info)
-          .setColorBlendState(color_blending)
-          .setInputAssemblyState(input_assembly_info)
-          .setLayout(pipeline_layout)
-          .setMultisampleState(multisample)
-          .setRasterizationState(rasterizer)
-          .setRenderPass(render_pass)
-          .setSubpass(0)
-          .setVertexInputState(vertex_input_info)
-          .setViewportState(viewport_state_info)
-          .build();
+      final var render_pass =
+        createRenderPass(resources, surface_format, device);
+
+      /*
+       * Create a pipeline for rendering.
+       */
 
       final var pipeline =
-        resources.add(device.createPipeline(pipeline_info));
+        resources.add(createPipeline(
+          surface_extent,
+          device,
+          shaders,
+          pipeline_layout,
+          render_pass));
 
       /*
        * Create framebuffers.
@@ -807,139 +618,38 @@ public final class HelloVulkanWithVMA
             .setRenderPass(render_pass)
             .build();
 
-        final var framebuffer =
-          resources.add(device.createFramebuffer(framebuffer_info));
-
-        framebuffers.add(framebuffer);
+        framebuffers.add(resources.add(device.createFramebuffer(framebuffer_info)));
       }
 
       /*
        * Create a vertex buffer.
        */
 
-      final var vertex_buffer_create_info =
-        VulkanBufferCreateInfo.builder()
-          .setSize(3L * (long) VERTEX_SIZE)
-          .addUsageFlags(VK_BUFFER_USAGE_VERTEX_BUFFER_BIT)
-          .setSharingMode(VK_SHARING_MODE_EXCLUSIVE)
-          .build();
-
-      final var vma_vertex_buffer_result =
-        vma_allocator.createBuffer(vma_alloc_create_info, vertex_buffer_create_info);
-
-      final var vertex_buffer =
-        resources.add(vma_vertex_buffer_result.result());
-
-      LOG.trace("allocated vertex buffer: {}", vertex_buffer);
-
-      /*
-       * Populate vertex buffer by mapping the memory and writing to it. Closing the mapped
-       * memory will automatically unmap it.
-       */
-
-      try (var vertex_mapped = vma_allocator.mapMemory(vma_vertex_buffer_result.allocation())) {
-        final var buffer = vertex_mapped.asByteBuffer();
-
-        final var v0 = VERTICES.get(0);
-        buffer.putFloat(0, (float) v0.x);
-        buffer.putFloat(4, (float) v0.y);
-        buffer.putFloat(8, (float) v0.r);
-        buffer.putFloat(12, (float) v0.g);
-        buffer.putFloat(16, (float) v0.b);
-
-        final var v1 = VERTICES.get(1);
-        buffer.putFloat(20, (float) v1.x);
-        buffer.putFloat(24, (float) v1.y);
-        buffer.putFloat(28, (float) v1.r);
-        buffer.putFloat(32, (float) v1.g);
-        buffer.putFloat(36, (float) v1.b);
-
-        final var v2 = VERTICES.get(2);
-        buffer.putFloat(40, (float) v2.x);
-        buffer.putFloat(44, (float) v2.y);
-        buffer.putFloat(48, (float) v2.r);
-        buffer.putFloat(52, (float) v2.g);
-        buffer.putFloat(56, (float) v2.b);
-      }
+      final var vertex_buffer = createVertexBuffer(resources, vma_allocator);
 
       /*
        * Create index buffer.
        */
 
-      final var index_buffer_create_info =
-        VulkanBufferCreateInfo.builder()
-          .setSize(3L * 2L)
-          .addUsageFlags(VK_BUFFER_USAGE_INDEX_BUFFER_BIT)
-          .setSharingMode(VK_SHARING_MODE_EXCLUSIVE)
-          .build();
-
-      final var vma_index_buffer_result =
-        vma_allocator.createBuffer(vma_alloc_create_info, index_buffer_create_info);
-
-      final var index_buffer =
-        resources.add(vma_index_buffer_result.result());
-
-      LOG.trace("allocated index buffer: {}", index_buffer);
-
-      /*
-       * Populate index buffer by mapping the memory and writing to it. Closing the mapped
-       * memory will automatically unmap it.
-       */
-
-      try (var index_mapped = vma_allocator.mapMemory(vma_index_buffer_result.allocation())) {
-        final var buffer = index_mapped.asByteBuffer();
-        buffer.putShort(0, (short) 0);
-        buffer.putShort(2, (short) 1);
-        buffer.putShort(4, (short) 2);
-      }
-
-      /*
-       * Create a command pool and buffers. If the graphics and presentation queues are separate,
-       * then separate command pools are required.
-       */
-
-      final var graphics_pool_info =
-        VulkanCommandPoolCreateInfo.builder()
-          .setQueueFamilyIndex(graphics_queue.queueIndex())
-          .build();
-
-      final var graphics_command_pool =
-        resources.add(device.createCommandPool(graphics_pool_info));
-
-      final var command_buffer_count = swap_chain.images().size();
-      final var graphics_command_buffer_info =
-        VulkanCommandBufferCreateInfo.builder()
-          .setCount(command_buffer_count)
-          .setLevel(VK_COMMAND_BUFFER_LEVEL_PRIMARY)
-          .setPool(graphics_command_pool)
-          .build();
-
-      final var graphics_command_buffers =
-        device.createCommandBuffers(graphics_command_buffer_info);
+      final var index_buffer = createIndexBuffer(resources, vma_allocator);
 
       /*
        * Create a pair of semaphores for synchronizing command execution.
        */
 
       final var render_finished =
-        resources.add(device.createSemaphore(
-          VulkanSemaphoreCreateInfo.builder()
-            .build()));
+        resources.add(device.createSemaphore(VulkanSemaphoreCreateInfo.builder().build()));
 
       final var image_available =
-        resources.add(device.createSemaphore(
-          VulkanSemaphoreCreateInfo.builder()
-            .build()));
+        resources.add(device.createSemaphore(VulkanSemaphoreCreateInfo.builder().build()));
 
       /*
        * Start recording commands.
        */
 
-      for (var index = 0; index < command_buffer_count; ++index) {
+      for (var index = 0; index < graphics_command_buffer_count; ++index) {
         final var framebuffer = framebuffers.get(index);
-
-        final var graphics_command_buffer =
-          graphics_command_buffers.get(index);
+        final var graphics_command_buffer = graphics_command_buffers.get(index);
 
         final var begin_info =
           VulkanCommandBufferBeginInfo.builder()
@@ -1025,6 +735,691 @@ public final class HelloVulkanWithVMA
         Thread.currentThread().interrupt();
       }
     }
+  }
+
+  private static void createTextures(
+    final CloseableCollectionType<VulkanException> resources,
+    final VulkanLogicalDeviceType device,
+    final VMAAllocatorType vma_allocator,
+    final VulkanQueueType graphics_queue,
+    final VulkanCommandPoolType transfer_command_pool)
+    throws VulkanException
+  {
+    final var texture_width = 256;
+    final var texture_height = 256;
+    final var texture_bpp = 4;
+    final var texture_size = texture_width * texture_height * texture_bpp;
+
+    final var staging_result =
+      createTextureStagingBuffer(resources, vma_allocator, texture_width, texture_height);
+    final var gpu_result =
+      createTextureGPU(resources, vma_allocator, texture_width, texture_height);
+
+    transitionImageLayout(
+      device,
+      graphics_queue,
+      transfer_command_pool,
+      gpu_result.result(),
+      VK_IMAGE_LAYOUT_UNDEFINED,
+      VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
+
+    copyBufferToImage(
+      device,
+      graphics_queue,
+      transfer_command_pool,
+      staging_result.result(),
+      gpu_result.result(),
+      texture_width,
+      texture_height);
+
+    transitionImageLayout(
+      device,
+      graphics_queue,
+      transfer_command_pool,
+      gpu_result.result(),
+      VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
+      VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+  }
+
+  private static void copyBufferToImage(
+    final VulkanLogicalDeviceType device,
+    final VulkanQueueType graphics_queue,
+    final VulkanCommandPoolType transfer_command_pool,
+    final VulkanBufferType source,
+    final VulkanImageType target,
+    final int texture_width,
+    final int texture_height)
+    throws VulkanException
+  {
+    try (var transfer_command_buffer =
+           device.createCommandBuffer(transfer_command_pool, VK_COMMAND_BUFFER_LEVEL_PRIMARY)) {
+      transfer_command_buffer.beginCommandBuffer(VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT);
+
+      transfer_command_buffer.copyBufferToImage(
+        source,
+        target,
+        VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
+        List.of(VulkanBufferImageCopy.builder()
+                  .setBufferImageHeight(0)
+                  .setBufferOffset(0L)
+                  .setBufferRowLength(0)
+                  .setImageExtent(VulkanExtent3D.of(texture_width, texture_height, 1))
+                  .setImageOffset(VulkanOffset3D.of(0, 0, 0))
+                  .setImageSubresource(
+                    VulkanImageSubresourceLayers.builder()
+                      .addAspectMask(VK_IMAGE_ASPECT_COLOR_BIT)
+                      .setBaseArrayLayer(0)
+                      .setLayerCount(1)
+                      .setMipLevel(0)
+                      .build())
+                  .build()));
+
+      transfer_command_buffer.endCommandBuffer();
+
+      LOG.trace("submitting image copy");
+      graphics_queue.submit(
+        List.of(VulkanSubmitInfo.builder()
+                  .addCommandBuffers(transfer_command_buffer)
+                  .build()));
+
+      LOG.trace("submitting waiting for image copy");
+      graphics_queue.waitIdle();
+    }
+  }
+
+  private static void transitionImageLayout(
+    final VulkanLogicalDeviceType device,
+    final VulkanQueueType graphics_queue,
+    final VulkanCommandPoolType command_pool,
+    final VulkanImageType image,
+    final VulkanImageLayout old_layout,
+    final VulkanImageLayout new_layout)
+    throws VulkanException
+  {
+    final var barrier_builder =
+      VulkanImageMemoryBarrier.builder()
+        .setSourceQueueFamilyIndex(-1)
+        .setTargetQueueFamilyIndex(-1)
+        .setImage(image)
+        .setSubresourceRange(
+          VulkanImageSubresourceRange.builder()
+            .addAspectMask(VK_IMAGE_ASPECT_COLOR_BIT)
+            .setBaseMipLevel(0)
+            .setBaseArrayLayer(0)
+            .setLevelCount(1)
+            .setLayerCount(1)
+            .build())
+        .setOldLayout(old_layout)
+        .setNewLayout(new_layout);
+
+    final Set<VulkanPipelineStageFlag> source_stage;
+    final Set<VulkanPipelineStageFlag> target_stage;
+
+    if (old_layout == VK_IMAGE_LAYOUT_UNDEFINED
+      && new_layout == VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL) {
+      barrier_builder.setSourceAccessMask(Set.of());
+      barrier_builder.setTargetAccessMask(Set.of(VK_ACCESS_TRANSFER_WRITE_BIT));
+      source_stage = Set.of(VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT);
+      target_stage = Set.of(VK_PIPELINE_STAGE_TRANSFER_BIT);
+    } else if (old_layout == VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL
+      && new_layout == VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL) {
+      barrier_builder.setSourceAccessMask(Set.of(VK_ACCESS_TRANSFER_WRITE_BIT));
+      barrier_builder.setTargetAccessMask(Set.of(VK_ACCESS_SHADER_READ_BIT));
+      source_stage = Set.of(VK_PIPELINE_STAGE_TRANSFER_BIT);
+      target_stage = Set.of(VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT);
+    } else {
+      throw new UnsupportedOperationException("Unsupported layout transition");
+    }
+
+    try (var command_buffer = device.createCommandBuffer(command_pool, VK_COMMAND_BUFFER_LEVEL_PRIMARY)) {
+      command_buffer.beginCommandBuffer(VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT);
+
+      command_buffer.pipelineBarrier(
+        source_stage,
+        target_stage,
+        Set.of(),
+        List.of(),
+        List.of(),
+        List.of(barrier_builder.build()));
+
+      command_buffer.endCommandBuffer();
+
+      LOG.trace("submitting image transition {} -> {} barrier", old_layout, new_layout);
+      graphics_queue.submit(
+        List.of(VulkanSubmitInfo.builder()
+                  .addCommandBuffers(command_buffer)
+                  .build()));
+
+      LOG.trace("waiting for image transition barrier");
+      graphics_queue.waitIdle();
+    }
+  }
+
+  /**
+   * Create a GPU-side texture.
+   */
+
+  private static VMAAllocationResult<VulkanImageType> createTextureGPU(
+    final CloseableCollectionType<VulkanException> resources,
+    final VMAAllocatorType vma_allocator,
+    final int texture_width,
+    final int texture_height)
+    throws VulkanException
+  {
+    LOG.trace(
+      "creating {}x{} gpu texture",
+      Integer.valueOf(texture_width),
+      Integer.valueOf(texture_height));
+
+    final var texture_buffer_create_info =
+      VulkanImageCreateInfo.builder()
+        .setArrayLayers(1)
+        .setExtent(VulkanExtent3D.of(texture_width, texture_height, 1))
+        .setFormat(VK_FORMAT_R8G8B8A8_UNORM)
+        .setImageType(VulkanImageKind.VK_IMAGE_TYPE_2D)
+        .setInitialLayout(VK_IMAGE_LAYOUT_UNDEFINED)
+        .setMipLevels(1)
+        .setSamples(Set.of(VK_SAMPLE_COUNT_1_BIT))
+        .setSharingMode(VK_SHARING_MODE_EXCLUSIVE)
+        .setTiling(VulkanImageTiling.VK_IMAGE_TILING_OPTIMAL)
+        .addUsage(VulkanImageUsageFlag.VK_IMAGE_USAGE_SAMPLED_BIT)
+        .addUsage(VulkanImageUsageFlag.VK_IMAGE_USAGE_TRANSFER_DST_BIT)
+        .build();
+
+    final var vma_gpu_alloc_create_info =
+      VMAAllocationCreateInfo.builder()
+        .setUsage(VMA_MEMORY_USAGE_GPU_ONLY)
+        .addRequiredFlags(VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT)
+        .setMemoryTypeBits(0L)
+        .build();
+
+    final var texture_result =
+      vma_allocator.createImage(vma_gpu_alloc_create_info, texture_buffer_create_info);
+
+    resources.add(texture_result.result());
+    return texture_result;
+  }
+
+  /**
+   * Create a CPU-side staging buffer for a texture.
+   */
+
+  private static VMAAllocationResult<VulkanBufferType> createTextureStagingBuffer(
+    final CloseableCollectionType<VulkanException> resources,
+    final VMAAllocatorType vma_allocator,
+    final int texture_width,
+    final int texture_height)
+    throws VulkanException
+  {
+    LOG.trace(
+      "creating {}x{} texture staging buffer",
+      Integer.valueOf(texture_width),
+      Integer.valueOf(texture_height));
+
+    final var vma_cpu_alloc_create_info =
+      VMAAllocationCreateInfo.builder()
+        .setUsage(VMA_MEMORY_USAGE_CPU_ONLY)
+        .addRequiredFlags(VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT)
+        .setMemoryTypeBits(0L)
+        .build();
+
+    final var size =
+      Integer.toUnsignedLong(texture_width) * Integer.toUnsignedLong(texture_height) * 4L;
+
+    final var texture_staging_buffer_create_info =
+      VulkanBufferCreateInfo.builder()
+        .setSize(size)
+        .addUsageFlags(VK_BUFFER_USAGE_TRANSFER_SRC_BIT)
+        .setSharingMode(VK_SHARING_MODE_EXCLUSIVE)
+        .build();
+
+    final var staging_buffer_result =
+      vma_allocator.createBuffer(vma_cpu_alloc_create_info, texture_staging_buffer_create_info);
+
+    resources.add(staging_buffer_result.result());
+
+    try (var map = vma_allocator.mapMemory(staging_buffer_result.allocation())) {
+      final var bytes = map.asByteBuffer();
+    }
+
+    return staging_buffer_result;
+  }
+
+  /**
+   * Create descriptor sets.
+   */
+
+  private static List<VulkanDescriptorSetType> createDescriptorSets(
+    final CloseableCollectionType<VulkanException> resources,
+    final VulkanLogicalDeviceType device,
+    final VulkanKHRSwapChainType swap_chain,
+    final ArrayList<VulkanBufferType> uniform_buffers,
+    final VulkanDescriptorSetLayoutType descriptor_set_layout)
+    throws VulkanException
+  {
+    final var descriptor_pool_uniform_buffer =
+      VulkanDescriptorPoolSize.of(
+        VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
+        swap_chain.images().size());
+
+    final var descriptor_pool_create_info =
+      VulkanDescriptorPoolCreateInfo.builder()
+        .setMaxSets(swap_chain.images().size())
+        .addPoolSizes(descriptor_pool_uniform_buffer)
+        .build();
+
+    final var descriptor_pool =
+      resources.add(device.createDescriptorPool(descriptor_pool_create_info));
+
+    final var descriptor_set_layouts =
+      IntStream.range(0, swap_chain.images().size())
+        .mapToObj(ignore -> descriptor_set_layout)
+        .collect(Collectors.toList());
+
+    final var descriptor_sets =
+      device.allocateDescriptorSets(
+        VulkanDescriptorSetAllocateInfo.builder()
+          .setSetLayouts(descriptor_set_layouts)
+          .setDescriptorPool(descriptor_pool)
+          .build());
+
+    for (var index = 0; index < swap_chain.images().size(); ++index) {
+      final var buffer_info =
+        VulkanDescriptorBufferInfo.builder()
+          .setBuffer(uniform_buffers.get(index))
+          .setOffset(0L)
+          .setRange(UNIFORM_BUFFER_SIZE)
+          .build();
+
+      final var descriptor_set_write =
+        VulkanWriteDescriptorSet.builder()
+          .setDestinationBinding(0)
+          .setDestinationArrayElement(0)
+          .setDestinationSet(descriptor_sets.get(index))
+          .setDescriptorType(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER)
+          .setDescriptorCount(1)
+          .addBufferInfos(buffer_info)
+          .build();
+
+      LOG.trace("updating descriptor set {}", Integer.valueOf(index));
+      device.updateDescriptorSets(List.of(descriptor_set_write), List.of());
+    }
+    return descriptor_sets;
+  }
+
+  /**
+   * Create a descriptor set layout.
+   */
+
+  private static VulkanDescriptorSetLayoutType createDescriptorSetLayout(
+    final CloseableCollectionType<VulkanException> resources,
+    final VulkanLogicalDeviceType device)
+    throws VulkanException
+  {
+    final var descriptor_set_layout_binding =
+      VulkanDescriptorSetLayoutBinding.builder()
+        .setBinding(0)
+        .setDescriptorType(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER)
+        .setDescriptorCount(1)
+        .addStageFlags(VK_SHADER_STAGE_FRAGMENT_BIT)
+        .build();
+
+    final var descriptor_set_layout_create_info =
+      VulkanDescriptorSetLayoutCreateInfo.builder()
+        .addBindings(descriptor_set_layout_binding)
+        .build();
+
+    return resources.add(device.createDescriptorSetLayout(descriptor_set_layout_create_info));
+  }
+
+  /**
+   * Configure the render pass.
+   *
+   * This specifies that:
+   *
+   * We don't want multisampling.
+   *
+   * Reads from the image attachment should behave as if the attachment has been cleared before
+   * rendering.
+   *
+   * Writes to the image attachment should be stored in the image.
+   *
+   * We don't care about reads or writes to the stencil buffer.
+   *
+   * We don't care about the initial layout of the image.
+   *
+   * The final layout of the image must be something usable for presentation to the screen.
+   */
+
+  private static VulkanRenderPassType createRenderPass(
+    final CloseableCollectionType<VulkanException> resources,
+    final VulkanSurfaceFormatKHR surface_format,
+    final VulkanLogicalDeviceType device)
+    throws VulkanException
+  {
+    final var color_attachment_description =
+      VulkanAttachmentDescription.builder()
+        .setFormat(surface_format.format())
+        .setSamples(VK_SAMPLE_COUNT_1_BIT)
+        .setLoadOp(VK_ATTACHMENT_LOAD_OP_CLEAR)
+        .setStoreOp(VK_ATTACHMENT_STORE_OP_STORE)
+        .setStencilLoadOp(VK_ATTACHMENT_LOAD_OP_DONT_CARE)
+        .setStencilStoreOp(VK_ATTACHMENT_STORE_OP_DONT_CARE)
+        .setInitialLayout(VK_IMAGE_LAYOUT_UNDEFINED)
+        .setFinalLayout(VK_IMAGE_LAYOUT_PRESENT_SRC_KHR)
+        .build();
+
+    final var color_attachment_reference =
+      VulkanAttachmentReference.builder()
+        .setAttachment(0)
+        .setLayout(VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL)
+        .build();
+
+    final var subpass_description =
+      VulkanSubpassDescription.builder()
+        .setPipelineBindPoint(VK_PIPELINE_BIND_POINT_GRAPHICS)
+        .addColorAttachments(color_attachment_reference)
+        .build();
+
+    final var subpass_dependency =
+      VulkanSubpassDependency.builder()
+        .setSrcSubpass(VulkanSubpassDependencyType.EXTERNAL)
+        .addSrcStageMask(VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT)
+        .setDstSubpass(0)
+        .addDstStageMask(VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT)
+        .addDstAccessMask(VK_ACCESS_COLOR_ATTACHMENT_READ_BIT)
+        .addDstAccessMask(VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT)
+        .build();
+
+    final var render_pass_create_info =
+      VulkanRenderPassCreateInfo.builder()
+        .addAttachments(color_attachment_description)
+        .addSubpasses(subpass_description)
+        .addDependencies(subpass_dependency)
+        .build();
+
+    return resources.add(device.createRenderPass(render_pass_create_info));
+  }
+
+  /**
+   * Configure the rendering pipeline.
+   */
+
+  private static VulkanPipelineType createPipeline(
+    final VulkanExtent2D surface_extent,
+    final VulkanLogicalDeviceType device,
+    final VulkanShaderModuleType shaders,
+    final VulkanPipelineLayoutType pipeline_layout,
+    final VulkanRenderPassType render_pass)
+    throws VulkanException
+  {
+    final var vertex_stage_info =
+      VulkanPipelineShaderStageCreateInfo.builder()
+        .setStage(VK_SHADER_STAGE_VERTEX_BIT)
+        .setModule(shaders)
+        .setShaderEntryPoint("R3_clip_triangle_vert_main")
+        .build();
+
+    final var fragment_stage_info =
+      VulkanPipelineShaderStageCreateInfo.builder()
+        .setStage(VK_SHADER_STAGE_FRAGMENT_BIT)
+        .setModule(shaders)
+        .setShaderEntryPoint("R3_clip_triangle_frag_ub_main")
+        .build();
+
+    final var vertex_binding_description =
+      VulkanVertexInputBindingDescription.builder()
+        .setBinding(0)
+        .setInputRate(VK_VERTEX_INPUT_RATE_VERTEX)
+        .setStride(VERTEX_SIZE)
+        .build();
+
+    final var vertex_position_attribute =
+      VulkanVertexInputAttributeDescription.builder()
+        .setBinding(0)
+        .setLocation(0)
+        .setFormat(VK_FORMAT_R32G32_SFLOAT)
+        .setOffset(0)
+        .build();
+
+    final var vertex_color_attribute =
+      VulkanVertexInputAttributeDescription.builder()
+        .setBinding(0)
+        .setLocation(1)
+        .setFormat(VK_FORMAT_R32G32B32_SFLOAT)
+        .setOffset(VERTEX_POSITION_SIZE)
+        .build();
+
+    final var vertex_input_info =
+      VulkanPipelineVertexInputStateCreateInfo.builder()
+        .addVertexBindingDescriptions(vertex_binding_description)
+        .addVertexAttributeDescriptions(vertex_position_attribute)
+        .addVertexAttributeDescriptions(vertex_color_attribute)
+        .build();
+
+    final var input_assembly_info =
+      VulkanPipelineInputAssemblyStateCreateInfo.builder()
+        .setTopology(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST)
+        .setPrimitiveRestartEnable(false)
+        .build();
+
+    final var viewport_state_info =
+      VulkanPipelineViewportStateCreateInfo.builder()
+        .addScissors(VulkanRectangle2D.of(VulkanOffset2D.of(0, 0), surface_extent))
+        .addViewports(VulkanViewport.of(
+          0.0f,
+          0.0f,
+          (float) surface_extent.width(),
+          (float) surface_extent.height(),
+          0.0f,
+          1.0f))
+        .build();
+
+    final var rasterizer =
+      VulkanPipelineRasterizationStateCreateInfo.builder()
+        .setCullMode(EnumSet.of(VK_CULL_MODE_BACK_BIT))
+        .setDepthBiasClamp(0.0f)
+        .setDepthBiasConstantFactor(0.0f)
+        .setDepthBiasEnable(false)
+        .setDepthBiasSlopeFactor(0.0f)
+        .setDepthClampEnable(false)
+        .setFrontFace(VK_FRONT_FACE_CLOCKWISE)
+        .setLineWidth(1.0f)
+        .setPolygonMode(VK_POLYGON_MODE_FILL)
+        .setRasterizerDiscardEnable(false)
+        .build();
+
+    final var blend_state =
+      VulkanPipelineColorBlendAttachmentState.builder()
+        .setEnable(false)
+        .build();
+
+    final var color_blending =
+      VulkanPipelineColorBlendStateCreateInfo.builder()
+        .addAttachments(blend_state)
+        .build();
+
+    final var multisample =
+      VulkanPipelineMultisampleStateCreateInfo.builder()
+        .setAlphaToCoverageEnable(false)
+        .setAlphaToOneEnable(false)
+        .setMinSampleShading(1.0f)
+        .setRasterizationSamples(VK_SAMPLE_COUNT_1_BIT)
+        .setSampleShadingEnable(false)
+        .build();
+
+    final var pipeline_info =
+      VulkanGraphicsPipelineCreateInfo.builder()
+        .addStages(fragment_stage_info)
+        .addStages(vertex_stage_info)
+        .setColorBlendState(color_blending)
+        .setInputAssemblyState(input_assembly_info)
+        .setLayout(pipeline_layout)
+        .setMultisampleState(multisample)
+        .setRasterizationState(rasterizer)
+        .setRenderPass(render_pass)
+        .setSubpass(0)
+        .setVertexInputState(vertex_input_info)
+        .setViewportState(viewport_state_info)
+        .build();
+
+    return device.createPipeline(pipeline_info);
+  }
+
+  /**
+   * Create and populate an index buffer.
+   */
+
+  private static VulkanBufferType createIndexBuffer(
+    final CloseableCollectionType<VulkanException> resources,
+    final VMAAllocatorType vma_allocator)
+    throws VulkanException
+  {
+    final var vma_alloc_create_info =
+      VMAAllocationCreateInfo.builder()
+        .setUsage(VMA_MEMORY_USAGE_GPU_ONLY)
+        .addRequiredFlags(VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT)
+        .setMemoryTypeBits(0L)
+        .build();
+
+    final var index_buffer_create_info =
+      VulkanBufferCreateInfo.builder()
+        .setSize(3L * 2L)
+        .addUsageFlags(VK_BUFFER_USAGE_INDEX_BUFFER_BIT)
+        .setSharingMode(VK_SHARING_MODE_EXCLUSIVE)
+        .build();
+
+    final var vma_index_buffer_result =
+      vma_allocator.createBuffer(vma_alloc_create_info, index_buffer_create_info);
+
+    final var index_buffer =
+      resources.add(vma_index_buffer_result.result());
+
+    LOG.trace("allocated index buffer: {}", index_buffer);
+
+    /*
+     * Populate index buffer by mapping the memory and writing to it. Closing the mapped
+     * memory will automatically unmap it.
+     */
+
+    try (var index_mapped = vma_allocator.mapMemory(vma_index_buffer_result.allocation())) {
+      final var buffer = index_mapped.asByteBuffer();
+      buffer.putShort(0, (short) 0);
+      buffer.putShort(2, (short) 1);
+      buffer.putShort(4, (short) 2);
+    }
+    return index_buffer;
+  }
+
+  /**
+   * Create and populate a vertex buffer.
+   */
+
+  private static VulkanBufferType createVertexBuffer(
+    final CloseableCollectionType<VulkanException> resources,
+    final VMAAllocatorType vma_allocator)
+    throws VulkanException
+  {
+    final var vma_alloc_create_info =
+      VMAAllocationCreateInfo.builder()
+        .setUsage(VMA_MEMORY_USAGE_GPU_ONLY)
+        .addRequiredFlags(VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT)
+        .setMemoryTypeBits(0L)
+        .build();
+
+    final var vertex_buffer_create_info =
+      VulkanBufferCreateInfo.builder()
+        .setSize(3L * (long) VERTEX_SIZE)
+        .addUsageFlags(VK_BUFFER_USAGE_VERTEX_BUFFER_BIT)
+        .setSharingMode(VK_SHARING_MODE_EXCLUSIVE)
+        .build();
+
+    final var vma_vertex_buffer_result =
+      vma_allocator.createBuffer(vma_alloc_create_info, vertex_buffer_create_info);
+
+    final var vertex_buffer =
+      resources.add(vma_vertex_buffer_result.result());
+
+    LOG.trace("allocated vertex buffer: {}", vertex_buffer);
+
+    /*
+     * Populate vertex buffer by mapping the memory and writing to it. Closing the mapped
+     * memory will automatically unmap it.
+     */
+
+    try (var vertex_mapped = vma_allocator.mapMemory(vma_vertex_buffer_result.allocation())) {
+      final var buffer = vertex_mapped.asByteBuffer();
+
+      final var v0 = VERTICES.get(0);
+      buffer.putFloat(0, (float) v0.x);
+      buffer.putFloat(4, (float) v0.y);
+      buffer.putFloat(8, (float) v0.r);
+      buffer.putFloat(12, (float) v0.g);
+      buffer.putFloat(16, (float) v0.b);
+
+      final var v1 = VERTICES.get(1);
+      buffer.putFloat(20, (float) v1.x);
+      buffer.putFloat(24, (float) v1.y);
+      buffer.putFloat(28, (float) v1.r);
+      buffer.putFloat(32, (float) v1.g);
+      buffer.putFloat(36, (float) v1.b);
+
+      final var v2 = VERTICES.get(2);
+      buffer.putFloat(40, (float) v2.x);
+      buffer.putFloat(44, (float) v2.y);
+      buffer.putFloat(48, (float) v2.r);
+      buffer.putFloat(52, (float) v2.g);
+      buffer.putFloat(56, (float) v2.b);
+    }
+    return vertex_buffer;
+  }
+
+  /**
+   * Create uniform buffers.
+   */
+
+  private static ArrayList<VulkanBufferType> createUniformBuffers(
+    final CloseableCollectionType<VulkanException> resources,
+    final VMAAllocatorType vma_allocator,
+    final VulkanKHRSwapChainType swap_chain)
+    throws VulkanException
+  {
+    final var vma_alloc_create_info =
+      VMAAllocationCreateInfo.builder()
+        .setUsage(VMA_MEMORY_USAGE_GPU_ONLY)
+        .addRequiredFlags(VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT)
+        .setMemoryTypeBits(0L)
+        .build();
+
+    final var uniform_buffer_create_info =
+      VulkanBufferCreateInfo.builder()
+        .setSize(UNIFORM_BUFFER_SIZE)
+        .addUsageFlags(VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT)
+        .setSharingMode(VK_SHARING_MODE_EXCLUSIVE)
+        .build();
+
+    final var uniform_buffers = new ArrayList<VulkanBufferType>(swap_chain.images().size());
+    for (var index = 0; index < swap_chain.images().size(); ++index) {
+      final var vma_uniform_buffer_result =
+        vma_allocator.createBuffer(vma_alloc_create_info, uniform_buffer_create_info);
+
+      final var uniform_buffer =
+        resources.add(vma_uniform_buffer_result.result());
+
+      LOG.trace("allocated uniform buffer: {}", uniform_buffer);
+      uniform_buffers.add(uniform_buffer);
+
+      /*
+       * Populate uniform buffer by mapping the memory and writing to it. Closing the mapped
+       * memory will automatically unmap it.
+       */
+
+      try (var uniform_map = vma_allocator.mapMemory(vma_uniform_buffer_result.allocation())) {
+        final var buffer = uniform_map.asByteBuffer();
+        buffer.putFloat(0, 1.0f);
+      }
+    }
+    return uniform_buffers;
   }
 
   /**

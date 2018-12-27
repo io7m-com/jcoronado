@@ -23,6 +23,7 @@ import org.immutables.value.Value;
  * @see "VkMemoryRequirements"
  */
 
+@VulkanAPIStructType(vulkanStruct = "VkMemoryRequirements")
 @ImmutablesStyleType
 @Value.Immutable
 public interface VulkanMemoryRequirementsType

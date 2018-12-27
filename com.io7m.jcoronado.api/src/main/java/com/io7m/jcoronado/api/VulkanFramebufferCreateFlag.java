@@ -22,6 +22,7 @@ package com.io7m.jcoronado.api;
  * @see "VkFramebufferCreateFlags"
  */
 
+@VulkanAPIEnumType(vulkanEnum = "VkFramebufferCreateFlags")
 public enum VulkanFramebufferCreateFlag implements VulkanEnumBitmaskType
 {
   /**

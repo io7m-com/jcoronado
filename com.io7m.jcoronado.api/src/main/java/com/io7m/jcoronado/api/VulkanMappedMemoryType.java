@@ -36,6 +36,8 @@ public interface VulkanMappedMemoryType extends AutoCloseable
    * @throws VulkanException On errors
    */
 
+  @VulkanAPIFunctionType(vulkanFunction = "vkUnmapMemory")
+  @VulkanAPIFunctionType(vulkanFunction = "vmaUnmapMemory")
   @Override
   void close()
     throws VulkanException;

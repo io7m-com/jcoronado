@@ -22,5 +22,8 @@ package com.io7m.jcoronado.api;
 
 public interface VulkanPipelineLayoutType extends VulkanHandleNonDispatchableType
 {
-
+  @VulkanAPIFunctionType(vulkanFunction = "vkDestroyPipelineLayout")
+  @Override
+  @VulkanExternallySynchronizedType void close()
+    throws VulkanException;
 }

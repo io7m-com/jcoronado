@@ -20,6 +20,7 @@ package com.io7m.jcoronado.api;
  * @see "VkFrontFace"
  */
 
+@VulkanAPIEnumType(vulkanEnum = "VkFrontFace")
 public enum VulkanFrontFace implements VulkanEnumIntegerType
 {
   /**

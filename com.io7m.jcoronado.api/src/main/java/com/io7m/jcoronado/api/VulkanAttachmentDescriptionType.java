@@ -27,6 +27,7 @@ import java.util.Set;
  * @see "VkAttachmentDescription"
  */
 
+@VulkanAPIStructType(vulkanStruct = "VkAttachmentDescription")
 @ImmutablesStyleType
 @Value.Immutable
 public interface VulkanAttachmentDescriptionType

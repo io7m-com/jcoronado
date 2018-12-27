@@ -49,6 +49,7 @@ public interface VulkanQueueType extends VulkanHandleDispatchableType
    * @throws VulkanException On errors
    */
 
+  @VulkanAPIFunctionType(vulkanFunction = "vkQueueSubmit")
   @VulkanExternallySynchronizedType
   void submit(
     List<VulkanSubmitInfo> submissions,
@@ -56,11 +57,29 @@ public interface VulkanQueueType extends VulkanHandleDispatchableType
     throws VulkanException;
 
   /**
+   * Submit the given list of queue submissions.
+   *
+   * @param submissions The queue submissions
+   *
+   * @throws VulkanException On errors
+   */
+
+  @VulkanAPIFunctionType(vulkanFunction = "vkQueueSubmit")
+  @VulkanExternallySynchronizedType
+  default void submit(
+    final List<VulkanSubmitInfo> submissions)
+    throws VulkanException
+  {
+    this.submit(submissions, Optional.empty());
+  }
+
+  /**
    * Wait until all items in the given queue have finished executing.
    *
    * @throws VulkanException On errors
    */
 
+  @VulkanAPIFunctionType(vulkanFunction = "vkQueueWaitIdle")
   @VulkanExternallySynchronizedType
   void waitIdle()
     throws VulkanException;

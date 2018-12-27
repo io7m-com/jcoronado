@@ -26,6 +26,7 @@ import java.util.Set;
  * @see "VkDescriptorSetLayoutCreateInfo"
  */
 
+@VulkanAPIStructType(vulkanStruct = "VkDescriptorSetLayoutCreateInfo")
 @ImmutablesStyleType
 @Value.Immutable
 public interface VulkanDescriptorSetLayoutCreateInfoType

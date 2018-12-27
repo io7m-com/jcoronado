@@ -20,6 +20,7 @@ package com.io7m.jcoronado.api;
  * @see "VkSubpassContents"
  */
 
+@VulkanAPIEnumType(vulkanEnum = "VkSubpassContents")
 public enum VulkanSubpassContents implements VulkanEnumIntegerType
 {
   /**

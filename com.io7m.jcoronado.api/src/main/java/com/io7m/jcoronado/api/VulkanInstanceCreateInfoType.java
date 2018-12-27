@@ -27,6 +27,7 @@ import java.util.Set;
  * @see "VkInstanceCreateInfo"
  */
 
+@VulkanAPIStructType(vulkanStruct = "VkInstanceCreateInfo")
 @ImmutablesStyleType
 @Value.Immutable
 public interface VulkanInstanceCreateInfoType

@@ -22,6 +22,9 @@ package com.io7m.jcoronado.api;
 
 public interface VulkanFramebufferType extends VulkanHandleNonDispatchableType
 {
-
+  @VulkanAPIFunctionType(vulkanFunction = "vkDestroyFramebuffer")
+  @Override
+  @VulkanExternallySynchronizedType void close()
+    throws VulkanException;
 }
 

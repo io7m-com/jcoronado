@@ -26,6 +26,7 @@ import java.util.List;
  * @see "VkSpecializationMap"
  */
 
+@VulkanAPIStructType(vulkanStruct = "VkSpecializationMap")
 @ImmutablesStyleType
 @Value.Immutable
 public interface VulkanSpecializationMapType

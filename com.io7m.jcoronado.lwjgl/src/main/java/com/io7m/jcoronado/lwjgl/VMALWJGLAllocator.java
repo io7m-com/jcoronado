@@ -22,6 +22,8 @@ import com.io7m.jcoronado.api.VulkanChecks;
 import com.io7m.jcoronado.api.VulkanDeviceMemoryType;
 import com.io7m.jcoronado.api.VulkanEnumMaps;
 import com.io7m.jcoronado.api.VulkanException;
+import com.io7m.jcoronado.api.VulkanImageCreateInfo;
+import com.io7m.jcoronado.api.VulkanImageType;
 import com.io7m.jcoronado.vma.VMAAllocationCreateInfo;
 import com.io7m.jcoronado.vma.VMAAllocationInfo;
 import com.io7m.jcoronado.vma.VMAAllocationInfoType;
@@ -198,6 +200,86 @@ public final class VMALWJGLAllocator extends VulkanLWJGLHandle implements VMAAll
     }
   }
 
+  @Override
+  public VMAAllocationResult<VulkanImageType> createImage(
+    final VMAAllocationCreateInfo alloc_create_info,
+    final VulkanImageCreateInfo image_create_info)
+    throws VulkanException
+  {
+    Objects.requireNonNull(alloc_create_info, "alloc_create_info");
+    Objects.requireNonNull(image_create_info, "image_create_info");
+
+    try (var stack = this.stack_initial.push()) {
+      final var vk_image_create_info =
+        VulkanLWJGLImageCreateInfos.pack(stack, image_create_info);
+
+      final var vk_alloc_create_info =
+        VmaAllocationCreateInfo.mallocStack(stack)
+          .flags(VulkanEnumMaps.packValues(alloc_create_info.flags()))
+          .memoryTypeBits((int) alloc_create_info.memoryTypeBits())
+          .preferredFlags(VulkanEnumMaps.packValues(alloc_create_info.preferredFlags()))
+          .requiredFlags(VulkanEnumMaps.packValues(alloc_create_info.requiredFlags()))
+          .pUserData(0L)
+          .pool(0L);
+
+      final var vk_allocation =
+        stack.mallocPointer(1);
+      final var vk_allocation_info =
+        VmaAllocationInfo.mallocStack(stack);
+      final var vk_image =
+        stack.mallocLong(1);
+
+      VulkanChecks.checkReturnCode(
+        Vma.vmaCreateImage(
+          this.allocator_address,
+          vk_image_create_info,
+          vk_alloc_create_info,
+          vk_image,
+          vk_allocation,
+          vk_allocation_info),
+        "vmaCreateImage");
+
+      final Optional<VulkanDeviceMemoryType> device_memory;
+      final var vk_device_memory = vk_allocation_info.deviceMemory();
+      if (vk_device_memory != 0L) {
+        device_memory =
+          Optional.of(new VulkanLWJGLDeviceMemory(
+            USER_OWNED, this.device.device(), vk_device_memory, this.host_allocator_proxy));
+      } else {
+        device_memory = Optional.empty();
+      }
+
+      final var info =
+        VMAAllocationInfo.builder()
+          .setDeviceMemory(device_memory)
+          .setMemoryType((long) vk_allocation_info.memoryType())
+          .setOffset(vk_allocation_info.offset())
+          .setSize(vk_allocation_info.size())
+          .build();
+
+      final var vk_buffer_handle = vk_image.get(0);
+      final var vk_allocation_handle = vk_allocation.get(0);
+
+      final var buffer =
+        new VulkanLWJGLImage(
+          USER_OWNED,
+          this.device.device(),
+          vk_buffer_handle,
+          () -> this.destroyVmaImage(vk_buffer_handle, vk_allocation_handle),
+          this.host_allocator_proxy);
+
+      final var allocation =
+        new VMALWJGLAllocation<>(
+          this,
+          vk_allocation_handle,
+          buffer,
+          info,
+          AllocatedItemKind.IMAGE);
+
+      return VMAAllocationResult.of(allocation, buffer);
+    }
+  }
+
   private void destroyVmaBuffer(
     final long vk_buffer_handle,
     final long vk_allocation_handle)
@@ -210,6 +292,20 @@ public final class VMALWJGLAllocator extends VulkanLWJGLHandle implements VMAAll
         Long.toUnsignedString(vk_allocation_handle, 16));
     }
     Vma.vmaDestroyBuffer(this.allocator_address, vk_buffer_handle, vk_allocation_handle);
+  }
+
+  private void destroyVmaImage(
+    final long vk_image_handle,
+    final long vk_allocation_handle)
+  {
+    if (LOG.isTraceEnabled()) {
+      LOG.trace(
+        "Vma.vmaDestroyImage: 0x{} 0x{} 0x{}",
+        Long.toUnsignedString(this.allocator_address, 16),
+        Long.toUnsignedString(vk_image_handle, 16),
+        Long.toUnsignedString(vk_allocation_handle, 16));
+    }
+    Vma.vmaDestroyImage(this.allocator_address, vk_image_handle, vk_allocation_handle);
   }
 
   @Override
@@ -233,6 +329,19 @@ public final class VMALWJGLAllocator extends VulkanLWJGLHandle implements VMAAll
     }
   }
 
+  private void destroyImage(
+    final VMALWJGLAllocation<VulkanLWJGLImage> allocation)
+  {
+    final var image_handle = allocation.item.handle();
+    final var alloc_handle = allocation.allocation;
+
+    if (LOG.isTraceEnabled()) {
+      LOG.trace("destroying image and allocation: {}", this);
+    }
+
+    Vma.vmaDestroyImage(this.allocator_address, image_handle, alloc_handle);
+  }
+
   private void destroyBuffer(
     final VMALWJGLAllocation<VulkanLWJGLBuffer> allocation)
   {
@@ -248,7 +357,8 @@ public final class VMALWJGLAllocator extends VulkanLWJGLHandle implements VMAAll
 
   private enum AllocatedItemKind
   {
-    BUFFER
+    BUFFER,
+    IMAGE
   }
 
   private static final class VMALWJGLAllocation<T> implements VMAAllocationType
@@ -331,6 +441,10 @@ public final class VMALWJGLAllocator extends VulkanLWJGLHandle implements VMAAll
           switch (this.deallocation) {
             case BUFFER: {
               this.allocator.destroyBuffer((VMALWJGLAllocation<VulkanLWJGLBuffer>) this);
+              break;
+            }
+            case IMAGE: {
+              this.allocator.destroyImage((VMALWJGLAllocation<VulkanLWJGLImage>) this);
               break;
             }
           }

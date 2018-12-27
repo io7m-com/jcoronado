@@ -16,16 +16,26 @@
 
 package com.io7m.jcoronado.lwjgl;
 
+import com.io7m.jcoronado.api.VulkanBufferCopy;
+import com.io7m.jcoronado.api.VulkanBufferImageCopy;
+import com.io7m.jcoronado.api.VulkanBufferMemoryBarrier;
 import com.io7m.jcoronado.api.VulkanBufferType;
 import com.io7m.jcoronado.api.VulkanChecks;
 import com.io7m.jcoronado.api.VulkanCommandBufferBeginInfo;
 import com.io7m.jcoronado.api.VulkanCommandBufferType;
+import com.io7m.jcoronado.api.VulkanDependencyFlag;
 import com.io7m.jcoronado.api.VulkanDescriptorSetType;
+import com.io7m.jcoronado.api.VulkanEnumMaps;
 import com.io7m.jcoronado.api.VulkanException;
 import com.io7m.jcoronado.api.VulkanExternallySynchronizedType;
+import com.io7m.jcoronado.api.VulkanImageLayout;
+import com.io7m.jcoronado.api.VulkanImageMemoryBarrier;
+import com.io7m.jcoronado.api.VulkanImageType;
 import com.io7m.jcoronado.api.VulkanIndexType;
+import com.io7m.jcoronado.api.VulkanMemoryBarrier;
 import com.io7m.jcoronado.api.VulkanPipelineBindPoint;
 import com.io7m.jcoronado.api.VulkanPipelineLayoutType;
+import com.io7m.jcoronado.api.VulkanPipelineStageFlag;
 import com.io7m.jcoronado.api.VulkanPipelineType;
 import com.io7m.jcoronado.api.VulkanRenderPassBeginInfo;
 import com.io7m.jcoronado.api.VulkanSubpassContents;
@@ -37,6 +47,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 import static com.io7m.jcoronado.lwjgl.VulkanLWJGLClassChecks.checkInstanceOf;
 import static com.io7m.jcoronado.lwjgl.VulkanLWJGLIntegerArrays.packIntsOrNull;
@@ -237,6 +248,81 @@ public final class VulkanLWJGLCommandBuffer
   }
 
   @Override
+  public @VulkanExternallySynchronizedType void copyBuffer(
+    final VulkanBufferType source,
+    final VulkanBufferType target,
+    final List<VulkanBufferCopy> regions)
+    throws VulkanException
+  {
+    Objects.requireNonNull(source, "source");
+    Objects.requireNonNull(target, "target");
+    Objects.requireNonNull(regions, "regions");
+
+    final var csource = checkInstanceOf(source, VulkanLWJGLBuffer.class);
+    final var ctarget = checkInstanceOf(target, VulkanLWJGLBuffer.class);
+
+    try (var stack = this.stack_initial.push()) {
+      VK10.vkCmdCopyBuffer(
+        this.handle,
+        csource.handle(),
+        ctarget.handle(),
+        VulkanLWJGLBufferCopy.packList(stack, regions));
+    }
+  }
+
+  @Override
+  public @VulkanExternallySynchronizedType void copyImageToBuffer(
+    final VulkanImageType source_image,
+    final VulkanImageLayout source_layout,
+    final VulkanBufferType target_buffer,
+    final List<VulkanBufferImageCopy> regions)
+    throws VulkanException
+  {
+    Objects.requireNonNull(source_image, "source_image");
+    Objects.requireNonNull(source_layout, "source_layout");
+    Objects.requireNonNull(target_buffer, "target_buffer");
+    Objects.requireNonNull(regions, "regions");
+
+    final var cimage = checkInstanceOf(source_image, VulkanLWJGLImage.class);
+    final var cbuffer = checkInstanceOf(target_buffer, VulkanLWJGLBuffer.class);
+
+    try (var stack = this.stack_initial.push()) {
+      VK10.vkCmdCopyImageToBuffer(
+        this.handle,
+        cimage.handle(),
+        source_layout.value(),
+        cbuffer.handle(),
+        VulkanLWJGLBufferImageCopy.packList(stack, regions));
+    }
+  }
+
+  @Override
+  public @VulkanExternallySynchronizedType void copyBufferToImage(
+    final VulkanBufferType source_buffer,
+    final VulkanImageType target_image,
+    final VulkanImageLayout target_image_layout,
+    final List<VulkanBufferImageCopy> regions)
+    throws VulkanException
+  {
+    Objects.requireNonNull(source_buffer, "source_buffer");
+    Objects.requireNonNull(target_image, "target_image");
+    Objects.requireNonNull(target_image_layout, "target_image_layout");
+    Objects.requireNonNull(regions, "regions");
+
+    final var cbuffer = checkInstanceOf(source_buffer, VulkanLWJGLBuffer.class);
+    final var cimage = checkInstanceOf(target_image, VulkanLWJGLImage.class);
+
+    try (var stack = this.stack_initial.push()) {
+      VK10.vkCmdCopyBufferToImage(
+        this.handle,
+        cbuffer.handle(),
+        cimage.handle(),
+        target_image_layout.value(),
+        VulkanLWJGLBufferImageCopy.packList(stack, regions));
+    }
+  }
+
+  @Override
   public void draw(
     final int vertex_count,
     final int instance_count,
@@ -267,6 +353,35 @@ public final class VulkanLWJGLCommandBuffer
   public void endRenderPass()
   {
     VK10.vkCmdEndRenderPass(this.handle);
+  }
+
+  @Override
+  public @VulkanExternallySynchronizedType void pipelineBarrier(
+    final Set<VulkanPipelineStageFlag> source_stage_mask,
+    final Set<VulkanPipelineStageFlag> target_stage_mask,
+    final Set<VulkanDependencyFlag> dependency_flags,
+    final List<VulkanMemoryBarrier> memory_barriers,
+    final List<VulkanBufferMemoryBarrier> buffer_memory_barriers,
+    final List<VulkanImageMemoryBarrier> image_memory_barriers)
+    throws VulkanException
+  {
+    Objects.requireNonNull(source_stage_mask, "source_stage_mask");
+    Objects.requireNonNull(target_stage_mask, "target_stage_mask");
+    Objects.requireNonNull(dependency_flags, "dependency_flags");
+    Objects.requireNonNull(memory_barriers, "memory_barriers");
+    Objects.requireNonNull(buffer_memory_barriers, "buffer_memory_barriers");
+    Objects.requireNonNull(image_memory_barriers, "image_memory_barriers");
+
+    try (var stack = this.stack_initial.push()) {
+      VK10.vkCmdPipelineBarrier(
+        this.handle,
+        VulkanEnumMaps.packValues(source_stage_mask),
+        VulkanEnumMaps.packValues(target_stage_mask),
+        VulkanEnumMaps.packValues(dependency_flags),
+        VulkanLWJGLMemoryBarriers.packList(stack, memory_barriers),
+        VulkanLWJGLBufferMemoryBarriers.packList(stack, buffer_memory_barriers),
+        VulkanLWJGLImageMemoryBarriers.packList(stack, image_memory_barriers));
+    }
   }
 
   @Override

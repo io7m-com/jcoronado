@@ -25,6 +25,7 @@ import org.immutables.value.Value;
  * @see "VkClearValue"
  */
 
+@VulkanAPIStructType(vulkanStruct = "VkClearValue")
 public interface VulkanClearValueType
 {
   /**

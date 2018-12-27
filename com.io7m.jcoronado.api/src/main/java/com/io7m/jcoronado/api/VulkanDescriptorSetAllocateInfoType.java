@@ -25,6 +25,7 @@ import java.util.List;
  * @see "VkDescriptorSetAllocateInfo"
  */
 
+@VulkanAPIStructType(vulkanStruct = "VkDescriptorSetAllocateInfo")
 @ImmutablesStyleType
 @Value.Immutable
 public interface VulkanDescriptorSetAllocateInfoType

@@ -18,8 +18,11 @@ package com.io7m.jcoronado.api;
 
 /**
  * Flags specifying descriptor set layout properties.
+ *
+ * @see "VkDescriptorSetLayoutCreateFlagBits"
  */
 
+@VulkanAPIEnumType(vulkanEnum = "VkDescriptorSetLayoutCreateFlagBits")
 public enum VulkanDescriptorSetLayoutCreateFlag implements VulkanEnumBitmaskType
 {
   /**

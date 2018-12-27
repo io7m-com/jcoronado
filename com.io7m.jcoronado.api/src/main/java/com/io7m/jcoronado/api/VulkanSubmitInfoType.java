@@ -27,6 +27,7 @@ import java.util.List;
  * @see "VkSubmitInfo"
  */
 
+@VulkanAPIStructType(vulkanStruct = "VkSubmitInfo")
 @ImmutablesStyleType
 @Value.Immutable
 public interface VulkanSubmitInfoType

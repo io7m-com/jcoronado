@@ -26,6 +26,7 @@ import org.immutables.value.Value;
  * @see "VkOffset3D"
  */
 
+@VulkanAPIStructType(vulkanStruct = "VkOffset3D")
 @ImmutablesStyleType
 @Value.Immutable
 public interface VulkanOffset3DType
