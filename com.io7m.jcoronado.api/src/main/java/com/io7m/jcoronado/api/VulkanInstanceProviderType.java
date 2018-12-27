@@ -66,6 +66,7 @@ public interface VulkanInstanceProviderType
    * @throws VulkanException On errors
    */
 
+  @VulkanAPIFunctionType(vulkanFunction = "vkCreateInstance")
   VulkanInstanceType createInstance(
     VulkanInstanceCreateInfo info,
     Optional<VulkanHostAllocatorType> allocator)
