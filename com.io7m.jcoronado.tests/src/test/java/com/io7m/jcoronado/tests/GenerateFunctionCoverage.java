@@ -45,7 +45,7 @@ public final class GenerateFunctionCoverage
       if (!reflect_names.containsKey(name)) {
         System.out.println("MISSING " + name);
       } else {
-        System.out.println("PRESENT " + name);
+        // System.out.println("PRESENT " + name);
       }
     }
   }

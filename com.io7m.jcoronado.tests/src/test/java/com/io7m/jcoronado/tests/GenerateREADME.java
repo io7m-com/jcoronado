@@ -32,6 +32,7 @@ public final class GenerateREADME
         new TypeAnnotationsScanner());
 
     final var repeats = new HashSet<String>();
+    System.out.println();
     showStructs(reflections);
     showEnums(reflections);
     showFunctions(reflections, repeats);
@@ -54,6 +55,7 @@ public final class GenerateREADME
         .thenComparing(Method::getName));
 
     System.out.println("## Functions");
+    System.out.println();
     System.out.println("| jcoronado | Vulkan |");
     System.out.println("|-----------|--------|");
 
@@ -105,6 +107,7 @@ public final class GenerateREADME
     types.sort(Comparator.comparing(Class::getName));
 
     System.out.println("## Structs");
+    System.out.println();
     System.out.println("| jcoronado | Vulkan |");
     System.out.println("|-----------|--------|");
 
@@ -143,6 +146,7 @@ public final class GenerateREADME
     types.sort(Comparator.comparing(Class::getName));
 
     System.out.println("## Enums");
+    System.out.println();
     System.out.println("| jcoronado | Vulkan |");
     System.out.println("|-----------|--------|");
 
