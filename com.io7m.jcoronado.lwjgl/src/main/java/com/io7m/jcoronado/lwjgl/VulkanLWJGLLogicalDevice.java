@@ -40,6 +40,8 @@ import com.io7m.jcoronado.api.VulkanFenceType;
 import com.io7m.jcoronado.api.VulkanFramebufferCreateInfo;
 import com.io7m.jcoronado.api.VulkanFramebufferType;
 import com.io7m.jcoronado.api.VulkanGraphicsPipelineCreateInfo;
+import com.io7m.jcoronado.api.VulkanImageCreateInfo;
+import com.io7m.jcoronado.api.VulkanImageType;
 import com.io7m.jcoronado.api.VulkanImageViewCreateInfo;
 import com.io7m.jcoronado.api.VulkanImageViewType;
 import com.io7m.jcoronado.api.VulkanIncompatibleClassException;
@@ -799,6 +801,53 @@ public final class VulkanLWJGLLogicalDevice
         () -> this.destroyBuffer(proxy, handle),
         proxy);
     }
+  }
+
+  @Override
+  public VulkanImageType createImage(
+    final VulkanImageCreateInfo create_info)
+    throws VulkanException
+  {
+    Objects.requireNonNull(create_info, "create_info");
+
+    this.checkNotClosed();
+
+    try (var stack = this.stack_initial.push()) {
+      final var info = VulkanLWJGLImageCreateInfos.pack(stack, create_info);
+      final var handles = new long[1];
+      final var proxy = this.hostAllocatorProxy();
+
+      VulkanChecks.checkReturnCode(
+        VK10.vkCreateImage(
+          this.device,
+          info,
+          proxy.callbackBuffer(),
+          handles),
+        "vkCreateImage");
+
+      final var handle = handles[0];
+      if (LOG.isTraceEnabled()) {
+        LOG.trace("created image: 0x{}", Long.toUnsignedString(handle, 16));
+      }
+
+      return new VulkanLWJGLImage(
+        USER_OWNED,
+        this.device,
+        handle,
+        () -> this.destroyImage(proxy, handle),
+        proxy);
+    }
+  }
+
+  private void destroyImage(
+    final VulkanLWJGLHostAllocatorProxy proxy,
+    final long handle)
+  {
+    if (LOG.isTraceEnabled()) {
+      LOG.trace("VK10.vkDestroyImage: 0x{}", Long.toUnsignedString(handle, 16));
+    }
+
+    VK10.vkDestroyImage(this.device, handle, proxy.callbackBuffer());
   }
 
   private void destroyBuffer(

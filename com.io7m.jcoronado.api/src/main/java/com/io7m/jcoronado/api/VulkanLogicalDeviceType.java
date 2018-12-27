@@ -411,6 +411,21 @@ public interface VulkanLogicalDeviceType extends VulkanHandleDispatchableType
     throws VulkanException;
 
   /**
+   * Create an image.
+   *
+   * @param create_info The image creation info
+   *
+   * @return A image
+   *
+   * @throws VulkanException On errors
+   */
+
+  @VulkanAPIFunctionType(vulkanFunction = "vkCreateImage")
+  VulkanImageType createImage(
+    VulkanImageCreateInfo create_info)
+    throws VulkanException;
+
+  /**
    * Retrieve the memory requirements for the given buffer.
    *
    * @param buffer The buffer
