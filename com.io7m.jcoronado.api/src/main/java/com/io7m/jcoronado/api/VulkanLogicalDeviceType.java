@@ -386,6 +386,37 @@ public interface VulkanLogicalDeviceType extends VulkanHandleDispatchableType
     throws VulkanException;
 
   /**
+   * Reset the given command pool.
+   *
+   * @param pool  The command pool
+   * @param flags The reset flags
+   *
+   * @throws VulkanException On errors
+   */
+
+  @VulkanAPIFunctionType(vulkanFunction = "vkResetCommandPool")
+  void resetCommandPool(
+    @VulkanExternallySynchronizedType VulkanCommandPoolType pool,
+    Set<VulkanCommandPoolResetFlag> flags)
+    throws VulkanException;
+
+  /**
+   * Reset the given command pool.
+   *
+   * @param pool The command pool
+   *
+   * @throws VulkanException On errors
+   */
+
+  @VulkanAPIFunctionType(vulkanFunction = "vkResetCommandPool")
+  default void resetCommandPool(
+    final @VulkanExternallySynchronizedType VulkanCommandPoolType pool)
+    throws VulkanException
+  {
+    this.resetCommandPool(pool, Set.of());
+  }
+
+  /**
    * Wait for this device to become idle.
    *
    * @throws VulkanException On errors
