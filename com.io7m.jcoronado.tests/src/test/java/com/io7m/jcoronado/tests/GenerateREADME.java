@@ -32,8 +32,8 @@ public final class GenerateREADME
         new TypeAnnotationsScanner());
 
     final var repeats = new HashSet<String>();
-    showStructs(reflections, repeats);
-    showEnums(reflections, repeats);
+    showStructs(reflections);
+    showEnums(reflections);
     showFunctions(reflections, repeats);
   }
 
@@ -91,19 +91,17 @@ public final class GenerateREADME
     final VulkanAPIFunctionType annotation)
   {
     System.out.printf(
-      "| %s.%s | [%s](%s) |\n",
-      method.getDeclaringClass().getName(),
+      "| %s.%s() | [%s](%s) |\n",
+      method.getDeclaringClass().getSimpleName(),
       method.getName(),
       annotation.vulkanFunction(),
       apiFunctionURI(annotation));
   }
 
   private static void showStructs(
-    final Reflections reflections,
-    final HashSet<String> repeats)
+    final Reflections reflections)
   {
-    final var types =
-      new ArrayList<>(reflections.getTypesAnnotatedWith(VulkanAPIStructType.class));
+    final var types = new ArrayList<>(reflections.getTypesAnnotatedWith(VulkanAPIStructType.class));
     types.sort(Comparator.comparing(Class::getName));
 
     System.out.println("## Structs");
@@ -132,18 +130,16 @@ public final class GenerateREADME
     final VulkanAPIStructType annotation)
   {
     System.out.printf(
-      "| %s| [%s](%s) |\n",
-      type.getName(),
+      "| %s | [%s](%s) |\n",
+      type.getSimpleName(),
       annotation.vulkanStruct(),
       apiStructURI(annotation));
   }
 
   private static void showEnums(
-    final Reflections reflections,
-    final HashSet<String> repeats)
+    final Reflections reflections)
   {
-    final var types =
-      new ArrayList<>(reflections.getTypesAnnotatedWith(VulkanAPIEnumType.class));
+    final var types = new ArrayList<>(reflections.getTypesAnnotatedWith(VulkanAPIEnumType.class));
     types.sort(Comparator.comparing(Class::getName));
 
     System.out.println("## Enums");
@@ -169,7 +165,7 @@ public final class GenerateREADME
   {
     System.out.printf(
       "| %s | [%s](%s) |\n",
-      type.getName(),
+      type.getSimpleName(),
       annotation.vulkanEnum(),
       apiEnumURI(annotation));
   }
