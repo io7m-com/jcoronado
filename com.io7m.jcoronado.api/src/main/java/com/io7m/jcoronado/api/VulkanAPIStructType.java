@@ -31,6 +31,12 @@ import java.lang.annotation.Target;
 public @interface VulkanAPIStructType
 {
   /**
+   * @return The API to which this function belongs
+   */
+
+  String api() default "vulkan";
+
+  /**
    * @return The name of the original C API struct
    */
 

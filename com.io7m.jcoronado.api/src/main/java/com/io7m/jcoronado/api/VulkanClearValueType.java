@@ -69,6 +69,7 @@ public interface VulkanClearValueType
    * A depth/stencil value.
    */
 
+  @VulkanAPIStructType(vulkanStruct = "VkClearValue")
   @ImmutablesStyleType
   @Value.Immutable
   interface VulkanClearValueDepthStencilType extends VulkanClearValueType
@@ -98,6 +99,7 @@ public interface VulkanClearValueType
    * A color consisting of signed integer components.
    */
 
+  @VulkanAPIStructType(vulkanStruct = "VkClearValue")
   @ImmutablesStyleType
   @Value.Immutable
   interface VulkanClearValueColorIntegerSignedType extends VulkanClearValueType
@@ -141,6 +143,7 @@ public interface VulkanClearValueType
    * A color consisting of unsigned integer components.
    */
 
+  @VulkanAPIStructType(vulkanStruct = "VkClearValue")
   @ImmutablesStyleType
   @Value.Immutable
   interface VulkanClearValueColorIntegerUnsignedType extends VulkanClearValueType
@@ -184,6 +187,7 @@ public interface VulkanClearValueType
    * A color consisting of floating-point components.
    */
 
+  @VulkanAPIStructType(vulkanStruct = "VkClearValue")
   @ImmutablesStyleType
   @Value.Immutable
   interface VulkanClearValueColorFloatingPointType extends VulkanClearValueType
