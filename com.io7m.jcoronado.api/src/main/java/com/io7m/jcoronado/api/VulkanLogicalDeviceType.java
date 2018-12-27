@@ -47,6 +47,7 @@ public interface VulkanLogicalDeviceType extends VulkanHandleDispatchableType
    * @throws VulkanException On errors
    */
 
+  @VulkanAPIFunctionType(vulkanFunction = "vkGetDeviceQueue")
   List<VulkanQueueType> queues()
     throws VulkanException;
 
@@ -61,6 +62,7 @@ public interface VulkanLogicalDeviceType extends VulkanHandleDispatchableType
    * @throws VulkanException On errors
    */
 
+  @VulkanAPIFunctionType(vulkanFunction = "vkGetDeviceQueue")
   default Optional<VulkanQueueType> queue(
     final int queue_family,
     final int queue_index)
