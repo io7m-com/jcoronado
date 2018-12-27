@@ -417,6 +417,37 @@ public interface VulkanLogicalDeviceType extends VulkanHandleDispatchableType
   }
 
   /**
+   * Reset the given descriptor pool.
+   *
+   * @param pool  The descriptor pool
+   * @param flags The reset flags
+   *
+   * @throws VulkanException On errors
+   */
+
+  @VulkanAPIFunctionType(vulkanFunction = "vkResetDescriptorPool")
+  void resetDescriptorPool(
+    @VulkanExternallySynchronizedType VulkanDescriptorPoolType pool,
+    Set<VulkanDescriptorPoolResetFlag> flags)
+    throws VulkanException;
+
+  /**
+   * Reset the given descriptor pool.
+   *
+   * @param pool The descriptor pool
+   *
+   * @throws VulkanException On errors
+   */
+
+  @VulkanAPIFunctionType(vulkanFunction = "vkResetDescriptorPool")
+  default void resetDescriptorPool(
+    @VulkanExternallySynchronizedType final VulkanDescriptorPoolType pool)
+    throws VulkanException
+  {
+    this.resetDescriptorPool(pool, Set.of());
+  }
+
+  /**
    * Wait for this device to become idle.
    *
    * @throws VulkanException On errors

@@ -26,6 +26,7 @@ import com.io7m.jcoronado.api.VulkanCommandPoolResetFlag;
 import com.io7m.jcoronado.api.VulkanCommandPoolType;
 import com.io7m.jcoronado.api.VulkanCopyDescriptorSet;
 import com.io7m.jcoronado.api.VulkanDescriptorPoolCreateInfo;
+import com.io7m.jcoronado.api.VulkanDescriptorPoolResetFlag;
 import com.io7m.jcoronado.api.VulkanDescriptorPoolType;
 import com.io7m.jcoronado.api.VulkanDescriptorSetAllocateInfo;
 import com.io7m.jcoronado.api.VulkanDescriptorSetLayoutCreateInfo;
@@ -778,6 +779,27 @@ public final class VulkanLWJGLLogicalDevice
         cpool.handle(),
         VulkanEnumMaps.packValues(flags)),
       "vkResetCommandPool");
+  }
+
+  @Override
+  public void resetDescriptorPool(
+    @VulkanExternallySynchronizedType final VulkanDescriptorPoolType pool,
+    final Set<VulkanDescriptorPoolResetFlag> flags)
+    throws VulkanException
+  {
+    Objects.requireNonNull(pool, "pool");
+    Objects.requireNonNull(flags, "flags");
+
+    this.checkNotClosed();
+
+    final var cpool = checkInstanceOf(pool, VulkanLWJGLCommandPool.class);
+
+    VulkanChecks.checkReturnCode(
+      VK10.vkResetDescriptorPool(
+        this.device,
+        cpool.handle(),
+        VulkanEnumMaps.packValues(flags)),
+      "vkResetDescriptorPool");
   }
 
   @Override
