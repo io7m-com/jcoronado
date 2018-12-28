@@ -22,6 +22,9 @@ package com.io7m.jcoronado.api;
 
 public interface VulkanSamplerType extends VulkanHandleNonDispatchableType
 {
-
+  @VulkanAPIFunctionType(vulkanFunction = "vkDestroySampler")
+  @Override
+  @VulkanExternallySynchronizedType void close()
+    throws VulkanException;
 }
 
