@@ -604,5 +604,4 @@ public interface VulkanLogicalDeviceType extends VulkanHandleDispatchableType
     long size,
     Set<VulkanMemoryMapFlag> flags)
     throws VulkanException;
-
 }
