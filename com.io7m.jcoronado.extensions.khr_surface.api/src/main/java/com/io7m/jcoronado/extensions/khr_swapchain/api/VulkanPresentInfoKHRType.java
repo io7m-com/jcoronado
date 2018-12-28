@@ -14,43 +14,47 @@
  * IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-package com.io7m.jcoronado.extensions.api;
+package com.io7m.jcoronado.extensions.khr_swapchain.api;
 
 import com.io7m.immutables.styles.ImmutablesStyleType;
+import com.io7m.jcoronado.api.VulkanAPIStructType;
+import com.io7m.jcoronado.api.VulkanSemaphoreType;
 import org.immutables.value.Value;
 
-import java.util.OptionalInt;
+import java.util.List;
+
+import static com.io7m.jcoronado.extensions.khr_swapchain.api.VulkanExtKHRSwapChainType.VulkanKHRSwapChainType;
 
 /**
- * The result of an attempt to acquire an image from the swap chain.
+ * @see "VkPresentInfoKHR"
  */
 
+@VulkanAPIStructType(api = "VK_KHR_swapchain", vulkanStruct = "VkPresentInfoKHR")
 @ImmutablesStyleType
 @Value.Immutable
-public interface VulkanSwapChainImageAcquisitionType
+public interface VulkanPresentInfoKHRType
 {
   /**
-   * @return The index of the acquired image in the swapchain
+   * @return The semaphores upon which to wait before issuing the present request.
    */
 
   @Value.Parameter
-  OptionalInt imageIndex();
+  List<VulkanSemaphoreType> waitSemaphores();
 
   /**
-   * If an image became available, and the swapchain no longer matches the surface properties
-   * exactly but can still be used to present to the surface successfully, this method will return
-   * {@code true}.
+   * @return The list of swapchains
+   */
+
+  @Value.Parameter
+  List<VulkanKHRSwapChainType> swapChains();
+
+  /**
+   * Each entry in this array identifies the image to present on the corresponding entry in the
+   * {@link #swapChains()} list.
    *
-   * @return {@code true} if the image is now suboptimal
+   * @return An array of images to be presented
    */
 
   @Value.Parameter
-  boolean subOptimal();
-
-  /**
-   * @return {@code true} iff a timeout was specified and no image was available within that time
-   */
-
-  @Value.Parameter
-  boolean timedOut();
+  List<Integer> imageIndices();
 }

@@ -14,14 +14,16 @@
  * IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-package com.io7m.jcoronado.extensions.api;
+package com.io7m.jcoronado.extensions.khr_swapchain.api;
 
+import com.io7m.jcoronado.api.VulkanAPIEnumType;
 import com.io7m.jcoronado.api.VulkanEnumBitmaskType;
 
 /**
  * @see "VkCompositeAlphaFlagBitsKHR"
  */
 
+@VulkanAPIEnumType(api = "VK_KHR_swapchain", vulkanEnum = "VkCompositeAlphaFlagBitsKHR")
 public enum VulkanCompositeAlphaFlagKHR implements VulkanEnumBitmaskType
 {
   /**

@@ -14,8 +14,9 @@
  * IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-package com.io7m.jcoronado.extensions.api;
+package com.io7m.jcoronado.extensions.khr_swapchain.api;
 
+import com.io7m.jcoronado.api.VulkanAPIEnumType;
 import com.io7m.jcoronado.api.VulkanEnumIntegerType;
 import com.io7m.jcoronado.api.VulkanEnumMaps;
 
@@ -26,6 +27,7 @@ import java.util.Optional;
  * @see "VkColorSpaceKHR"
  */
 
+@VulkanAPIEnumType(api = "VK_KHR_swapchain", vulkanEnum = "VkColorSpaceKHR")
 public enum VulkanColorSpaceKHR implements VulkanEnumIntegerType
 {
   /**

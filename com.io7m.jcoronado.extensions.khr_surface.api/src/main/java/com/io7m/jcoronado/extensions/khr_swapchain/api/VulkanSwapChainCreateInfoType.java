@@ -14,13 +14,16 @@
  * IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-package com.io7m.jcoronado.extensions.api;
+package com.io7m.jcoronado.extensions.khr_swapchain.api;
 
 import com.io7m.immutables.styles.ImmutablesStyleType;
+import com.io7m.jcoronado.api.VulkanAPIStructType;
 import com.io7m.jcoronado.api.VulkanExtent2D;
 import com.io7m.jcoronado.api.VulkanFormat;
 import com.io7m.jcoronado.api.VulkanImageUsageFlag;
 import com.io7m.jcoronado.api.VulkanSharingMode;
+import com.io7m.jcoronado.extensions.khr_surface.api.VulkanExtKHRSurfaceType;
+import com.io7m.jcoronado.extensions.khr_surface.api.VulkanSurfaceTransformFlagKHR;
 import org.immutables.value.Value;
 
 import java.util.List;
@@ -33,6 +36,7 @@ import java.util.Set;
  * @see "VkSwapchainCreateInfoKHR"
  */
 
+@VulkanAPIStructType(api = "VK_KHR_swapchain", vulkanStruct = "VkSwapchainCreateInfoKHR")
 @ImmutablesStyleType
 @Value.Immutable
 public interface VulkanSwapChainCreateInfoType

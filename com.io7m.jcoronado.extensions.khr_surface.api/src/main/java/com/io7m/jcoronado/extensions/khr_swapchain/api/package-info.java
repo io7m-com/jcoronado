@@ -14,31 +14,8 @@
  * IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-package com.io7m.jcoronado.extensions.api;
-
-import com.io7m.immutables.styles.ImmutablesStyleType;
-import com.io7m.jcoronado.api.VulkanFormat;
-import org.immutables.value.Value;
-
 /**
- * @see "VkSurfaceFormatKHR"
+ * Type-safe Vulkan frontend (VK_KHR_swapchain extension API)
  */
 
-@ImmutablesStyleType
-@Value.Immutable
-public interface VulkanSurfaceFormatKHRType
-{
-  /**
-   * @return A format that is compatible with the specified surface.
-   */
-
-  @Value.Parameter
-  VulkanFormat format();
-
-  /**
-   * @return A presentation color space that is compatible with the surface.
-   */
-
-  @Value.Parameter
-  VulkanColorSpaceKHR colorSpace();
-}
+package com.io7m.jcoronado.extensions.khr_swapchain.api;

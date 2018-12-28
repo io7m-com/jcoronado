@@ -4,11 +4,11 @@
   <!-- Generated types -->
   <Match>
     <Or>
-      <Class name="com.io7m.jcoronado.extensions.api.VulkanSurfaceCapabilitiesKHR"/>
-      <Class name="com.io7m.jcoronado.extensions.api.VulkanSurfaceFormatKHR"/>
-      <Class name="com.io7m.jcoronado.extensions.api.VulkanSwapChainCreateInfo"/>
-      <Class name="com.io7m.jcoronado.extensions.api.VulkanSwapChainImageAcquisition"/>
-      <Class name="com.io7m.jcoronado.extensions.api.VulkanExtKHRSwapChainImageAcquisition"/>
+      <Class name="com.io7m.jcoronado.extensions.khr_surface.api.VulkanSurfaceCapabilitiesKHR"/>"/>
+      <Class name="com.io7m.jcoronado.extensions.khr_surface.api.VulkanSurfaceFormatKHR"/>
+      <Class name="com.io7m.jcoronado.extensions.khr_swapchain.api.VulkanPresentInfoKHR"/>
+      <Class name="com.io7m.jcoronado.extensions.khr_swapchain.api.VulkanSwapChainCreateInfo"/>
+      <Class name="com.io7m.jcoronado.extensions.khr_swapchain.api.VulkanSwapChainImageAcquisition"/>
 
       <Class name="~com\.io7m\.jcoronado\..+\$Builder"/>
       <Class name="~com\.io7m\.jcoronado\..+\$InitShim"/>

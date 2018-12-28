@@ -14,45 +14,34 @@
  * IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-package com.io7m.jcoronado.extensions.api;
+package com.io7m.jcoronado.extensions.khr_surface.api;
 
 import com.io7m.immutables.styles.ImmutablesStyleType;
-import com.io7m.jcoronado.api.VulkanSemaphoreType;
+import com.io7m.jcoronado.api.VulkanAPIStructType;
+import com.io7m.jcoronado.api.VulkanFormat;
+import com.io7m.jcoronado.extensions.khr_swapchain.api.VulkanColorSpaceKHR;
 import org.immutables.value.Value;
 
-import java.util.List;
-
-import static com.io7m.jcoronado.extensions.api.VulkanExtKHRSwapChainType.VulkanKHRSwapChainType;
-
 /**
- * @see "VkPresentInfoKHR"
+ * @see "VkSurfaceFormatKHR"
  */
 
+@VulkanAPIStructType(api = "VK_KHR_surface", vulkanStruct = "VkSurfaceFormatKHR")
 @ImmutablesStyleType
 @Value.Immutable
-public interface VulkanPresentInfoKHRType
+public interface VulkanSurfaceFormatKHRType
 {
   /**
-   * @return The semaphores upon which to wait before issuing the present request.
+   * @return A format that is compatible with the specified surface.
    */
 
   @Value.Parameter
-  List<VulkanSemaphoreType> waitSemaphores();
+  VulkanFormat format();
 
   /**
-   * @return The list of swapchains
+   * @return A presentation color space that is compatible with the surface.
    */
 
   @Value.Parameter
-  List<VulkanKHRSwapChainType> swapChains();
-
-  /**
-   * Each entry in this array identifies the image to present on the corresponding entry in the
-   * {@link #swapChains()} list.
-   *
-   * @return An array of images to be presented
-   */
-
-  @Value.Parameter
-  List<Integer> imageIndices();
+  VulkanColorSpaceKHR colorSpace();
 }

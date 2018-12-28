@@ -15,7 +15,16 @@
  */
 
 /**
- * Type-safe Vulkan frontend (Extensions API)
+ * Type-safe Vulkan frontend (VK_KHR_surface and VK_KHR_swapchain extension API)
  */
 
-package com.io7m.jcoronado.extensions.api;
+module com.io7m.jcoronado.extensions.khr.surface.api
+{
+  requires static org.immutables.value;
+  requires static com.io7m.immutables.style;
+
+  requires com.io7m.jcoronado.api;
+
+  exports com.io7m.jcoronado.extensions.khr_surface.api;
+  exports com.io7m.jcoronado.extensions.khr_swapchain.api;
+}

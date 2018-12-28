@@ -14,14 +14,16 @@
  * IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-package com.io7m.jcoronado.extensions.api;
+package com.io7m.jcoronado.extensions.khr_surface.api;
 
+import com.io7m.jcoronado.api.VulkanAPIEnumType;
 import com.io7m.jcoronado.api.VulkanEnumBitmaskType;
 
 /**
  * @see "VkSurfaceTransformFlagBitsKHR"
  */
 
+@VulkanAPIEnumType(api = "VK_KHR_surface", vulkanEnum = "VkSurfaceTransformFlagBitsKHR")
 public enum VulkanSurfaceTransformFlagKHR implements VulkanEnumBitmaskType
 {
   /**

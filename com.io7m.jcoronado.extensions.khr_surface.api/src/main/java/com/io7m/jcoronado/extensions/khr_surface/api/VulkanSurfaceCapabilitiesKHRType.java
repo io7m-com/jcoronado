@@ -14,11 +14,13 @@
  * IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-package com.io7m.jcoronado.extensions.api;
+package com.io7m.jcoronado.extensions.khr_surface.api;
 
 import com.io7m.immutables.styles.ImmutablesStyleType;
+import com.io7m.jcoronado.api.VulkanAPIStructType;
 import com.io7m.jcoronado.api.VulkanExtent2D;
 import com.io7m.jcoronado.api.VulkanImageUsageFlag;
+import com.io7m.jcoronado.extensions.khr_swapchain.api.VulkanCompositeAlphaFlagKHR;
 import org.immutables.value.Value;
 
 import java.util.Set;
@@ -27,6 +29,7 @@ import java.util.Set;
  * @see "VkSurfaceCapabilitiesKHR"
  */
 
+@VulkanAPIStructType(api = "VK_KHR_surface", vulkanStruct = "VkSurfaceCapabilitiesKHR")
 @ImmutablesStyleType
 @Value.Immutable
 public interface VulkanSurfaceCapabilitiesKHRType
