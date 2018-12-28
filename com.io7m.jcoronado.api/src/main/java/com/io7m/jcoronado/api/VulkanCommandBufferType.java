@@ -335,6 +335,81 @@ public interface VulkanCommandBufferType extends VulkanHandleDispatchableType
   }
 
   /**
+   * Clear regions within bound framebuffer attachments.
+   *
+   * @param attachments The attachments to clear and the clear values to use
+   * @param rectangles  An array of structures defining regions within each selected attachment to
+   *                    clear
+   *
+   * @throws VulkanException On errors
+   */
+
+  @VulkanAPIFunctionType(vulkanFunction = "vkCmdClearAttachments")
+  @VulkanExternallySynchronizedType
+  void clearAttachments(
+    List<VulkanClearAttachment> attachments,
+    List<VulkanClearRectangle> rectangles)
+    throws VulkanException;
+
+  /**
+   * Clear regions within bound framebuffer attachments.
+   *
+   * @param attachment The attachment to clear and the clear values to use
+   * @param rectangle  A structure defining a region within each selected attachment to clear
+   *
+   * @throws VulkanException On errors
+   */
+
+  @VulkanAPIFunctionType(vulkanFunction = "vkCmdClearAttachments")
+  @VulkanExternallySynchronizedType
+  default void clearAttachments(
+    final VulkanClearAttachment attachment,
+    final VulkanClearRectangle rectangle)
+    throws VulkanException
+  {
+    this.clearAttachments(List.of(attachment), List.of(rectangle));
+  }
+
+  /**
+   * Clear regions within bound framebuffer attachments.
+   *
+   * @param attachment The attachment to clear and the clear values to use
+   * @param rectangles An array of structures defining regions within each selected attachment to
+   *                   clear
+   *
+   * @throws VulkanException On errors
+   */
+
+  @VulkanAPIFunctionType(vulkanFunction = "vkCmdClearAttachments")
+  @VulkanExternallySynchronizedType
+  default void clearAttachments(
+    final VulkanClearAttachment attachment,
+    final List<VulkanClearRectangle> rectangles)
+    throws VulkanException
+  {
+    this.clearAttachments(List.of(attachment), rectangles);
+  }
+
+  /**
+   * Clear regions within bound framebuffer attachments.
+   *
+   * @param attachment The attachment to clear and the clear values to use
+   * @param rectangle  A structure defining a region within each selected attachment to clear
+   *
+   * @throws VulkanException On errors
+   */
+
+  @VulkanAPIFunctionType(vulkanFunction = "vkCmdClearAttachments")
+  @VulkanExternallySynchronizedType
+  default void clearAttachments(
+    final List<VulkanClearAttachment> attachment,
+    final VulkanClearRectangle rectangle)
+    throws VulkanException
+  {
+    this.clearAttachments(attachment, List.of(rectangle));
+  }
+
+  /**
    * Draw primitives.
    *
    * @param vertex_count   The number of vertices to draw.

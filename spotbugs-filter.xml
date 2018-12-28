@@ -24,6 +24,8 @@
       <Class name="com.io7m.jcoronado.api.VulkanBufferCreateInfo"/>
       <Class name="com.io7m.jcoronado.api.VulkanBufferImageCopy"/>
       <Class name="com.io7m.jcoronado.api.VulkanBufferMemoryBarrier"/>
+      <Class name="com.io7m.jcoronado.api.VulkanClearAttachment"/>
+      <Class name="com.io7m.jcoronado.api.VulkanClearRectangle"/>
       <Class name="com.io7m.jcoronado.api.VulkanClearValueColorFloatingPoint"/>
       <Class name="com.io7m.jcoronado.api.VulkanClearValueColorIntegerSigned"/>
       <Class name="com.io7m.jcoronado.api.VulkanClearValueColorIntegerUnsigned"/>

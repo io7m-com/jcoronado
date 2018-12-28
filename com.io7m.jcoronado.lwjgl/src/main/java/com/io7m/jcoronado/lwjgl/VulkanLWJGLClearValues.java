@@ -64,7 +64,26 @@ public final class VulkanLWJGLClearValues
     return target_values;
   }
 
-  static void packTo(
+  /**
+   * Pack a structure.
+   *
+   * @param stack  A stack
+   * @param source A structure
+   *
+   * @return A packed structure
+   */
+
+  public static VkClearValue pack(
+    final MemoryStack stack,
+    final VulkanClearValueType source)
+  {
+    Objects.requireNonNull(stack, "stack");
+    Objects.requireNonNull(source, "source");
+
+    return packTo(source, VkClearValue.mallocStack(stack));
+  }
+
+  static VkClearValue packTo(
     final VulkanClearValueType clear,
     final VkClearValue target)
   {
@@ -113,5 +132,6 @@ public final class VulkanLWJGLClearValues
         break;
       }
     }
+    return target;
   }
 }
