@@ -17,20 +17,20 @@
 package com.io7m.jcoronado.lwjgl;
 
 import com.io7m.jcoronado.api.VulkanException;
-import com.io7m.jcoronado.api.VulkanOffset3D;
+import com.io7m.jcoronado.api.VulkanImageBlit;
 import org.lwjgl.system.MemoryStack;
-import org.lwjgl.vulkan.VkOffset3D;
+import org.lwjgl.vulkan.VkImageBlit;
 
 import java.util.List;
 import java.util.Objects;
 
 /**
- * Functions to pack 3D shapes.
+ * Functions to pack image blit info.
  */
 
-public final class VulkanLWJGLOffset3Ds
+public final class VulkanLWJGLImageBlits
 {
-  private VulkanLWJGLOffset3Ds()
+  private VulkanLWJGLImageBlits()
   {
 
   }
@@ -38,27 +38,56 @@ public final class VulkanLWJGLOffset3Ds
   /**
    * Pack a structure.
    *
-   * @param stack  A stack
-   * @param offset A structure
+   * @param stack A stack
+   * @param info  A structure
    *
    * @return A packed structure
+   *
+   * @throws VulkanException On errors
    */
 
-  public static VkOffset3D pack(
+  public static VkImageBlit pack(
     final MemoryStack stack,
-    final VulkanOffset3D offset)
+    final VulkanImageBlit info)
+    throws VulkanException
   {
     Objects.requireNonNull(stack, "stack");
-    Objects.requireNonNull(offset, "offset");
+    Objects.requireNonNull(info, "info");
 
-    return packInto(offset, VkOffset3D.mallocStack(stack));
+    return packInto(stack, info, VkImageBlit.mallocStack(stack));
   }
 
-  private static VkOffset3D packInto(
-    final VulkanOffset3D source,
-    final VkOffset3D target)
+  /**
+   * Pack a structure.
+   *
+   * @param stack  A stack
+   * @param source The input structure
+   * @param target The output structure
+   *
+   * @return A packed structure
+   *
+   * @throws VulkanException On errors
+   */
+
+  public static VkImageBlit packInto(
+    final MemoryStack stack,
+    final VulkanImageBlit source,
+    final VkImageBlit target)
+    throws VulkanException
   {
-    return target.set(source.x(), source.y(), source.z());
+    Objects.requireNonNull(stack, "stack");
+    Objects.requireNonNull(source, "source");
+    Objects.requireNonNull(target, "target");
+
+    return target.set(
+      VulkanLWJGLImageSubresourceLayers.pack(
+        stack, source.sourceSubresource()),
+      VulkanLWJGLOffset3Ds.packList(
+        stack, List.of(source.sourceOffset0(), source.sourceOffset1())),
+      VulkanLWJGLImageSubresourceLayers.pack(
+        stack, source.targetSubresource()),
+      VulkanLWJGLOffset3Ds.packList(
+        stack, List.of(source.targetOffset0(), source.targetOffset1())));
   }
 
   /**
@@ -72,9 +101,9 @@ public final class VulkanLWJGLOffset3Ds
    * @throws VulkanException On errors
    */
 
-  public static VkOffset3D.Buffer packList(
+  public static VkImageBlit.Buffer packList(
     final MemoryStack stack,
-    final List<VulkanOffset3D> infos)
+    final List<VulkanImageBlit> infos)
     throws VulkanException
   {
     Objects.requireNonNull(stack, "stack");
@@ -82,8 +111,8 @@ public final class VulkanLWJGLOffset3Ds
 
     return VulkanLWJGLArrays.pack(
       infos,
-      (sstack, value, output) -> packInto(value, output),
-      (sstack, count) -> VkOffset3D.mallocStack(count, sstack),
+      (sstack, value, output) -> packInto(stack, value, output),
+      (sstack, count) -> VkImageBlit.mallocStack(count, sstack),
       stack);
   }
 
@@ -98,9 +127,9 @@ public final class VulkanLWJGLOffset3Ds
    * @throws VulkanException On errors
    */
 
-  public static VkOffset3D.Buffer packListOrNull(
+  public static VkImageBlit.Buffer packListOrNull(
     final MemoryStack stack,
-    final List<VulkanOffset3D> infos)
+    final List<VulkanImageBlit> infos)
     throws VulkanException
   {
     Objects.requireNonNull(stack, "stack");
@@ -108,8 +137,8 @@ public final class VulkanLWJGLOffset3Ds
 
     return VulkanLWJGLArrays.packOrNull(
       infos,
-      (sstack, value, output) -> packInto(value, output),
-      (sstack, count) -> VkOffset3D.mallocStack(count, sstack),
+      (sstack, value, output) -> packInto(stack, value, output),
+      (sstack, count) -> VkImageBlit.mallocStack(count, sstack),
       stack);
   }
 }

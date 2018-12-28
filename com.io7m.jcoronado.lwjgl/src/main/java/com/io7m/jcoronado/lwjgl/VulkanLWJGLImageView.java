@@ -16,6 +16,7 @@
 
 package com.io7m.jcoronado.lwjgl;
 
+import com.io7m.jcoronado.api.VulkanImageType;
 import com.io7m.jcoronado.api.VulkanImageViewType;
 import org.lwjgl.vulkan.VK10;
 import org.lwjgl.vulkan.VkDevice;
@@ -33,15 +34,18 @@ public final class VulkanLWJGLImageView extends VulkanLWJGLHandle implements Vul
   private static final Logger LOG = LoggerFactory.getLogger(VulkanLWJGLImageView.class);
 
   private final long handle;
+  private final VulkanLWJGLImage image;
   private final VkDevice device;
 
   VulkanLWJGLImageView(
     final VkDevice in_device,
     final long in_handle,
+    final VulkanLWJGLImage in_image,
     final VulkanLWJGLHostAllocatorProxy in_host_allocator_proxy)
   {
     super(Ownership.USER_OWNED, in_host_allocator_proxy);
     this.device = Objects.requireNonNull(in_device, "device");
+    this.image = Objects.requireNonNull(in_image, "image");
     this.handle = in_handle;
   }
 
@@ -96,5 +100,11 @@ public final class VulkanLWJGLImageView extends VulkanLWJGLHandle implements Vul
       LOG.trace("destroying image view: {}", this);
     }
     VK10.vkDestroyImageView(this.device, this.handle, this.hostAllocatorProxy().callbackBuffer());
+  }
+
+  @Override
+  public VulkanImageType image()
+  {
+    return this.image;
   }
 }

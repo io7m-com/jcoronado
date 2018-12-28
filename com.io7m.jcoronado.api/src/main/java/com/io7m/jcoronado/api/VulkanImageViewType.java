@@ -28,4 +28,10 @@ public interface VulkanImageViewType extends VulkanHandleNonDispatchableType
   @Override
   @VulkanExternallySynchronizedType void close()
     throws VulkanException;
+
+  /**
+   * @return The image to which this image view refers
+   */
+
+  VulkanImageType image();
 }

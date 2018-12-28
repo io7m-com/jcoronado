@@ -86,7 +86,7 @@ public final class VulkanLWJGLEqualsTest
   public void testVulkanLWJGLImageView()
   {
     EqualsVerifier.forClass(VulkanLWJGLImageView.class)
-      .withIgnoredFields("ownership", "device", "closed", "host_allocator_proxy")
+      .withIgnoredFields("ownership", "device", "image", "closed", "host_allocator_proxy")
       .withNonnullFields("handle")
       .verify();
   }

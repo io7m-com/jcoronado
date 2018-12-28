@@ -168,6 +168,63 @@ public interface VulkanCommandBufferType extends VulkanHandleDispatchableType
     throws VulkanException;
 
   /**
+   * Copy regions of an image, potentially performing format conversion.
+   *
+   * @param source_image        The source image
+   * @param source_image_layout The layout of the source image
+   * @param target_image        The target image
+   * @param target_image_layout The target image layout
+   * @param regions             The regions that will be used to blit
+   * @param filter              The filter to apply if the blits require scaling
+   *
+   * @throws VulkanException On errors
+   */
+
+  @VulkanAPIFunctionType(vulkanFunction = "vkCmdBlitImage")
+  @VulkanExternallySynchronizedType
+  void blitImage(
+    VulkanImageType source_image,
+    VulkanImageLayout source_image_layout,
+    VulkanImageType target_image,
+    VulkanImageLayout target_image_layout,
+    List<VulkanImageBlit> regions,
+    VulkanFilter filter)
+    throws VulkanException;
+
+  /**
+   * Copy regions of an image, potentially performing format conversion.
+   *
+   * @param source_image        The source image
+   * @param source_image_layout The layout of the source image
+   * @param target_image        The target image
+   * @param target_image_layout The target image layout
+   * @param region              The regions that will be used to blit
+   * @param filter              The filter to apply if the blits require scaling
+   *
+   * @throws VulkanException On errors
+   */
+
+  @VulkanAPIFunctionType(vulkanFunction = "vkCmdBlitImage")
+  @VulkanExternallySynchronizedType
+  default void blitImage(
+    final VulkanImageType source_image,
+    final VulkanImageLayout source_image_layout,
+    final VulkanImageType target_image,
+    final VulkanImageLayout target_image_layout,
+    final VulkanImageBlit region,
+    final VulkanFilter filter)
+    throws VulkanException
+  {
+    this.blitImage(
+      source_image,
+      source_image_layout,
+      target_image,
+      target_image_layout,
+      List.of(region),
+      filter);
+  }
+
+  /**
    * Copy data between buffer regions.
    *
    * @param source  The source buffer

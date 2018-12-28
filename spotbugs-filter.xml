@@ -49,6 +49,7 @@
       <Class name="com.io7m.jcoronado.api.VulkanFramebufferCreateInfo"/>
       <Class name="com.io7m.jcoronado.api.VulkanGraphicsPipelineCreateInfo"/>
       <Class name="com.io7m.jcoronado.api.VulkanHostAllocatorCallbacks"/>
+      <Class name="com.io7m.jcoronado.api.VulkanImageBlit"/>
       <Class name="com.io7m.jcoronado.api.VulkanImageCreateInfo"/>
       <Class name="com.io7m.jcoronado.api.VulkanImageMemoryBarrier"/>
       <Class name="com.io7m.jcoronado.api.VulkanImageSubresourceLayers"/>

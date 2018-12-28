@@ -337,7 +337,7 @@ public final class VulkanLWJGLLogicalDevice
         LOG.trace("created image view: 0x{}", Long.toUnsignedString(view_handle, 16));
       }
 
-      return new VulkanLWJGLImageView(this.device, view_handle, this.hostAllocatorProxy());
+      return new VulkanLWJGLImageView(this.device, view_handle, image, this.hostAllocatorProxy());
     }
   }
 

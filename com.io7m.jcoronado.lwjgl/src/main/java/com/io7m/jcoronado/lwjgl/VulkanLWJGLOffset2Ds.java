@@ -16,10 +16,12 @@
 
 package com.io7m.jcoronado.lwjgl;
 
+import com.io7m.jcoronado.api.VulkanException;
 import com.io7m.jcoronado.api.VulkanOffset2D;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.vulkan.VkOffset2D;
 
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -49,6 +51,65 @@ public final class VulkanLWJGLOffset2Ds
     Objects.requireNonNull(stack, "stack");
     Objects.requireNonNull(offset, "offset");
 
-    return VkOffset2D.mallocStack(stack).set(offset.x(), offset.y());
+    return packInto(offset, VkOffset2D.mallocStack(stack));
+  }
+
+  private static VkOffset2D packInto(
+    final VulkanOffset2D source,
+    final VkOffset2D target)
+  {
+    return target.set(source.x(), source.y());
+  }
+
+  /**
+   * Pack structures.
+   *
+   * @param stack A stack
+   * @param infos A list of structures
+   *
+   * @return A list of packed structure
+   *
+   * @throws VulkanException On errors
+   */
+
+  public static VkOffset2D.Buffer packList(
+    final MemoryStack stack,
+    final List<VulkanOffset2D> infos)
+    throws VulkanException
+  {
+    Objects.requireNonNull(stack, "stack");
+    Objects.requireNonNull(infos, "infos");
+
+    return VulkanLWJGLArrays.pack(
+      infos,
+      (sstack, value, output) -> packInto(value, output),
+      (sstack, count) -> VkOffset2D.mallocStack(count, sstack),
+      stack);
+  }
+
+  /**
+   * Pack structures.
+   *
+   * @param stack A stack
+   * @param infos A list of structures
+   *
+   * @return A list of packed structure
+   *
+   * @throws VulkanException On errors
+   */
+
+  public static VkOffset2D.Buffer packListOrNull(
+    final MemoryStack stack,
+    final List<VulkanOffset2D> infos)
+    throws VulkanException
+  {
+    Objects.requireNonNull(stack, "stack");
+    Objects.requireNonNull(infos, "infos");
+
+    return VulkanLWJGLArrays.packOrNull(
+      infos,
+      (sstack, value, output) -> packInto(value, output),
+      (sstack, count) -> VkOffset2D.mallocStack(count, sstack),
+      stack);
   }
 }
