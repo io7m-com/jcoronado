@@ -283,6 +283,58 @@ public interface VulkanCommandBufferType extends VulkanHandleDispatchableType
     throws VulkanException;
 
   /**
+   * Copy regions of an image, potentially performing format conversion.
+   *
+   * @param source_image        The source image
+   * @param source_image_layout The layout of the source image
+   * @param target_image        The target image
+   * @param target_image_layout The target image layout
+   * @param regions             The regions that will be used to copy
+   *
+   * @throws VulkanException On errors
+   */
+
+  @VulkanAPIFunctionType(vulkanFunction = "vkCmdCopyImage")
+  @VulkanExternallySynchronizedType
+  void copyImage(
+    VulkanImageType source_image,
+    VulkanImageLayout source_image_layout,
+    VulkanImageType target_image,
+    VulkanImageLayout target_image_layout,
+    List<VulkanImageCopy> regions)
+    throws VulkanException;
+
+  /**
+   * Copy regions of an image, potentially performing format conversion.
+   *
+   * @param source_image        The source image
+   * @param source_image_layout The layout of the source image
+   * @param target_image        The target image
+   * @param target_image_layout The target image layout
+   * @param region              The regions that will be used to copy
+   *
+   * @throws VulkanException On errors
+   */
+
+  @VulkanAPIFunctionType(vulkanFunction = "vkCmdCopyImage")
+  @VulkanExternallySynchronizedType
+  default void copyImage(
+    final VulkanImageType source_image,
+    final VulkanImageLayout source_image_layout,
+    final VulkanImageType target_image,
+    final VulkanImageLayout target_image_layout,
+    final VulkanImageCopy region)
+    throws VulkanException
+  {
+    this.copyImage(
+      source_image,
+      source_image_layout,
+      target_image,
+      target_image_layout,
+      List.of(region));
+  }
+
+  /**
    * Draw primitives.
    *
    * @param vertex_count   The number of vertices to draw.

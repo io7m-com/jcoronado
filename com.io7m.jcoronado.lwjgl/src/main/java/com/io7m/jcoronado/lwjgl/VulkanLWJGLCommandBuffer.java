@@ -30,6 +30,7 @@ import com.io7m.jcoronado.api.VulkanException;
 import com.io7m.jcoronado.api.VulkanExternallySynchronizedType;
 import com.io7m.jcoronado.api.VulkanFilter;
 import com.io7m.jcoronado.api.VulkanImageBlit;
+import com.io7m.jcoronado.api.VulkanImageCopy;
 import com.io7m.jcoronado.api.VulkanImageLayout;
 import com.io7m.jcoronado.api.VulkanImageMemoryBarrier;
 import com.io7m.jcoronado.api.VulkanImageType;
@@ -278,6 +279,35 @@ public final class VulkanLWJGLCommandBuffer
         target_image_layout.value(),
         VulkanLWJGLImageBlits.packList(stack, regions),
         filter.value());
+    }
+  }
+
+  @Override
+  public @VulkanExternallySynchronizedType void copyImage(
+    final VulkanImageType source_image,
+    final VulkanImageLayout source_image_layout,
+    final VulkanImageType target_image,
+    final VulkanImageLayout target_image_layout,
+    final List<VulkanImageCopy> regions)
+    throws VulkanException
+  {
+    Objects.requireNonNull(source_image, "source_image");
+    Objects.requireNonNull(source_image_layout, "source_image_layout");
+    Objects.requireNonNull(target_image, "target_image");
+    Objects.requireNonNull(target_image_layout, "target_image_layout");
+    Objects.requireNonNull(regions, "regions");
+
+    final var csource = checkInstanceOf(source_image, VulkanLWJGLImage.class);
+    final var ctarget = checkInstanceOf(target_image, VulkanLWJGLImage.class);
+
+    try (var stack = this.stack_initial.push()) {
+      VK10.vkCmdCopyImage(
+        this.handle,
+        csource.handle(),
+        source_image_layout.value(),
+        ctarget.handle(),
+        target_image_layout.value(),
+        VulkanLWJGLImageCopies.packList(stack, regions));
     }
   }
 
