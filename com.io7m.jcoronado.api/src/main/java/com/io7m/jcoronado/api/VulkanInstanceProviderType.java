@@ -43,6 +43,7 @@ public interface VulkanInstanceProviderType
    * @throws VulkanException On errors
    */
 
+  @VulkanAPIFunctionType(vulkanFunction = "vkEnumerateInstanceExtensionProperties")
   Map<String, VulkanExtensionProperties> extensions()
     throws VulkanException;
 
@@ -52,6 +53,7 @@ public interface VulkanInstanceProviderType
    * @throws VulkanException On errors
    */
 
+  @VulkanAPIFunctionType(vulkanFunction = "vkEnumerateInstanceLayerProperties")
   Map<String, VulkanLayerProperties> layers()
     throws VulkanException;
 
