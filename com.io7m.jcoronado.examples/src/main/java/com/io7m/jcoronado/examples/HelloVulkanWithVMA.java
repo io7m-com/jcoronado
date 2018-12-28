@@ -1076,7 +1076,7 @@ public final class HelloVulkanWithVMA
     final var rng = new Random(23L);
     try (var map = vma_allocator.mapMemory(staging_buffer_result.allocation())) {
       final var bytes = map.asByteBuffer();
-      for (var index = 0; index < size; ++index) {
+      for (var index = 0; (long) index < size; ++index) {
         bytes.put(index, (byte) (rng.nextInt(256) & 0xff));
       }
       map.flush();
