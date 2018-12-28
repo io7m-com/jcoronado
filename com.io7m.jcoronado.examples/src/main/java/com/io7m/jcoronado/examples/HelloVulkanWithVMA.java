@@ -718,21 +718,7 @@ public final class HelloVulkanWithVMA
           presentation_queue);
 
         if (frame % 10_000 == 0) {
-          LOG.debug(
-            "allocated command scoped memory:  {} octets",
-            Long.valueOf(host_allocator.allocatedCommandScopeOctets()));
-          LOG.debug(
-            "allocated object scoped memory:   {} octets",
-            Long.valueOf(host_allocator.allocatedObjectScopeOctets()));
-          LOG.debug(
-            "allocated cache scoped memory:    {} octets",
-            Long.valueOf(host_allocator.allocatedCacheScopeOctets()));
-          LOG.debug(
-            "allocated device scoped memory:   {} octets",
-            Long.valueOf(host_allocator.allocatedDeviceScopeOctets()));
-          LOG.debug(
-            "allocated instance scoped memory: {} octets",
-            Long.valueOf(host_allocator.allocatedInstanceScopeOctets()));
+          showMemoryStatistics(host_allocator);
         }
         ++frame;
       }
@@ -756,6 +742,31 @@ public final class HelloVulkanWithVMA
         Thread.currentThread().interrupt();
       }
     }
+  }
+
+  private static void showMemoryStatistics(
+    final VulkanHostAllocatorTracker host_allocator)
+  {
+    LOG.debug(
+      "allocated command scoped memory:  {} octets ({}MB)",
+      Long.valueOf(host_allocator.allocatedCommandScopeOctets()),
+      Double.valueOf((double) host_allocator.allocatedCommandScopeOctets() / 1_000_000.0));
+    LOG.debug(
+      "allocated object scoped memory:   {} octets ({}MB)",
+      Long.valueOf(host_allocator.allocatedObjectScopeOctets()),
+      Double.valueOf((double) host_allocator.allocatedObjectScopeOctets() / 1_000_000.0));
+    LOG.debug(
+      "allocated cache scoped memory:    {} octets ({}MB)",
+      Long.valueOf(host_allocator.allocatedCacheScopeOctets()),
+      Double.valueOf((double) host_allocator.allocatedCacheScopeOctets() / 1_000_000.0));
+    LOG.debug(
+      "allocated device scoped memory:   {} octets ({}MB)",
+      Long.valueOf(host_allocator.allocatedDeviceScopeOctets()),
+      Double.valueOf((double) host_allocator.allocatedDeviceScopeOctets() / 1_000_000.0));
+    LOG.debug(
+      "allocated instance scoped memory: {} octets ({}MB)",
+      Long.valueOf(host_allocator.allocatedInstanceScopeOctets()),
+      Double.valueOf((double) host_allocator.allocatedInstanceScopeOctets() / 1_000_000.0));
   }
 
   private static final class Texture
