@@ -62,6 +62,8 @@ import com.io7m.jcoronado.api.VulkanPipelineType;
 import com.io7m.jcoronado.api.VulkanQueueType;
 import com.io7m.jcoronado.api.VulkanRenderPassCreateInfo;
 import com.io7m.jcoronado.api.VulkanRenderPassType;
+import com.io7m.jcoronado.api.VulkanSamplerCreateInfo;
+import com.io7m.jcoronado.api.VulkanSamplerType;
 import com.io7m.jcoronado.api.VulkanSemaphoreCreateInfo;
 import com.io7m.jcoronado.api.VulkanSemaphoreType;
 import com.io7m.jcoronado.api.VulkanShaderModuleCreateInfo;
@@ -272,6 +274,36 @@ public final class VulkanLWJGLLogicalDevice
         this.device,
         shader_module,
         this.hostAllocatorProxy());
+    }
+  }
+
+  @Override
+  public VulkanSamplerType createSampler(
+    final VulkanSamplerCreateInfo create_info)
+    throws VulkanException
+  {
+    Objects.requireNonNull(create_info, "create_info");
+
+    this.checkNotClosed();
+
+    try (var stack = this.stack_initial.push()) {
+      final var vk_create_info = VulkanLWJGLSamplerCreateInfos.pack(stack, create_info);
+
+      final var handle = new long[1];
+      VulkanChecks.checkReturnCode(
+        VK10.vkCreateSampler(
+          this.device,
+          vk_create_info,
+          this.hostAllocatorProxy().callbackBuffer(),
+          handle),
+        "vkCreateSampler");
+
+      final var vk_handle = handle[0];
+      if (LOG.isTraceEnabled()) {
+        LOG.trace("created sampler: 0x{}", Long.toUnsignedString(vk_handle, 16));
+      }
+
+      return new VulkanLWJGLSampler(USER_OWNED, this.device, vk_handle, this.hostAllocatorProxy());
     }
   }
 

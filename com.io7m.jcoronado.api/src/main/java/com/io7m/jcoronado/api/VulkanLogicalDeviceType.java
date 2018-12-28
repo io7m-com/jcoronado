@@ -100,6 +100,21 @@ public interface VulkanLogicalDeviceType extends VulkanHandleDispatchableType
     throws VulkanException;
 
   /**
+   * Create a sampler.
+   *
+   * @param create_info The creation info
+   *
+   * @return A sampler
+   *
+   * @throws VulkanException On errors
+   */
+
+  @VulkanAPIFunctionType(vulkanFunction = "vkCreateSampler")
+  VulkanSamplerType createSampler(
+    VulkanSamplerCreateInfo create_info)
+    throws VulkanException;
+
+  /**
    * Create an image view.
    *
    * @param info The image view creation info

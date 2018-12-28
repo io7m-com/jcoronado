@@ -34,12 +34,14 @@ public interface VulkanWriteDescriptorSetType
    * @return The destination descriptor set to update.
    */
 
+  @Value.Parameter
   VulkanDescriptorSetType destinationSet();
 
   /**
    * @return The descriptor binding within that set.
    */
 
+  @Value.Parameter
   int destinationBinding();
 
   /**
@@ -48,7 +50,12 @@ public interface VulkanWriteDescriptorSetType
    * then destinationArrayElement specifies the starting byte offset within the binding.
    */
 
-  int destinationArrayElement();
+  @Value.Parameter
+  @Value.Default
+  default int destinationArrayElement()
+  {
+    return 0;
+  }
 
   /**
    * @return The number of descriptors to update (the number of elements in imageInfos, bufferInfos,
@@ -60,6 +67,7 @@ public interface VulkanWriteDescriptorSetType
    * specifies the number of bytes to update.
    */
 
+  @Value.Parameter
   int descriptorCount();
 
   /**
@@ -69,12 +77,14 @@ public interface VulkanWriteDescriptorSetType
    * descriptor also controls which array the descriptors are taken from.
    */
 
+  @Value.Parameter
   VulkanDescriptorType descriptorType();
 
   /**
    * @return An array of VulkanDescriptorImageInfo structures
    */
 
+  @Value.Parameter
   List<VulkanDescriptorImageInfo> imageInfos();
 
 
@@ -82,11 +92,13 @@ public interface VulkanWriteDescriptorSetType
    * @return An array of VulkanDescriptorBufferInfo structures
    */
 
+  @Value.Parameter
   List<VulkanDescriptorBufferInfo> bufferInfos();
 
   /**
    * @return An array of VulkanBufferViewType handles
    */
 
+  @Value.Parameter
   List<VulkanBufferViewType> texelBufferViews();
 }

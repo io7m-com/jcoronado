@@ -65,7 +65,11 @@ public interface VulkanImageViewCreateInfoType
    */
 
   @Value.Parameter
-  VulkanComponentMapping components();
+  @Value.Default
+  default VulkanComponentMapping components()
+  {
+    return VulkanComponentMappingType.identity();
+  }
 
   /**
    * @return The set of mipmap levels and array layers to be accessible to the view

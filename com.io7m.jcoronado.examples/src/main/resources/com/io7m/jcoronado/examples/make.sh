@@ -2,6 +2,13 @@
 
 glslangValidator \
   -V \
+  -o clip_space_triangle.frag.spv \
+  -e R3_clip_triangle_frag_main \
+  --source-entrypoint R3_clip_triangle_frag_main \
+  clip_space_triangle.frag
+
+glslangValidator \
+  -V \
   -o clip_space_triangle_ub.frag.spv \
   -e R3_clip_triangle_frag_ub_main \
   --source-entrypoint R3_clip_triangle_frag_ub_main \
@@ -9,10 +16,10 @@ glslangValidator \
 
 glslangValidator \
   -V \
-  -o clip_space_triangle.frag.spv \
-  -e R3_clip_triangle_frag_main \
-  --source-entrypoint R3_clip_triangle_frag_main \
-  clip_space_triangle.frag
+  -o clip_space_triangle_ub_texture.frag.spv \
+  -e R3_clip_triangle_frag_ub_texture_main \
+  --source-entrypoint R3_clip_triangle_frag_ub_texture_main \
+  clip_space_triangle_ub_texture.frag
 
 glslangValidator \
   -V \
@@ -27,4 +34,5 @@ spirv-link \
   -o shaders.spv \
   clip_space_triangle.vert.spv \
   clip_space_triangle.frag.spv \
-  clip_space_triangle_ub.frag.spv
+  clip_space_triangle_ub.frag.spv \
+  clip_space_triangle_ub_texture.frag.spv

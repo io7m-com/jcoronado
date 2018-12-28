@@ -89,6 +89,7 @@
       <Class name="com.io7m.jcoronado.api.VulkanRectangle2D"/>
       <Class name="com.io7m.jcoronado.api.VulkanRenderPassBeginInfo"/>
       <Class name="com.io7m.jcoronado.api.VulkanRenderPassCreateInfo"/>
+      <Class name="com.io7m.jcoronado.api.VulkanSamplerCreateInfo"/>
       <Class name="com.io7m.jcoronado.api.VulkanSemaphoreCreateInfo"/>
       <Class name="com.io7m.jcoronado.api.VulkanShaderModuleCreateInfo"/>
       <Class name="com.io7m.jcoronado.api.VulkanSpecializationMap"/>
