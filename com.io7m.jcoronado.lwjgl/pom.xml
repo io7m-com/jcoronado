@@ -47,6 +47,10 @@
     </dependency>
     <dependency>
       <groupId>org.lwjgl.osgi</groupId>
+      <artifactId>org.lwjgl.jemalloc</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.lwjgl.osgi</groupId>
       <artifactId>org.lwjgl.vulkan</artifactId>
     </dependency>
     <dependency>
