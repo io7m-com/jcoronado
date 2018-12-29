@@ -407,6 +407,15 @@ public final class VulkanLWJGLCommandBuffer
   }
 
   @Override
+  public @VulkanExternallySynchronizedType void dispatch(
+    final int group_count_x,
+    final int group_count_y,
+    final int group_count_z)
+  {
+    VK10.vkCmdDispatch(this.handle, group_count_x, group_count_y, group_count_z);
+  }
+
+  @Override
   public @VulkanExternallySynchronizedType void copyBuffer(
     final VulkanBufferType source,
     final VulkanBufferType target,

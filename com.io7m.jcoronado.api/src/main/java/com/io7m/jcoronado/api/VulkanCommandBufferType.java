@@ -452,6 +452,24 @@ public interface VulkanCommandBufferType extends VulkanHandleDispatchableType
     throws VulkanException;
 
   /**
+   * Dispatch compute work items.
+   *
+   * @param group_count_x The number of local workgroups to dispatch in the X dimension.
+   * @param group_count_y The number of local workgroups to dispatch in the Y dimension.
+   * @param group_count_z The number of local workgroups to dispatch in the Z dimension.
+   *
+   * @throws VulkanException On errors
+   */
+
+  @VulkanAPIFunctionType(vulkanFunction = "vkCmdDispatch")
+  @VulkanExternallySynchronizedType
+  void dispatch(
+    int group_count_x,
+    int group_count_y,
+    int group_count_z)
+    throws VulkanException;
+
+  /**
    * Draw primitives.
    *
    * @param vertex_count   The number of vertices to draw.
