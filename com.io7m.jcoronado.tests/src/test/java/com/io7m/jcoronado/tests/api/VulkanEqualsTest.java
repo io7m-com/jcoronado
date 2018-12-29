@@ -111,6 +111,7 @@ public final class VulkanEqualsTest
       final var ignore_names =
         Set.of(
           "compareTo",
+          "colorType",
           "checkPreconditions",
           "findSuitableMemoryType",
           "toHumanString",

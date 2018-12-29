@@ -23,7 +23,7 @@ import com.io7m.jcoronado.api.VulkanBufferType;
 import com.io7m.jcoronado.api.VulkanChecks;
 import com.io7m.jcoronado.api.VulkanClearAttachment;
 import com.io7m.jcoronado.api.VulkanClearRectangle;
-import com.io7m.jcoronado.api.VulkanClearValueType;
+import com.io7m.jcoronado.api.VulkanClearValueDepthStencil;
 import com.io7m.jcoronado.api.VulkanCommandBufferBeginInfo;
 import com.io7m.jcoronado.api.VulkanCommandBufferType;
 import com.io7m.jcoronado.api.VulkanDependencyFlag;
@@ -57,6 +57,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
+import static com.io7m.jcoronado.api.VulkanClearValueType.VulkanClearValueColorType;
 import static com.io7m.jcoronado.lwjgl.VulkanLWJGLClassChecks.checkInstanceOf;
 import static com.io7m.jcoronado.lwjgl.VulkanLWJGLIntegerArrays.packIntsOrNull;
 import static com.io7m.jcoronado.lwjgl.VulkanLWJGLIntegerArrays.packLongs;
@@ -355,7 +356,7 @@ public final class VulkanLWJGLCommandBuffer
   public @VulkanExternallySynchronizedType void clearColorImage(
     final VulkanImageType image,
     final VulkanImageLayout image_layout,
-    final VulkanClearValueType.VulkanClearValueColorType color,
+    final VulkanClearValueColorType color,
     final List<VulkanImageSubresourceRange> ranges)
     throws VulkanException
   {
@@ -374,6 +375,33 @@ public final class VulkanLWJGLCommandBuffer
         cimage.handle(),
         image_layout.value(),
         VulkanLWJGLClearValues.packColor(stack, color),
+        VulkanLWJGLImageSubresourceRanges.packList(stack, ranges));
+    }
+  }
+
+  @Override
+  public @VulkanExternallySynchronizedType void clearDepthStencilImage(
+    final VulkanImageType image,
+    final VulkanImageLayout image_layout,
+    final VulkanClearValueDepthStencil depth_stencil,
+    final List<VulkanImageSubresourceRange> ranges)
+    throws VulkanException
+  {
+    Objects.requireNonNull(image, "image");
+    Objects.requireNonNull(image_layout, "image_layout");
+    Objects.requireNonNull(depth_stencil, "depth_stencil");
+    Objects.requireNonNull(ranges, "ranges");
+
+    this.checkNotClosed();
+
+    final var cimage = checkInstanceOf(image, VulkanLWJGLImage.class);
+
+    try (var stack = this.stack_initial.push()) {
+      VK10.vkCmdClearDepthStencilImage(
+        this.handle,
+        cimage.handle(),
+        image_layout.value(),
+        VulkanLWJGLClearValues.packDepthStencil(stack, depth_stencil),
         VulkanLWJGLImageSubresourceRanges.packList(stack, ranges));
     }
   }

@@ -176,6 +176,12 @@
   </Match>
 
   <Match>
+    <Class name="com.io7m.jcoronado.lwjgl.VulkanLWJGLClearValues"/>
+    <Method name="packTo"/>
+    <Bug pattern="BC_UNCONFIRMED_CAST"/>
+  </Match>
+
+  <Match>
     <Or>
       <Bug pattern="CE_CLASS_ENVY"/>
       <Bug pattern="CRLF_INJECTION_LOGS"/>

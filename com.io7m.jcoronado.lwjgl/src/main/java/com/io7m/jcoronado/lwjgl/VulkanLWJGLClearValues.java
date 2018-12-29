@@ -24,6 +24,7 @@ import com.io7m.jcoronado.api.VulkanClearValueType;
 import com.io7m.junreachable.UnreachableCodeException;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.vulkan.VkClearColorValue;
+import org.lwjgl.vulkan.VkClearDepthStencilValue;
 import org.lwjgl.vulkan.VkClearValue;
 
 import java.util.List;
@@ -106,7 +107,7 @@ public final class VulkanLWJGLClearValues
     switch (source.type()) {
       case DEPTH_STENCIL: {
         final var depth_stencil = (VulkanClearValueDepthStencil) source;
-        target.depthStencil().set(depth_stencil.depth(), depth_stencil.stencil());
+        packToDepthStencil(depth_stencil, target.depthStencil());
         break;
       }
 
@@ -115,6 +116,14 @@ public final class VulkanLWJGLClearValues
         break;
       }
     }
+    return target;
+  }
+
+  private static VkClearDepthStencilValue packToDepthStencil(
+    final VulkanClearValueDepthStencil source,
+    final VkClearDepthStencilValue target)
+  {
+    target.set(source.depth(), source.stencil());
     return target;
   }
 
@@ -174,5 +183,24 @@ public final class VulkanLWJGLClearValues
     Objects.requireNonNull(source, "source");
 
     return packToColor(source, VkClearColorValue.mallocStack(stack));
+  }
+
+  /**
+   * Pack a structure.
+   *
+   * @param stack  A stack
+   * @param source A structure
+   *
+   * @return A packed structure
+   */
+
+  public static VkClearDepthStencilValue packDepthStencil(
+    final MemoryStack stack,
+    final VulkanClearValueDepthStencil source)
+  {
+    Objects.requireNonNull(stack, "stack");
+    Objects.requireNonNull(source, "source");
+
+    return packToDepthStencil(source, VkClearDepthStencilValue.mallocStack(stack));
   }
 }

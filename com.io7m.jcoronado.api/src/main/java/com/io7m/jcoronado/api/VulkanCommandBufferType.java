@@ -432,6 +432,26 @@ public interface VulkanCommandBufferType extends VulkanHandleDispatchableType
     throws VulkanException;
 
   /**
+   * Clear regions of a depth stencil image.
+   *
+   * @param image         The image
+   * @param image_layout  The image layout
+   * @param depth_stencil The depth stencil value
+   * @param ranges        The image subresource ranges
+   *
+   * @throws VulkanException On errors
+   */
+
+  @VulkanAPIFunctionType(vulkanFunction = "vkCmdClearDepthStencilImage")
+  @VulkanExternallySynchronizedType
+  void clearDepthStencilImage(
+    VulkanImageType image,
+    VulkanImageLayout image_layout,
+    VulkanClearValueDepthStencil depth_stencil,
+    List<VulkanImageSubresourceRange> ranges)
+    throws VulkanException;
+
+  /**
    * Draw primitives.
    *
    * @param vertex_count   The number of vertices to draw.
