@@ -21,11 +21,15 @@ import com.io7m.jcoronado.api.VulkanClearValueColorIntegerSigned;
 import com.io7m.jcoronado.api.VulkanClearValueColorIntegerUnsigned;
 import com.io7m.jcoronado.api.VulkanClearValueDepthStencil;
 import com.io7m.jcoronado.api.VulkanClearValueType;
+import com.io7m.junreachable.UnreachableCodeException;
 import org.lwjgl.system.MemoryStack;
+import org.lwjgl.vulkan.VkClearColorValue;
 import org.lwjgl.vulkan.VkClearValue;
 
 import java.util.List;
 import java.util.Objects;
+
+import static com.io7m.jcoronado.api.VulkanClearValueType.VulkanClearValueColorType;
 
 /**
  * Functions to pack rectangles.
@@ -83,55 +87,92 @@ public final class VulkanLWJGLClearValues
     return packTo(source, VkClearValue.mallocStack(stack));
   }
 
-  static VkClearValue packTo(
-    final VulkanClearValueType clear,
+  /**
+   * Pack a structure.
+   *
+   * @param source The source value
+   * @param target The target structure
+   *
+   * @return A packed structure
+   */
+
+  public static VkClearValue packTo(
+    final VulkanClearValueType source,
     final VkClearValue target)
   {
-    switch (clear.type()) {
-      case DEPTH_STENCIL: {
-        final var depth_stencil =
-          (VulkanClearValueDepthStencil) clear;
+    Objects.requireNonNull(source, "source");
+    Objects.requireNonNull(target, "target");
 
+    switch (source.type()) {
+      case DEPTH_STENCIL: {
+        final var depth_stencil = (VulkanClearValueDepthStencil) source;
         target.depthStencil().set(depth_stencil.depth(), depth_stencil.stencil());
         break;
       }
 
-      case COLOR_INTEGER_SIGNED: {
-        final var color =
-          (VulkanClearValueColorIntegerSigned) clear;
-
-        final var ib = target.color().int32();
-        ib.put(0, color.red());
-        ib.put(1, color.green());
-        ib.put(2, color.blue());
-        ib.put(3, color.alpha());
-        break;
-      }
-
-      case COLOR_INTEGER_UNSIGNED: {
-        final var color =
-          (VulkanClearValueColorIntegerUnsigned) clear;
-
-        final var ib = target.color().uint32();
-        ib.put(0, color.red());
-        ib.put(1, color.green());
-        ib.put(2, color.blue());
-        ib.put(3, color.alpha());
-        break;
-      }
-
-      case COLOR_FLOATING_POINT: {
-        final var color =
-          (VulkanClearValueColorFloatingPoint) clear;
-
-        final var ib = target.color().float32();
-        ib.put(0, color.red());
-        ib.put(1, color.green());
-        ib.put(2, color.blue());
-        ib.put(3, color.alpha());
+      case COLOR: {
+        packToColor((VulkanClearValueColorType) source, target.color());
         break;
       }
     }
     return target;
+  }
+
+  private static VkClearColorValue packToColor(
+    final VulkanClearValueColorType source,
+    final VkClearColorValue target)
+  {
+    switch (source.colorType()) {
+      case COLOR_INTEGER_SIGNED: {
+        final var color = (VulkanClearValueColorIntegerSigned) source;
+        final var ib = target.int32();
+        ib.put(0, color.red());
+        ib.put(1, color.green());
+        ib.put(2, color.blue());
+        ib.put(3, color.alpha());
+        return target;
+      }
+
+      case COLOR_INTEGER_UNSIGNED: {
+        final var color = (VulkanClearValueColorIntegerUnsigned) source;
+        final var ib = target.uint32();
+        ib.put(0, color.red());
+        ib.put(1, color.green());
+        ib.put(2, color.blue());
+        ib.put(3, color.alpha());
+        return target;
+      }
+
+      case COLOR_FLOATING_POINT: {
+        final var color = (VulkanClearValueColorFloatingPoint) source;
+        final var ib = target.float32();
+        ib.put(0, color.red());
+        ib.put(1, color.green());
+        ib.put(2, color.blue());
+        ib.put(3, color.alpha());
+        return target;
+      }
+    }
+
+    throw new UnreachableCodeException();
+  }
+
+  /**
+   * Pack a structure.
+   *
+   * @param stack  A stack
+   * @param source A structure
+   *
+   * @return A packed structure
+   */
+
+  public static VkClearColorValue packColor(
+    final MemoryStack stack,
+    final VulkanClearValueColorType source)
+  {
+    Objects.requireNonNull(stack, "stack");
+    Objects.requireNonNull(source, "source");
+
+    return packToColor(source, VkClearColorValue.mallocStack(stack));
   }
 }

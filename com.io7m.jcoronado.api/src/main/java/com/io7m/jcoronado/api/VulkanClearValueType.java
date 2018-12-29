@@ -19,6 +19,12 @@ package com.io7m.jcoronado.api;
 import com.io7m.immutables.styles.ImmutablesStyleType;
 import org.immutables.value.Value;
 
+import static com.io7m.jcoronado.api.VulkanClearValueType.Type.COLOR;
+import static com.io7m.jcoronado.api.VulkanClearValueType.Type.DEPTH_STENCIL;
+import static com.io7m.jcoronado.api.VulkanClearValueType.VulkanClearValueColorType.ColorType.COLOR_FLOATING_POINT;
+import static com.io7m.jcoronado.api.VulkanClearValueType.VulkanClearValueColorType.ColorType.COLOR_INTEGER_SIGNED;
+import static com.io7m.jcoronado.api.VulkanClearValueType.VulkanClearValueColorType.ColorType.COLOR_INTEGER_UNSIGNED;
+
 /**
  * Union specifying a clear value.
  *
@@ -47,22 +53,10 @@ public interface VulkanClearValueType
     DEPTH_STENCIL,
 
     /**
-     * A color consisting of signed integer components.
+     * A color value.
      */
 
-    COLOR_INTEGER_SIGNED,
-
-    /**
-     * A color consisting of unsigned integer components.
-     */
-
-    COLOR_INTEGER_UNSIGNED,
-
-    /**
-     * A color consisting of floating-point components.
-     */
-
-    COLOR_FLOATING_POINT
+    COLOR,
   }
 
   /**
@@ -77,7 +71,7 @@ public interface VulkanClearValueType
     @Override
     default Type type()
     {
-      return Type.DEPTH_STENCIL;
+      return DEPTH_STENCIL;
     }
 
     /**
@@ -96,18 +90,63 @@ public interface VulkanClearValueType
   }
 
   /**
+   * A depth/stencil value.
+   */
+
+  @VulkanAPIStructType(vulkanStruct = "VkClearValue")
+  interface VulkanClearValueColorType extends VulkanClearValueType
+  {
+    @Override
+    default Type type()
+    {
+      return COLOR;
+    }
+
+    /**
+     * @return The type of value
+     */
+
+    ColorType colorType();
+
+    /**
+     * The actual type of clea value.
+     */
+
+    enum ColorType
+    {
+      /**
+       * A color consisting of signed integer components.
+       */
+
+      COLOR_INTEGER_SIGNED,
+
+      /**
+       * A color consisting of unsigned integer components.
+       */
+
+      COLOR_INTEGER_UNSIGNED,
+
+      /**
+       * A color consisting of floating-point components.
+       */
+
+      COLOR_FLOATING_POINT
+    }
+  }
+
+  /**
    * A color consisting of signed integer components.
    */
 
   @VulkanAPIStructType(vulkanStruct = "VkClearValue")
   @ImmutablesStyleType
   @Value.Immutable
-  interface VulkanClearValueColorIntegerSignedType extends VulkanClearValueType
+  interface VulkanClearValueColorIntegerSignedType extends VulkanClearValueColorType
   {
     @Override
-    default Type type()
+    default ColorType colorType()
     {
-      return Type.COLOR_INTEGER_SIGNED;
+      return COLOR_INTEGER_SIGNED;
     }
 
     /**
@@ -146,12 +185,12 @@ public interface VulkanClearValueType
   @VulkanAPIStructType(vulkanStruct = "VkClearValue")
   @ImmutablesStyleType
   @Value.Immutable
-  interface VulkanClearValueColorIntegerUnsignedType extends VulkanClearValueType
+  interface VulkanClearValueColorIntegerUnsignedType extends VulkanClearValueColorType
   {
     @Override
-    default Type type()
+    default ColorType colorType()
     {
-      return Type.COLOR_INTEGER_UNSIGNED;
+      return COLOR_INTEGER_UNSIGNED;
     }
 
     /**
@@ -190,12 +229,12 @@ public interface VulkanClearValueType
   @VulkanAPIStructType(vulkanStruct = "VkClearValue")
   @ImmutablesStyleType
   @Value.Immutable
-  interface VulkanClearValueColorFloatingPointType extends VulkanClearValueType
+  interface VulkanClearValueColorFloatingPointType extends VulkanClearValueColorType
   {
     @Override
-    default Type type()
+    default ColorType colorType()
     {
-      return Type.COLOR_FLOATING_POINT;
+      return COLOR_FLOATING_POINT;
     }
 
     /**

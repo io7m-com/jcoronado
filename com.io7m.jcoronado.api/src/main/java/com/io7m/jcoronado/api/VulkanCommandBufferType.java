@@ -19,6 +19,8 @@ package com.io7m.jcoronado.api;
 import java.util.List;
 import java.util.Set;
 
+import static com.io7m.jcoronado.api.VulkanClearValueType.VulkanClearValueColorType;
+
 /**
  * @see "VkCommandBuffer"
  */
@@ -408,6 +410,26 @@ public interface VulkanCommandBufferType extends VulkanHandleDispatchableType
   {
     this.clearAttachments(attachment, List.of(rectangle));
   }
+
+  /**
+   * Clear regions of a color image.
+   *
+   * @param image        The image
+   * @param image_layout The image layout
+   * @param color        The color value
+   * @param ranges       The image subresource ranges
+   *
+   * @throws VulkanException On errors
+   */
+
+  @VulkanAPIFunctionType(vulkanFunction = "vkCmdClearColorImage")
+  @VulkanExternallySynchronizedType
+  void clearColorImage(
+    VulkanImageType image,
+    VulkanImageLayout image_layout,
+    VulkanClearValueColorType color,
+    List<VulkanImageSubresourceRange> ranges)
+    throws VulkanException;
 
   /**
    * Draw primitives.

@@ -23,6 +23,7 @@ import com.io7m.jcoronado.api.VulkanBufferType;
 import com.io7m.jcoronado.api.VulkanChecks;
 import com.io7m.jcoronado.api.VulkanClearAttachment;
 import com.io7m.jcoronado.api.VulkanClearRectangle;
+import com.io7m.jcoronado.api.VulkanClearValueType;
 import com.io7m.jcoronado.api.VulkanCommandBufferBeginInfo;
 import com.io7m.jcoronado.api.VulkanCommandBufferType;
 import com.io7m.jcoronado.api.VulkanDependencyFlag;
@@ -36,6 +37,7 @@ import com.io7m.jcoronado.api.VulkanImageBlit;
 import com.io7m.jcoronado.api.VulkanImageCopy;
 import com.io7m.jcoronado.api.VulkanImageLayout;
 import com.io7m.jcoronado.api.VulkanImageMemoryBarrier;
+import com.io7m.jcoronado.api.VulkanImageSubresourceRange;
 import com.io7m.jcoronado.api.VulkanImageType;
 import com.io7m.jcoronado.api.VulkanIndexType;
 import com.io7m.jcoronado.api.VulkanMemoryBarrier;
@@ -346,6 +348,33 @@ public final class VulkanLWJGLCommandBuffer
         this.handle,
         VulkanLWJGLClearAttachments.packList(stack, attachments),
         VulkanLWJGLClearRectangles.packList(stack, rectangles));
+    }
+  }
+
+  @Override
+  public @VulkanExternallySynchronizedType void clearColorImage(
+    final VulkanImageType image,
+    final VulkanImageLayout image_layout,
+    final VulkanClearValueType.VulkanClearValueColorType color,
+    final List<VulkanImageSubresourceRange> ranges)
+    throws VulkanException
+  {
+    Objects.requireNonNull(image, "image");
+    Objects.requireNonNull(image_layout, "image_layout");
+    Objects.requireNonNull(color, "color");
+    Objects.requireNonNull(ranges, "ranges");
+
+    this.checkNotClosed();
+
+    final var cimage = checkInstanceOf(image, VulkanLWJGLImage.class);
+
+    try (var stack = this.stack_initial.push()) {
+      VK10.vkCmdClearColorImage(
+        this.handle,
+        cimage.handle(),
+        image_layout.value(),
+        VulkanLWJGLClearValues.packColor(stack, color),
+        VulkanLWJGLImageSubresourceRanges.packList(stack, ranges));
     }
   }
 
