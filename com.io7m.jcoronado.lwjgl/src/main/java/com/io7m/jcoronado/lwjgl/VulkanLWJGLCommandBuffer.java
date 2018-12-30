@@ -46,6 +46,8 @@ import com.io7m.jcoronado.api.VulkanPipelineBindPoint;
 import com.io7m.jcoronado.api.VulkanPipelineLayoutType;
 import com.io7m.jcoronado.api.VulkanPipelineStageFlag;
 import com.io7m.jcoronado.api.VulkanPipelineType;
+import com.io7m.jcoronado.api.VulkanQueryControlFlag;
+import com.io7m.jcoronado.api.VulkanQueryPoolType;
 import com.io7m.jcoronado.api.VulkanRectangle2D;
 import com.io7m.jcoronado.api.VulkanRenderPassBeginInfo;
 import com.io7m.jcoronado.api.VulkanStencilFaceFlag;
@@ -148,6 +150,38 @@ public final class VulkanLWJGLCommandBuffer
         VK10.vkBeginCommandBuffer(this.handle, packed),
         "vkBeginCommandBuffer");
     }
+  }
+
+  @Override
+  public @VulkanExternallySynchronizedType void beginQuery(
+    final VulkanQueryPoolType pool,
+    final int query,
+    final Set<VulkanQueryControlFlag> flags)
+    throws VulkanException
+  {
+    Objects.requireNonNull(pool, "pool");
+    Objects.requireNonNull(flags, "flags");
+
+    this.checkNotClosed();
+
+    final var cpool = checkInstanceOf(pool, VulkanLWJGLQueryPool.class);
+
+    VK10.vkCmdBeginQuery(this.handle, cpool.handle(), query, VulkanEnumMaps.packValues(flags));
+  }
+
+  @Override
+  public @VulkanExternallySynchronizedType void endQuery(
+    final VulkanQueryPoolType pool,
+    final int query)
+    throws VulkanException
+  {
+    Objects.requireNonNull(pool, "pool");
+
+    this.checkNotClosed();
+
+    final var cpool = checkInstanceOf(pool, VulkanLWJGLQueryPool.class);
+
+    VK10.vkCmdEndQuery(this.handle, cpool.handle(), query);
   }
 
   @Override
@@ -768,6 +802,22 @@ public final class VulkanLWJGLCommandBuffer
   }
 
   @Override
+  public @VulkanExternallySynchronizedType void resetQueryPool(
+    final VulkanQueryPoolType pool,
+    final int first_query,
+    final int query_count)
+    throws VulkanException
+  {
+    Objects.requireNonNull(pool, "pool");
+
+    this.checkNotClosed();
+
+    final var cpool = checkInstanceOf(pool, VulkanLWJGLQueryPool.class);
+
+    VK10.vkCmdResetQueryPool(this.handle, cpool.handle(), first_query, query_count);
+  }
+
+  @Override
   public void endCommandBuffer()
     throws VulkanException
   {
@@ -776,6 +826,23 @@ public final class VulkanLWJGLCommandBuffer
     VulkanChecks.checkReturnCode(
       VK10.vkEndCommandBuffer(this.handle),
       "vkEndCommandBuffer");
+  }
+
+  @Override
+  public @VulkanExternallySynchronizedType void writeTimestamp(
+    final VulkanPipelineStageFlag stage,
+    final VulkanQueryPoolType pool,
+    final int query_index)
+    throws VulkanException
+  {
+    Objects.requireNonNull(stage, "stage");
+    Objects.requireNonNull(pool, "pool");
+
+    this.checkNotClosed();
+
+    final var cpool = checkInstanceOf(pool, VulkanLWJGLQueryPool.class);
+
+    VK10.vkCmdWriteTimestamp(this.handle, stage.value(), cpool.handle(), query_index);
   }
 
   /**

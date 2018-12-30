@@ -318,6 +318,21 @@ public interface VulkanLogicalDeviceType extends VulkanHandleDispatchableType
     throws VulkanException;
 
   /**
+   * Create a query pool.
+   *
+   * @param create_info The query pool creation info
+   *
+   * @return A query pool
+   *
+   * @throws VulkanException On errors
+   */
+
+  @VulkanAPIFunctionType(vulkanFunction = "vkCreateQueryPool")
+  VulkanQueryPoolType createQueryPool(
+    VulkanQueryPoolCreateInfo create_info)
+    throws VulkanException;
+
+  /**
    * Create a framebuffer.
    *
    * @param create_info The framebuffer creation info

@@ -59,6 +59,8 @@ import com.io7m.jcoronado.api.VulkanPhysicalDeviceType;
 import com.io7m.jcoronado.api.VulkanPipelineLayoutCreateInfo;
 import com.io7m.jcoronado.api.VulkanPipelineLayoutType;
 import com.io7m.jcoronado.api.VulkanPipelineType;
+import com.io7m.jcoronado.api.VulkanQueryPoolCreateInfo;
+import com.io7m.jcoronado.api.VulkanQueryPoolType;
 import com.io7m.jcoronado.api.VulkanQueueType;
 import com.io7m.jcoronado.api.VulkanRenderPassCreateInfo;
 import com.io7m.jcoronado.api.VulkanRenderPassType;
@@ -594,6 +596,40 @@ public final class VulkanLWJGLLogicalDevice
       }
 
       return castPipelines(result_pipelines);
+    }
+  }
+
+  @Override
+  public VulkanQueryPoolType createQueryPool(final VulkanQueryPoolCreateInfo create_info)
+    throws VulkanException
+  {
+    Objects.requireNonNull(create_info, "create_info");
+
+    this.checkNotClosed();
+
+    try (var stack = this.stack_initial.push()) {
+      final var vk_create_info =
+        VulkanLWJGLQueryPoolCreateInfos.pack(stack, create_info);
+
+      final var pool = new long[1];
+      VulkanChecks.checkReturnCode(
+        VK10.vkCreateQueryPool(
+          this.device,
+          vk_create_info,
+          this.hostAllocatorProxy().callbackBuffer(),
+          pool),
+        "vkCreateQueryPool");
+
+      final var pool_handle = pool[0];
+      if (LOG.isTraceEnabled()) {
+        LOG.trace("created query pool: 0x{}", Long.toUnsignedString(pool_handle, 16));
+      }
+
+      return new VulkanLWJGLQueryPool(
+        USER_OWNED,
+        this.device,
+        pool_handle,
+        this.hostAllocatorProxy());
     }
   }
 

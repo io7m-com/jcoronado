@@ -76,6 +76,40 @@ public interface VulkanCommandBufferType extends VulkanHandleDispatchableType
   }
 
   /**
+   * Begin a query.
+   *
+   * @param pool  The query pool
+   * @param query The query index
+   * @param flags Control flags for the query
+   *
+   * @throws VulkanException On errors
+   */
+
+  @VulkanAPIFunctionType(vulkanFunction = "vkCmdBeginQuery")
+  @VulkanExternallySynchronizedType
+  void beginQuery(
+    VulkanQueryPoolType pool,
+    int query,
+    Set<VulkanQueryControlFlag> flags)
+    throws VulkanException;
+
+  /**
+   * End a query.
+   *
+   * @param pool  The query pool
+   * @param query The query index
+   *
+   * @throws VulkanException On errors
+   */
+
+  @VulkanAPIFunctionType(vulkanFunction = "vkCmdEndQuery")
+  @VulkanExternallySynchronizedType
+  void endQuery(
+    VulkanQueryPoolType pool,
+    int query)
+    throws VulkanException;
+
+  /**
    * Specify how commands in the first subpass of a render pass are provided.
    *
    * @param info     The begin info
@@ -777,6 +811,24 @@ public interface VulkanCommandBufferType extends VulkanHandleDispatchableType
     throws VulkanException;
 
   /**
+   * Reset a query pool.
+   *
+   * @param pool        The query pool
+   * @param first_query The initial query index to reset
+   * @param query_count The number of queries to reset
+   *
+   * @throws VulkanException On errors
+   */
+
+  @VulkanAPIFunctionType(vulkanFunction = "vkCmdResetQueryPool")
+  @VulkanExternallySynchronizedType
+  void resetQueryPool(
+    VulkanQueryPoolType pool,
+    int first_query,
+    int query_count)
+    throws VulkanException;
+
+  /**
    * End a command buffer.
    *
    * @throws VulkanException On errors
@@ -785,6 +837,24 @@ public interface VulkanCommandBufferType extends VulkanHandleDispatchableType
   @VulkanAPIFunctionType(vulkanFunction = "vkEndCommandBuffer")
   @VulkanExternallySynchronizedType
   void endCommandBuffer()
+    throws VulkanException;
+
+  /**
+   * Write a device timestamp into a query object.
+   *
+   * @param stage       The stage of the pipeline
+   * @param pool        The query pool
+   * @param query_index The query index
+   *
+   * @throws VulkanException On errors
+   */
+
+  @VulkanAPIFunctionType(vulkanFunction = "vkCmdWriteTimestamp")
+  @VulkanExternallySynchronizedType
+  void writeTimestamp(
+    VulkanPipelineStageFlag stage,
+    VulkanQueryPoolType pool,
+    int query_index)
     throws VulkanException;
 }
 

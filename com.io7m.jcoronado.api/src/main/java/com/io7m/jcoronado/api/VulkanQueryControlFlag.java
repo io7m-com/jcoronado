@@ -17,14 +17,31 @@
 package com.io7m.jcoronado.api;
 
 /**
- * @see "VkQueryPool"
+ * Bitmask specifying constraints on a query.
+ *
+ * @see "VkQueryControlFlagBits"
  */
 
-public interface VulkanQueryPoolType extends VulkanHandleNonDispatchableType
+@VulkanAPIEnumType(vulkanEnum = "VkQueryControlFlagBits")
+public enum VulkanQueryControlFlag implements VulkanEnumBitmaskType
 {
-  @VulkanAPIFunctionType(vulkanFunction = "vkDestroyQueryPool")
-  @Override
-  @VulkanExternallySynchronizedType void close()
-    throws VulkanException;
-}
+  /**
+   * Specifies the precision of occlusion queries.
+   */
 
+  VK_QUERY_CONTROL_PRECISE_BIT(0x00000001);
+
+  private final int value;
+
+  VulkanQueryControlFlag(
+    final int i)
+  {
+    this.value = i;
+  }
+
+  @Override
+  public int value()
+  {
+    return this.value;
+  }
+}

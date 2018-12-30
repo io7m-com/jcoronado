@@ -17,14 +17,40 @@
 package com.io7m.jcoronado.api;
 
 /**
- * @see "VkQueryPool"
+ * Specify the type of queries managed by a query pool.
  */
 
-public interface VulkanQueryPoolType extends VulkanHandleNonDispatchableType
+@VulkanAPIEnumType(vulkanEnum = "VkQueryType")
+public enum VulkanQueryKind implements VulkanEnumIntegerType
 {
-  @VulkanAPIFunctionType(vulkanFunction = "vkDestroyQueryPool")
-  @Override
-  @VulkanExternallySynchronizedType void close()
-    throws VulkanException;
-}
+  /**
+   * Specifies an occlusion query.
+   */
 
+  VK_QUERY_TYPE_OCCLUSION(0),
+
+  /**
+   * Specifies a pipeline statistics query.
+   */
+
+  VK_QUERY_TYPE_PIPELINE_STATISTICS(1),
+
+  /**
+   * Specifies a timestamp query.
+   */
+
+  VK_QUERY_TYPE_TIMESTAMP(2);
+
+  private final int value;
+
+  VulkanQueryKind(final int i)
+  {
+    this.value = i;
+  }
+
+  @Override
+  public int value()
+  {
+    return this.value;
+  }
+}

@@ -17,14 +17,29 @@
 package com.io7m.jcoronado.api;
 
 /**
- * @see "VkQueryPool"
+ * Vulkan 1.1 specification: "VkQueryPoolCreateFlagBits is a bitmask type for setting a mask, but is
+ * currently reserved for future use."
  */
 
-public interface VulkanQueryPoolType extends VulkanHandleNonDispatchableType
+@VulkanAPIEnumType(vulkanEnum = "VkQueryPoolCreateFlagBits")
+public enum VulkanQueryPoolCreateFlag implements VulkanEnumBitmaskType
 {
-  @VulkanAPIFunctionType(vulkanFunction = "vkDestroyQueryPool")
-  @Override
-  @VulkanExternallySynchronizedType void close()
-    throws VulkanException;
-}
+  /**
+   * No flags set.
+   */
 
+  VK_QUERY_POOL_CREATE_FLAG_NONE(0x0);
+
+  private final int value;
+
+  VulkanQueryPoolCreateFlag(final int i)
+  {
+    this.value = i;
+  }
+
+  @Override
+  public int value()
+  {
+    return this.value;
+  }
+}
