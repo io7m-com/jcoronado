@@ -634,6 +634,18 @@ public final class VulkanLWJGLCommandBuffer
   }
 
   @Override
+  public @VulkanExternallySynchronizedType void nextSubpass(
+    final VulkanSubpassContents contents)
+    throws VulkanException
+  {
+    Objects.requireNonNull(contents, "contents");
+
+    this.checkNotClosed();
+
+    VK10.vkCmdNextSubpass(this.handle, contents.value());
+  }
+
+  @Override
   public @VulkanExternallySynchronizedType void setLineWidth(
     final float width)
     throws VulkanException

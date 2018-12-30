@@ -614,6 +614,20 @@ public interface VulkanCommandBufferType extends VulkanHandleDispatchableType
     throws VulkanException;
 
   /**
+   * Transition to the next subpass of a render pass.
+   *
+   * @param contents Specifies how the commands in the next subpass will be provided, in the same
+   *                 fashion as the corresponding parameter of vkCmdBeginRenderPass.
+   *
+   * @throws VulkanException On errors
+   */
+
+  @VulkanAPIFunctionType(vulkanFunction = "vkCmdNextSubpass")
+  @VulkanExternallySynchronizedType
+  void nextSubpass(VulkanSubpassContents contents)
+    throws VulkanException;
+
+  /**
    * Set the dynamic line width state.
    *
    * @param width The width of rasterized line segments.
