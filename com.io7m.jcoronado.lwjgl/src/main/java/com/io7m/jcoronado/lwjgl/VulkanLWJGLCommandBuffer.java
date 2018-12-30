@@ -16,6 +16,7 @@
 
 package com.io7m.jcoronado.lwjgl;
 
+import com.io7m.jcoronado.api.VulkanBlendConstants;
 import com.io7m.jcoronado.api.VulkanBufferCopy;
 import com.io7m.jcoronado.api.VulkanBufferImageCopy;
 import com.io7m.jcoronado.api.VulkanBufferMemoryBarrier;
@@ -45,8 +46,11 @@ import com.io7m.jcoronado.api.VulkanPipelineBindPoint;
 import com.io7m.jcoronado.api.VulkanPipelineLayoutType;
 import com.io7m.jcoronado.api.VulkanPipelineStageFlag;
 import com.io7m.jcoronado.api.VulkanPipelineType;
+import com.io7m.jcoronado.api.VulkanRectangle2D;
 import com.io7m.jcoronado.api.VulkanRenderPassBeginInfo;
+import com.io7m.jcoronado.api.VulkanStencilFaceFlag;
 import com.io7m.jcoronado.api.VulkanSubpassContents;
+import com.io7m.jcoronado.api.VulkanViewport;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.vulkan.VK10;
 import org.lwjgl.vulkan.VkCommandBuffer;
@@ -574,6 +578,23 @@ public final class VulkanLWJGLCommandBuffer
   }
 
   @Override
+  public @VulkanExternallySynchronizedType void fillBuffer(
+    final VulkanBufferType buffer,
+    final long offset,
+    final long size,
+    final int data)
+    throws VulkanException
+  {
+    Objects.requireNonNull(buffer, "buffer");
+
+    this.checkNotClosed();
+
+    final var cbuffer = checkInstanceOf(buffer, VulkanLWJGLBuffer.class);
+
+    VK10.vkCmdFillBuffer(this.handle, cbuffer.handle(), offset, size, data);
+  }
+
+  @Override
   public void endRenderPass()
     throws VulkanDestroyedException
   {
@@ -609,6 +630,128 @@ public final class VulkanLWJGLCommandBuffer
         VulkanLWJGLMemoryBarriers.packList(stack, memory_barriers),
         VulkanLWJGLBufferMemoryBarriers.packList(stack, buffer_memory_barriers),
         VulkanLWJGLImageMemoryBarriers.packList(stack, image_memory_barriers));
+    }
+  }
+
+  @Override
+  public @VulkanExternallySynchronizedType void setLineWidth(
+    final float width)
+    throws VulkanException
+  {
+    this.checkNotClosed();
+
+    VK10.vkCmdSetLineWidth(this.handle, width);
+  }
+
+  @Override
+  public @VulkanExternallySynchronizedType void setDepthBias(
+    final float depth_bias_constant_factor,
+    final float depth_bias_clamp,
+    final float depth_bias_slope_factor)
+    throws VulkanException
+  {
+    this.checkNotClosed();
+
+    VK10.vkCmdSetDepthBias(
+      this.handle, depth_bias_constant_factor, depth_bias_clamp, depth_bias_slope_factor);
+  }
+
+  @Override
+  public @VulkanExternallySynchronizedType void setDepthBounds(
+    final float min_depth_bounds,
+    final float max_depth_bounds)
+    throws VulkanException
+  {
+    this.checkNotClosed();
+
+    VK10.vkCmdSetDepthBounds(this.handle, min_depth_bounds, max_depth_bounds);
+  }
+
+  @Override
+  public @VulkanExternallySynchronizedType void setBlendConstants(
+    final VulkanBlendConstants constants)
+    throws VulkanException
+  {
+    Objects.requireNonNull(constants, "constants");
+
+    this.checkNotClosed();
+
+    VK10.vkCmdSetBlendConstants(this.handle, new float[]{
+      constants.r(),
+      constants.g(),
+      constants.b(),
+      constants.a(),
+    });
+  }
+
+  @Override
+  public @VulkanExternallySynchronizedType void setStencilReference(
+    final Set<VulkanStencilFaceFlag> face_mask,
+    final int reference)
+    throws VulkanException
+  {
+    Objects.requireNonNull(face_mask, "face_mask");
+
+    this.checkNotClosed();
+
+    VK10.vkCmdSetStencilReference(this.handle, VulkanEnumMaps.packValues(face_mask), reference);
+  }
+
+  @Override
+  public @VulkanExternallySynchronizedType void setStencilCompareMask(
+    final Set<VulkanStencilFaceFlag> face_mask,
+    final int mask)
+    throws VulkanException
+  {
+    Objects.requireNonNull(face_mask, "face_mask");
+
+    this.checkNotClosed();
+
+    VK10.vkCmdSetStencilCompareMask(this.handle, VulkanEnumMaps.packValues(face_mask), mask);
+  }
+
+  @Override
+  public @VulkanExternallySynchronizedType void setStencilWriteMask(
+    final Set<VulkanStencilFaceFlag> face_mask,
+    final int mask)
+    throws VulkanException
+  {
+    Objects.requireNonNull(face_mask, "face_mask");
+
+    this.checkNotClosed();
+
+    VK10.vkCmdSetStencilWriteMask(this.handle, VulkanEnumMaps.packValues(face_mask), mask);
+  }
+
+  @Override
+  public @VulkanExternallySynchronizedType void setScissor(
+    final int first_scissor,
+    final List<VulkanRectangle2D> rectangles)
+    throws VulkanException
+  {
+    Objects.requireNonNull(rectangles, "rectangles");
+
+    this.checkNotClosed();
+
+    try (var stack = this.stack_initial.push()) {
+      VK10.vkCmdSetScissor(
+        this.handle, first_scissor, VulkanLWJGLRect2Ds.packList(stack, rectangles));
+    }
+  }
+
+  @Override
+  public @VulkanExternallySynchronizedType void setViewport(
+    final int first_viewport,
+    final List<VulkanViewport> viewports)
+    throws VulkanException
+  {
+    Objects.requireNonNull(viewports, "viewports");
+
+    this.checkNotClosed();
+
+    try (var stack = this.stack_initial.push()) {
+      VK10.vkCmdSetViewport(
+        this.handle, first_viewport, VulkanLWJGLViewports.packList(stack, viewports));
     }
   }
 

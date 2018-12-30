@@ -57,11 +57,12 @@ public final class VulkanLWJGLRenderPassBeginInfos
     Objects.requireNonNull(framebuffer, "framebuffer");
 
     return VkRenderPassBeginInfo.mallocStack(stack)
-      .sType(VK10.VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO)
-      .pNext(0L)
-      .framebuffer(framebuffer.handle())
-      .renderPass(render_pass.handle())
-      .renderArea(VulkanLWJGLRectangles.pack(stack, info.renderArea()))
-      .pClearValues(VulkanLWJGLClearValues.packAll(stack, info.clearValues()));
+      .set(
+        VK10.VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO,
+        0L,
+        render_pass.handle(),
+        framebuffer.handle(),
+        VulkanLWJGLRect2Ds.pack(stack, info.renderArea()),
+        VulkanLWJGLClearValues.packAll(stack, info.clearValues()));
   }
 }

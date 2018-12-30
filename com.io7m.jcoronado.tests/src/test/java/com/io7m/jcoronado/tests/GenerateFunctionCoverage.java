@@ -48,6 +48,11 @@ public final class GenerateFunctionCoverage
         // System.out.println("PRESENT " + name);
       }
     }
+
+    final var expected = (double) registry_names.size();
+    final var received = (double) reflect_names.size();
+    System.out.println();
+    System.out.printf("Coverage: %.2f%%\n", Double.valueOf((received / expected) * 100.0));
   }
 
   private static Map<String, Method> loadNamesReflectively(

@@ -553,6 +553,31 @@ public interface VulkanCommandBufferType extends VulkanHandleDispatchableType
     throws VulkanException;
 
   /**
+   * Fill a region of a buffer with a fixed value.
+   *
+   * @param buffer The buffer to be filled.
+   * @param offset The byte offset into the buffer at which to start filling, and must be a multiple
+   *               of 4.
+   * @param size   The number of bytes to fill, and must be either a multiple of 4, or VK_WHOLE_SIZE
+   *               to fill the range from offset to the end of the buffer. If VK_WHOLE_SIZE is used
+   *               and the remaining size of the buffer is not a multiple of 4, then the nearest
+   *               smaller multiple is used.
+   * @param data   The 4-byte word written repeatedly to the buffer to fill size bytes of data. The
+   *               data word is written to memory according to the host endianness.
+   *
+   * @throws VulkanException On errors
+   */
+
+  @VulkanAPIFunctionType(vulkanFunction = "vkCmdFillBuffer")
+  @VulkanExternallySynchronizedType
+  void fillBuffer(
+    VulkanBufferType buffer,
+    long offset,
+    long size,
+    int data)
+    throws VulkanException;
+
+  /**
    * End a render pass.
    *
    * @throws VulkanException On errors
@@ -586,6 +611,155 @@ public interface VulkanCommandBufferType extends VulkanHandleDispatchableType
     List<VulkanMemoryBarrier> memory_barriers,
     List<VulkanBufferMemoryBarrier> buffer_memory_barriers,
     List<VulkanImageMemoryBarrier> image_memory_barriers)
+    throws VulkanException;
+
+  /**
+   * Set the dynamic line width state.
+   *
+   * @param width The width of rasterized line segments.
+   *
+   * @throws VulkanException On errors
+   */
+
+  @VulkanAPIFunctionType(vulkanFunction = "vkCmdSetLineWidth")
+  @VulkanExternallySynchronizedType
+  void setLineWidth(float width)
+    throws VulkanException;
+
+  /**
+   * Set the depth bias dynamic state.
+   *
+   * @param depth_bias_constant_factor A scalar factor controlling the constant depth value added to
+   *                                   each fragment.
+   * @param depth_bias_clamp           The maximum (or minimum) depth bias of a fragment.
+   * @param depth_bias_slope_factor    A scalar factor applied to a fragment’s slope in depth bias
+   *                                   calculations.
+   *
+   * @throws VulkanException On errors
+   */
+
+  @VulkanAPIFunctionType(vulkanFunction = "vkCmdSetDepthBias")
+  @VulkanExternallySynchronizedType
+  void setDepthBias(
+    float depth_bias_constant_factor,
+    float depth_bias_clamp,
+    float depth_bias_slope_factor)
+    throws VulkanException;
+
+  /**
+   * Set the depth bounds test values for a command buffer.
+   *
+   * @param min_depth_bounds The lower bound of the range of depth values used in the depth bounds
+   *                         test.
+   * @param max_depth_bounds The upper bound of the range of depth values used in the depth bounds
+   *                         test.
+   *
+   * @throws VulkanException On errors
+   */
+
+  @VulkanAPIFunctionType(vulkanFunction = "vkCmdSetDepthBounds")
+  @VulkanExternallySynchronizedType
+  void setDepthBounds(
+    float min_depth_bounds,
+    float max_depth_bounds)
+    throws VulkanException;
+
+  /**
+   * Set the values of blend constants.
+   *
+   * @param constants The R, G, B, and A components of the blend constant color used in blending,
+   *                  depending on the blend factor.
+   *
+   * @throws VulkanException On errors
+   */
+
+  @VulkanAPIFunctionType(vulkanFunction = "vkCmdSetBlendConstants")
+  @VulkanExternallySynchronizedType
+  void setBlendConstants(
+    VulkanBlendConstants constants)
+    throws VulkanException;
+
+  /**
+   * Set the stencil reference.
+   *
+   * @param face_mask A set of flags specifying the set of stencil state for which to update the
+   *                  reference value.
+   * @param reference The new value to use as the stencil reference value.
+   *
+   * @throws VulkanException On errors
+   */
+
+  @VulkanAPIFunctionType(vulkanFunction = "vkCmdSetStencilReference")
+  @VulkanExternallySynchronizedType
+  void setStencilReference(
+    Set<VulkanStencilFaceFlag> face_mask,
+    int reference)
+    throws VulkanException;
+
+  /**
+   * Set the stencil compare mask.
+   *
+   * @param face_mask A set of flags specifying the set of stencil state for which to update the
+   *                  reference value.
+   * @param mask      The new value to use as the stencil compare mask value.
+   *
+   * @throws VulkanException On errors
+   */
+
+  @VulkanAPIFunctionType(vulkanFunction = "vkCmdSetStencilCompareMask")
+  @VulkanExternallySynchronizedType
+  void setStencilCompareMask(
+    Set<VulkanStencilFaceFlag> face_mask,
+    int mask)
+    throws VulkanException;
+
+  /**
+   * Set the stencil write mask.
+   *
+   * @param face_mask A set of flags specifying the set of stencil state for which to update the
+   *                  reference value.
+   * @param mask      The new value to use as the stencil write mask value.
+   *
+   * @throws VulkanException On errors
+   */
+
+  @VulkanAPIFunctionType(vulkanFunction = "vkCmdSetStencilWriteMask")
+  @VulkanExternallySynchronizedType
+  void setStencilWriteMask(
+    Set<VulkanStencilFaceFlag> face_mask,
+    int mask)
+    throws VulkanException;
+
+  /**
+   * Set the dynamic scissor rectangles on a command buffer.
+   *
+   * @param first_scissor The index of the first scissor whose state is updated by the command.
+   * @param rectangles    An array of structures defining scissor rectangles.
+   *
+   * @throws VulkanException On errors
+   */
+
+  @VulkanAPIFunctionType(vulkanFunction = "vkCmdSetScissor")
+  @VulkanExternallySynchronizedType
+  void setScissor(
+    int first_scissor,
+    List<VulkanRectangle2D> rectangles)
+    throws VulkanException;
+
+  /**
+   * Set the viewport on a command buffer.
+   *
+   * @param first_viewport The index of the first viewport whose state is updated by the command.
+   * @param viewports      An array of structures defining viewport rectangles.
+   *
+   * @throws VulkanException On errors
+   */
+
+  @VulkanAPIFunctionType(vulkanFunction = "vkCmdSetViewport")
+  @VulkanExternallySynchronizedType
+  void setViewport(
+    int first_viewport,
+    List<VulkanViewport> viewports)
     throws VulkanException;
 
   /**

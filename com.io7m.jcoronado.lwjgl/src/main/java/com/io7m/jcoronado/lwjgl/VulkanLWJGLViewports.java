@@ -17,20 +17,20 @@
 package com.io7m.jcoronado.lwjgl;
 
 import com.io7m.jcoronado.api.VulkanException;
-import com.io7m.jcoronado.api.VulkanRectangle2D;
+import com.io7m.jcoronado.api.VulkanViewport;
 import org.lwjgl.system.MemoryStack;
-import org.lwjgl.vulkan.VkRect2D;
+import org.lwjgl.vulkan.VkViewport;
 
 import java.util.List;
 import java.util.Objects;
 
 /**
- * Functions to pack rectangles.
+ * Functions to pack viewports.
  */
 
-public final class VulkanLWJGLRect2Ds
+public final class VulkanLWJGLViewports
 {
-  private VulkanLWJGLRect2Ds()
+  private VulkanLWJGLViewports()
   {
 
   }
@@ -45,20 +45,19 @@ public final class VulkanLWJGLRect2Ds
    *
    */
 
-  public static VkRect2D pack(
+  public static VkViewport pack(
     final MemoryStack stack,
-    final VulkanRectangle2D info)
+    final VulkanViewport info)
   {
     Objects.requireNonNull(stack, "stack");
     Objects.requireNonNull(info, "info");
 
-    return packInto(stack, info, VkRect2D.mallocStack(stack));
+    return packInto(info, VkViewport.mallocStack(stack));
   }
 
   /**
    * Pack a structure.
    *
-   * @param stack A stack
    * @param source The input structure
    * @param target The output structure
    *
@@ -66,18 +65,20 @@ public final class VulkanLWJGLRect2Ds
    *
    */
 
-  public static VkRect2D packInto(
-    final MemoryStack stack,
-    final VulkanRectangle2D source,
-    final VkRect2D target)
+  public static VkViewport packInto(
+    final VulkanViewport source,
+    final VkViewport target)
   {
-    Objects.requireNonNull(stack, "stack");
     Objects.requireNonNull(source, "source");
     Objects.requireNonNull(target, "target");
 
     return target.set(
-      VulkanLWJGLOffset2Ds.pack(stack, source.offset()),
-      VulkanLWJGLExtent2Ds.pack(stack, source.extent()));
+      source.x(),
+      source.y(),
+      source.width(),
+      source.height(),
+      source.minDepth(),
+      source.maxDepth());
   }
 
   /**
@@ -91,9 +92,9 @@ public final class VulkanLWJGLRect2Ds
    * @throws VulkanException On errors
    */
 
-  public static VkRect2D.Buffer packList(
+  public static VkViewport.Buffer packList(
     final MemoryStack stack,
-    final List<VulkanRectangle2D> infos)
+    final List<VulkanViewport> infos)
     throws VulkanException
   {
     Objects.requireNonNull(stack, "stack");
@@ -101,8 +102,8 @@ public final class VulkanLWJGLRect2Ds
 
     return VulkanLWJGLArrays.pack(
       infos,
-      VulkanLWJGLRect2Ds::packInto,
-      (sstack, count) -> VkRect2D.mallocStack(count, sstack),
+      (stack1, source, target) -> packInto(source, target),
+      (sstack, count) -> VkViewport.mallocStack(count, sstack),
       stack);
   }
 
@@ -117,9 +118,9 @@ public final class VulkanLWJGLRect2Ds
    * @throws VulkanException On errors
    */
 
-  public static VkRect2D.Buffer packListOrNull(
+  public static VkViewport.Buffer packListOrNull(
     final MemoryStack stack,
-    final List<VulkanRectangle2D> infos)
+    final List<VulkanViewport> infos)
     throws VulkanException
   {
     Objects.requireNonNull(stack, "stack");
@@ -127,8 +128,8 @@ public final class VulkanLWJGLRect2Ds
 
     return VulkanLWJGLArrays.packOrNull(
       infos,
-      VulkanLWJGLRect2Ds::packInto,
-      (sstack, count) -> VkRect2D.mallocStack(count, sstack),
+      (stack1, source, target) -> packInto(source, target),
+      (sstack, count) -> VkViewport.mallocStack(count, sstack),
       stack);
   }
 }

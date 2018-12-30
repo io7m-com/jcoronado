@@ -14,43 +14,38 @@
  * IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-package com.io7m.jcoronado.lwjgl;
-
-import com.io7m.jcoronado.api.VulkanRectangle2D;
-import org.lwjgl.system.MemoryStack;
-import org.lwjgl.vulkan.VkRect2D;
-
-import java.util.Objects;
+package com.io7m.jcoronado.api;
 
 /**
- * Functions to pack rectangles.
+ * @see "VkStencilFaceFlags"
  */
 
-public final class VulkanLWJGLRectangles
+@VulkanAPIEnumType(vulkanEnum = "VkStencilFaceFlags")
+public enum VulkanStencilFaceFlag implements VulkanEnumBitmaskType
 {
-  private VulkanLWJGLRectangles()
-  {
-
-  }
-
   /**
-   * Pack a structure.
-   *
-   * @param stack     A stack
-   * @param rectangle A structure
-   *
-   * @return A packed structure
+   * Specifies that only the front set of stencil state is updated.
    */
 
-  public static VkRect2D pack(
-    final MemoryStack stack,
-    final VulkanRectangle2D rectangle)
-  {
-    Objects.requireNonNull(stack, "stack");
-    Objects.requireNonNull(rectangle, "rectangle");
+  VK_STENCIL_FACE_FRONT_BIT(0x00000001),
 
-    return VkRect2D.mallocStack(stack)
-      .offset(VulkanLWJGLOffset2Ds.pack(stack, rectangle.offset()))
-      .extent(VulkanLWJGLExtent2Ds.pack(stack, rectangle.extent()));
+  /**
+   * Specifies that only the back set of stencil state is updated.
+   */
+
+  VK_STENCIL_FACE_BACK_BIT(0x00000002);
+
+  private final int value;
+
+  VulkanStencilFaceFlag(
+    final int i)
+  {
+    this.value = i;
+  }
+
+  @Override
+  public int value()
+  {
+    return this.value;
   }
 }
