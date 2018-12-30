@@ -811,6 +811,38 @@ public interface VulkanCommandBufferType extends VulkanHandleDispatchableType
     throws VulkanException;
 
   /**
+   * Set an event object to signaled state.
+   *
+   * @param event The event
+   * @param mask  The source stage mask used to determine when the event is signaled.
+   *
+   * @throws VulkanException On errors
+   */
+
+  @VulkanAPIFunctionType(vulkanFunction = "vkCmdSetEvent")
+  @VulkanExternallySynchronizedType
+  void setEvent(
+    VulkanEventType event,
+    Set<VulkanPipelineStageFlag> mask)
+    throws VulkanException;
+
+  /**
+   * Reset an event object to non-signaled state.
+   *
+   * @param event The event
+   * @param mask  The source stage mask used to determine when the event is signaled.
+   *
+   * @throws VulkanException On errors
+   */
+
+  @VulkanAPIFunctionType(vulkanFunction = "vkCmdResetEvent")
+  @VulkanExternallySynchronizedType
+  void resetEvent(
+    VulkanEventType event,
+    Set<VulkanPipelineStageFlag> mask)
+    throws VulkanException;
+
+  /**
    * Reset a query pool.
    *
    * @param pool        The query pool
@@ -855,6 +887,30 @@ public interface VulkanCommandBufferType extends VulkanHandleDispatchableType
     VulkanPipelineStageFlag stage,
     VulkanQueryPoolType pool,
     int query_index)
+    throws VulkanException;
+
+  /**
+   * Wait for one or more events and insert a set of memory.
+   *
+   * @param events                 The events upon which to wait
+   * @param source_stage_mask      The source stage mask
+   * @param target_stage_mask      The target state mask
+   * @param memory_barriers        A list of memory barriers
+   * @param buffer_memory_barriers A list of buffer memory barriers
+   * @param image_memory_barriers  A list of image memory barriers
+   *
+   * @throws VulkanException On errors
+   */
+
+  @VulkanAPIFunctionType(vulkanFunction = "vkCmdWaitEvents")
+  @VulkanExternallySynchronizedType
+  void waitEvents(
+    List<VulkanEventType> events,
+    Set<VulkanPipelineStageFlag> source_stage_mask,
+    Set<VulkanPipelineStageFlag> target_stage_mask,
+    List<VulkanMemoryBarrier> memory_barriers,
+    List<VulkanBufferMemoryBarrier> buffer_memory_barriers,
+    List<VulkanImageMemoryBarrier> image_memory_barriers)
     throws VulkanException;
 }
 

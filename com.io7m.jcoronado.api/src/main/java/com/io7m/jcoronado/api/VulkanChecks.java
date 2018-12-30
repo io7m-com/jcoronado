@@ -46,20 +46,36 @@ public final class VulkanChecks
     Objects.requireNonNull(function, "function");
 
     if (code != 0) {
-      throw new VulkanCallFailedException(
-        code,
-        function,
-        new StringBuilder(64)
-          .append("Function ")
-          .append(function)
-          .append(" returned 0x")
-          .append(Integer.toUnsignedString(code, 16))
-          .append(" (")
-          .append(Integer.toString(code))
-          .append(") (")
-          .append(VulkanErrorCodes.errorName(code).orElse("Unrecognized error code"))
-          .append(')')
-          .toString());
+      throw failed(code, function);
     }
+  }
+
+  /**
+   * Create an exception indicating that the given call failed.
+   *
+   * @param code     The return code
+   * @param function The function name
+   *
+   * @return The exception
+   */
+
+  public static VulkanCallFailedException failed(
+    final int code,
+    final String function)
+  {
+    return new VulkanCallFailedException(
+      code,
+      function,
+      new StringBuilder(64)
+        .append("Function ")
+        .append(function)
+        .append(" returned 0x")
+        .append(Integer.toUnsignedString(code, 16))
+        .append(" (")
+        .append(Integer.toString(code))
+        .append(") (")
+        .append(VulkanErrorCodes.errorName(code).orElse("Unrecognized error code"))
+        .append(')')
+        .toString());
   }
 }

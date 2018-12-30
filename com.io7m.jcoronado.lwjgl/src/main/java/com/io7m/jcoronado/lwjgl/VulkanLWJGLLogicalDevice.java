@@ -35,6 +35,8 @@ import com.io7m.jcoronado.api.VulkanDescriptorSetType;
 import com.io7m.jcoronado.api.VulkanDestroyedException;
 import com.io7m.jcoronado.api.VulkanDeviceMemoryType;
 import com.io7m.jcoronado.api.VulkanEnumMaps;
+import com.io7m.jcoronado.api.VulkanEventCreateInfo;
+import com.io7m.jcoronado.api.VulkanEventType;
 import com.io7m.jcoronado.api.VulkanException;
 import com.io7m.jcoronado.api.VulkanExtensionType;
 import com.io7m.jcoronado.api.VulkanExternallySynchronizedType;
@@ -94,6 +96,8 @@ import java.util.stream.Collectors;
 import static com.io7m.jcoronado.lwjgl.VulkanLWJGLClassChecks.checkInstanceOf;
 import static com.io7m.jcoronado.lwjgl.VulkanLWJGLHandle.Ownership.USER_OWNED;
 import static com.io7m.jcoronado.lwjgl.VulkanLWJGLHandle.Ownership.VULKAN_OWNED;
+import static org.lwjgl.vulkan.VK10.VK_EVENT_RESET;
+import static org.lwjgl.vulkan.VK10.VK_EVENT_SET;
 
 /**
  * LWJGL {@link VkDevice}
@@ -773,20 +777,18 @@ public final class VulkanLWJGLLogicalDevice
     this.checkNotClosed();
 
     try (var stack = this.stack_initial.push()) {
-      final var packed =
-        VulkanLWJGLSemaphoreCreateInfos.pack(stack, create_info);
+      final var packed = VulkanLWJGLSemaphoreCreateInfos.pack(stack, create_info);
 
-      final var semaphores = new long[1];
-
+      final var handles = new long[1];
       VulkanChecks.checkReturnCode(
         VK10.vkCreateSemaphore(
           this.device,
           packed,
           this.hostAllocatorProxy().callbackBuffer(),
-          semaphores),
+          handles),
         "vkCreateSemaphore");
 
-      final var handle = semaphores[0];
+      final var handle = handles[0];
       if (LOG.isTraceEnabled()) {
         LOG.trace("created semaphore: 0x{}", Long.toUnsignedString(handle, 16));
       }
@@ -804,11 +806,9 @@ public final class VulkanLWJGLLogicalDevice
     this.checkNotClosed();
 
     try (var stack = this.stack_initial.push()) {
-      final var packed =
-        VulkanLWJGLFenceCreateInfos.pack(stack, create_info);
+      final var packed = VulkanLWJGLFenceCreateInfos.pack(stack, create_info);
 
       final var fences = new long[1];
-
       VulkanChecks.checkReturnCode(
         VK10.vkCreateFence(
           this.device,
@@ -819,9 +819,38 @@ public final class VulkanLWJGLLogicalDevice
 
       final var handle = fences[0];
       if (LOG.isTraceEnabled()) {
-        LOG.trace("created semaphore: 0x{}", Long.toUnsignedString(handle, 16));
+        LOG.trace("created fence: 0x{}", Long.toUnsignedString(handle, 16));
       }
       return new VulkanLWJGLFence(USER_OWNED, this.device, handle, this.hostAllocatorProxy());
+    }
+  }
+
+  @Override
+  public VulkanEventType createEvent(
+    final VulkanEventCreateInfo create_info)
+    throws VulkanException
+  {
+    Objects.requireNonNull(create_info, "create_info");
+
+    this.checkNotClosed();
+
+    try (var stack = this.stack_initial.push()) {
+      final var packed = VulkanLWJGLEventCreateInfos.pack(stack, create_info);
+
+      final var handles = new long[1];
+      VulkanChecks.checkReturnCode(
+        VK10.vkCreateEvent(
+          this.device,
+          packed,
+          this.hostAllocatorProxy().callbackBuffer(),
+          handles),
+        "vkCreateEvent");
+
+      final var handle = handles[0];
+      if (LOG.isTraceEnabled()) {
+        LOG.trace("created event: 0x{}", Long.toUnsignedString(handle, 16));
+      }
+      return new VulkanLWJGLEvent(USER_OWNED, this.device, handle, this.hostAllocatorProxy());
     }
   }
 
@@ -1068,6 +1097,8 @@ public final class VulkanLWJGLLogicalDevice
     Objects.requireNonNull(buffer, "buffer");
     Objects.requireNonNull(device_memory, "device_memory");
 
+    this.checkNotClosed();
+
     final var cbuffer =
       checkInstanceOf(buffer, VulkanLWJGLBuffer.class);
     final var cmemory =
@@ -1088,6 +1119,8 @@ public final class VulkanLWJGLLogicalDevice
   {
     Objects.requireNonNull(memory, "memory");
     Objects.requireNonNull(flags, "flags");
+
+    this.checkNotClosed();
 
     final var cmemory =
       checkInstanceOf(memory, VulkanLWJGLDeviceMemory.class);
@@ -1114,6 +1147,50 @@ public final class VulkanLWJGLLogicalDevice
         this.flushMappedMemoryRange(VulkanMappedMemoryRange.of(map_mem, map_off, map_size)),
       address,
       size);
+  }
+
+  @Override
+  public @VulkanExternallySynchronizedType void setEvent(
+    final VulkanEventType event)
+    throws VulkanException
+  {
+    Objects.requireNonNull(event, "event");
+
+    this.checkNotClosed();
+
+    VK10.vkSetEvent(this.device, checkInstanceOf(event, VulkanLWJGLEvent.class).handle());
+  }
+
+  @Override
+  public @VulkanExternallySynchronizedType void resetEvent(
+    final VulkanEventType event)
+    throws VulkanException
+  {
+    Objects.requireNonNull(event, "event");
+
+    VK10.vkResetEvent(this.device, checkInstanceOf(event, VulkanLWJGLEvent.class).handle());
+  }
+
+  @Override
+  public @VulkanExternallySynchronizedType VulkanEventStatus getEventStatus(
+    final VulkanEventType event)
+    throws VulkanException
+  {
+    Objects.requireNonNull(event, "event");
+
+    this.checkNotClosed();
+
+    final var result =
+      VK10.vkGetEventStatus(this.device, checkInstanceOf(event, VulkanLWJGLEvent.class).handle());
+
+    if (result == VK_EVENT_SET) {
+      return VulkanEventStatus.VK_EVENT_SET;
+    }
+    if (result == VK_EVENT_RESET) {
+      return VulkanEventStatus.VK_EVENT_RESET;
+    }
+
+    throw VulkanChecks.failed(result, "vkGetEventStatus");
   }
 
   @Override

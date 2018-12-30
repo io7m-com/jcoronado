@@ -16,15 +16,26 @@
 
 package com.io7m.jcoronado.api;
 
+import com.io7m.immutables.styles.ImmutablesStyleType;
+import org.immutables.value.Value;
+
+import java.util.Set;
+
 /**
- * @see "VkEvent"
+ * The type of Vulkan event creation information.
+ *
+ * @see "VkEventCreateInfo"
  */
 
-public interface VulkanEventType extends VulkanHandleNonDispatchableType
+@VulkanAPIStructType(vulkanStruct = "VkEventCreateInfo")
+@ImmutablesStyleType
+@Value.Immutable
+public interface VulkanEventCreateInfoType
 {
-  @VulkanAPIFunctionType(vulkanFunction = "vkDestroyEvent")
-  @Override
-  @VulkanExternallySynchronizedType void close()
-    throws VulkanException;
-}
+  /**
+   * @return The event creation flags
+   */
 
+  @Value.Parameter
+  Set<VulkanEventCreateFlag> flags();
+}

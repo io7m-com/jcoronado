@@ -434,6 +434,21 @@ public interface VulkanLogicalDeviceType extends VulkanHandleDispatchableType
     throws VulkanException;
 
   /**
+   * Create an event.
+   *
+   * @param create_info The event creation info
+   *
+   * @return An event
+   *
+   * @throws VulkanException On errors
+   */
+
+  @VulkanAPIFunctionType(vulkanFunction = "vkCreateEvent")
+  VulkanEventType createEvent(
+    VulkanEventCreateInfo create_info)
+    throws VulkanException;
+
+  /**
    * Reset the given fences.
    *
    * @param fences The fences
@@ -618,5 +633,68 @@ public interface VulkanLogicalDeviceType extends VulkanHandleDispatchableType
     long offset,
     long size,
     Set<VulkanMemoryMapFlag> flags)
+    throws VulkanException;
+
+  /**
+   * Set an event object to signaled state.
+   *
+   * @param event The event
+   *
+   * @throws VulkanException On errors
+   */
+
+  @VulkanAPIFunctionType(vulkanFunction = "vkSetEvent")
+  @VulkanExternallySynchronizedType
+  void setEvent(
+    VulkanEventType event)
+    throws VulkanException;
+
+  /**
+   * Reset an event object to non-signaled state.
+   *
+   * @param event The event
+   *
+   * @throws VulkanException On errors
+   */
+
+  @VulkanAPIFunctionType(vulkanFunction = "vkResetEvent")
+  @VulkanExternallySynchronizedType
+  void resetEvent(
+    VulkanEventType event)
+    throws VulkanException;
+
+  /**
+   * The status of an event.
+   */
+
+  enum VulkanEventStatus
+  {
+    /**
+     * The event is signaled.
+     */
+
+    VK_EVENT_SET,
+
+    /**
+     * The event is unsignaled.
+     */
+
+    VK_EVENT_RESET
+  }
+
+  /**
+   * Retrieve the status of an event object.
+   *
+   * @param event The event
+   *
+   * @return The event status
+   *
+   * @throws VulkanException On errors
+   */
+
+  @VulkanAPIFunctionType(vulkanFunction = "vkGetEventStatus")
+  @VulkanExternallySynchronizedType
+  VulkanEventStatus getEventStatus(
+    VulkanEventType event)
     throws VulkanException;
 }

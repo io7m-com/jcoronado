@@ -31,6 +31,7 @@ import com.io7m.jcoronado.api.VulkanDependencyFlag;
 import com.io7m.jcoronado.api.VulkanDescriptorSetType;
 import com.io7m.jcoronado.api.VulkanDestroyedException;
 import com.io7m.jcoronado.api.VulkanEnumMaps;
+import com.io7m.jcoronado.api.VulkanEventType;
 import com.io7m.jcoronado.api.VulkanException;
 import com.io7m.jcoronado.api.VulkanExternallySynchronizedType;
 import com.io7m.jcoronado.api.VulkanFilter;
@@ -795,6 +796,38 @@ public final class VulkanLWJGLCommandBuffer
   }
 
   @Override
+  public @VulkanExternallySynchronizedType void setEvent(
+    final VulkanEventType event,
+    final Set<VulkanPipelineStageFlag> mask)
+    throws VulkanException
+  {
+    Objects.requireNonNull(event, "event");
+    Objects.requireNonNull(mask, "mask");
+
+    VK10.vkCmdSetEvent(
+      this.handle,
+      checkInstanceOf(event, VulkanLWJGLEvent.class).handle(),
+      VulkanEnumMaps.packValues(mask));
+  }
+
+  @Override
+  public @VulkanExternallySynchronizedType void resetEvent(
+    final VulkanEventType event,
+    final Set<VulkanPipelineStageFlag> mask)
+    throws VulkanException
+  {
+    Objects.requireNonNull(event, "event");
+    Objects.requireNonNull(mask, "mask");
+
+    this.checkNotClosed();
+
+    VK10.vkCmdResetEvent(
+      this.handle,
+      checkInstanceOf(event, VulkanLWJGLEvent.class).handle(),
+      VulkanEnumMaps.packValues(mask));
+  }
+
+  @Override
   public @VulkanExternallySynchronizedType void resetQueryPool(
     final VulkanQueryPoolType pool,
     final int first_query,
@@ -840,6 +873,37 @@ public final class VulkanLWJGLCommandBuffer
       stage.value(),
       checkInstanceOf(pool, VulkanLWJGLQueryPool.class).handle(),
       query_index);
+  }
+
+  @Override
+  public @VulkanExternallySynchronizedType void waitEvents(
+    final List<VulkanEventType> events,
+    final Set<VulkanPipelineStageFlag> source_stage_mask,
+    final Set<VulkanPipelineStageFlag> target_stage_mask,
+    final List<VulkanMemoryBarrier> memory_barriers,
+    final List<VulkanBufferMemoryBarrier> buffer_memory_barriers,
+    final List<VulkanImageMemoryBarrier> image_memory_barriers)
+    throws VulkanException
+  {
+    Objects.requireNonNull(events, "events");
+    Objects.requireNonNull(source_stage_mask, "source_stage_mask");
+    Objects.requireNonNull(target_stage_mask, "target_stage_mask");
+    Objects.requireNonNull(memory_barriers, "memory_barriers");
+    Objects.requireNonNull(buffer_memory_barriers, "buffer_memory_barriers");
+    Objects.requireNonNull(image_memory_barriers, "image_memory_barriers");
+
+    this.checkNotClosed();
+
+    try (var stack = this.stack_initial.push()) {
+      VK10.vkCmdWaitEvents(
+        this.handle,
+        packLongs(stack, events, v -> checkInstanceOf(v, VulkanLWJGLEvent.class).handle()),
+        VulkanEnumMaps.packValues(source_stage_mask),
+        VulkanEnumMaps.packValues(target_stage_mask),
+        VulkanLWJGLMemoryBarriers.packList(stack, memory_barriers),
+        VulkanLWJGLBufferMemoryBarriers.packList(stack, buffer_memory_barriers),
+        VulkanLWJGLImageMemoryBarriers.packList(stack, image_memory_barriers));
+    }
   }
 
   /**

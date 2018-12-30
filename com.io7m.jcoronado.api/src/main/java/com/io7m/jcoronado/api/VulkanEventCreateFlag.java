@@ -17,14 +17,28 @@
 package com.io7m.jcoronado.api;
 
 /**
- * @see "VkEvent"
+ * Flags specified when creating events.
  */
 
-public interface VulkanEventType extends VulkanHandleNonDispatchableType
+@VulkanAPIEnumType(vulkanEnum = "VkEventCreateFlagBits")
+public enum VulkanEventCreateFlag implements VulkanEnumBitmaskType
 {
-  @VulkanAPIFunctionType(vulkanFunction = "vkDestroyEvent")
-  @Override
-  @VulkanExternallySynchronizedType void close()
-    throws VulkanException;
-}
+  /**
+   * Specifies that no flags are set.
+   */
 
+  VK_EVENT_CREATE_NONE(0x0000_0000);
+
+  private final int value;
+
+  VulkanEventCreateFlag(final int i)
+  {
+    this.value = i;
+  }
+
+  @Override
+  public int value()
+  {
+    return this.value;
+  }
+}
