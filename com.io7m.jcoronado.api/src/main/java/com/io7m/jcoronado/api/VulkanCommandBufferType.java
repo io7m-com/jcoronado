@@ -513,6 +513,46 @@ public interface VulkanCommandBufferType extends VulkanHandleDispatchableType
     throws VulkanException;
 
   /**
+   * Draw primitives indirectly.
+   *
+   * @param buffer     The buffer containing draw parameters.
+   * @param offset     The byte offset into buffer where parameters begin.
+   * @param draw_count The number of draws to execute, and can be zero.
+   * @param stride     The byte stride between successive sets of draw parameters.
+   *
+   * @throws VulkanException On errors
+   */
+
+  @VulkanAPIFunctionType(vulkanFunction = "vkCmdDrawIndirect")
+  @VulkanExternallySynchronizedType
+  void drawIndirect(
+    VulkanBufferType buffer,
+    long offset,
+    int draw_count,
+    int stride)
+    throws VulkanException;
+
+  /**
+   * Draw primitives indirectly.
+   *
+   * @param buffer     The buffer containing draw parameters.
+   * @param offset     The byte offset into buffer where parameters begin.
+   * @param draw_count The number of draws to execute, and can be zero.
+   * @param stride     The byte stride between successive sets of draw parameters.
+   *
+   * @throws VulkanException On errors
+   */
+
+  @VulkanAPIFunctionType(vulkanFunction = "vkCmdDrawIndexedIndirect")
+  @VulkanExternallySynchronizedType
+  void drawIndexedIndirect(
+    VulkanBufferType buffer,
+    long offset,
+    int draw_count,
+    int stride)
+    throws VulkanException;
+
+  /**
    * End a render pass.
    *
    * @throws VulkanException On errors

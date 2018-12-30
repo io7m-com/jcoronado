@@ -530,6 +530,50 @@ public final class VulkanLWJGLCommandBuffer
   }
 
   @Override
+  public @VulkanExternallySynchronizedType void drawIndirect(
+    final VulkanBufferType buffer,
+    final long offset,
+    final int draw_count,
+    final int stride)
+    throws VulkanException
+  {
+    Objects.requireNonNull(buffer, "buffer");
+
+    this.checkNotClosed();
+
+    final var cbuffer = checkInstanceOf(buffer, VulkanLWJGLBuffer.class);
+
+    VK10.vkCmdDrawIndirect(
+      this.handle,
+      cbuffer.handle(),
+      offset,
+      draw_count,
+      stride);
+  }
+
+  @Override
+  public @VulkanExternallySynchronizedType void drawIndexedIndirect(
+    final VulkanBufferType buffer,
+    final long offset,
+    final int draw_count,
+    final int stride)
+    throws VulkanException
+  {
+    Objects.requireNonNull(buffer, "buffer");
+
+    this.checkNotClosed();
+
+    final var cbuffer = checkInstanceOf(buffer, VulkanLWJGLBuffer.class);
+
+    VK10.vkCmdDrawIndexedIndirect(
+      this.handle,
+      cbuffer.handle(),
+      offset,
+      draw_count,
+      stride);
+  }
+
+  @Override
   public void endRenderPass()
     throws VulkanDestroyedException
   {
