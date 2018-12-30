@@ -20,9 +20,15 @@ import com.io7m.jcoronado.api.VulkanDestroyedException;
 import com.io7m.jcoronado.api.VulkanEnumMaps;
 import com.io7m.jcoronado.api.VulkanException;
 import com.io7m.jcoronado.api.VulkanExtensionProperties;
+import com.io7m.jcoronado.api.VulkanExtent3D;
 import com.io7m.jcoronado.api.VulkanFormat;
 import com.io7m.jcoronado.api.VulkanFormatFeatureFlag;
 import com.io7m.jcoronado.api.VulkanFormatProperties;
+import com.io7m.jcoronado.api.VulkanImageCreateFlag;
+import com.io7m.jcoronado.api.VulkanImageFormatProperties;
+import com.io7m.jcoronado.api.VulkanImageKind;
+import com.io7m.jcoronado.api.VulkanImageTiling;
+import com.io7m.jcoronado.api.VulkanImageUsageFlag;
 import com.io7m.jcoronado.api.VulkanInstanceType;
 import com.io7m.jcoronado.api.VulkanLayerProperties;
 import com.io7m.jcoronado.api.VulkanLogicalDeviceCreateInfo;
@@ -41,6 +47,7 @@ import org.lwjgl.vulkan.VkDeviceCreateInfo;
 import org.lwjgl.vulkan.VkDeviceQueueCreateInfo;
 import org.lwjgl.vulkan.VkExtensionProperties;
 import org.lwjgl.vulkan.VkFormatProperties;
+import org.lwjgl.vulkan.VkImageFormatProperties;
 import org.lwjgl.vulkan.VkLayerProperties;
 import org.lwjgl.vulkan.VkPhysicalDevice;
 import org.lwjgl.vulkan.VkPhysicalDeviceFeatures;
@@ -434,6 +441,50 @@ public final class VulkanLWJGLPhysicalDevice
         .setBufferFeatures(mapBufferFeatures(vk_properties))
         .setLinearTilingFeatures(mapLinearTilingFeatures(vk_properties))
         .setOptimalTilingFeatures(mapOptimalFeatures(vk_properties))
+        .build();
+    }
+  }
+
+  @Override
+  public VulkanImageFormatProperties imageFormatProperties(
+    final VulkanFormat format,
+    final VulkanImageKind type,
+    final VulkanImageTiling tiling,
+    final Set<VulkanImageUsageFlag> usage,
+    final Set<VulkanImageCreateFlag> flags)
+    throws VulkanException
+  {
+    Objects.requireNonNull(format, "format");
+    Objects.requireNonNull(type, "type");
+    Objects.requireNonNull(tiling, "tiling");
+    Objects.requireNonNull(usage, "usage");
+    Objects.requireNonNull(flags, "flags");
+
+    try (var stack = this.stack_initial.push()) {
+      final var vk_properties = VkImageFormatProperties.mallocStack(stack);
+
+      checkReturnCode(
+        VK10.vkGetPhysicalDeviceImageFormatProperties(
+          this.device,
+          format.value(),
+          type.value(),
+          tiling.value(),
+          VulkanEnumMaps.packValues(usage),
+          VulkanEnumMaps.packValues(flags),
+          vk_properties),
+        "vkGetPhysicalDeviceImageFormatProperties");
+
+      final var extent = vk_properties.maxExtent();
+      return VulkanImageFormatProperties.builder()
+        .setMaxArrayLayers(vk_properties.maxArrayLayers())
+        .setMaxMipLevels(vk_properties.maxMipLevels())
+        .setMaxResourceSize(vk_properties.maxResourceSize())
+        .setMaxExtent(
+          VulkanExtent3D.builder()
+            .setWidth(extent.width())
+            .setHeight(extent.height())
+            .setDepth(extent.depth())
+            .build())
         .build();
     }
   }

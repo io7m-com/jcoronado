@@ -19,6 +19,7 @@ package com.io7m.jcoronado.api;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * A reference to a physical Vulkan device.
@@ -97,6 +98,27 @@ public interface VulkanPhysicalDeviceType extends VulkanHandleDispatchableType
 
   @VulkanAPIFunctionType(vulkanFunction = "vkGetPhysicalDeviceFormatProperties")
   VulkanFormatProperties formatProperties(VulkanFormat format)
+    throws VulkanException;
+
+  /**
+   * @param format The format
+   * @param type   The image kind
+   * @param tiling The image tiling mode
+   * @param usage  The usage flags
+   * @param flags  The creation flags
+   *
+   * @return The properties of the given image format
+   *
+   * @throws VulkanException On errors
+   */
+
+  @VulkanAPIFunctionType(vulkanFunction = "vkGetPhysicalDeviceImageFormatProperties")
+  VulkanImageFormatProperties imageFormatProperties(
+    VulkanFormat format,
+    VulkanImageKind type,
+    VulkanImageTiling tiling,
+    Set<VulkanImageUsageFlag> usage,
+    Set<VulkanImageCreateFlag> flags)
     throws VulkanException;
 
   /**
