@@ -143,8 +143,7 @@ public final class VulkanLWJGLCommandBuffer
     this.checkNotClosed();
 
     try (var stack = this.stack_initial.push()) {
-      final var packed =
-        VulkanLWJGLCommandBufferBeginInfos.pack(stack, info);
+      final var packed = VulkanLWJGLCommandBufferBeginInfos.pack(stack, info);
 
       VulkanChecks.checkReturnCode(
         VK10.vkBeginCommandBuffer(this.handle, packed),
@@ -164,9 +163,11 @@ public final class VulkanLWJGLCommandBuffer
 
     this.checkNotClosed();
 
-    final var cpool = checkInstanceOf(pool, VulkanLWJGLQueryPool.class);
-
-    VK10.vkCmdBeginQuery(this.handle, cpool.handle(), query, VulkanEnumMaps.packValues(flags));
+    VK10.vkCmdBeginQuery(
+      this.handle,
+      checkInstanceOf(pool, VulkanLWJGLQueryPool.class).handle(),
+      query,
+      VulkanEnumMaps.packValues(flags));
   }
 
   @Override
@@ -179,9 +180,10 @@ public final class VulkanLWJGLCommandBuffer
 
     this.checkNotClosed();
 
-    final var cpool = checkInstanceOf(pool, VulkanLWJGLQueryPool.class);
-
-    VK10.vkCmdEndQuery(this.handle, cpool.handle(), query);
+    VK10.vkCmdEndQuery(
+      this.handle,
+      checkInstanceOf(pool, VulkanLWJGLQueryPool.class).handle(),
+      query);
   }
 
   @Override
@@ -219,10 +221,10 @@ public final class VulkanLWJGLCommandBuffer
 
     this.checkNotClosed();
 
-    final var pipe =
-      checkInstanceOf(pipeline, VulkanLWJGLPipeline.class);
-
-    VK10.vkCmdBindPipeline(this.handle, bind_point.value(), pipe.handle());
+    VK10.vkCmdBindPipeline(
+      this.handle,
+      bind_point.value(),
+      checkInstanceOf(pipeline, VulkanLWJGLPipeline.class).handle());
   }
 
   @Override
@@ -239,21 +241,11 @@ public final class VulkanLWJGLCommandBuffer
     this.checkNotClosed();
 
     try (var stack = this.stack_initial.push()) {
-      final var buffers_size = buffers.size();
-      final var lbuffers = stack.mallocLong(buffers_size);
-      final var offsets_size = offsets.size();
-      final var loffsets = stack.mallocLong(offsets_size);
-
-      for (var index = 0; index < buffers_size; ++index) {
-        final var cbuffer =
-          checkInstanceOf(buffers.get(index), VulkanLWJGLBuffer.class);
-        lbuffers.put(index, cbuffer.handle());
-      }
-      for (var index = 0; index < offsets_size; ++index) {
-        loffsets.put(index, offsets.get(index).longValue());
-      }
-
-      VK10.vkCmdBindVertexBuffers(this.handle, first_binding, lbuffers, loffsets);
+      VK10.vkCmdBindVertexBuffers(
+        this.handle,
+        first_binding,
+        packLongs(stack, buffers, b -> checkInstanceOf(b, VulkanLWJGLBuffer.class).handle()),
+        packLongs(stack, offsets, Long::longValue));
     }
   }
 
@@ -269,9 +261,11 @@ public final class VulkanLWJGLCommandBuffer
 
     this.checkNotClosed();
 
-    final var cbuffer = checkInstanceOf(buffer, VulkanLWJGLBuffer.class);
-
-    VK10.vkCmdBindIndexBuffer(this.handle, cbuffer.handle(), offset, index_type.value());
+    VK10.vkCmdBindIndexBuffer(
+      this.handle,
+      checkInstanceOf(buffer, VulkanLWJGLBuffer.class).handle(),
+      offset,
+      index_type.value());
   }
 
   @Override
@@ -579,11 +573,9 @@ public final class VulkanLWJGLCommandBuffer
 
     this.checkNotClosed();
 
-    final var cbuffer = checkInstanceOf(buffer, VulkanLWJGLBuffer.class);
-
     VK10.vkCmdDrawIndirect(
       this.handle,
-      cbuffer.handle(),
+      checkInstanceOf(buffer, VulkanLWJGLBuffer.class).handle(),
       offset,
       draw_count,
       stride);
@@ -601,11 +593,9 @@ public final class VulkanLWJGLCommandBuffer
 
     this.checkNotClosed();
 
-    final var cbuffer = checkInstanceOf(buffer, VulkanLWJGLBuffer.class);
-
     VK10.vkCmdDrawIndexedIndirect(
       this.handle,
-      cbuffer.handle(),
+      checkInstanceOf(buffer, VulkanLWJGLBuffer.class).handle(),
       offset,
       draw_count,
       stride);
@@ -623,9 +613,12 @@ public final class VulkanLWJGLCommandBuffer
 
     this.checkNotClosed();
 
-    final var cbuffer = checkInstanceOf(buffer, VulkanLWJGLBuffer.class);
-
-    VK10.vkCmdFillBuffer(this.handle, cbuffer.handle(), offset, size, data);
+    VK10.vkCmdFillBuffer(
+      this.handle,
+      checkInstanceOf(buffer, VulkanLWJGLBuffer.class).handle(),
+      offset,
+      size,
+      data);
   }
 
   @Override
@@ -812,9 +805,11 @@ public final class VulkanLWJGLCommandBuffer
 
     this.checkNotClosed();
 
-    final var cpool = checkInstanceOf(pool, VulkanLWJGLQueryPool.class);
-
-    VK10.vkCmdResetQueryPool(this.handle, cpool.handle(), first_query, query_count);
+    VK10.vkCmdResetQueryPool(
+      this.handle,
+      checkInstanceOf(pool, VulkanLWJGLQueryPool.class).handle(),
+      first_query,
+      query_count);
   }
 
   @Override
@@ -840,9 +835,11 @@ public final class VulkanLWJGLCommandBuffer
 
     this.checkNotClosed();
 
-    final var cpool = checkInstanceOf(pool, VulkanLWJGLQueryPool.class);
-
-    VK10.vkCmdWriteTimestamp(this.handle, stage.value(), cpool.handle(), query_index);
+    VK10.vkCmdWriteTimestamp(
+      this.handle,
+      stage.value(),
+      checkInstanceOf(pool, VulkanLWJGLQueryPool.class).handle(),
+      query_index);
   }
 
   /**
