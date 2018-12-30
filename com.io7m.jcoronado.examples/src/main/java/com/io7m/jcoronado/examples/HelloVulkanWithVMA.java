@@ -387,6 +387,17 @@ public final class HelloVulkanWithVMA
 
       LOG.debug("physical device: {}", physical_device);
 
+      for (final var format : VulkanFormat.values()) {
+        final var properties = physical_device.formatProperties(format);
+
+        LOG.debug(
+          "physical device: format {} -> linear  {}", format, properties.linearTilingFeatures());
+        LOG.debug(
+          "physical device: format {} -> optimal {}", format, properties.optimalTilingFeatures());
+        LOG.debug(
+          "physical device: format {} -> buffer  {}", format, properties.bufferFeatures());
+      }
+
       /*
        * Require the VK_KHR_get_memory_requirements2 extension in order to use VMA.
        */

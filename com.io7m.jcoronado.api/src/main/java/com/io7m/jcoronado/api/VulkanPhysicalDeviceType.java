@@ -88,6 +88,18 @@ public interface VulkanPhysicalDeviceType extends VulkanHandleDispatchableType
     throws VulkanException;
 
   /**
+   * @param format The format
+   *
+   * @return The properties of the given format
+   *
+   * @throws VulkanException On errors
+   */
+
+  @VulkanAPIFunctionType(vulkanFunction = "vkGetPhysicalDeviceFormatProperties")
+  VulkanFormatProperties formatProperties(VulkanFormat format)
+    throws VulkanException;
+
+  /**
    * @return The memory properties of the device
    *
    * @throws VulkanException On errors

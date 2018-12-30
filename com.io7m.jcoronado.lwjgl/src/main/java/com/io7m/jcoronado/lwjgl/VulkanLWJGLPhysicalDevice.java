@@ -20,6 +20,9 @@ import com.io7m.jcoronado.api.VulkanDestroyedException;
 import com.io7m.jcoronado.api.VulkanEnumMaps;
 import com.io7m.jcoronado.api.VulkanException;
 import com.io7m.jcoronado.api.VulkanExtensionProperties;
+import com.io7m.jcoronado.api.VulkanFormat;
+import com.io7m.jcoronado.api.VulkanFormatFeatureFlag;
+import com.io7m.jcoronado.api.VulkanFormatProperties;
 import com.io7m.jcoronado.api.VulkanInstanceType;
 import com.io7m.jcoronado.api.VulkanLayerProperties;
 import com.io7m.jcoronado.api.VulkanLogicalDeviceCreateInfo;
@@ -37,6 +40,7 @@ import org.lwjgl.vulkan.VkDevice;
 import org.lwjgl.vulkan.VkDeviceCreateInfo;
 import org.lwjgl.vulkan.VkDeviceQueueCreateInfo;
 import org.lwjgl.vulkan.VkExtensionProperties;
+import org.lwjgl.vulkan.VkFormatProperties;
 import org.lwjgl.vulkan.VkLayerProperties;
 import org.lwjgl.vulkan.VkPhysicalDevice;
 import org.lwjgl.vulkan.VkPhysicalDeviceFeatures;
@@ -45,10 +49,12 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 
 import static com.io7m.jcoronado.api.VulkanChecks.checkReturnCode;
 
@@ -61,6 +67,9 @@ public final class VulkanLWJGLPhysicalDevice
 {
   private static final Logger LOG =
     LoggerFactory.getLogger(VulkanLWJGLPhysicalDevice.class);
+
+  private static final VulkanFormatFeatureFlag[] FLAGS =
+    VulkanFormatFeatureFlag.values();
 
   private final VulkanLWJGLInstance instance;
   private final VkPhysicalDevice device;
@@ -202,6 +211,37 @@ public final class VulkanLWJGLPhysicalDevice
     }
     vk_queue_buffer.position(0);
     return vk_queue_buffer;
+  }
+
+  private static Set<VulkanFormatFeatureFlag> mapOptimalFeatures(
+    final VkFormatProperties vk_properties)
+  {
+    return unpackFlagsFromMask(vk_properties.optimalTilingFeatures());
+  }
+
+  private static Set<VulkanFormatFeatureFlag> unpackFlagsFromMask(
+    final int mask)
+  {
+    final var results = new HashSet<VulkanFormatFeatureFlag>();
+    for (final var flag : FLAGS) {
+      final var value = flag.value();
+      if ((mask & value) == value) {
+        results.add(flag);
+      }
+    }
+    return results;
+  }
+
+  private static Set<VulkanFormatFeatureFlag> mapLinearTilingFeatures(
+    final VkFormatProperties vk_properties)
+  {
+    return unpackFlagsFromMask(vk_properties.linearTilingFeatures());
+  }
+
+  private static Set<VulkanFormatFeatureFlag> mapBufferFeatures(
+    final VkFormatProperties vk_properties)
+  {
+    return unpackFlagsFromMask(vk_properties.bufferFeatures());
   }
 
   @Override
@@ -375,6 +415,27 @@ public final class VulkanLWJGLPhysicalDevice
   {
     this.checkNotClosed();
     return this.features;
+  }
+
+  @Override
+  public VulkanFormatProperties formatProperties(
+    final VulkanFormat format)
+    throws VulkanException
+  {
+    Objects.requireNonNull(format, "format");
+
+    this.checkNotClosed();
+
+    try (var stack = this.stack_initial.push()) {
+      final var vk_properties = VkFormatProperties.mallocStack(stack);
+      VK10.vkGetPhysicalDeviceFormatProperties(this.device, format.value(), vk_properties);
+
+      return VulkanFormatProperties.builder()
+        .setBufferFeatures(mapBufferFeatures(vk_properties))
+        .setLinearTilingFeatures(mapLinearTilingFeatures(vk_properties))
+        .setOptimalTilingFeatures(mapOptimalFeatures(vk_properties))
+        .build();
+    }
   }
 
   @Override
