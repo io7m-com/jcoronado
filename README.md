@@ -54,6 +54,7 @@ to allow for easy unit testing and mocking of code that calls Vulkan.
 | VulkanCommandBufferCreateInfoType | [VkCommandBufferAllocateInfo](https://www.khronos.org/registry/vulkan/specs/1.1-extensions/man/html/VkCommandBufferAllocateInfo.html) |
 | VulkanCommandPoolCreateInfoType | [VkCommandPoolCreateInfo](https://www.khronos.org/registry/vulkan/specs/1.1-extensions/man/html/VkCommandPoolCreateInfo.html) |
 | VulkanComponentMappingType | [VkComponentMapping](https://www.khronos.org/registry/vulkan/specs/1.1-extensions/man/html/VkComponentMapping.html) |
+| VulkanComputePipelineCreateInfoType | [VkComputePipelineCreateInfo](https://www.khronos.org/registry/vulkan/specs/1.1-extensions/man/html/VkComputePipelineCreateInfo.html) |
 | VulkanComputeWorkGroupCountType | [VkPhysicalDeviceLimits](https://www.khronos.org/registry/vulkan/specs/1.1-extensions/man/html/VkPhysicalDeviceLimits.html) |
 | VulkanComputeWorkGroupSizeType | [VkPhysicalDeviceLimits](https://www.khronos.org/registry/vulkan/specs/1.1-extensions/man/html/VkPhysicalDeviceLimits.html) |
 | VulkanCopyDescriptorSetType | [VkCopyDescriptorSet](https://www.khronos.org/registry/vulkan/specs/1.1-extensions/man/html/VkCopyDescriptorSet.html) |
@@ -301,6 +302,8 @@ to allow for easy unit testing and mocking of code that calls Vulkan.
 | VulkanLogicalDeviceType.createCommandBuffer() | [vkAllocateCommandBuffers](https://www.khronos.org/registry/vulkan/specs/1.1-extensions/man/html/vkAllocateCommandBuffers.html) |
 | VulkanLogicalDeviceType.createCommandBuffers() | [vkAllocateCommandBuffers](https://www.khronos.org/registry/vulkan/specs/1.1-extensions/man/html/vkAllocateCommandBuffers.html) |
 | VulkanLogicalDeviceType.createCommandPool() | [vkCreateCommandPool](https://www.khronos.org/registry/vulkan/specs/1.1-extensions/man/html/vkCreateCommandPool.html) |
+| VulkanLogicalDeviceType.createComputePipeline() | [vkCreateComputePipelines](https://www.khronos.org/registry/vulkan/specs/1.1-extensions/man/html/vkCreateComputePipelines.html) |
+| VulkanLogicalDeviceType.createComputePipelines() | [vkCreateComputePipelines](https://www.khronos.org/registry/vulkan/specs/1.1-extensions/man/html/vkCreateComputePipelines.html) |
 | VulkanLogicalDeviceType.createDescriptorPool() | [vkCreateDescriptorPool](https://www.khronos.org/registry/vulkan/specs/1.1-extensions/man/html/vkCreateDescriptorPool.html) |
 | VulkanLogicalDeviceType.createDescriptorSetLayout() | [vkCreateDescriptorSetLayout](https://www.khronos.org/registry/vulkan/specs/1.1-extensions/man/html/vkCreateDescriptorSetLayout.html) |
 | VulkanLogicalDeviceType.createEvent() | [vkCreateEvent](https://www.khronos.org/registry/vulkan/specs/1.1-extensions/man/html/vkCreateEvent.html) |
@@ -377,7 +380,6 @@ to allow for easy unit testing and mocking of code that calls Vulkan.
 * `vkCmdResolveImage`
 * `vkCmdSetDeviceMask`
 * `vkCmdUpdateBuffer`
-* `vkCreateComputePipelines`
 * `vkCreateDescriptorUpdateTemplate`
 * `vkCreateSamplerYcbcrConversion`
 * `vkDestroyDescriptorUpdateTemplate`
@@ -415,7 +417,6 @@ to allow for easy unit testing and mocking of code that calls Vulkan.
 * `vkTrimCommandPool`
 * `vkUpdateDescriptorSetWithTemplate`
 
-121 of 165 functions implemented
+122 of 165 functions implemented
 
-Coverage: 73.33%
-
+Coverage: 73.94%
