@@ -25,6 +25,7 @@ to allow for easy unit testing and mocking of code that calls Vulkan.
   * Example code included
   * [OSGi](http://www.osgi.org)-ready
   * [JPMS](https://en.wikipedia.org/wiki/Java_Platform_Module_System)-ready
+  * ISC license
 
 # Usage
 

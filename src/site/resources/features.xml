@@ -3,7 +3,11 @@
 <div xmlns="http://www.w3.org/1999/xhtml">
   <ul>
     <li>Type-safe <a href="https://www.khronos.org/vulkan/">Vulkan</a> frontend.</li>
-    <li><a href="https://www.osgi.org/">OSGi</a>-ready</li>
+    <li>Strong separation of API and implementation to allow for switching to different bindings at compile-time</li>
+    <li>Strongly-typed interfaces with a heavy emphasis on immutable value types</li>
+    <li>Fully documented (JavaDoc)</li>
+    <li>Example code included</li>
+    <li><a href="http://www.osgi.org">OSGi</a>-ready</li>
     <li><a href="https://en.wikipedia.org/wiki/Java_Platform_Module_System">JPMS</a>-ready</li>
     <li>ISC license</li>
   </ul>

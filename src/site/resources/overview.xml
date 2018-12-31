@@ -18,9 +18,13 @@
       </a>
   </p>
 
-  <p>
-    The <tt>jcoronado</tt> package implements a type-safe wrapper to the
-    <a href="https://www.khronos.org/vulkan/">Vulkan</a> API.
-  </p>
+  <p>The <code>jcoronado</code> package attempts
+  to provide a type-safe, mildly object-oriented
+  frontend to the <a href="https://www.khronos.org/vulkan/">Vulkan</a> API. Currently, it uses the high-quality
+  <a href="https://www.lwjgl.org/">LWJGL</a> bindings
+  internally, and wraps them with a thin layer of short-lived immutable
+  types for safety and efficiency. It strongly separates the API and
+  implementation to allow for easy unit testing and mocking of code
+  that calls Vulkan.</p>
 
 </div>
