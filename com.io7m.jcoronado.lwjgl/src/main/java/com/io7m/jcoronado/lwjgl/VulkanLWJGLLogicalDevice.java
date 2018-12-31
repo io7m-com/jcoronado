@@ -59,6 +59,8 @@ import com.io7m.jcoronado.api.VulkanMemoryAllocateInfo;
 import com.io7m.jcoronado.api.VulkanMemoryMapFlag;
 import com.io7m.jcoronado.api.VulkanMemoryRequirements;
 import com.io7m.jcoronado.api.VulkanPhysicalDeviceType;
+import com.io7m.jcoronado.api.VulkanPipelineCacheCreateInfo;
+import com.io7m.jcoronado.api.VulkanPipelineCacheType;
 import com.io7m.jcoronado.api.VulkanPipelineLayoutCreateInfo;
 import com.io7m.jcoronado.api.VulkanPipelineLayoutType;
 import com.io7m.jcoronado.api.VulkanPipelineType;
@@ -566,6 +568,40 @@ public final class VulkanLWJGLLogicalDevice
         USER_OWNED,
         this.device,
         pass_handle,
+        this.hostAllocatorProxy());
+    }
+  }
+
+  @Override
+  public VulkanPipelineCacheType createPipelineCache(
+    final VulkanPipelineCacheCreateInfo create_info)
+    throws VulkanException
+  {
+    Objects.requireNonNull(create_info, "create_info");
+
+    this.checkNotClosed();
+
+    try (var stack = this.stack_initial.push()) {
+      final var vk_create_info =
+        VulkanLWJGLPipelineCacheCreateInfos.pack(stack, create_info);
+
+      final var handles = new long[1];
+      VulkanChecks.checkReturnCode(
+        VK10.vkCreatePipelineCache(
+          this.device,
+          vk_create_info,
+          this.hostAllocatorProxy().callbackBuffer(),
+          handles),
+        "vkCreatePipelineCache");
+
+      final var handle = handles[0];
+      if (LOG.isTraceEnabled()) {
+        LOG.trace("created pipeline cache: 0x{}", Long.toUnsignedString(handle, 16));
+      }
+
+      return new VulkanLWJGLPipelineCache(
+        this.device,
+        handle,
         this.hostAllocatorProxy());
     }
   }
@@ -1207,6 +1243,28 @@ public final class VulkanLWJGLLogicalDevice
         this.flushMappedMemoryRange(VulkanMappedMemoryRange.of(map_mem, map_off, map_size)),
       address,
       size);
+  }
+
+  @Override
+  public void mergePipelineCaches(
+    final List<VulkanPipelineCacheType> caches,
+    final VulkanPipelineCacheType output)
+    throws VulkanException
+  {
+    Objects.requireNonNull(caches, "caches");
+    Objects.requireNonNull(output, "output");
+
+    this.checkNotClosed();
+
+    try (var stack = this.stack_initial.push()) {
+      VulkanChecks.checkReturnCode(
+        VK10.vkMergePipelineCaches(
+          this.device,
+          checkInstanceOf(output, VulkanLWJGLPipelineCache.class).handle(),
+          packLongs(
+            stack, caches, c -> checkInstanceOf(c, VulkanLWJGLPipelineCache.class).handle())),
+        "vkMergePipelineCaches");
+    }
   }
 
   @Override

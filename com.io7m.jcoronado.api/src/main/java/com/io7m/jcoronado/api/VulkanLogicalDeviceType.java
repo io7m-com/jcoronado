@@ -303,6 +303,21 @@ public interface VulkanLogicalDeviceType extends VulkanHandleDispatchableType
   }
 
   /**
+   * Create a pipeline cache.
+   *
+   * @param pipeline_info The pipeline cache creation info
+   *
+   * @return A pipeline
+   *
+   * @throws VulkanException On errors
+   */
+
+  @VulkanAPIFunctionType(vulkanFunction = "vkCreatePipelineCache")
+  VulkanPipelineCacheType createPipelineCache(
+    VulkanPipelineCacheCreateInfo pipeline_info)
+    throws VulkanException;
+
+  /**
    * Create a set of pipelines.
    *
    * @param pipeline_infos The pipeline creation infos
@@ -713,6 +728,21 @@ public interface VulkanLogicalDeviceType extends VulkanHandleDispatchableType
     long offset,
     long size,
     Set<VulkanMemoryMapFlag> flags)
+    throws VulkanException;
+
+  /**
+   * Combine the data stores of pipeline caches.
+   *
+   * @param output The output cache
+   * @param caches The input caches
+   *
+   * @throws VulkanException On errors
+   */
+
+  @VulkanAPIFunctionType(vulkanFunction = "vkMergePipelineCaches")
+  void mergePipelineCaches(
+    List<VulkanPipelineCacheType> caches,
+    VulkanPipelineCacheType output)
     throws VulkanException;
 
   /**

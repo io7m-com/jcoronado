@@ -17,14 +17,31 @@
 package com.io7m.jcoronado.api;
 
 /**
- * @see "VkPipelineCache"
+ * Flags specified when creating pipeline caches.
+ *
+ * Vulkan 1.1 specification: "VkPipelineCacheCreateFlags is a bitmask type for setting a mask, but is
+ * currently reserved for future use."
  */
 
-public interface VulkanPipelineCacheType extends VulkanHandleNonDispatchableType
+@VulkanAPIEnumType(vulkanEnum = "VkPipelineCacheCreateFlags")
+public enum VulkanPipelineCacheCreateFlag implements VulkanEnumBitmaskType
 {
-  @VulkanAPIFunctionType(vulkanFunction = "vkDestroyPipelineCache")
-  @Override
-  @VulkanExternallySynchronizedType void close()
-    throws VulkanException;
-}
+  /**
+   * No flags set.
+   */
 
+  VK_PIPELINE_CACHE_CREATE_FLAG_NONE(0x0);
+
+  private final int value;
+
+  VulkanPipelineCacheCreateFlag(final int i)
+  {
+    this.value = i;
+  }
+
+  @Override
+  public int value()
+  {
+    return this.value;
+  }
+}

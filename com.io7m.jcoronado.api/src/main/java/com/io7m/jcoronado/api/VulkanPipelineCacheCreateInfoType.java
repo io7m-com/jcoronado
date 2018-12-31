@@ -16,15 +16,35 @@
 
 package com.io7m.jcoronado.api;
 
+import com.io7m.immutables.styles.ImmutablesStyleType;
+import org.immutables.value.Value;
+
+import java.nio.ByteBuffer;
+import java.util.Set;
+
 /**
- * @see "VkPipelineCache"
+ * The type of pipeline cache creation information.
+ *
+ * @see "VkPipelineCacheCreateInfo"
  */
 
-public interface VulkanPipelineCacheType extends VulkanHandleNonDispatchableType
+@VulkanAPIStructType(vulkanStruct = "VkPipelineCacheCreateInfo")
+@ImmutablesStyleType
+@Value.Immutable
+public interface VulkanPipelineCacheCreateInfoType
 {
-  @VulkanAPIFunctionType(vulkanFunction = "vkDestroyPipelineCache")
-  @Override
-  @VulkanExternallySynchronizedType void close()
-    throws VulkanException;
-}
+  /**
+   * @return The creation flags
+   */
 
+  @Value.Parameter
+  Set<VulkanPipelineCacheCreateFlag> flags();
+
+  /**
+   * @return A pointer to previously retrieved pipeline cache data. If the pipeline cache data is
+   * incompatible with the device, the pipeline cache will be initially empty.
+   */
+
+  @Value.Parameter
+  ByteBuffer initialData();
+}
