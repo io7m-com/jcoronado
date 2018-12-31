@@ -398,5 +398,6 @@ jcoronado
 * `vkUpdateDescriptorSetWithTemplate`
 
 121 of 165 functions implemented
+
 Coverage: 73.33%
 

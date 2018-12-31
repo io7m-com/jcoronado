@@ -65,6 +65,7 @@ public final class GenerateFunctionCoverage
     System.out.printf("%d of %d functions implemented\n",
                       Integer.valueOf(reflect_names.size()),
                       Integer.valueOf(registry_names.size()));
+    System.out.println();
     System.out.printf("Coverage: %.2f%%\n", Double.valueOf((received / expected) * 100.0));
   }
 
