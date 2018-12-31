@@ -55,6 +55,7 @@
       <Class name="com.io7m.jcoronado.api.VulkanImageCreateInfo"/>
       <Class name="com.io7m.jcoronado.api.VulkanImageFormatProperties"/>
       <Class name="com.io7m.jcoronado.api.VulkanImageMemoryBarrier"/>
+      <Class name="com.io7m.jcoronado.api.VulkanImageSubresource"/>
       <Class name="com.io7m.jcoronado.api.VulkanImageSubresourceLayers"/>
       <Class name="com.io7m.jcoronado.api.VulkanImageSubresourceRange"/>
       <Class name="com.io7m.jcoronado.api.VulkanImageViewCreateInfo"/>

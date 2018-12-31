@@ -46,6 +46,7 @@ import com.io7m.jcoronado.api.VulkanFramebufferCreateInfo;
 import com.io7m.jcoronado.api.VulkanFramebufferType;
 import com.io7m.jcoronado.api.VulkanGraphicsPipelineCreateInfo;
 import com.io7m.jcoronado.api.VulkanImageCreateInfo;
+import com.io7m.jcoronado.api.VulkanImageSubresource;
 import com.io7m.jcoronado.api.VulkanImageType;
 import com.io7m.jcoronado.api.VulkanImageViewCreateInfo;
 import com.io7m.jcoronado.api.VulkanImageViewType;
@@ -72,6 +73,7 @@ import com.io7m.jcoronado.api.VulkanSemaphoreCreateInfo;
 import com.io7m.jcoronado.api.VulkanSemaphoreType;
 import com.io7m.jcoronado.api.VulkanShaderModuleCreateInfo;
 import com.io7m.jcoronado.api.VulkanShaderModuleType;
+import com.io7m.jcoronado.api.VulkanSubresourceLayout;
 import com.io7m.jcoronado.api.VulkanUncheckedException;
 import com.io7m.jcoronado.api.VulkanWriteDescriptorSet;
 import org.lwjgl.PointerBuffer;
@@ -82,6 +84,7 @@ import org.lwjgl.vulkan.VkDevice;
 import org.lwjgl.vulkan.VkMemoryAllocateInfo;
 import org.lwjgl.vulkan.VkMemoryRequirements;
 import org.lwjgl.vulkan.VkQueue;
+import org.lwjgl.vulkan.VkSubresourceLayout;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -1270,6 +1273,36 @@ public final class VulkanLWJGLLogicalDevice
     }
 
     throw VulkanChecks.failed(result, "vkGetEventStatus");
+  }
+
+  @Override
+  public @VulkanExternallySynchronizedType VulkanSubresourceLayout getImageSubresourceLayout(
+    final VulkanImageType image,
+    final VulkanImageSubresource image_subresource)
+    throws VulkanException
+  {
+    Objects.requireNonNull(image, "image");
+    Objects.requireNonNull(image_subresource, "image_subresource");
+
+    this.checkNotClosed();
+
+    try (var stack = this.stack_initial.push()) {
+      final var vk_layout = VkSubresourceLayout.mallocStack(stack);
+
+      VK10.vkGetImageSubresourceLayout(
+        this.device,
+        checkInstanceOf(image, VulkanLWJGLImage.class).handle(),
+        VulkanLWJGLImageSubresources.pack(stack, image_subresource),
+        vk_layout);
+
+      return VulkanSubresourceLayout.builder()
+        .setArrayPitch(vk_layout.arrayPitch())
+        .setDepthPitch(vk_layout.depthPitch())
+        .setOffset(vk_layout.offset())
+        .setRowPitch(vk_layout.rowPitch())
+        .setSize(vk_layout.size())
+        .build();
+    }
   }
 
   @Override

@@ -812,4 +812,22 @@ public interface VulkanLogicalDeviceType extends VulkanHandleDispatchableType
   VulkanFenceStatus getFenceStatus(
     VulkanFenceType fence)
     throws VulkanException;
+
+  /**
+   * Retrieve information about an image subresource.
+   *
+   * @param image             The image
+   * @param image_subresource A structure selecting a specific image for the image subresource
+   *
+   * @return The subresource layout
+   *
+   * @throws VulkanException On errors
+   */
+
+  @VulkanAPIFunctionType(vulkanFunction = "vkGetImageSubresourceLayout")
+  @VulkanExternallySynchronizedType
+  VulkanSubresourceLayout getImageSubresourceLayout(
+    VulkanImageType image,
+    VulkanImageSubresource image_subresource)
+    throws VulkanException;
 }
