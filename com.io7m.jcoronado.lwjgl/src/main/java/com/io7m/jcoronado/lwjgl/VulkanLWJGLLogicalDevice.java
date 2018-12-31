@@ -95,6 +95,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -607,10 +608,12 @@ public final class VulkanLWJGLLogicalDevice
   }
 
   @Override
-  public List<VulkanPipelineType> createPipelines(
+  public List<VulkanPipelineType> createGraphicsPipelines(
+    final Optional<VulkanPipelineCacheType> pipeline_cache,
     final List<VulkanGraphicsPipelineCreateInfo> pipeline_infos)
     throws VulkanException
   {
+    Objects.requireNonNull(pipeline_cache, "pipeline_cache");
     Objects.requireNonNull(pipeline_infos, "pipeline_infos");
 
     this.checkNotClosed();
@@ -623,7 +626,7 @@ public final class VulkanLWJGLLogicalDevice
       VulkanChecks.checkReturnCode(
         VK10.vkCreateGraphicsPipelines(
           this.device,
-          0L,
+          mapPipelineCacheOptional(pipeline_cache),
           infos,
           this.hostAllocatorProxy().callbackBuffer(),
           pipes),
@@ -646,6 +649,16 @@ public final class VulkanLWJGLLogicalDevice
 
       return castPipelines(result_pipelines);
     }
+  }
+
+  private static long mapPipelineCacheOptional(
+    final Optional<VulkanPipelineCacheType> pipeline_cache)
+    throws VulkanIncompatibleClassException
+  {
+    if (pipeline_cache.isPresent()) {
+      return checkInstanceOf(pipeline_cache.get(), VulkanLWJGLPipelineCache.class).handle();
+    }
+    return 0L;
   }
 
   @Override

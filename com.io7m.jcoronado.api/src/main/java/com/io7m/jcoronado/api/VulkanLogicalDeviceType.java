@@ -284,22 +284,62 @@ public interface VulkanLogicalDeviceType extends VulkanHandleDispatchableType
     throws VulkanException;
 
   /**
-   * Create a pipeline.
+   * Create a graphics pipeline.
    *
    * @param pipeline_info The pipeline creation info
    *
-   * @return A pipeline
+   * @return A graphics pipeline
    *
    * @throws VulkanException On errors
    */
 
   @VulkanAPIFunctionType(vulkanFunction = "vkCreateGraphicsPipelines")
-  default VulkanPipelineType createPipeline(
+  default VulkanPipelineType createGraphicsPipeline(
+    final VulkanGraphicsPipelineCreateInfo pipeline_info)
+    throws VulkanException
+  {
+    return this.createGraphicsPipeline(Optional.empty(), pipeline_info);
+  }
+
+  /**
+   * Create a graphics pipeline.
+   *
+   * @param cache         A pipeline cache
+   * @param pipeline_info The pipeline creation info
+   *
+   * @return A graphics pipeline
+   *
+   * @throws VulkanException On errors
+   */
+
+  @VulkanAPIFunctionType(vulkanFunction = "vkCreateGraphicsPipelines")
+  default VulkanPipelineType createGraphicsPipeline(
+    final VulkanPipelineCacheType cache,
+    final VulkanGraphicsPipelineCreateInfo pipeline_info)
+    throws VulkanException
+  {
+    return this.createGraphicsPipeline(Optional.of(cache), pipeline_info);
+  }
+
+  /**
+   * Create a graphics pipeline.
+   *
+   * @param pipeline_cache A pipeline cache
+   * @param pipeline_info  The pipeline creation info
+   *
+   * @return A graphics pipeline
+   *
+   * @throws VulkanException On errors
+   */
+
+  @VulkanAPIFunctionType(vulkanFunction = "vkCreateGraphicsPipelines")
+  default VulkanPipelineType createGraphicsPipeline(
+    final Optional<VulkanPipelineCacheType> pipeline_cache,
     final VulkanGraphicsPipelineCreateInfo pipeline_info)
     throws VulkanException
   {
     Objects.requireNonNull(pipeline_info, "pipeline_info");
-    return this.createPipelines(List.of(pipeline_info)).get(0);
+    return this.createGraphicsPipelines(pipeline_cache, List.of(pipeline_info)).get(0);
   }
 
   /**
@@ -307,7 +347,7 @@ public interface VulkanLogicalDeviceType extends VulkanHandleDispatchableType
    *
    * @param pipeline_info The pipeline cache creation info
    *
-   * @return A pipeline
+   * @return A pipeline cache
    *
    * @throws VulkanException On errors
    */
@@ -318,19 +358,59 @@ public interface VulkanLogicalDeviceType extends VulkanHandleDispatchableType
     throws VulkanException;
 
   /**
-   * Create a set of pipelines.
+   * Create a set of graphics pipelines.
    *
+   * @param pipeline_cache A pipeline cache
    * @param pipeline_infos The pipeline creation infos
    *
-   * @return A pipeline
+   * @return A list of graphics pipelines
    *
    * @throws VulkanException On errors
    */
 
   @VulkanAPIFunctionType(vulkanFunction = "vkCreateGraphicsPipelines")
-  List<VulkanPipelineType> createPipelines(
+  List<VulkanPipelineType> createGraphicsPipelines(
+    Optional<VulkanPipelineCacheType> pipeline_cache,
     List<VulkanGraphicsPipelineCreateInfo> pipeline_infos)
     throws VulkanException;
+
+  /**
+   * Create a set of graphics pipelines.
+   *
+   * @param pipeline_cache A pipeline cache
+   * @param pipeline_infos The pipeline creation infos
+   *
+   * @return A list of graphics pipelines
+   *
+   * @throws VulkanException On errors
+   */
+
+  @VulkanAPIFunctionType(vulkanFunction = "vkCreateGraphicsPipelines")
+  default List<VulkanPipelineType> createGraphicsPipelines(
+    final VulkanPipelineCacheType pipeline_cache,
+    final List<VulkanGraphicsPipelineCreateInfo> pipeline_infos)
+    throws VulkanException
+  {
+    return this.createGraphicsPipelines(Optional.of(pipeline_cache), pipeline_infos);
+  }
+
+  /**
+   * Create a set of graphics pipelines.
+   *
+   * @param pipeline_infos The pipeline creation infos
+   *
+   * @return A list of graphics pipelines
+   *
+   * @throws VulkanException On errors
+   */
+
+  @VulkanAPIFunctionType(vulkanFunction = "vkCreateGraphicsPipelines")
+  default List<VulkanPipelineType> createGraphicsPipelines(
+    final List<VulkanGraphicsPipelineCreateInfo> pipeline_infos)
+    throws VulkanException
+  {
+    return this.createGraphicsPipelines(Optional.empty(), pipeline_infos);
+  }
 
   /**
    * Create a query pool.

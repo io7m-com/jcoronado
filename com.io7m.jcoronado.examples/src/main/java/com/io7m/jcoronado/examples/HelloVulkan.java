@@ -619,7 +619,7 @@ public final class HelloVulkan
           .build();
 
       final var pipeline =
-        resources.add(device.createPipeline(pipeline_info));
+        resources.add(device.createGraphicsPipeline(pipeline_info));
 
       /*
        * Create framebuffers.

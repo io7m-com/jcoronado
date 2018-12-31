@@ -1412,7 +1412,7 @@ public final class HelloVulkanWithVMA
         .setViewportState(viewport_state_info)
         .build();
 
-    return device.createPipeline(pipeline_info);
+    return device.createGraphicsPipeline(pipeline_info);
   }
 
   /**
