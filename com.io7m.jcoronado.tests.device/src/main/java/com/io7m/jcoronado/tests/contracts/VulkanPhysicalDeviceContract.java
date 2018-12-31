@@ -17,7 +17,6 @@
 package com.io7m.jcoronado.tests.contracts;
 
 import com.io7m.jcoronado.api.VulkanException;
-import com.io7m.jcoronado.api.VulkanInstanceProviderType;
 import com.io7m.jcoronado.api.VulkanInstanceType;
 import com.io7m.jcoronado.api.VulkanPhysicalDeviceType;
 import org.junit.jupiter.api.AfterEach;
@@ -36,7 +35,7 @@ public abstract class VulkanPhysicalDeviceContract extends VulkanOnDeviceContrac
     throws VulkanException;
 
   @BeforeEach
-  public void testSetup()
+  public final void testSetup()
     throws VulkanException
   {
     Assumptions.assumeTrue(this.shouldRun(), "Test should run");
@@ -45,7 +44,7 @@ public abstract class VulkanPhysicalDeviceContract extends VulkanOnDeviceContrac
   }
 
   @AfterEach
-  public void tearDown()
+  public final void tearDown()
     throws VulkanException
   {
     Assumptions.assumeTrue(this.shouldRun(), "Test should run");

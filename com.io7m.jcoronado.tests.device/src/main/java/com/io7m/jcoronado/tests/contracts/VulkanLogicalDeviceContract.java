@@ -17,45 +17,55 @@
 package com.io7m.jcoronado.tests.contracts;
 
 import com.io7m.jcoronado.api.VulkanException;
-import com.io7m.jcoronado.api.VulkanInstanceProviderType;
+import com.io7m.jcoronado.api.VulkanInstanceType;
+import com.io7m.jcoronado.api.VulkanLogicalDeviceType;
+import com.io7m.jcoronado.api.VulkanPhysicalDeviceType;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Assumptions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.Optional;
-
-public abstract class VulkanInstanceContract extends VulkanOnDeviceContract
+public abstract class VulkanLogicalDeviceContract extends VulkanOnDeviceContract
 {
-  protected abstract VulkanInstanceProviderType instanceProvider();
+  private VulkanPhysicalDeviceType physical_device;
+  private VulkanLogicalDeviceType device;
 
-  @Test
-  public final void testInstance()
+  protected abstract VulkanInstanceType instance();
+
+  protected abstract VulkanPhysicalDeviceType createPhysicalDevice()
+    throws VulkanException;
+
+  protected abstract VulkanLogicalDeviceType createLogicalDevice(
+    VulkanPhysicalDeviceType device)
+    throws VulkanException;
+
+  @BeforeEach
+  public void testSetup()
     throws VulkanException
   {
     Assumptions.assumeTrue(this.shouldRun(), "Test should run");
 
-    final var provider = this.instanceProvider();
-    final var logger = this.logger();
-    try (var instance = provider.createInstance(VulkanInstanceInfo.info(), Optional.empty())) {
-      instance.enabledExtensions().forEach(
-        (name, extension) -> logger.debug("extension: {}", extension.name()));
-    }
+    this.physical_device = this.createPhysicalDevice();
+    this.device = this.createLogicalDevice(this.physical_device);
+  }
+
+  @AfterEach
+  public void tearDown()
+    throws VulkanException
+  {
+    Assumptions.assumeTrue(this.shouldRun(), "Test should run");
+
+    this.device.close();
+    this.physical_device.close();
+    this.instance().close();
   }
 
   @Test
-  public final void testInstancePhysicalDevices()
-    throws VulkanException
+  public final void testLogicalDevice()
   {
     Assumptions.assumeTrue(this.shouldRun(), "Test should run");
 
-    final var provider = this.instanceProvider();
-    final var logger = this.logger();
-    try (var instance = provider.createInstance(VulkanInstanceInfo.info(), Optional.empty())) {
-      final var devices = instance.physicalDevices();
-      Assertions.assertTrue(devices.size() > 0, "At least one device required");
-      for (final var device : devices) {
-        logger.debug("device: {}", device.properties().name());
-      }
-    }
+    Assertions.assertEquals(this.physical_device, this.device.physicalDevice());
   }
 }
