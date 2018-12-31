@@ -312,20 +312,16 @@ public final class HelloVulkanWithVMA
       final var instances = VulkanLWJGLInstanceProvider.create();
       LOG.debug("instance provider: {} {}", instances.providerName(), instances.providerVersion());
 
-      final var available_extensions =
-        instances.extensions();
-      final var available_layers =
-        instances.layers();
+      final var available_extensions = instances.extensions();
+      final var available_layers = instances.layers();
 
       /*
        * Determine which extensions are required by the window system, and which layers are
        * required.
        */
 
-      final var required_layers =
-        Set.of("VK_LAYER_LUNARG_standard_validation");
-      final var required_extensions =
-        requiredGLFWExtensions();
+      final var required_layers = Set.of("VK_LAYER_LUNARG_standard_validation");
+      final var required_extensions = requiredGLFWExtensions();
 
       available_extensions.forEach(HelloVulkanWithVMA::showInstanceAvailableExtension);
       available_layers.forEach(HelloVulkanWithVMA::showInstanceAvailableLayer);

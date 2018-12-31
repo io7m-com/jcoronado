@@ -16,19 +16,16 @@
 
 package com.io7m.jcoronado.tests.device.lwjgl;
 
-import com.io7m.jcoronado.api.VulkanApplicationInfo;
 import com.io7m.jcoronado.api.VulkanException;
-import com.io7m.jcoronado.api.VulkanInstanceCreateInfo;
 import com.io7m.jcoronado.api.VulkanInstanceProviderType;
 import com.io7m.jcoronado.api.VulkanInstanceType;
 import com.io7m.jcoronado.api.VulkanPhysicalDeviceType;
-import com.io7m.jcoronado.api.VulkanVersions;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLInstanceProvider;
+import com.io7m.jcoronado.tests.contracts.VulkanInstanceInfo;
 import com.io7m.jcoronado.tests.contracts.VulkanPhysicalDeviceContract;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.List;
 import java.util.Optional;
 
 public final class VulkanLWJGLPhysicalDeviceTest extends VulkanPhysicalDeviceContract
@@ -40,20 +37,7 @@ public final class VulkanLWJGLPhysicalDeviceTest extends VulkanPhysicalDeviceCon
     final VulkanInstanceProviderType current_provider)
   {
     try {
-      return
-        current_provider.createInstance(
-          VulkanInstanceCreateInfo.builder()
-            .setApplicationInfo(
-              VulkanApplicationInfo.of(
-                "com.io7m.jcoronado.tests.Test",
-                VulkanVersions.encode(0, 0, 1),
-                "com.io7m.jcoronado.tests",
-                VulkanVersions.encode(0, 0, 1),
-                VulkanVersions.encode(1, 0, 0)))
-            .setEnabledExtensions(List.of())
-            .setEnabledLayers(List.of())
-            .build(),
-          Optional.empty());
+      return current_provider.createInstance(VulkanInstanceInfo.info(), Optional.empty());
     } catch (final VulkanException e) {
       throw new IllegalStateException(e);
     }

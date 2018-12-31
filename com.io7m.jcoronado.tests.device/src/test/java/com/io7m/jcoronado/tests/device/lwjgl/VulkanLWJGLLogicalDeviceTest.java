@@ -20,6 +20,7 @@ import com.io7m.jcoronado.api.VulkanException;
 import com.io7m.jcoronado.api.VulkanInstanceProviderType;
 import com.io7m.jcoronado.api.VulkanInstanceType;
 import com.io7m.jcoronado.api.VulkanLogicalDeviceCreateInfo;
+import com.io7m.jcoronado.api.VulkanLogicalDeviceQueueCreateInfo;
 import com.io7m.jcoronado.api.VulkanLogicalDeviceType;
 import com.io7m.jcoronado.api.VulkanPhysicalDeviceType;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLInstanceProvider;
@@ -79,8 +80,16 @@ public final class VulkanLWJGLLogicalDeviceTest extends VulkanLogicalDeviceContr
     final VulkanPhysicalDeviceType device)
     throws VulkanException
   {
+    final var queue =
+      VulkanLogicalDeviceQueueCreateInfo.builder()
+        .setQueueCount(1)
+        .setQueueFamilyIndex(device.queueFamilies().get(0).queueFamilyIndex())
+        .setQueuePriorities(1.0f)
+        .build();
+
     return device.createLogicalDevice(
       VulkanLogicalDeviceCreateInfo.builder()
+        .addQueueCreateInfos(queue)
         .build());
   }
 }

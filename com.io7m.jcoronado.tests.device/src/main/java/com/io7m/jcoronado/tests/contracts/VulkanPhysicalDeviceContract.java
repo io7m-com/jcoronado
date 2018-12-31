@@ -59,7 +59,13 @@ public abstract class VulkanPhysicalDeviceContract extends VulkanOnDeviceContrac
   {
     Assumptions.assumeTrue(this.shouldRun(), "Test should run");
 
-    Assertions.assertEquals(0, this.device.layers().size());
+    final var logger = this.logger();
+    this.device.layers().forEach((layer_name, layer_props) -> {
+      logger.debug("layer: {}", layer_name);
+    });
+
+    Assertions.assertTrue(
+      this.device.layers().size() >= 1, "At least one layer must be present");
 
     Assertions.assertTrue(
       this.device.properties().apiVersion().major() >= 1,
