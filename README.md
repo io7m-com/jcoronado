@@ -9,6 +9,8 @@ jcoronado
 
 ![jcoronado](./src/site/resources/jcoronado.jpg?raw=true)
 
+The `jcoronado` package attempts to provide a type-safe, mildly object-oriented frontend to the [Vulkan](https://www.khronos.org/vulkan/) API. Currently, it uses the high-quality [LWJGL](https://www.lwjgl.org/) bindings internally, and wraps them with a thin layer of short-lived immutable types for safety and efficiency.  
+
 # Usage
 
 ## Structs
