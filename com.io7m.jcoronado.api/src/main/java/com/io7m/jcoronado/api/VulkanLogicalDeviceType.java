@@ -1023,4 +1023,118 @@ public interface VulkanLogicalDeviceType extends VulkanHandleDispatchableType
     VulkanImageType image,
     VulkanImageSubresource image_subresource)
     throws VulkanException;
+
+  /**
+   * Create a compute pipeline.
+   *
+   * @param pipeline_info The pipeline creation info
+   *
+   * @return A compute pipeline
+   *
+   * @throws VulkanException On errors
+   */
+
+  @VulkanAPIFunctionType(vulkanFunction = "vkCreateComputePipelines")
+  default VulkanPipelineType createComputePipeline(
+    final VulkanComputePipelineCreateInfo pipeline_info)
+    throws VulkanException
+  {
+    return this.createComputePipeline(Optional.empty(), pipeline_info);
+  }
+
+  /**
+   * Create a compute pipeline.
+   *
+   * @param cache         A pipeline cache
+   * @param pipeline_info The pipeline creation info
+   *
+   * @return A compute pipeline
+   *
+   * @throws VulkanException On errors
+   */
+
+  @VulkanAPIFunctionType(vulkanFunction = "vkCreateComputePipelines")
+  default VulkanPipelineType createComputePipeline(
+    final VulkanPipelineCacheType cache,
+    final VulkanComputePipelineCreateInfo pipeline_info)
+    throws VulkanException
+  {
+    return this.createComputePipeline(Optional.of(cache), pipeline_info);
+  }
+
+  /**
+   * Create a compute pipeline.
+   *
+   * @param pipeline_cache A pipeline cache
+   * @param pipeline_info  The pipeline creation info
+   *
+   * @return A compute pipeline
+   *
+   * @throws VulkanException On errors
+   */
+
+  @VulkanAPIFunctionType(vulkanFunction = "vkCreateComputePipelines")
+  default VulkanPipelineType createComputePipeline(
+    final Optional<VulkanPipelineCacheType> pipeline_cache,
+    final VulkanComputePipelineCreateInfo pipeline_info)
+    throws VulkanException
+  {
+    Objects.requireNonNull(pipeline_info, "pipeline_info");
+    return this.createComputePipelines(pipeline_cache, List.of(pipeline_info)).get(0);
+  }
+
+  /**
+   * Create a set of compute pipelines.
+   *
+   * @param pipeline_cache A pipeline cache
+   * @param pipeline_infos The pipeline creation infos
+   *
+   * @return A list of compute pipelines
+   *
+   * @throws VulkanException On errors
+   */
+
+  @VulkanAPIFunctionType(vulkanFunction = "vkCreateComputePipelines")
+  List<VulkanPipelineType> createComputePipelines(
+    Optional<VulkanPipelineCacheType> pipeline_cache,
+    List<VulkanComputePipelineCreateInfo> pipeline_infos)
+    throws VulkanException;
+
+  /**
+   * Create a set of compute pipelines.
+   *
+   * @param pipeline_cache A pipeline cache
+   * @param pipeline_infos The pipeline creation infos
+   *
+   * @return A list of compute pipelines
+   *
+   * @throws VulkanException On errors
+   */
+
+  @VulkanAPIFunctionType(vulkanFunction = "vkCreateComputePipelines")
+  default List<VulkanPipelineType> createComputePipelines(
+    final VulkanPipelineCacheType pipeline_cache,
+    final List<VulkanComputePipelineCreateInfo> pipeline_infos)
+    throws VulkanException
+  {
+    return this.createComputePipelines(Optional.of(pipeline_cache), pipeline_infos);
+  }
+
+  /**
+   * Create a set of compute pipelines.
+   *
+   * @param pipeline_infos The pipeline creation infos
+   *
+   * @return A list of compute pipelines
+   *
+   * @throws VulkanException On errors
+   */
+
+  @VulkanAPIFunctionType(vulkanFunction = "vkCreateComputePipelines")
+  default List<VulkanPipelineType> createComputePipelines(
+    final List<VulkanComputePipelineCreateInfo> pipeline_infos)
+    throws VulkanException
+  {
+    return this.createComputePipelines(Optional.empty(), pipeline_infos);
+  }
 }

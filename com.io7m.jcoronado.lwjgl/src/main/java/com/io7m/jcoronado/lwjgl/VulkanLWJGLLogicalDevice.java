@@ -26,6 +26,7 @@ import com.io7m.jcoronado.api.VulkanCommandBufferType;
 import com.io7m.jcoronado.api.VulkanCommandPoolCreateInfo;
 import com.io7m.jcoronado.api.VulkanCommandPoolResetFlag;
 import com.io7m.jcoronado.api.VulkanCommandPoolType;
+import com.io7m.jcoronado.api.VulkanComputePipelineCreateInfo;
 import com.io7m.jcoronado.api.VulkanCopyDescriptorSet;
 import com.io7m.jcoronado.api.VulkanDescriptorPoolCreateInfo;
 import com.io7m.jcoronado.api.VulkanDescriptorPoolResetFlag;
@@ -1386,6 +1387,42 @@ public final class VulkanLWJGLLogicalDevice
         .setRowPitch(vk_layout.rowPitch())
         .setSize(vk_layout.size())
         .build();
+    }
+  }
+
+  @Override
+  public List<VulkanPipelineType> createComputePipelines(
+    final Optional<VulkanPipelineCacheType> pipeline_cache,
+    final List<VulkanComputePipelineCreateInfo> pipeline_infos)
+    throws VulkanException
+  {
+    Objects.requireNonNull(pipeline_cache, "pipeline_cache");
+    Objects.requireNonNull(pipeline_infos, "pipeline_infos");
+
+    try (var stack = this.stack_initial.push()) {
+      final var pipes = new long[pipeline_infos.size()];
+      final var proxy = this.hostAllocatorProxy();
+      VulkanChecks.checkReturnCode(
+        VK10.vkCreateComputePipelines(
+          this.device,
+          mapPipelineCacheOptional(pipeline_cache),
+          VulkanLWJGLComputePipelineCreateInfos.pack(stack, pipeline_infos),
+          proxy.callbackBuffer(),
+          pipes),
+        "vkCreateComputePipelines");
+
+      final ArrayList<VulkanLWJGLPipeline> result_pipelines =
+        new ArrayList<>(pipeline_infos.size());
+
+      for (var index = 0; index < pipeline_infos.size(); ++index) {
+        final var pipe = pipes[index];
+        if (LOG.isTraceEnabled()) {
+          LOG.trace("created pipeline: 0x{}", Long.toUnsignedString(pipe, 16));
+        }
+        result_pipelines.add(new VulkanLWJGLPipeline(USER_OWNED, this.device, pipe, proxy));
+      }
+
+      return castPipelines(result_pipelines);
     }
   }
 
