@@ -60,7 +60,7 @@ public final class VulkanLWJGLShaderModulesTest
         .build();
 
     final var packed =
-      VulkanLWJGLShaderModules.packShaderModuleCreateInfo(this.stack, info);
+      VulkanLWJGLShaderModules.pack(this.stack, info);
 
     Assertions.assertAll(
       () -> {

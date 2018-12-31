@@ -44,7 +44,7 @@ public final class VulkanLWJGLShaderModules
    * @return A packed structure
    */
 
-  public static VkShaderModuleCreateInfo packShaderModuleCreateInfo(
+  public static VkShaderModuleCreateInfo pack(
     final MemoryStack stack,
     final VulkanShaderModuleCreateInfo create_info)
   {
