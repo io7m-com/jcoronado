@@ -116,6 +116,21 @@ public interface VulkanLogicalDeviceType extends VulkanHandleDispatchableType
     throws VulkanException;
 
   /**
+   * Create an buffer view.
+   *
+   * @param info The buffer view creation info
+   *
+   * @return An buffer view
+   *
+   * @throws VulkanException On errors
+   */
+
+  @VulkanAPIFunctionType(vulkanFunction = "vkCreateBufferView")
+  VulkanBufferViewType createBufferView(
+    VulkanBufferViewCreateInfo info)
+    throws VulkanException;
+
+  /**
    * Create an image view.
    *
    * @param info The image view creation info

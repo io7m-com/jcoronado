@@ -16,7 +16,9 @@
 
 package com.io7m.jcoronado.lwjgl;
 
+import com.io7m.jcoronado.api.VulkanBufferType;
 import com.io7m.jcoronado.api.VulkanBufferViewType;
+import org.lwjgl.vulkan.VK10;
 import org.lwjgl.vulkan.VkDevice;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,19 +35,19 @@ public final class VulkanLWJGLBufferView extends VulkanLWJGLHandle implements Vu
 
   private final long handle;
   private final VkDevice device;
-  private final Runnable deallocate;
+  private final VulkanLWJGLBuffer buffer;
 
   VulkanLWJGLBufferView(
     final Ownership ownership,
     final VkDevice in_device,
     final long in_handle,
-    final Runnable in_deallocate,
+    final VulkanLWJGLBuffer in_buffer,
     final VulkanLWJGLHostAllocatorProxy in_host_allocator_proxy)
   {
     super(ownership, in_host_allocator_proxy);
     this.device = Objects.requireNonNull(in_device, "device");
+    this.buffer = Objects.requireNonNull(in_buffer, "buffer");
     this.handle = in_handle;
-    this.deallocate = Objects.requireNonNull(in_deallocate, "deallocate");
   }
 
   @Override
@@ -90,7 +92,7 @@ public final class VulkanLWJGLBufferView extends VulkanLWJGLHandle implements Vu
       LOG.trace("destroying buffer view: {}", this);
     }
 
-    this.deallocate.run();
+    VK10.vkDestroyBufferView(this.device, this.handle, this.hostAllocatorProxy().callbackBuffer());
   }
 
   /**
@@ -100,5 +102,11 @@ public final class VulkanLWJGLBufferView extends VulkanLWJGLHandle implements Vu
   public long handle()
   {
     return this.handle;
+  }
+
+  @Override
+  public VulkanBufferType buffer()
+  {
+    return this.buffer;
   }
 }

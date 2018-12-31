@@ -17,20 +17,28 @@
 package com.io7m.jcoronado.api;
 
 /**
- * @see "VkBufferView"
+ * @see "VkBufferViewCreateFlags"
  */
 
-public interface VulkanBufferViewType extends VulkanHandleNonDispatchableType
+@VulkanAPIEnumType(vulkanEnum = "VkBufferViewCreateFlags")
+public enum VulkanBufferViewCreateFlag implements VulkanEnumBitmaskType
 {
-  @VulkanAPIFunctionType(vulkanFunction = "vkDestroyBufferView")
-  @Override
-  @VulkanExternallySynchronizedType void close()
-    throws VulkanException;
-
   /**
-   * @return The buffer to which this buffer view refers
+   * No flags are set.
    */
 
-  VulkanBufferType buffer();
-}
+  VK_BUFFER_VIEW_CREATE_NONE(0x00000000);
 
+  private final int value;
+
+  VulkanBufferViewCreateFlag(final int i)
+  {
+    this.value = i;
+  }
+
+  @Override
+  public int value()
+  {
+    return this.value;
+  }
+}

@@ -18,6 +18,8 @@ package com.io7m.jcoronado.lwjgl;
 
 import com.io7m.jcoronado.api.VulkanBufferCreateInfo;
 import com.io7m.jcoronado.api.VulkanBufferType;
+import com.io7m.jcoronado.api.VulkanBufferViewCreateInfo;
+import com.io7m.jcoronado.api.VulkanBufferViewType;
 import com.io7m.jcoronado.api.VulkanChecks;
 import com.io7m.jcoronado.api.VulkanCommandBufferCreateInfo;
 import com.io7m.jcoronado.api.VulkanCommandBufferType;
@@ -330,6 +332,39 @@ public final class VulkanLWJGLLogicalDevice
   }
 
   @Override
+  public VulkanBufferViewType createBufferView(
+    final VulkanBufferViewCreateInfo info)
+    throws VulkanException
+  {
+    Objects.requireNonNull(info, "info");
+
+    this.checkNotClosed();
+
+    final var buffer = checkInstanceOf(info.buffer(), VulkanLWJGLBuffer.class);
+
+    try (var stack = this.stack_initial.push()) {
+      final var create_info = VulkanLWJGLBufferViewCreateInfos.pack(stack, info);
+
+      final var handles = new long[1];
+      VulkanChecks.checkReturnCode(
+        VK10.vkCreateBufferView(
+          this.device,
+          create_info,
+          this.hostAllocatorProxy().callbackBuffer(),
+          handles),
+        "vkCreateBufferView");
+
+      final var handle = handles[0];
+      if (LOG.isTraceEnabled()) {
+        LOG.trace("created buffer view: 0x{}", Long.toUnsignedString(handle, 16));
+      }
+
+      return new VulkanLWJGLBufferView(
+        USER_OWNED, this.device, handle, buffer, this.hostAllocatorProxy());
+    }
+  }
+
+  @Override
   public VulkanImageViewType createImageView(
     final VulkanImageViewCreateInfo info)
     throws VulkanException
@@ -338,12 +373,10 @@ public final class VulkanLWJGLLogicalDevice
 
     this.checkNotClosed();
 
-    final var image =
-      checkInstanceOf(info.image(), VulkanLWJGLImage.class);
+    final var image = checkInstanceOf(info.image(), VulkanLWJGLImage.class);
 
     try (var stack = this.stack_initial.push()) {
-      final var create_info =
-        VulkanLWJGLImageViews.packImageViewCreateInfo(stack, info, image);
+      final var create_info = VulkanLWJGLImageViews.packImageViewCreateInfo(stack, info, image);
 
       final var view = new long[1];
       VulkanChecks.checkReturnCode(
