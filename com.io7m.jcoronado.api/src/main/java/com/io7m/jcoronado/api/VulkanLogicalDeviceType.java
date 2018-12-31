@@ -389,6 +389,21 @@ public interface VulkanLogicalDeviceType extends VulkanHandleDispatchableType
     throws VulkanException;
 
   /**
+   * Retrieve the memory requirements for the given image.
+   *
+   * @param image The image
+   *
+   * @return The memory requirements
+   *
+   * @throws VulkanException On errors
+   */
+
+  @VulkanAPIFunctionType(vulkanFunction = "vkGetImageMemoryRequirements")
+  VulkanMemoryRequirements getImageMemoryRequirements(
+    VulkanImageType image)
+    throws VulkanException;
+
+  /**
    * The result of fetching data for a pipeline cache.
    */
 

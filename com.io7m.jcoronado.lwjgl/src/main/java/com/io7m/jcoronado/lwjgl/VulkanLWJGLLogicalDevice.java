@@ -85,7 +85,6 @@ import org.lwjgl.system.MemoryStack;
 import org.lwjgl.vulkan.VK10;
 import org.lwjgl.vulkan.VkCommandBuffer;
 import org.lwjgl.vulkan.VkDevice;
-import org.lwjgl.vulkan.VkMemoryAllocateInfo;
 import org.lwjgl.vulkan.VkMemoryRequirements;
 import org.lwjgl.vulkan.VkQueue;
 import org.lwjgl.vulkan.VkSubresourceLayout;
@@ -669,6 +668,31 @@ public final class VulkanLWJGLLogicalDevice
   }
 
   @Override
+  public VulkanMemoryRequirements getImageMemoryRequirements(
+    final VulkanImageType image)
+    throws VulkanException
+  {
+    Objects.requireNonNull(image, "image");
+
+    this.checkNotClosed();
+
+    final var cimage =
+      checkInstanceOf(image, VulkanLWJGLImage.class);
+
+    try (var stack = this.stack_initial.push()) {
+      final var info = VkMemoryRequirements.mallocStack(stack);
+
+      VK10.vkGetImageMemoryRequirements(this.device, cimage.handle(), info);
+
+      return VulkanMemoryRequirements.builder()
+        .setAlignment(info.alignment())
+        .setMemoryTypeBits(info.memoryTypeBits())
+        .setSize(info.size())
+        .build();
+    }
+  }
+
+  @Override
   public VulkanPipelineCacheDataResult getPipelineCacheData(
     final VulkanPipelineCacheType pipeline_cache,
     final ByteBuffer data)
@@ -1238,18 +1262,11 @@ public final class VulkanLWJGLLogicalDevice
     this.checkNotClosed();
 
     try (var stack = this.stack_initial.push()) {
-      final var cinfo =
-        VkMemoryAllocateInfo.mallocStack(stack)
-          .sType(VK10.VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO)
-          .pNext(0L)
-          .allocationSize(info.size())
-          .memoryTypeIndex(info.memoryTypeIndex());
-
       final var handles = new long[1];
       VulkanChecks.checkReturnCode(
         VK10.vkAllocateMemory(
           this.device,
-          cinfo,
+          VulkanLWJGLMemoryAllocateInfos.pack(stack, info),
           this.hostAllocatorProxy().callbackBuffer(),
           handles),
         "vkAllocateMemory");
@@ -1260,10 +1277,7 @@ public final class VulkanLWJGLLogicalDevice
       }
 
       return new VulkanLWJGLDeviceMemory(
-        USER_OWNED,
-        this.device,
-        handles[0],
-        this.hostAllocatorProxy());
+        USER_OWNED, this.device, handle, this.hostAllocatorProxy());
     }
   }
 
