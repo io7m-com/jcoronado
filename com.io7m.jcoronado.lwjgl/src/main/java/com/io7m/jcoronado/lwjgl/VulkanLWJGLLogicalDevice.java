@@ -93,11 +93,17 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static com.io7m.jcoronado.api.VulkanLogicalDeviceType.VulkanWaitStatus.VK_WAIT_SUCCEEDED;
+import static com.io7m.jcoronado.api.VulkanLogicalDeviceType.VulkanWaitStatus.VK_WAIT_TIMED_OUT;
 import static com.io7m.jcoronado.lwjgl.VulkanLWJGLClassChecks.checkInstanceOf;
 import static com.io7m.jcoronado.lwjgl.VulkanLWJGLHandle.Ownership.USER_OWNED;
 import static com.io7m.jcoronado.lwjgl.VulkanLWJGLHandle.Ownership.VULKAN_OWNED;
+import static com.io7m.jcoronado.lwjgl.VulkanLWJGLIntegerArrays.packLongs;
 import static org.lwjgl.vulkan.VK10.VK_EVENT_RESET;
 import static org.lwjgl.vulkan.VK10.VK_EVENT_SET;
+import static org.lwjgl.vulkan.VK10.VK_NOT_READY;
+import static org.lwjgl.vulkan.VK10.VK_SUCCESS;
+import static org.lwjgl.vulkan.VK10.VK_TIMEOUT;
 
 /**
  * LWJGL {@link VkDevice}
@@ -930,6 +936,35 @@ public final class VulkanLWJGLLogicalDevice
   }
 
   @Override
+  public VulkanWaitStatus waitForFences(
+    final List<VulkanFenceType> fences,
+    final boolean wait_all,
+    final long timeout_nanos)
+    throws VulkanException
+  {
+    Objects.requireNonNull(fences, "fences");
+
+    this.checkNotClosed();
+
+    try (var stack = this.stack_initial.push()) {
+      final var result =
+        VK10.vkWaitForFences(
+          this.device,
+          packLongs(stack, fences, f -> checkInstanceOf(f, VulkanLWJGLFence.class).handle()),
+          wait_all,
+          timeout_nanos);
+
+      if (result == VK_SUCCESS) {
+        return VK_WAIT_SUCCEEDED;
+      }
+      if (result == VK_TIMEOUT) {
+        return VK_WAIT_TIMED_OUT;
+      }
+      throw VulkanChecks.failed(result, "vkWaitForFences");
+    }
+  }
+
+  @Override
   public VulkanBufferType createBuffer(
     final VulkanBufferCreateInfo create_info)
     throws VulkanException
@@ -1188,6 +1223,28 @@ public final class VulkanLWJGLLogicalDevice
     }
     if (result == VK_EVENT_RESET) {
       return VulkanEventStatus.VK_EVENT_RESET;
+    }
+
+    throw VulkanChecks.failed(result, "vkGetEventStatus");
+  }
+
+  @Override
+  public @VulkanExternallySynchronizedType VulkanFenceStatus getFenceStatus(
+    final VulkanFenceType fence)
+    throws VulkanException
+  {
+    Objects.requireNonNull(fence, "fence");
+
+    this.checkNotClosed();
+
+    final var result =
+      VK10.vkGetFenceStatus(this.device, checkInstanceOf(fence, VulkanLWJGLFence.class).handle());
+
+    if (result == VK_SUCCESS) {
+      return VulkanFenceStatus.VK_FENCE_SIGNALLED;
+    }
+    if (result == VK_NOT_READY) {
+      return VulkanFenceStatus.VK_FENCE_UNSIGNALLED;
     }
 
     throw VulkanChecks.failed(result, "vkGetEventStatus");

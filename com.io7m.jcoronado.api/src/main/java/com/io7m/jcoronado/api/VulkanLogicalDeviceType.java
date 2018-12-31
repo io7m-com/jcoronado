@@ -534,6 +534,66 @@ public interface VulkanLogicalDeviceType extends VulkanHandleDispatchableType
     throws VulkanException;
 
   /**
+   * The result of waiting.
+   */
+
+  enum VulkanWaitStatus
+  {
+    /**
+     * Specifies that waiting for a condition succeeded (the condition became  {@code true}).
+     */
+
+    VK_WAIT_SUCCEEDED,
+
+    /**
+     * Specifies that waiting for a condition timed out (the condition did not become  {@code
+     * true}).
+     */
+
+    VK_WAIT_TIMED_OUT
+  }
+
+  /**
+   * Wait for one or more fences to become signaled.
+   *
+   * @param fences        The fences upon which to wait
+   * @param wait_all      {@code true} if all fences must become signalled to stop waiting, {@code
+   *                      false} if any fence can become signalled
+   * @param timeout_nanos The timeout period in units of nanoseconds.
+   *
+   * @return A value indicating whether waiting succeeded or timed out
+   *
+   * @throws VulkanException On errors
+   */
+
+  @VulkanAPIFunctionType(vulkanFunction = "vkWaitForFences")
+  VulkanWaitStatus waitForFences(
+    List<VulkanFenceType> fences,
+    boolean wait_all,
+    long timeout_nanos)
+    throws VulkanException;
+
+  /**
+   * Wait for a fence to become signaled.
+   *
+   * @param fence         The fences upon which to wait
+   * @param timeout_nanos The timeout period in units of nanoseconds.
+   *
+   * @return A value indicating whether waiting succeeded or timed out
+   *
+   * @throws VulkanException On errors
+   */
+
+  @VulkanAPIFunctionType(vulkanFunction = "vkWaitForFences")
+  default VulkanWaitStatus waitForFence(
+    final VulkanFenceType fence,
+    final long timeout_nanos)
+    throws VulkanException
+  {
+    return this.waitForFences(List.of(fence), true, timeout_nanos);
+  }
+
+  /**
    * Create a buffer.
    *
    * @param create_info The buffer creation info
@@ -696,5 +756,40 @@ public interface VulkanLogicalDeviceType extends VulkanHandleDispatchableType
   @VulkanExternallySynchronizedType
   VulkanEventStatus getEventStatus(
     VulkanEventType event)
+    throws VulkanException;
+
+  /**
+   * The status of an event.
+   */
+
+  enum VulkanFenceStatus
+  {
+    /**
+     * The fence is signaled.
+     */
+
+    VK_FENCE_SIGNALLED,
+
+    /**
+     * The fence is unsignaled.
+     */
+
+    VK_FENCE_UNSIGNALLED
+  }
+
+  /**
+   * Retrieve the status of a fence object.
+   *
+   * @param fence The fence
+   *
+   * @return The fence status
+   *
+   * @throws VulkanException On errors
+   */
+
+  @VulkanAPIFunctionType(vulkanFunction = "vkGetFenceStatus")
+  @VulkanExternallySynchronizedType
+  VulkanFenceStatus getFenceStatus(
+    VulkanFenceType fence)
     throws VulkanException;
 }
