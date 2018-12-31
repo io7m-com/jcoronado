@@ -59,7 +59,7 @@ public final class VulkanVersions
     final int minor,
     final int patch)
   {
-    return major << 22 | minor << 12 | patch;
+    return (major << 22) | (minor << 12) | patch;
   }
 
   /**
@@ -83,7 +83,7 @@ public final class VulkanVersions
   public static int decodeMinor(
     final int version)
   {
-    return version >> 12 & 1023;
+    return (version >> 12) & 1023;
   }
 
   /**
