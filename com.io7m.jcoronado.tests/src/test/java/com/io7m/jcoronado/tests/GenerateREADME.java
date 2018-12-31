@@ -8,7 +8,11 @@ import org.reflections.Reflections;
 import org.reflections.scanners.MethodAnnotationsScanner;
 import org.reflections.scanners.SubTypesScanner;
 import org.reflections.scanners.TypeAnnotationsScanner;
+import org.xml.sax.SAXException;
 
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.xpath.XPathExpressionException;
+import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -23,6 +27,7 @@ public final class GenerateREADME
 
   public static void main(
     final String[] args)
+    throws Exception
   {
     final var reflections =
       new Reflections(
@@ -31,6 +36,13 @@ public final class GenerateREADME
         new SubTypesScanner(),
         new TypeAnnotationsScanner());
 
+    showComparisons(reflections);
+    GenerateFunctionCoverage.showMissingFunctions(reflections);
+  }
+
+  private static void showComparisons(
+    final Reflections reflections)
+  {
     final var repeats = new HashSet<String>();
     System.out.println();
     showStructs(reflections);
@@ -185,6 +197,15 @@ public final class GenerateREADME
           "https://www.khronos.org/registry/vulkan/specs/1.1-extensions/man/html",
           function.vulkanFunction());
       }
+
+      case "VK_KHR_surface": {
+        return "https://www.khronos.org/registry/vulkan/specs/1.1-extensions/html/vkspec.html#VK_KHR_surface";
+      }
+
+      case "VK_KHR_swapchain": {
+        return "https://www.khronos.org/registry/vulkan/specs/1.1-extensions/html/vkspec.html#VK_KHR_swapchain";
+      }
+
       case "vma": {
         return "https://gpuopen-librariesandsdks.github.io/VulkanMemoryAllocator/html/globals_func.html#index_v";
       }
@@ -205,9 +226,19 @@ public final class GenerateREADME
           "https://www.khronos.org/registry/vulkan/specs/1.1-extensions/man/html",
           struct.vulkanStruct());
       }
+
+      case "VK_KHR_surface": {
+        return "https://www.khronos.org/registry/vulkan/specs/1.1-extensions/html/vkspec.html#VK_KHR_surface";
+      }
+
+      case "VK_KHR_swapchain": {
+        return "https://www.khronos.org/registry/vulkan/specs/1.1-extensions/html/vkspec.html#VK_KHR_swapchain";
+      }
+
       case "vma": {
         return "https://gpuopen-librariesandsdks.github.io/VulkanMemoryAllocator/html/globals_func.html#index_v";
       }
+
       default: {
         throw new IllegalStateException("Unrecognized API: " + api);
       }
@@ -225,9 +256,19 @@ public final class GenerateREADME
           "https://www.khronos.org/registry/vulkan/specs/1.1-extensions/man/html",
           enum_type.vulkanEnum());
       }
+
+      case "VK_KHR_surface": {
+        return "https://www.khronos.org/registry/vulkan/specs/1.1-extensions/html/vkspec.html#VK_KHR_surface";
+      }
+
+      case "VK_KHR_swapchain": {
+        return "https://www.khronos.org/registry/vulkan/specs/1.1-extensions/html/vkspec.html#VK_KHR_swapchain";
+      }
+
       case "vma": {
         return "https://gpuopen-librariesandsdks.github.io/VulkanMemoryAllocator/html/globals_func.html#index_v";
       }
+
       default: {
         throw new IllegalStateException("Unrecognized API: " + api);
       }

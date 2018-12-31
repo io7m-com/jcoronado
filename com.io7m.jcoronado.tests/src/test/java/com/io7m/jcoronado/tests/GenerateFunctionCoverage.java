@@ -38,12 +38,22 @@ public final class GenerateFunctionCoverage
         new SubTypesScanner(),
         new TypeAnnotationsScanner());
 
+    showMissingFunctions(reflections);
+  }
+
+  static void showMissingFunctions(
+    final Reflections reflections)
+    throws ParserConfigurationException, SAXException, IOException, XPathExpressionException
+  {
     final var reflect_names = loadNamesReflectively(reflections);
     final var registry_names = loadVulkanRegistryFunctionNames();
 
+    System.out.println("## Missing Functions");
+    System.out.println();
+
     for (final var name : registry_names) {
       if (!reflect_names.containsKey(name)) {
-        System.out.println("MISSING " + name);
+        System.out.println("* `" + name + "`");
       } else {
         // System.out.println("PRESENT " + name);
       }
@@ -52,6 +62,9 @@ public final class GenerateFunctionCoverage
     final var expected = (double) registry_names.size();
     final var received = (double) reflect_names.size();
     System.out.println();
+    System.out.printf("%d of %d functions implemented\n",
+                      Integer.valueOf(reflect_names.size()),
+                      Integer.valueOf(registry_names.size()));
     System.out.printf("Coverage: %.2f%%\n", Double.valueOf((received / expected) * 100.0));
   }
 
