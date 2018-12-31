@@ -22,13 +22,14 @@
   <url>http://github.com/io7m/jcoronado</url>
 
   <modules>
-    <module>com.io7m.jcoronado.api</module>
-    <module>com.io7m.jcoronado.tests</module>
-    <module>com.io7m.jcoronado.lwjgl</module>
-    <module>com.io7m.jcoronado.extensions.khr_surface.api</module>
-    <module>com.io7m.jcoronado.examples</module>
-    <module>com.io7m.jcoronado.vma</module>
     <module>com.io7m.jcoronado.allocation_tracker</module>
+    <module>com.io7m.jcoronado.api</module>
+    <module>com.io7m.jcoronado.examples</module>
+    <module>com.io7m.jcoronado.extensions.khr_surface.api</module>
+    <module>com.io7m.jcoronado.lwjgl</module>
+    <module>com.io7m.jcoronado.tests.device</module>
+    <module>com.io7m.jcoronado.tests</module>
+    <module>com.io7m.jcoronado.vma</module>
   </modules>
 
   <properties>
@@ -155,6 +156,11 @@
       <dependency>
         <groupId>org.junit.jupiter</groupId>
         <artifactId>junit-jupiter-engine</artifactId>
+        <version>5.3.2</version>
+      </dependency>
+      <dependency>
+        <groupId>org.junit.jupiter</groupId>
+        <artifactId>junit-jupiter-api</artifactId>
         <version>5.3.2</version>
       </dependency>
       <dependency>

@@ -4,7 +4,8 @@
   <!-- Generated types -->
   <Match>
     <Or>
-      <Class name="com.io7m.jcoronado.extensions.khr_surface.api.VulkanSurfaceCapabilitiesKHR"/>"/>
+      <Class name="com.io7m.jcoronado.extensions.khr_surface.api.VulkanSurfaceCapabilitiesKHR"/>
+      "/>
       <Class name="com.io7m.jcoronado.extensions.khr_surface.api.VulkanSurfaceFormatKHR"/>
       <Class name="com.io7m.jcoronado.extensions.khr_swapchain.api.VulkanPresentInfoKHR"/>
       <Class name="com.io7m.jcoronado.extensions.khr_swapchain.api.VulkanSwapChainCreateInfo"/>
@@ -35,6 +36,7 @@
       <Class name="com.io7m.jcoronado.api.VulkanCommandBufferCreateInfo"/>
       <Class name="com.io7m.jcoronado.api.VulkanCommandPoolCreateInfo"/>
       <Class name="com.io7m.jcoronado.api.VulkanComponentMapping"/>
+      <Class name="com.io7m.jcoronado.api.VulkanComputePipelineCreateInfo"/>
       <Class name="com.io7m.jcoronado.api.VulkanComputeWorkGroupCount"/>
       <Class name="com.io7m.jcoronado.api.VulkanComputeWorkGroupSize"/>
       <Class name="com.io7m.jcoronado.api.VulkanCopyDescriptorSet"/>
@@ -164,6 +166,12 @@
       <Method name="packOptional"/>
       <Bug pattern="LEST_LOST_EXCEPTION_STACK_TRACE"/>
     </And>
+  </Match>
+
+  <Match>
+    <Class name="com.io7m.jcoronado.lwjgl.VulkanLWJGLComputePipelineCreateInfos"/>
+    <Method name="mapBasePipelineHandle"/>
+    <Bug pattern="LEST_LOST_EXCEPTION_STACK_TRACE"/>
   </Match>
 
   <Match>
