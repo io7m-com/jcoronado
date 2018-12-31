@@ -1145,6 +1145,28 @@ public final class VulkanLWJGLLogicalDevice
   }
 
   @Override
+  public void bindImageMemory(
+    final VulkanImageType image,
+    final VulkanDeviceMemoryType device_memory,
+    final long offset)
+    throws VulkanException
+  {
+    Objects.requireNonNull(image, "image");
+    Objects.requireNonNull(device_memory, "device_memory");
+
+    this.checkNotClosed();
+
+    final var cimage =
+      checkInstanceOf(image, VulkanLWJGLImage.class);
+    final var cmemory =
+      checkInstanceOf(device_memory, VulkanLWJGLDeviceMemory.class);
+
+    VulkanChecks.checkReturnCode(
+      VK10.vkBindImageMemory(this.device, cimage.handle(), cmemory.handle(), offset),
+      "vkBindImageMemory");
+  }
+
+  @Override
   public VulkanMappedMemoryType mapMemory(
     final VulkanDeviceMemoryType memory,
     final long offset,

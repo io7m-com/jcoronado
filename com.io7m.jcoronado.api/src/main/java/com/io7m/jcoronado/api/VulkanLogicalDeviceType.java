@@ -674,6 +674,26 @@ public interface VulkanLogicalDeviceType extends VulkanHandleDispatchableType
     throws VulkanException;
 
   /**
+   * Bind device memory to a image object.
+   *
+   * @param image         The logical device that owns the image and memory
+   * @param device_memory The device memory to attach
+   * @param offset        The start offset of the region of memory which is to be bound to the
+   *                      image. The number of bytes returned in the VkMemoryRequirements::size
+   *                      member in memory, starting from memoryOffset bytes, will be bound to the
+   *                      specified image.
+   *
+   * @throws VulkanException On errors
+   */
+
+  @VulkanAPIFunctionType(vulkanFunction = "vkBindImageMemory")
+  void bindImageMemory(
+    @VulkanExternallySynchronizedType VulkanImageType image,
+    VulkanDeviceMemoryType device_memory,
+    long offset)
+    throws VulkanException;
+
+  /**
    * Map a memory object into the application address space.
    *
    * @param memory The device memory object to be mapped
