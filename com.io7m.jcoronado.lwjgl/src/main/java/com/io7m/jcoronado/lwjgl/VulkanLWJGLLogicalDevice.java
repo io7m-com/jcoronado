@@ -90,6 +90,7 @@ import org.lwjgl.vulkan.VkSubresourceLayout;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -99,6 +100,8 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static com.io7m.jcoronado.api.VulkanLogicalDeviceType.VulkanPipelineCacheDataResult.VK_PIPELINE_CACHE_INCOMPLETE;
+import static com.io7m.jcoronado.api.VulkanLogicalDeviceType.VulkanPipelineCacheDataResult.VK_PIPELINE_CACHE_SUCCESS;
 import static com.io7m.jcoronado.api.VulkanLogicalDeviceType.VulkanWaitStatus.VK_WAIT_SUCCEEDED;
 import static com.io7m.jcoronado.api.VulkanLogicalDeviceType.VulkanWaitStatus.VK_WAIT_TIMED_OUT;
 import static com.io7m.jcoronado.lwjgl.VulkanLWJGLClassChecks.checkInstanceOf;
@@ -107,6 +110,7 @@ import static com.io7m.jcoronado.lwjgl.VulkanLWJGLHandle.Ownership.VULKAN_OWNED;
 import static com.io7m.jcoronado.lwjgl.VulkanLWJGLIntegerArrays.packLongs;
 import static org.lwjgl.vulkan.VK10.VK_EVENT_RESET;
 import static org.lwjgl.vulkan.VK10.VK_EVENT_SET;
+import static org.lwjgl.vulkan.VK10.VK_INCOMPLETE;
 import static org.lwjgl.vulkan.VK10.VK_NOT_READY;
 import static org.lwjgl.vulkan.VK10.VK_SUCCESS;
 import static org.lwjgl.vulkan.VK10.VK_TIMEOUT;
@@ -604,6 +608,62 @@ public final class VulkanLWJGLLogicalDevice
         this.device,
         handle,
         this.hostAllocatorProxy());
+    }
+  }
+
+  @Override
+  public long getPipelineCacheDataSize(
+    final VulkanPipelineCacheType pipeline_cache)
+    throws VulkanException
+  {
+    Objects.requireNonNull(pipeline_cache, "pipeline_cache");
+
+    this.checkNotClosed();
+
+    try (var stack = this.stack_initial.push()) {
+      final var ptr = stack.mallocPointer(1);
+
+      VulkanChecks.checkReturnCode(
+        VK10.vkGetPipelineCacheData(
+          this.device,
+          checkInstanceOf(pipeline_cache, VulkanLWJGLPipelineCache.class).handle(),
+          ptr,
+          null),
+        "vkGetPipelineCacheData");
+
+      return ptr.get(0);
+    }
+  }
+
+  @Override
+  public VulkanPipelineCacheDataResult getPipelineCacheData(
+    final VulkanPipelineCacheType pipeline_cache,
+    final ByteBuffer data)
+    throws VulkanException
+  {
+    Objects.requireNonNull(pipeline_cache, "pipeline_cache");
+    Objects.requireNonNull(data, "data");
+
+    this.checkNotClosed();
+
+    try (var stack = this.stack_initial.push()) {
+      final var ptr = stack.mallocPointer(1);
+      ptr.put(0, Integer.toUnsignedLong(data.capacity()));
+
+      final var result =
+        VK10.vkGetPipelineCacheData(
+          this.device,
+          checkInstanceOf(pipeline_cache, VulkanLWJGLPipelineCache.class).handle(),
+          ptr,
+          data);
+
+      if (result == VK_SUCCESS) {
+        return VK_PIPELINE_CACHE_SUCCESS;
+      }
+      if (result == VK_INCOMPLETE) {
+        return VK_PIPELINE_CACHE_INCOMPLETE;
+      }
+      throw VulkanChecks.failed(result, "vkGetPipelineCacheData");
     }
   }
 

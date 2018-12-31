@@ -16,6 +16,7 @@
 
 package com.io7m.jcoronado.api;
 
+import java.nio.ByteBuffer;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -355,6 +356,58 @@ public interface VulkanLogicalDeviceType extends VulkanHandleDispatchableType
   @VulkanAPIFunctionType(vulkanFunction = "vkCreatePipelineCache")
   VulkanPipelineCacheType createPipelineCache(
     VulkanPipelineCacheCreateInfo pipeline_info)
+    throws VulkanException;
+
+  /**
+   * Retrieve the size of the data store for the pipeline cache.
+   *
+   * @param pipeline_cache The pipeline cache
+   *
+   * @return The size of the pipeline cache data
+   *
+   * @throws VulkanException On errors
+   */
+
+  @VulkanAPIFunctionType(vulkanFunction = "vkGetPipelineCacheData")
+  long getPipelineCacheDataSize(
+    VulkanPipelineCacheType pipeline_cache)
+    throws VulkanException;
+
+  /**
+   * The result of fetching data for a pipeline cache.
+   */
+
+  enum VulkanPipelineCacheDataResult
+  {
+    /**
+     * Specifies that fetching data for a pipeline cache succeeded.
+     */
+
+    VK_PIPELINE_CACHE_SUCCESS,
+
+    /**
+     * Specifies that fetching data for a pipeline cache failed due to the buffer being too small.
+     */
+
+    VK_PIPELINE_CACHE_INCOMPLETE
+  }
+
+  /**
+   * Retrieve the data store for the pipeline cache.
+   *
+   * @param pipeline_cache The pipeline cache
+   * @param data           The buffer used to store the data
+   *
+   * @return A value indicating the result of the retrieval
+   *
+   * @throws VulkanException On errors
+   * @see #getPipelineCacheDataSize(VulkanPipelineCacheType)
+   */
+
+  @VulkanAPIFunctionType(vulkanFunction = "vkGetPipelineCacheData")
+  VulkanPipelineCacheDataResult getPipelineCacheData(
+    VulkanPipelineCacheType pipeline_cache,
+    ByteBuffer data)
     throws VulkanException;
 
   /**
