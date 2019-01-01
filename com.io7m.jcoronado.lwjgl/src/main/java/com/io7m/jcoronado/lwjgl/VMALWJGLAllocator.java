@@ -455,6 +455,12 @@ public final class VMALWJGLAllocator extends VulkanLWJGLHandle implements VMAAll
         }
       }
     }
+
+    @Override
+    public boolean isClosed()
+    {
+      return this.closed;
+    }
   }
 
   private static final class VMALWJGLMappedMemory

@@ -17,13 +17,17 @@
 package com.io7m.jcoronado.tests.contracts;
 
 import com.io7m.jcoronado.api.VulkanBufferCreateInfo;
+import com.io7m.jcoronado.api.VulkanBufferType;
+import com.io7m.jcoronado.api.VulkanDeviceMemoryType;
 import com.io7m.jcoronado.api.VulkanException;
 import com.io7m.jcoronado.api.VulkanInstanceType;
 import com.io7m.jcoronado.api.VulkanLogicalDeviceType;
 import com.io7m.jcoronado.api.VulkanMemoryAllocateInfo;
 import com.io7m.jcoronado.api.VulkanMemoryPropertyFlag;
+import com.io7m.jcoronado.api.VulkanMemoryType;
 import com.io7m.jcoronado.api.VulkanPhysicalDeviceType;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -88,7 +92,13 @@ public abstract class VulkanBufferContract extends VulkanOnDeviceContract
         .setSize(100L)
         .build();
 
+    final VulkanBufferType escaped_buffer;
+    final VulkanDeviceMemoryType escaped_memory;
+
     try (var buffer = this.device.createBuffer(buffer_info)) {
+      Assertions.assertFalse(buffer.isClosed(), "Buffer is destroyed");
+      escaped_buffer = buffer;
+
       logger.debug("buffer: {}", buffer);
 
       final var requirements = this.device.getBufferMemoryRequirements(buffer);
@@ -104,9 +114,15 @@ public abstract class VulkanBufferContract extends VulkanOnDeviceContract
           .build();
 
       try (var memory = this.device.allocateMemory(memory_info)) {
+        Assertions.assertFalse(memory.isClosed(), "Memory is destroyed");
+        escaped_memory = memory;
+
         logger.debug("memory: {}", memory);
         this.device.bindBufferMemory(buffer, memory, 0L);
       }
     }
+
+    Assertions.assertTrue(escaped_buffer.isClosed(), "Buffer is destroyed");
+    Assertions.assertTrue(escaped_memory.isClosed(), "Memory is destroyed");
   }
 }

@@ -64,6 +64,8 @@ public abstract class VulkanPhysicalDeviceContract extends VulkanOnDeviceContrac
       logger.debug("layer: {}", layer_name);
     });
 
+    Assertions.assertFalse(this.device.isClosed(), "Device is not closed");
+
     Assertions.assertTrue(
       this.device.layers().size() >= 1, "At least one layer must be present");
 

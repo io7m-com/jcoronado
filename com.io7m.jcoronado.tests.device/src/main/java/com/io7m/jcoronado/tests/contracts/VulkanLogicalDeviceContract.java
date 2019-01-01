@@ -67,5 +67,6 @@ public abstract class VulkanLogicalDeviceContract extends VulkanOnDeviceContract
     Assumptions.assumeTrue(this.shouldRun(), "Test should run");
 
     Assertions.assertEquals(this.physical_device, this.device.physicalDevice());
+    Assertions.assertFalse(this.physical_device.isClosed(), "Device is not closed");
   }
 }

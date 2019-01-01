@@ -44,6 +44,12 @@ abstract class VulkanLWJGLHandle implements VulkanHandleType
     return this.host_allocator_proxy;
   }
 
+  @Override
+  public final boolean isClosed()
+  {
+    return this.closed;
+  }
+
   protected abstract Logger logger();
 
   @Override

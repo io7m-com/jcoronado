@@ -32,4 +32,12 @@ public interface VulkanHandleType extends AutoCloseable
   @Override
   void close()
     throws VulkanException;
+
+  /**
+   * @return {@code true} iff the handle has been destroyed with {@link #close()}
+   *
+   * @see #close()
+   */
+
+  boolean isClosed();
 }
