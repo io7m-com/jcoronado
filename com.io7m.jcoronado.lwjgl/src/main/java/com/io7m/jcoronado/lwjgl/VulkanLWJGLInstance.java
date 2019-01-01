@@ -106,8 +106,7 @@ public final class VulkanLWJGLInstance
     try (var stack = stack_initial.push()) {
       final var count = new int[1];
 
-      VK10.vkGetPhysicalDeviceQueueFamilyProperties(
-        vk_device, count, null);
+      VK10.vkGetPhysicalDeviceQueueFamilyProperties(vk_device, count, null);
 
       final var queue_family_count = count[0];
       if (queue_family_count == 0) {
