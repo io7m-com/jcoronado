@@ -24,6 +24,7 @@
   <modules>
     <module>com.io7m.jcoronado.allocation_tracker</module>
     <module>com.io7m.jcoronado.api</module>
+    <module>com.io7m.jcoronado.documentation</module>
     <module>com.io7m.jcoronado.examples</module>
     <module>com.io7m.jcoronado.extensions.khr_surface.api</module>
     <module>com.io7m.jcoronado.lwjgl</module>
