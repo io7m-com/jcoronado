@@ -29,6 +29,10 @@ to allow for easy unit testing and mocking of code that calls Vulkan.
 
 # Usage
 
+There is a roughly 1:1 mapping between `jcoronado` and Vulkan types
+and functions. If you know how to write Vulkan code, nothing in
+`jcoronado` should be unfamiliar.
+
 ## Structs
 
 | jcoronado | Vulkan |
