@@ -34,7 +34,7 @@
   </modules>
 
   <properties>
-    <io7m.api.previousVersion>0.0.1</io7m.api.previousVersion>
+    <io7m.api.previousVersion>0.0.1-SNAPSHOT</io7m.api.previousVersion>
     <io7m.org.immutables.value.version>2.6.1</io7m.org.immutables.value.version>
     <io7m.org.lwjgl.version>3.2.1.1</io7m.org.lwjgl.version>
     <jmockit.version>1.44</jmockit.version>
