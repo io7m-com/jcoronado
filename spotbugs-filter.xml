@@ -195,18 +195,19 @@
 
   <Match>
     <Or>
+      <Bug pattern="AI_ANNOTATION_ISSUES_NEEDS_NULLABLE"/>
+      <Bug pattern="BED_HIERARCHICAL_EXCEPTION_DECLARATION"/>
       <Bug pattern="CE_CLASS_ENVY"/>
       <Bug pattern="CRLF_INJECTION_LOGS"/>
-      <Bug pattern="MRC_METHOD_RETURNS_CONSTANT"/>
-      <Bug pattern="WEM_WEAK_EXCEPTION_MESSAGING"/>
+      <Bug pattern="FCBL_FIELD_COULD_BE_LOCAL"/>
       <Bug pattern="IMC_IMMATURE_CLASS_NO_TOSTRING"/>
-      <Bug pattern="UVA_USE_VAR_ARGS"/>
-      <Bug pattern="OPM_OVERLY_PERMISSIVE_METHOD"/>
+      <Bug pattern="MRC_METHOD_RETURNS_CONSTANT"/>
       <Bug pattern="OCP_OVERLY_CONCRETE_PARAMETER"/>
-      <Bug pattern="AI_ANNOTATION_ISSUES_NEEDS_NULLABLE"/>
+      <Bug pattern="OPM_OVERLY_PERMISSIVE_METHOD"/>
       <Bug pattern="RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE"/>
       <Bug pattern="UPM_UNCALLED_PRIVATE_METHOD"/>
-      <Bug pattern="FCBL_FIELD_COULD_BE_LOCAL"/>
+      <Bug pattern="UVA_USE_VAR_ARGS"/>
+      <Bug pattern="WEM_WEAK_EXCEPTION_MESSAGING"/>
     </Or>
   </Match>
 

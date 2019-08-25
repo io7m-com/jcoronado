@@ -19,7 +19,6 @@ package com.io7m.jcoronado.lwjgl;
 import com.io7m.jcoronado.api.VulkanDescriptorSetLayoutType;
 import com.io7m.jcoronado.api.VulkanEnumMaps;
 import com.io7m.jcoronado.api.VulkanException;
-import com.io7m.jcoronado.api.VulkanIncompatibleClassException;
 import com.io7m.jcoronado.api.VulkanPipelineLayoutCreateInfo;
 import com.io7m.jcoronado.api.VulkanPushConstantRange;
 import org.lwjgl.system.MemoryStack;
@@ -73,14 +72,13 @@ public final class VulkanLWJGLPipelineLayouts
    *
    * @return A packed structure
    *
-   * @throws VulkanIncompatibleClassException If an incompatible class is specified
-   * @throws VulkanException                  On errors
+   * @throws VulkanException On errors
    */
 
   public static VkPipelineLayoutCreateInfo packPipelineLayoutCreateInfo(
     final MemoryStack stack,
     final VulkanPipelineLayoutCreateInfo info)
-    throws VulkanException, VulkanIncompatibleClassException
+    throws VulkanException
   {
     Objects.requireNonNull(stack, "stack");
     Objects.requireNonNull(info, "info");
