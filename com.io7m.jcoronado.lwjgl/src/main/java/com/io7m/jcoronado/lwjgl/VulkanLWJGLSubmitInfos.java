@@ -58,7 +58,7 @@ public final class VulkanLWJGLSubmitInfos
     final MemoryStack stack,
     final List<VulkanSubmitInfo> infos,
     final VkSubmitInfo.Buffer buffer)
-    throws VulkanException
+    throws VulkanException, VulkanIncompatibleClassException
   {
     Objects.requireNonNull(stack, "stack");
     Objects.requireNonNull(infos, "info");

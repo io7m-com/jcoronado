@@ -80,7 +80,7 @@ public final class VulkanLWJGLPipelineLayouts
   public static VkPipelineLayoutCreateInfo packPipelineLayoutCreateInfo(
     final MemoryStack stack,
     final VulkanPipelineLayoutCreateInfo info)
-    throws VulkanException
+    throws VulkanException, VulkanIncompatibleClassException
   {
     Objects.requireNonNull(stack, "stack");
     Objects.requireNonNull(info, "info");

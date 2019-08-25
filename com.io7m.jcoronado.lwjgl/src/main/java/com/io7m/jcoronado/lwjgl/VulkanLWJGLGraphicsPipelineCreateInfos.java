@@ -53,7 +53,7 @@ public final class VulkanLWJGLGraphicsPipelineCreateInfos
   public static VkGraphicsPipelineCreateInfo.Buffer pack(
     final MemoryStack stack,
     final List<VulkanGraphicsPipelineCreateInfo> pipeline_infos)
-    throws VulkanException
+    throws VulkanException, VulkanIncompatibleClassException
   {
     Objects.requireNonNull(pipeline_infos, "pipeline_infos");
 
