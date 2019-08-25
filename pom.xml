@@ -184,6 +184,11 @@
         <artifactId>fastutil</artifactId>
         <version>8.2.2</version>
       </dependency>
+      <dependency>
+        <groupId>com.io7m.primogenitor</groupId>
+        <artifactId>com.io7m.primogenitor.support</artifactId>
+        <version>3.3.0</version>
+      </dependency>
 
       <dependency>
         <groupId>org.lwjgl</groupId>
