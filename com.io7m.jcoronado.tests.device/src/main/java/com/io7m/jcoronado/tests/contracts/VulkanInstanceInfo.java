@@ -40,7 +40,7 @@ public final class VulkanInstanceInfo
           VulkanVersions.encode(0, 0, 1),
           VulkanVersions.encode(1, 0, 0)))
       .setEnabledExtensions(List.of())
-      .setEnabledLayers(List.of("VK_LAYER_LUNARG_standard_validation"))
+      .setEnabledLayers(List.of("VK_LAYER_KHRONOS_validation"))
       .build();
   }
 }
