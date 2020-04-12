@@ -8,11 +8,7 @@ import org.reflections.Reflections;
 import org.reflections.scanners.MethodAnnotationsScanner;
 import org.reflections.scanners.SubTypesScanner;
 import org.reflections.scanners.TypeAnnotationsScanner;
-import org.xml.sax.SAXException;
 
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.xpath.XPathExpressionException;
-import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -115,7 +111,8 @@ public final class GenerateREADME
   private static void showStructs(
     final Reflections reflections)
   {
-    final var types = new ArrayList<>(reflections.getTypesAnnotatedWith(VulkanAPIStructType.class));
+    final var types = new ArrayList<>(reflections.getTypesAnnotatedWith(
+      VulkanAPIStructType.class));
     types.sort(Comparator.comparing(Class::getName));
 
     System.out.println("## Structs");
@@ -154,7 +151,8 @@ public final class GenerateREADME
   private static void showEnums(
     final Reflections reflections)
   {
-    final var types = new ArrayList<>(reflections.getTypesAnnotatedWith(VulkanAPIEnumType.class));
+    final var types = new ArrayList<>(reflections.getTypesAnnotatedWith(
+      VulkanAPIEnumType.class));
     types.sort(Comparator.comparing(Class::getName));
 
     System.out.println("## Enums");

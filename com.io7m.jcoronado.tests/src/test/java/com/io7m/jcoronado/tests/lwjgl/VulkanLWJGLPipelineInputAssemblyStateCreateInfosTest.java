@@ -29,7 +29,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Optional;
 
-import static com.io7m.jcoronado.api.VulkanPrimitiveTopology.*;
+import static com.io7m.jcoronado.api.VulkanPrimitiveTopology.VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
 
 public final class VulkanLWJGLPipelineInputAssemblyStateCreateInfosTest
 {
@@ -37,6 +37,29 @@ public final class VulkanLWJGLPipelineInputAssemblyStateCreateInfosTest
     VulkanLWJGLPipelineInputAssemblyStateCreateInfosTest.class);
 
   private MemoryStack stack = MemoryStack.create();
+
+  static void checkPacked(
+    final VkPipelineInputAssemblyStateCreateInfo packed)
+  {
+    Assertions.assertNotNull(packed, "VkPipelineInputAssemblyStateCreateInfo");
+
+    Assertions.assertAll(
+      () -> {
+        Assertions.assertEquals(0L, packed.pNext());
+      },
+      () -> {
+        Assertions.assertEquals(
+          VK10.VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO,
+          packed.sType());
+      },
+      () -> {
+        Assertions.assertEquals(
+          VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST.value(),
+          packed.topology());
+        Assertions.assertTrue(packed.primitiveRestartEnable());
+      }
+    );
+  }
 
   @BeforeEach
   public void testSetup()
@@ -59,29 +82,12 @@ public final class VulkanLWJGLPipelineInputAssemblyStateCreateInfosTest
 
     checkPacked(packed);
     checkPacked(
-      VulkanLWJGLPipelineInputAssemblyStateCreateInfos.packOptional(this.stack, Optional.of(info)));
+      VulkanLWJGLPipelineInputAssemblyStateCreateInfos.packOptional(
+        this.stack,
+        Optional.of(info)));
     Assertions.assertNull(
-      VulkanLWJGLPipelineInputAssemblyStateCreateInfos.packOptional(this.stack, Optional.empty()));
-  }
-
-  static void checkPacked(
-    final VkPipelineInputAssemblyStateCreateInfo packed)
-  {
-    Assertions.assertNotNull(packed, "VkPipelineInputAssemblyStateCreateInfo");
-
-    Assertions.assertAll(
-      () -> {
-        Assertions.assertEquals(0L, packed.pNext());
-      },
-      () -> {
-        Assertions.assertEquals(
-          VK10.VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO,
-          packed.sType());
-      },
-      () -> {
-        Assertions.assertEquals(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST.value(), packed.topology());
-        Assertions.assertTrue(packed.primitiveRestartEnable());
-      }
-    );
+      VulkanLWJGLPipelineInputAssemblyStateCreateInfos.packOptional(
+        this.stack,
+        Optional.empty()));
   }
 }

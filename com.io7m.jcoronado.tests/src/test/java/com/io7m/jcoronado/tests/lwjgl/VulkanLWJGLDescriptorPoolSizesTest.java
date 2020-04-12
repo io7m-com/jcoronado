@@ -17,26 +17,14 @@
 package com.io7m.jcoronado.tests.lwjgl;
 
 import com.io7m.jcoronado.api.VulkanDescriptorPoolSize;
-import com.io7m.jcoronado.api.VulkanDescriptorSetLayoutBinding;
 import com.io7m.jcoronado.api.VulkanDescriptorType;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLDescriptorPoolSizes;
-import com.io7m.jcoronado.lwjgl.VulkanLWJGLDescriptorSetLayoutBindings;
-import com.io7m.jcoronado.lwjgl.VulkanLWJGLSampler;
-import mockit.Expectations;
-import mockit.Mocked;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.lwjgl.system.MemoryStack;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.nio.LongBuffer;
-import java.util.List;
-import java.util.Set;
-
-import static com.io7m.jcoronado.api.VulkanDescriptorType.VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-import static com.io7m.jcoronado.api.VulkanShaderStageFlag.VK_SHADER_STAGE_VERTEX_BIT;
 
 public final class VulkanLWJGLDescriptorPoolSizesTest
 {
@@ -59,7 +47,9 @@ public final class VulkanLWJGLDescriptorPoolSizesTest
       final var binding =
         VulkanDescriptorPoolSize.of(type, 23);
       final var packed =
-        VulkanLWJGLDescriptorPoolSizes.packDescriptorPoolSize(this.stack, binding);
+        VulkanLWJGLDescriptorPoolSizes.packDescriptorPoolSize(
+          this.stack,
+          binding);
 
       Assertions.assertAll(
         () -> {

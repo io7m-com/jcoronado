@@ -30,7 +30,8 @@ import java.util.List;
 
 public final class VulkanLWJGLAttachmentReferencesTest
 {
-  private static final Logger LOG = LoggerFactory.getLogger(VulkanLWJGLAttachmentReferencesTest.class);
+  private static final Logger LOG = LoggerFactory.getLogger(
+    VulkanLWJGLAttachmentReferencesTest.class);
 
   private MemoryStack stack = MemoryStack.create();
 
@@ -66,7 +67,9 @@ public final class VulkanLWJGLAttachmentReferencesTest
       List.of(reference_0, reference_1, reference_2);
 
     final var packed =
-      VulkanLWJGLAttachmentReferences.packAttachmentReferences(this.stack, references);
+      VulkanLWJGLAttachmentReferences.packAttachmentReferences(
+        this.stack,
+        references);
 
     for (var index = 0; index < 3; ++index) {
       final var f_index = index;

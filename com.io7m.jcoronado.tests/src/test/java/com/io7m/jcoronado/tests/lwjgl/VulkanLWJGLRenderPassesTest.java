@@ -51,7 +51,8 @@ import static com.io7m.jcoronado.api.VulkanSampleCountFlag.VK_SAMPLE_COUNT_1_BIT
 
 public final class VulkanLWJGLRenderPassesTest
 {
-  private static final Logger LOG = LoggerFactory.getLogger(VulkanLWJGLRenderPassesTest.class);
+  private static final Logger LOG = LoggerFactory.getLogger(
+    VulkanLWJGLRenderPassesTest.class);
 
   private MemoryStack stack = MemoryStack.create();
 
@@ -138,7 +139,9 @@ public final class VulkanLWJGLRenderPassesTest
 
     Assertions.assertAll(
       () -> {
-        Assertions.assertEquals(VK10.VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO, packed.sType());
+        Assertions.assertEquals(
+          VK10.VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO,
+          packed.sType());
       },
       () -> {
         Assertions.assertEquals(0L, packed.pNext());

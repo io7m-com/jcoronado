@@ -19,12 +19,17 @@ public final class GenerateFeaturesMethodNames
   {
     List.of(VkPhysicalDeviceFeatures.class.getMethods())
       .stream()
-      .filter(m -> Objects.equals(m.getDeclaringClass(), VkPhysicalDeviceFeatures.class))
+      .filter(m -> Objects.equals(
+        m.getDeclaringClass(),
+        VkPhysicalDeviceFeatures.class))
       .filter(m -> !m.getName().startsWith("n"))
       .filter(m -> Objects.equals(m.getReturnType(), boolean.class))
       .sorted(Comparator.comparing(Method::getName))
       .forEach(method -> {
-        System.out.printf("@Value.Parameter\n%s %s();\n\n", method.getReturnType().getName(),  method.getName());
+        System.out.printf(
+          "@Value.Parameter\n%s %s();\n\n",
+          method.getReturnType().getName(),
+          method.getName());
       });
   }
 }

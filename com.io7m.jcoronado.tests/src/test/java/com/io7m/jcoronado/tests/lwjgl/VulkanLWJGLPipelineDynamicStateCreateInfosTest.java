@@ -41,32 +41,6 @@ public final class VulkanLWJGLPipelineDynamicStateCreateInfosTest
 
   private MemoryStack stack = MemoryStack.create();
 
-  @BeforeEach
-  public void testSetup()
-  {
-    LOG.debug("testSetup");
-    this.stack = this.stack.push();
-  }
-
-  @Test
-  public void testPipelineDynamicStateCreateInfo()
-    throws VulkanException
-  {
-    final var info =
-      VulkanPipelineDynamicStateCreateInfo.builder()
-        .addDynamicStates(VulkanDynamicState.values())
-        .build();
-
-    final var packed =
-      VulkanLWJGLPipelineDynamicStateCreateInfos.pack(this.stack, info);
-
-    checkPacked(packed);
-    checkPacked(
-      VulkanLWJGLPipelineDynamicStateCreateInfos.packOptional(this.stack, Optional.of(info)));
-    Assertions.assertNull(
-      VulkanLWJGLPipelineDynamicStateCreateInfos.packOptional(this.stack, Optional.empty()));
-  }
-
   static void checkPacked(
     final VkPipelineDynamicStateCreateInfo packed)
   {
@@ -99,5 +73,35 @@ public final class VulkanLWJGLPipelineDynamicStateCreateInfosTest
         Assertions.assertEquals(expected, received);
       }
     );
+  }
+
+  @BeforeEach
+  public void testSetup()
+  {
+    LOG.debug("testSetup");
+    this.stack = this.stack.push();
+  }
+
+  @Test
+  public void testPipelineDynamicStateCreateInfo()
+    throws VulkanException
+  {
+    final var info =
+      VulkanPipelineDynamicStateCreateInfo.builder()
+        .addDynamicStates(VulkanDynamicState.values())
+        .build();
+
+    final var packed =
+      VulkanLWJGLPipelineDynamicStateCreateInfos.pack(this.stack, info);
+
+    checkPacked(packed);
+    checkPacked(
+      VulkanLWJGLPipelineDynamicStateCreateInfos.packOptional(
+        this.stack,
+        Optional.of(info)));
+    Assertions.assertNull(
+      VulkanLWJGLPipelineDynamicStateCreateInfos.packOptional(
+        this.stack,
+        Optional.empty()));
   }
 }

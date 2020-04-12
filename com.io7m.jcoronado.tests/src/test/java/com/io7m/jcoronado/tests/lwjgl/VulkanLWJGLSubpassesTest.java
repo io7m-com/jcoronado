@@ -31,7 +31,8 @@ import org.slf4j.LoggerFactory;
 
 public final class VulkanLWJGLSubpassesTest
 {
-  private static final Logger LOG = LoggerFactory.getLogger(VulkanLWJGLSubpassesTest.class);
+  private static final Logger LOG = LoggerFactory.getLogger(
+    VulkanLWJGLSubpassesTest.class);
 
   private MemoryStack stack = MemoryStack.create();
 
@@ -73,7 +74,8 @@ public final class VulkanLWJGLSubpassesTest
       },
       () -> {
         Assertions.assertEquals(
-          VK10.VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT, packed.srcAccessMask());
+          VK10.VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT,
+          packed.srcAccessMask());
       },
       () -> {
         Assertions.assertEquals(

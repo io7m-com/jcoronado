@@ -39,7 +39,8 @@ import static com.io7m.jcoronado.api.VulkanImageViewKind.VK_IMAGE_VIEW_TYPE_2D;
 
 public final class VulkanLWJGLImageViewsTest
 {
-  private static final Logger LOG = LoggerFactory.getLogger(VulkanLWJGLImageViewsTest.class);
+  private static final Logger LOG = LoggerFactory.getLogger(
+    VulkanLWJGLImageViewsTest.class);
 
   private MemoryStack stack = MemoryStack.create();
 
@@ -96,7 +97,9 @@ public final class VulkanLWJGLImageViewsTest
       },
 
       () -> {
-        Assertions.assertEquals(VK10.VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO, packed.sType());
+        Assertions.assertEquals(
+          VK10.VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO,
+          packed.sType());
       },
 
       () -> {
@@ -108,11 +111,15 @@ public final class VulkanLWJGLImageViewsTest
       },
 
       () -> {
-        Assertions.assertEquals(VK_FORMAT_B8G8R8A8_UNORM.value(), packed.format());
+        Assertions.assertEquals(
+          VK_FORMAT_B8G8R8A8_UNORM.value(),
+          packed.format());
       },
 
       () -> {
-        Assertions.assertEquals(VK_IMAGE_VIEW_TYPE_2D.value(), packed.viewType());
+        Assertions.assertEquals(
+          VK_IMAGE_VIEW_TYPE_2D.value(),
+          packed.viewType());
       },
 
       () -> {

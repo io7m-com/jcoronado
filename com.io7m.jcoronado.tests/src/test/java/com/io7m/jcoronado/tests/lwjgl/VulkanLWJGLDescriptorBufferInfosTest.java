@@ -47,7 +47,8 @@ public final class VulkanLWJGLDescriptorBufferInfosTest
     final @Mocked VulkanLWJGLBuffer buffer)
     throws Exception
   {
-    new Expectations() {{
+    new Expectations()
+    {{
       buffer.handle();
       this.result = Long.valueOf(100L);
     }};

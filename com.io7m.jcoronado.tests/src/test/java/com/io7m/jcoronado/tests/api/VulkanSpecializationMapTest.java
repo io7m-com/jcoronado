@@ -34,6 +34,7 @@ public final class VulkanSpecializationMapTest
       });
 
     Assertions.assertTrue(e.getMessage()
-                            .contains("Must use direct byte buffers for specialization data"));
+                            .contains(
+                              "Must use direct byte buffers for specialization data"));
   }
 }

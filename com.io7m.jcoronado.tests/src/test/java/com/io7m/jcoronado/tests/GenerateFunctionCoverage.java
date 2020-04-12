@@ -43,7 +43,11 @@ public final class GenerateFunctionCoverage
 
   static void showMissingFunctions(
     final Reflections reflections)
-    throws ParserConfigurationException, SAXException, IOException, XPathExpressionException
+    throws
+    ParserConfigurationException,
+    SAXException,
+    IOException,
+    XPathExpressionException
   {
     final var reflect_names = loadNamesReflectively(reflections);
     final var registry_names = loadVulkanRegistryFunctionNames();
@@ -62,11 +66,14 @@ public final class GenerateFunctionCoverage
     final var expected = (double) registry_names.size();
     final var received = (double) reflect_names.size();
     System.out.println();
-    System.out.printf("%d of %d functions implemented\n",
-                      Integer.valueOf(reflect_names.size()),
-                      Integer.valueOf(registry_names.size()));
+    System.out.printf(
+      "%d of %d functions implemented\n",
+      Integer.valueOf(reflect_names.size()),
+      Integer.valueOf(registry_names.size()));
     System.out.println();
-    System.out.printf("Coverage: %.2f%%\n", Double.valueOf((received / expected) * 100.0));
+    System.out.printf(
+      "Coverage: %.2f%%\n",
+      Double.valueOf((received / expected) * 100.0));
   }
 
   private static Map<String, Method> loadNamesReflectively(
@@ -99,7 +106,11 @@ public final class GenerateFunctionCoverage
   }
 
   private static TreeSet<String> loadVulkanRegistryFunctionNames()
-    throws ParserConfigurationException, SAXException, IOException, XPathExpressionException
+    throws
+    ParserConfigurationException,
+    SAXException,
+    IOException,
+    XPathExpressionException
   {
     final var factory = DocumentBuilderFactory.newInstance();
     final var builder = factory.newDocumentBuilder();
@@ -149,9 +160,6 @@ public final class GenerateFunctionCoverage
     if (name.endsWith("EXT")) {
       return false;
     }
-    if (name.endsWith("ANDROID")) {
-      return false;
-    }
-    return true;
+    return !name.endsWith("ANDROID");
   }
 }

@@ -19,11 +19,16 @@ public final class GenerateFeaturesToVkFeatures
   {
     List.of(VulkanPhysicalDeviceFeatures.class.getMethods())
       .stream()
-      .filter(m -> Objects.equals(m.getDeclaringClass(), VulkanPhysicalDeviceFeatures.class))
+      .filter(m -> Objects.equals(
+        m.getDeclaringClass(),
+        VulkanPhysicalDeviceFeatures.class))
       .filter(m -> Objects.equals(m.getReturnType(), boolean.class))
       .sorted(Comparator.comparing(Method::getName))
       .forEach(method -> {
-        System.out.printf(".%s(features.%s())\n", method.getName(), method.getName());
+        System.out.printf(
+          ".%s(features.%s())\n",
+          method.getName(),
+          method.getName());
       });
   }
 }

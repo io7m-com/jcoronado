@@ -39,7 +39,8 @@ import static com.io7m.jcoronado.api.VulkanShaderStageFlag.VK_SHADER_STAGE_VERTE
 
 public final class VulkanLWJGLDescriptorSetLayoutsTest
 {
-  private static final Logger LOG = LoggerFactory.getLogger(VulkanLWJGLDescriptorSetLayoutsTest.class);
+  private static final Logger LOG = LoggerFactory.getLogger(
+    VulkanLWJGLDescriptorSetLayoutsTest.class);
 
   private MemoryStack stack = MemoryStack.create();
 
@@ -86,7 +87,9 @@ public final class VulkanLWJGLDescriptorSetLayoutsTest
         .build();
 
     final var packed =
-      VulkanLWJGLDescriptorSetLayouts.packDescriptorSetLayoutCreateInfo(this.stack, create_info);
+      VulkanLWJGLDescriptorSetLayouts.packDescriptorSetLayoutCreateInfo(
+        this.stack,
+        create_info);
     final var bindings = packed.pBindings();
     final var vk_bind_0 = bindings.get(0);
     final var vk_bind_1 = bindings.get(1);

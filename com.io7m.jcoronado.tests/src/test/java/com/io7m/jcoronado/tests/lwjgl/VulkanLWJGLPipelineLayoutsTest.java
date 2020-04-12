@@ -34,7 +34,8 @@ import org.slf4j.LoggerFactory;
 
 public final class VulkanLWJGLPipelineLayoutsTest
 {
-  private static final Logger LOG = LoggerFactory.getLogger(VulkanLWJGLPipelineLayoutsTest.class);
+  private static final Logger LOG = LoggerFactory.getLogger(
+    VulkanLWJGLPipelineLayoutsTest.class);
 
   private MemoryStack stack = MemoryStack.create();
 
@@ -52,7 +53,8 @@ public final class VulkanLWJGLPipelineLayoutsTest
     final @Mocked VulkanLWJGLDescriptorSetLayout layout_2)
     throws Exception
   {
-    new Expectations() {{
+    new Expectations()
+    {{
       layout_0.handle();
       this.result = Long.valueOf(0x100L);
       layout_1.handle();
@@ -102,11 +104,16 @@ public final class VulkanLWJGLPipelineLayoutsTest
       },
 
       () -> {
-        Assertions.assertEquals(VK10.VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO, packed.sType());
+        Assertions.assertEquals(
+          VK10.VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO,
+          packed.sType());
       },
 
       () -> {
-        Assertions.assertEquals(3, packed.pushConstantRangeCount(), "range count");
+        Assertions.assertEquals(
+          3,
+          packed.pushConstantRangeCount(),
+          "range count");
       },
 
       () -> {
@@ -179,11 +186,16 @@ public final class VulkanLWJGLPipelineLayoutsTest
       },
 
       () -> {
-        Assertions.assertEquals(VK10.VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO, packed.sType());
+        Assertions.assertEquals(
+          VK10.VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO,
+          packed.sType());
       },
 
       () -> {
-        Assertions.assertEquals(3, packed.pushConstantRangeCount(), "range count");
+        Assertions.assertEquals(
+          3,
+          packed.pushConstantRangeCount(),
+          "range count");
       },
 
       () -> {

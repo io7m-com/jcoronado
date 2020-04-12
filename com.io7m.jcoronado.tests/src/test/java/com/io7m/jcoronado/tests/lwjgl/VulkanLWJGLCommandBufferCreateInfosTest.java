@@ -29,7 +29,7 @@ import org.lwjgl.vulkan.VK10;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static com.io7m.jcoronado.api.VulkanCommandBufferLevel.*;
+import static com.io7m.jcoronado.api.VulkanCommandBufferLevel.VK_COMMAND_BUFFER_LEVEL_PRIMARY;
 
 public final class VulkanLWJGLCommandBufferCreateInfosTest
 {
@@ -49,7 +49,8 @@ public final class VulkanLWJGLCommandBufferCreateInfosTest
   public void testCommandPoolCreateInfo(
     final @Mocked VulkanLWJGLCommandPool pool)
   {
-    new Expectations() {{
+    new Expectations()
+    {{
       pool.handle();
       this.result = Long.valueOf(0x300L);
     }};

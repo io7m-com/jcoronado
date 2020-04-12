@@ -41,39 +41,6 @@ public final class VulkanLWJGLPipelineVertexInputStateCreateInfosTest
 
   private MemoryStack stack = MemoryStack.create();
 
-  @BeforeEach
-  public void testSetup()
-  {
-    LOG.debug("testSetup");
-    this.stack = this.stack.push();
-  }
-
-  @Test
-  public void testPipelineVertexInputStateCreateInfo()
-  {
-    final var desc_0 =
-      VulkanVertexInputAttributeDescription.of(0, 1, VK_FORMAT_B8G8R8A8_UNORM, 23);
-    final var desc_1 =
-      VulkanVertexInputAttributeDescription.of(2, 3, VK_FORMAT_D16_UNORM, 26);
-    final var bind_0 =
-      VulkanVertexInputBindingDescription.of(3, 56, VK_VERTEX_INPUT_RATE_VERTEX);
-    final var bind_1 =
-      VulkanVertexInputBindingDescription.of(5, 57, VK_VERTEX_INPUT_RATE_INSTANCE);
-
-    final var info =
-      VulkanPipelineVertexInputStateCreateInfo.builder()
-        .addVertexAttributeDescriptions(desc_0)
-        .addVertexAttributeDescriptions(desc_1)
-        .addVertexBindingDescriptions(bind_0)
-        .addVertexBindingDescriptions(bind_1)
-        .build();
-
-    final var packed =
-      VulkanLWJGLPipelineVertexInputStateCreateInfos.pack(this.stack, info);
-
-    checkPacked(packed);
-  }
-
   static void checkPacked(final VkPipelineVertexInputStateCreateInfo packed)
   {
     Assertions.assertNotNull(packed, "VkPipelineVertexInputStateCreateInfo");
@@ -117,15 +84,62 @@ public final class VulkanLWJGLPipelineVertexInputStateCreateInfosTest
 
         vps.position(0);
         Assertions.assertEquals(3, vps.binding());
-        Assertions.assertEquals(VK_VERTEX_INPUT_RATE_VERTEX.value(), vps.inputRate());
+        Assertions.assertEquals(
+          VK_VERTEX_INPUT_RATE_VERTEX.value(),
+          vps.inputRate());
         Assertions.assertEquals(56, vps.stride());
 
         vps.position(1);
         Assertions.assertEquals(5, vps.binding());
-        Assertions.assertEquals(VK_VERTEX_INPUT_RATE_INSTANCE.value(), vps.inputRate());
+        Assertions.assertEquals(
+          VK_VERTEX_INPUT_RATE_INSTANCE.value(),
+          vps.inputRate());
         Assertions.assertEquals(57, vps.stride());
       }
     );
+  }
+
+  @BeforeEach
+  public void testSetup()
+  {
+    LOG.debug("testSetup");
+    this.stack = this.stack.push();
+  }
+
+  @Test
+  public void testPipelineVertexInputStateCreateInfo()
+  {
+    final var desc_0 =
+      VulkanVertexInputAttributeDescription.of(
+        0,
+        1,
+        VK_FORMAT_B8G8R8A8_UNORM,
+        23);
+    final var desc_1 =
+      VulkanVertexInputAttributeDescription.of(2, 3, VK_FORMAT_D16_UNORM, 26);
+    final var bind_0 =
+      VulkanVertexInputBindingDescription.of(
+        3,
+        56,
+        VK_VERTEX_INPUT_RATE_VERTEX);
+    final var bind_1 =
+      VulkanVertexInputBindingDescription.of(
+        5,
+        57,
+        VK_VERTEX_INPUT_RATE_INSTANCE);
+
+    final var info =
+      VulkanPipelineVertexInputStateCreateInfo.builder()
+        .addVertexAttributeDescriptions(desc_0)
+        .addVertexAttributeDescriptions(desc_1)
+        .addVertexBindingDescriptions(bind_0)
+        .addVertexBindingDescriptions(bind_1)
+        .build();
+
+    final var packed =
+      VulkanLWJGLPipelineVertexInputStateCreateInfos.pack(this.stack, info);
+
+    checkPacked(packed);
   }
 
   @Test

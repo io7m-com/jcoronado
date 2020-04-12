@@ -33,7 +33,8 @@ import java.util.List;
 
 public final class VulkanLWJGLClearValuesTest
 {
-  private static final Logger LOG = LoggerFactory.getLogger(VulkanLWJGLClearValuesTest.class);
+  private static final Logger LOG = LoggerFactory.getLogger(
+    VulkanLWJGLClearValuesTest.class);
 
   private MemoryStack stack = MemoryStack.create();
 
@@ -65,10 +66,22 @@ public final class VulkanLWJGLClearValuesTest
       final var g = ci.get(1);
       final var b = ci.get(2);
       final var a = ci.get(3);
-      LOG.debug("{} r 0x{}", Integer.valueOf(index), Integer.toUnsignedString(r, 16));
-      LOG.debug("{} g 0x{}", Integer.valueOf(index), Integer.toUnsignedString(g, 16));
-      LOG.debug("{} b 0x{}", Integer.valueOf(index), Integer.toUnsignedString(b, 16));
-      LOG.debug("{} a 0x{}", Integer.valueOf(index), Integer.toUnsignedString(a, 16));
+      LOG.debug(
+        "{} r 0x{}",
+        Integer.valueOf(index),
+        Integer.toUnsignedString(r, 16));
+      LOG.debug(
+        "{} g 0x{}",
+        Integer.valueOf(index),
+        Integer.toUnsignedString(g, 16));
+      LOG.debug(
+        "{} b 0x{}",
+        Integer.valueOf(index),
+        Integer.toUnsignedString(b, 16));
+      LOG.debug(
+        "{} a 0x{}",
+        Integer.valueOf(index),
+        Integer.toUnsignedString(a, 16));
 
       Assertions.assertEquals(index, r, "r-" + index);
       Assertions.assertEquals(index, g, "g-" + index);
@@ -98,10 +111,22 @@ public final class VulkanLWJGLClearValuesTest
       final var g = ci.get(1);
       final var b = ci.get(2);
       final var a = ci.get(3);
-      LOG.debug("{} r 0x{}", Integer.valueOf(index), Integer.toUnsignedString(r, 16));
-      LOG.debug("{} g 0x{}", Integer.valueOf(index), Integer.toUnsignedString(g, 16));
-      LOG.debug("{} b 0x{}", Integer.valueOf(index), Integer.toUnsignedString(b, 16));
-      LOG.debug("{} a 0x{}", Integer.valueOf(index), Integer.toUnsignedString(a, 16));
+      LOG.debug(
+        "{} r 0x{}",
+        Integer.valueOf(index),
+        Integer.toUnsignedString(r, 16));
+      LOG.debug(
+        "{} g 0x{}",
+        Integer.valueOf(index),
+        Integer.toUnsignedString(g, 16));
+      LOG.debug(
+        "{} b 0x{}",
+        Integer.valueOf(index),
+        Integer.toUnsignedString(b, 16));
+      LOG.debug(
+        "{} a 0x{}",
+        Integer.valueOf(index),
+        Integer.toUnsignedString(a, 16));
 
       Assertions.assertEquals(index, r, "r-" + index);
       Assertions.assertEquals(index, g, "g-" + index);
@@ -160,8 +185,14 @@ public final class VulkanLWJGLClearValuesTest
       final var value = packed_structures.get(index);
 
       final var ci = value.depthStencil();
-      LOG.debug("{} depth   {}", Integer.valueOf(index), Float.valueOf(ci.depth()));
-      LOG.debug("{} stencil {}", Integer.valueOf(index), Integer.valueOf(ci.stencil()));
+      LOG.debug(
+        "{} depth   {}",
+        Integer.valueOf(index),
+        Float.valueOf(ci.depth()));
+      LOG.debug(
+        "{} stencil {}",
+        Integer.valueOf(index),
+        Integer.valueOf(ci.stencil()));
 
       Assertions.assertEquals(index, ci.depth(), "depth-" + index);
       Assertions.assertEquals(index, ci.stencil(), "stencil-" + index);

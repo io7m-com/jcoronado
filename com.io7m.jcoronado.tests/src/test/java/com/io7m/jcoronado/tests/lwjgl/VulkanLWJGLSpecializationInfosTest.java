@@ -31,7 +31,8 @@ import java.util.Optional;
 
 public final class VulkanLWJGLSpecializationInfosTest
 {
-  private static final Logger LOG = LoggerFactory.getLogger(VulkanLWJGLSpecializationInfosTest.class);
+  private static final Logger LOG = LoggerFactory.getLogger(
+    VulkanLWJGLSpecializationInfosTest.class);
 
   private MemoryStack stack = MemoryStack.create();
 

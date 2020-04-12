@@ -23,7 +23,6 @@ import com.io7m.jcoronado.api.VulkanException;
 import com.io7m.jcoronado.api.VulkanExtent2D;
 import com.io7m.jcoronado.api.VulkanFrontFace;
 import com.io7m.jcoronado.api.VulkanGraphicsPipelineCreateInfo;
-import com.io7m.jcoronado.api.VulkanIncompatibleClassException;
 import com.io7m.jcoronado.api.VulkanLogicOp;
 import com.io7m.jcoronado.api.VulkanOffset2D;
 import com.io7m.jcoronado.api.VulkanPipelineColorBlendAttachmentState;
@@ -224,13 +223,23 @@ public final class VulkanLWJGLGraphicsPipelineCreateInfosTest
         .build();
 
     final var desc_0 =
-      VulkanVertexInputAttributeDescription.of(0, 1, VK_FORMAT_B8G8R8A8_UNORM, 23);
+      VulkanVertexInputAttributeDescription.of(
+        0,
+        1,
+        VK_FORMAT_B8G8R8A8_UNORM,
+        23);
     final var desc_1 =
       VulkanVertexInputAttributeDescription.of(2, 3, VK_FORMAT_D16_UNORM, 26);
     final var bind_0 =
-      VulkanVertexInputBindingDescription.of(3, 56, VK_VERTEX_INPUT_RATE_VERTEX);
+      VulkanVertexInputBindingDescription.of(
+        3,
+        56,
+        VK_VERTEX_INPUT_RATE_VERTEX);
     final var bind_1 =
-      VulkanVertexInputBindingDescription.of(5, 57, VK_VERTEX_INPUT_RATE_INSTANCE);
+      VulkanVertexInputBindingDescription.of(
+        5,
+        57,
+        VK_VERTEX_INPUT_RATE_INSTANCE);
 
     final var vertex_info =
       VulkanPipelineVertexInputStateCreateInfo.builder()
@@ -300,7 +309,9 @@ public final class VulkanLWJGLGraphicsPipelineCreateInfosTest
         base_opt);
 
     final var packed_0 =
-      VulkanLWJGLGraphicsPipelineCreateInfos.pack(this.stack, List.of(info)).get(0);
+      VulkanLWJGLGraphicsPipelineCreateInfos.pack(
+        this.stack,
+        List.of(info)).get(0);
 
     VulkanLWJGLPipelineColorBlendStateCreateInfosTest.checkPacked(
       packed_0.pColorBlendState(), true);

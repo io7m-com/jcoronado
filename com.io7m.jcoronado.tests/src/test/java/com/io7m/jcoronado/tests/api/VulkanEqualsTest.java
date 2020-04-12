@@ -39,6 +39,49 @@ public final class VulkanEqualsTest
 {
   private static final Logger LOG = LoggerFactory.getLogger(VulkanEqualsTest.class);
 
+  private static void checkTypeException(
+    final Class<?> type,
+    final Class<?> subtype,
+    final AssertionError e)
+  {
+    if (Objects.equals(
+      type,
+      VulkanPipelineMultisampleStateCreateInfoType.class)) {
+      if (e.getMessage().contains("sampleMask")) {
+        LOG.error(
+          "{}: {}: applying exception for comparison failure: ",
+          type,
+          subtype,
+          e);
+        return;
+      }
+    }
+
+    throw e;
+  }
+
+  private static boolean isAttribute(final Method m)
+  {
+    if (Objects.equals(m.getDeclaringClass(), Object.class)) {
+      return false;
+    }
+
+    if (m.isDefault()) {
+      final var ignore_names =
+        Set.of(
+          "compareTo",
+          "colorType",
+          "checkPreconditions",
+          "findSuitableMemoryType",
+          "toHumanString",
+          "type");
+
+      return !ignore_names.contains(m.getName());
+    }
+
+    return (m.getModifiers() & Modifier.ABSTRACT) == Modifier.ABSTRACT;
+  }
+
   @Test
   public void testEqualsReflectively()
   {
@@ -68,7 +111,10 @@ public final class VulkanEqualsTest
           final var name_array = new String[names.size()];
           names.toArray(name_array);
 
-          LOG.debug("checking: {}: names: {}", subtype.getCanonicalName(), names);
+          LOG.debug(
+            "checking: {}: names: {}",
+            subtype.getCanonicalName(),
+            names);
 
           try {
             EqualsVerifier.forClass(subtype)
@@ -84,42 +130,5 @@ public final class VulkanEqualsTest
     }
 
     Assertions.assertAll(executables);
-  }
-
-  private static void checkTypeException(
-    final Class<?> type,
-    final Class<?> subtype,
-    final AssertionError e)
-  {
-    if (Objects.equals(type, VulkanPipelineMultisampleStateCreateInfoType.class)) {
-      if (e.getMessage().contains("sampleMask")) {
-        LOG.error("{}: {}: applying exception for comparison failure: ", type, subtype, e);
-        return;
-      }
-    }
-
-    throw e;
-  }
-
-  private static boolean isAttribute(final Method m)
-  {
-    if (Objects.equals(m.getDeclaringClass(), Object.class)) {
-      return false;
-    }
-
-    if (m.isDefault()) {
-      final var ignore_names =
-        Set.of(
-          "compareTo",
-          "colorType",
-          "checkPreconditions",
-          "findSuitableMemoryType",
-          "toHumanString",
-          "type");
-
-      return !ignore_names.contains(m.getName());
-    }
-
-    return (m.getModifiers() & Modifier.ABSTRACT) == Modifier.ABSTRACT;
   }
 }

@@ -37,36 +37,6 @@ public final class VulkanLWJGLPipelineMultisampleStateCreateInfosTest
 
   private MemoryStack stack = MemoryStack.create();
 
-  @BeforeEach
-  public void testSetup()
-  {
-    LOG.debug("testSetup");
-    this.stack = this.stack.push();
-  }
-
-  @Test
-  public void testPipelineMultisampleStateCreateInfo()
-  {
-    final var info =
-      VulkanPipelineMultisampleStateCreateInfo.builder()
-        .setAlphaToCoverageEnable(true)
-        .setMinSampleShading(0.5f)
-        .setRasterizationSamples(VulkanSampleCountFlag.VK_SAMPLE_COUNT_1_BIT)
-        .setSampleShadingEnable(true)
-        .setAlphaToOneEnable(true)
-        .setSampleMask(new int[]{1, 2, 3})
-        .build();
-
-    final var packed =
-      VulkanLWJGLPipelineMultisampleStateCreateInfos.pack(this.stack, info);
-
-    checkPacked(packed);
-    checkPacked(
-      VulkanLWJGLPipelineMultisampleStateCreateInfos.packOptional(this.stack, Optional.of(info)));
-    Assertions.assertNull(
-      VulkanLWJGLPipelineMultisampleStateCreateInfos.packOptional(this.stack, Optional.empty()));
-  }
-
   static void checkPacked(
     final VkPipelineMultisampleStateCreateInfo packed)
   {
@@ -93,5 +63,39 @@ public final class VulkanLWJGLPipelineMultisampleStateCreateInfosTest
         Assertions.assertTrue(packed.alphaToCoverageEnable());
       }
     );
+  }
+
+  @BeforeEach
+  public void testSetup()
+  {
+    LOG.debug("testSetup");
+    this.stack = this.stack.push();
+  }
+
+  @Test
+  public void testPipelineMultisampleStateCreateInfo()
+  {
+    final var info =
+      VulkanPipelineMultisampleStateCreateInfo.builder()
+        .setAlphaToCoverageEnable(true)
+        .setMinSampleShading(0.5f)
+        .setRasterizationSamples(VulkanSampleCountFlag.VK_SAMPLE_COUNT_1_BIT)
+        .setSampleShadingEnable(true)
+        .setAlphaToOneEnable(true)
+        .setSampleMask(new int[]{1, 2, 3})
+        .build();
+
+    final var packed =
+      VulkanLWJGLPipelineMultisampleStateCreateInfos.pack(this.stack, info);
+
+    checkPacked(packed);
+    checkPacked(
+      VulkanLWJGLPipelineMultisampleStateCreateInfos.packOptional(
+        this.stack,
+        Optional.of(info)));
+    Assertions.assertNull(
+      VulkanLWJGLPipelineMultisampleStateCreateInfos.packOptional(
+        this.stack,
+        Optional.empty()));
   }
 }

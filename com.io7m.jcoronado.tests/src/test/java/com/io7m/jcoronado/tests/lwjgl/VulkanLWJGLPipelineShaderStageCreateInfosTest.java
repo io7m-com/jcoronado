@@ -41,6 +41,49 @@ public final class VulkanLWJGLPipelineShaderStageCreateInfosTest
 
   private MemoryStack stack = MemoryStack.create();
 
+  static void checkPacked(
+    final VulkanLWJGLShaderModule module,
+    final VkPipelineShaderStageCreateInfo.Buffer packed)
+  {
+    Assertions.assertNotNull(packed, "VkPipelineShaderStageCreateInfo");
+
+    Assertions.assertAll(
+      () -> {
+        Assertions.assertEquals(0L, packed.pNext());
+      },
+      () -> {
+        Assertions.assertEquals(
+          VK10.VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO,
+          packed.sType());
+      },
+      () -> {
+        packed.position(0);
+
+        Assertions.assertEquals(
+          "main",
+          packed.pNameString());
+        Assertions.assertEquals(
+          module.handle(),
+          packed.module());
+        Assertions.assertEquals(
+          VK10.VK_SHADER_STAGE_VERTEX_BIT,
+          packed.stage());
+
+        packed.position(1);
+
+        Assertions.assertEquals(
+          "main2",
+          packed.pNameString());
+        Assertions.assertEquals(
+          module.handle(),
+          packed.module());
+        Assertions.assertEquals(
+          VK10.VK_SHADER_STAGE_FRAGMENT_BIT,
+          packed.stage());
+      }
+    );
+  }
+
   @BeforeEach
   public void testSetup()
   {
@@ -122,51 +165,11 @@ public final class VulkanLWJGLPipelineShaderStageCreateInfosTest
         .build();
 
     final var packed =
-      VulkanLWJGLPipelineShaderStageCreateInfos.packAll(this.stack, List.of(info_0, info_1));
+      VulkanLWJGLPipelineShaderStageCreateInfos.packAll(this.stack,
+                                                        List.of(
+                                                          info_0,
+                                                          info_1));
 
     checkPacked(module, packed);
-  }
-
-  static void checkPacked(
-    final VulkanLWJGLShaderModule module,
-    final VkPipelineShaderStageCreateInfo.Buffer packed)
-  {
-    Assertions.assertNotNull(packed, "VkPipelineShaderStageCreateInfo");
-
-    Assertions.assertAll(
-      () -> {
-        Assertions.assertEquals(0L, packed.pNext());
-      },
-      () -> {
-        Assertions.assertEquals(
-          VK10.VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO,
-          packed.sType());
-      },
-      () -> {
-        packed.position(0);
-
-        Assertions.assertEquals(
-          "main",
-          packed.pNameString());
-        Assertions.assertEquals(
-          module.handle(),
-          packed.module());
-        Assertions.assertEquals(
-          VK10.VK_SHADER_STAGE_VERTEX_BIT,
-          packed.stage());
-
-        packed.position(1);
-
-        Assertions.assertEquals(
-          "main2",
-          packed.pNameString());
-        Assertions.assertEquals(
-          module.handle(),
-          packed.module());
-        Assertions.assertEquals(
-          VK10.VK_SHADER_STAGE_FRAGMENT_BIT,
-          packed.stage());
-      }
-    );
   }
 }

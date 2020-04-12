@@ -46,6 +46,84 @@ public final class VulkanLWJGLPipelineColorBlendStateCreateInfosTest
 
   private MemoryStack stack = MemoryStack.create();
 
+  static void checkPacked(
+    final VkPipelineColorBlendStateCreateInfo packed,
+    final boolean logic)
+  {
+    Assertions.assertNotNull(packed, "VkPipelineColorBlendStateCreateInfo");
+
+    Assertions.assertAll(
+      () -> {
+        Assertions.assertEquals(0L, packed.pNext());
+      },
+      () -> {
+        Assertions.assertEquals(
+          VK10.VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO,
+          packed.sType());
+      },
+      () -> {
+        if (logic) {
+          Assertions.assertEquals(
+            VulkanLogicOp.VK_LOGIC_OP_AND_INVERTED.value(),
+            packed.logicOp(),
+            "logic op");
+        } else {
+          Assertions.assertEquals(
+            0,
+            packed.logicOp(),
+            "logic op");
+        }
+
+        Assertions.assertEquals(
+          Boolean.valueOf(logic),
+          Boolean.valueOf(packed.logicOpEnable()),
+          "logic");
+        Assertions.assertEquals(
+          1.0f,
+          packed.blendConstants().get(0),
+          "constant r");
+        Assertions.assertEquals(
+          2.0f,
+          packed.blendConstants().get(1),
+          "constant g");
+        Assertions.assertEquals(
+          3.0f,
+          packed.blendConstants().get(2),
+          "constant b");
+        Assertions.assertEquals(
+          4.0f,
+          packed.blendConstants().get(3),
+          "constant a");
+
+        final var attach = packed.pAttachments();
+        Assertions.assertEquals(
+          VK_BLEND_OP_ADD.value(),
+          attach.alphaBlendOp(),
+          "alphaBlendOp");
+        Assertions.assertEquals(
+          VK_BLEND_OP_HSL_LUMINOSITY_EXT.value(),
+          attach.colorBlendOp(),
+          "colorBlendOp");
+        Assertions.assertEquals(
+          VK_BLEND_FACTOR_ONE.value(),
+          attach.dstAlphaBlendFactor(),
+          "dstAlphaBlendFactor");
+        Assertions.assertEquals(
+          VK_BLEND_FACTOR_ONE_MINUS_DST_COLOR.value(),
+          attach.dstColorBlendFactor(),
+          "dstColorBlendFactor");
+        Assertions.assertEquals(
+          VK_BLEND_FACTOR_CONSTANT_ALPHA.value(),
+          attach.srcAlphaBlendFactor(),
+          "srcAlphaBlendFactor");
+        Assertions.assertEquals(
+          VK_BLEND_FACTOR_CONSTANT_COLOR.value(),
+          attach.srcColorBlendFactor(),
+          "srcColorBlendFactor");
+      }
+    );
+  }
+
   @BeforeEach
   public void testSetup()
   {
@@ -79,73 +157,14 @@ public final class VulkanLWJGLPipelineColorBlendStateCreateInfosTest
 
     checkPacked(packed, true);
     checkPacked(
-      VulkanLWJGLPipelineColorBlendStateCreateInfos.packOptional(this.stack, Optional.of(info)),
+      VulkanLWJGLPipelineColorBlendStateCreateInfos.packOptional(
+        this.stack,
+        Optional.of(info)),
       true);
     Assertions.assertNull(
-      VulkanLWJGLPipelineColorBlendStateCreateInfos.packOptional(this.stack, Optional.empty()));
-  }
-
-  static void checkPacked(
-    final VkPipelineColorBlendStateCreateInfo packed,
-    final boolean logic)
-  {
-    Assertions.assertNotNull(packed, "VkPipelineColorBlendStateCreateInfo");
-
-    Assertions.assertAll(
-      () -> {
-        Assertions.assertEquals(0L, packed.pNext());
-      },
-      () -> {
-        Assertions.assertEquals(
-          VK10.VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO,
-          packed.sType());
-      },
-      () -> {
-        if (logic) {
-          Assertions.assertEquals(
-            VulkanLogicOp.VK_LOGIC_OP_AND_INVERTED.value(),
-            packed.logicOp(),
-            "logic op");
-        } else {
-          Assertions.assertEquals(
-            0,
-            packed.logicOp(),
-            "logic op");
-        }
-
-        Assertions.assertEquals(
-          Boolean.valueOf(logic),
-          Boolean.valueOf(packed.logicOpEnable()),
-          "logic");
-        Assertions.assertEquals(1.0f, packed.blendConstants().get(0), "constant r");
-        Assertions.assertEquals(2.0f, packed.blendConstants().get(1), "constant g");
-        Assertions.assertEquals(3.0f, packed.blendConstants().get(2), "constant b");
-        Assertions.assertEquals(4.0f, packed.blendConstants().get(3), "constant a");
-
-        final var attach = packed.pAttachments();
-        Assertions.assertEquals(VK_BLEND_OP_ADD.value(), attach.alphaBlendOp(), "alphaBlendOp");
-        Assertions.assertEquals(
-          VK_BLEND_OP_HSL_LUMINOSITY_EXT.value(),
-          attach.colorBlendOp(),
-          "colorBlendOp");
-        Assertions.assertEquals(
-          VK_BLEND_FACTOR_ONE.value(),
-          attach.dstAlphaBlendFactor(),
-          "dstAlphaBlendFactor");
-        Assertions.assertEquals(
-          VK_BLEND_FACTOR_ONE_MINUS_DST_COLOR.value(),
-          attach.dstColorBlendFactor(),
-          "dstColorBlendFactor");
-        Assertions.assertEquals(
-          VK_BLEND_FACTOR_CONSTANT_ALPHA.value(),
-          attach.srcAlphaBlendFactor(),
-          "srcAlphaBlendFactor");
-        Assertions.assertEquals(
-          VK_BLEND_FACTOR_CONSTANT_COLOR.value(),
-          attach.srcColorBlendFactor(),
-          "srcColorBlendFactor");
-      }
-    );
+      VulkanLWJGLPipelineColorBlendStateCreateInfos.packOptional(
+        this.stack,
+        Optional.empty()));
   }
 
   @Test
@@ -174,9 +193,13 @@ public final class VulkanLWJGLPipelineColorBlendStateCreateInfosTest
 
     checkPacked(packed, false);
     checkPacked(
-      VulkanLWJGLPipelineColorBlendStateCreateInfos.packOptional(this.stack, Optional.of(info)),
+      VulkanLWJGLPipelineColorBlendStateCreateInfos.packOptional(
+        this.stack,
+        Optional.of(info)),
       false);
     Assertions.assertNull(
-      VulkanLWJGLPipelineColorBlendStateCreateInfos.packOptional(this.stack, Optional.empty()));
+      VulkanLWJGLPipelineColorBlendStateCreateInfos.packOptional(
+        this.stack,
+        Optional.empty()));
   }
 }

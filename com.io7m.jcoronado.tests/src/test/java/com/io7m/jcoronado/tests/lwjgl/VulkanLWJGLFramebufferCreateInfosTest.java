@@ -69,7 +69,11 @@ public final class VulkanLWJGLFramebufferCreateInfosTest
         .build();
 
     final var packed =
-      VulkanLWJGLFramebufferCreateInfos.pack(this.stack, info, List.of(image_view), render_pass);
+      VulkanLWJGLFramebufferCreateInfos.pack(
+        this.stack,
+        info,
+        List.of(image_view),
+        render_pass);
 
     Assertions.assertAll(
       () -> {

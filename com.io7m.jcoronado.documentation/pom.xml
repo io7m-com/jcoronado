@@ -83,7 +83,7 @@
               <outputDirectory>${project.build.directory}/documentation/</outputDirectory>
               <resources>
                 <resource>
-                  <directory>src/main/resources/com/io7m/jlexing/documentation/</directory>
+                  <directory>src/main/resources/com/io7m/jcoronado/documentation/</directory>
                   <filtering>true</filtering>
                 </resource>
               </resources>

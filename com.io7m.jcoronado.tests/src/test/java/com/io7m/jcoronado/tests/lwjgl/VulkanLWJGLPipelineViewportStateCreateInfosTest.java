@@ -40,45 +40,6 @@ public final class VulkanLWJGLPipelineViewportStateCreateInfosTest
 
   private MemoryStack stack = MemoryStack.create();
 
-  @BeforeEach
-  public void testSetup()
-  {
-    LOG.debug("testSetup");
-    this.stack = this.stack.push();
-  }
-
-  @Test
-  public void testPipelineViewportStateCreateInfo()
-  {
-    final var viewport_0 =
-      VulkanViewport.of(101.0f, 102.0f, 103.0f, 104.0f, 0.0f, 1.0f);
-    final var viewport_1 =
-      VulkanViewport.of(105.0f, 106.0f, 107.0f, 108.0f, 0.0f, 1.0f);
-
-    final var scissor_0 =
-      VulkanRectangle2D.of(VulkanOffset2D.of(5, 17), VulkanExtent2D.of(23, 34));
-    final var scissor_1 =
-      VulkanRectangle2D.of(VulkanOffset2D.of(6, 18), VulkanExtent2D.of(25, 37));
-
-    final var info =
-      VulkanPipelineViewportStateCreateInfo.builder()
-        .addViewports(viewport_0)
-        .addViewports(viewport_1)
-        .addScissors(scissor_0)
-        .addScissors(scissor_1)
-        .build();
-
-    final var packed =
-      VulkanLWJGLPipelineViewportStateCreateInfos.pack(this.stack, info);
-
-    checkPacked(packed);
-
-    checkPacked(VulkanLWJGLPipelineViewportStateCreateInfos.packOptional(
-      this.stack, Optional.of(info)));
-    Assertions.assertNull(VulkanLWJGLPipelineViewportStateCreateInfos.packOptional(
-      this.stack, Optional.empty()));
-  }
-
   static void checkPacked(
     final VkPipelineViewportStateCreateInfo packed)
   {
@@ -172,5 +133,44 @@ public final class VulkanLWJGLPipelineViewportStateCreateInfosTest
           vps.extent().height());
       }
     );
+  }
+
+  @BeforeEach
+  public void testSetup()
+  {
+    LOG.debug("testSetup");
+    this.stack = this.stack.push();
+  }
+
+  @Test
+  public void testPipelineViewportStateCreateInfo()
+  {
+    final var viewport_0 =
+      VulkanViewport.of(101.0f, 102.0f, 103.0f, 104.0f, 0.0f, 1.0f);
+    final var viewport_1 =
+      VulkanViewport.of(105.0f, 106.0f, 107.0f, 108.0f, 0.0f, 1.0f);
+
+    final var scissor_0 =
+      VulkanRectangle2D.of(VulkanOffset2D.of(5, 17), VulkanExtent2D.of(23, 34));
+    final var scissor_1 =
+      VulkanRectangle2D.of(VulkanOffset2D.of(6, 18), VulkanExtent2D.of(25, 37));
+
+    final var info =
+      VulkanPipelineViewportStateCreateInfo.builder()
+        .addViewports(viewport_0)
+        .addViewports(viewport_1)
+        .addScissors(scissor_0)
+        .addScissors(scissor_1)
+        .build();
+
+    final var packed =
+      VulkanLWJGLPipelineViewportStateCreateInfos.pack(this.stack, info);
+
+    checkPacked(packed);
+
+    checkPacked(VulkanLWJGLPipelineViewportStateCreateInfos.packOptional(
+      this.stack, Optional.of(info)));
+    Assertions.assertNull(VulkanLWJGLPipelineViewportStateCreateInfos.packOptional(
+      this.stack, Optional.empty()));
   }
 }

@@ -40,38 +40,6 @@ public final class VulkanLWJGLPipelineRasterizationStateCreateInfosTest
 
   private MemoryStack stack = MemoryStack.create();
 
-  @BeforeEach
-  public void testSetup()
-  {
-    LOG.debug("testSetup");
-    this.stack = this.stack.push();
-  }
-
-  @Test
-  public void testPipelineRasterizationStateCreateInfo()
-  {
-    final var info =
-      VulkanPipelineRasterizationStateCreateInfo.builder()
-        .setDepthBiasSlopeFactor(2.5f)
-        .setDepthBiasClamp(3.0f)
-        .setDepthBiasConstantFactor(0.5f)
-        .setDepthBiasEnable(true)
-        .setFrontFace(VulkanFrontFace.VK_FRONT_FACE_CLOCKWISE)
-        .setCullMode(Set.of(VulkanCullModeFlag.VK_CULL_MODE_BACK_BIT))
-        .setPolygonMode(VulkanPolygonMode.VK_POLYGON_MODE_FILL)
-        .setLineWidth(50.0f)
-        .setRasterizerDiscardEnable(true)
-        .setDepthClampEnable(true)
-        .build();
-
-    checkPacked(
-      VulkanLWJGLPipelineRasterizationStateCreateInfos.pack(this.stack, info));
-    checkPacked(
-      VulkanLWJGLPipelineRasterizationStateCreateInfos.packOptional(this.stack, Optional.of(info)));
-    Assertions.assertNull(
-      VulkanLWJGLPipelineRasterizationStateCreateInfos.packOptional(this.stack, Optional.empty()));
-  }
-
   static void checkPacked(
     final VkPipelineRasterizationStateCreateInfo packed)
   {
@@ -129,5 +97,41 @@ public final class VulkanLWJGLPipelineRasterizationStateCreateInfosTest
           packed.cullMode());
       }
     );
+  }
+
+  @BeforeEach
+  public void testSetup()
+  {
+    LOG.debug("testSetup");
+    this.stack = this.stack.push();
+  }
+
+  @Test
+  public void testPipelineRasterizationStateCreateInfo()
+  {
+    final var info =
+      VulkanPipelineRasterizationStateCreateInfo.builder()
+        .setDepthBiasSlopeFactor(2.5f)
+        .setDepthBiasClamp(3.0f)
+        .setDepthBiasConstantFactor(0.5f)
+        .setDepthBiasEnable(true)
+        .setFrontFace(VulkanFrontFace.VK_FRONT_FACE_CLOCKWISE)
+        .setCullMode(Set.of(VulkanCullModeFlag.VK_CULL_MODE_BACK_BIT))
+        .setPolygonMode(VulkanPolygonMode.VK_POLYGON_MODE_FILL)
+        .setLineWidth(50.0f)
+        .setRasterizerDiscardEnable(true)
+        .setDepthClampEnable(true)
+        .build();
+
+    checkPacked(
+      VulkanLWJGLPipelineRasterizationStateCreateInfos.pack(this.stack, info));
+    checkPacked(
+      VulkanLWJGLPipelineRasterizationStateCreateInfos.packOptional(
+        this.stack,
+        Optional.of(info)));
+    Assertions.assertNull(
+      VulkanLWJGLPipelineRasterizationStateCreateInfos.packOptional(
+        this.stack,
+        Optional.empty()));
   }
 }

@@ -47,6 +47,91 @@ public final class VulkanLWJGLPipelineDepthStencilStateCreateInfosTest
 
   private MemoryStack stack = MemoryStack.create();
 
+  static void checkPacked(
+    final VkPipelineDepthStencilStateCreateInfo packed)
+  {
+    Assertions.assertNotNull(packed, "VkPipelineDepthStencilStateCreateInfo");
+
+    Assertions.assertAll(
+      () -> {
+        Assertions.assertEquals(0L, packed.pNext());
+      },
+      () -> {
+        Assertions.assertEquals(
+          VK10.VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO,
+          packed.sType());
+      },
+      () -> {
+        Assertions.assertTrue(packed.depthBoundsTestEnable());
+        Assertions.assertTrue(packed.depthTestEnable());
+        Assertions.assertTrue(packed.depthWriteEnable());
+        Assertions.assertTrue(packed.stencilTestEnable());
+        Assertions.assertEquals(
+          VK_COMPARE_OP_LESS_OR_EQUAL.value(), packed.depthCompareOp());
+        Assertions.assertEquals(2.4f, packed.minDepthBounds());
+        Assertions.assertEquals(23.0f, packed.maxDepthBounds());
+
+        Assertions.assertEquals(
+          VK_STENCIL_OP_KEEP.value(),
+          packed.front().failOp(),
+          "front.failOp");
+        Assertions.assertEquals(
+          VK_STENCIL_OP_DECREMENT_AND_CLAMP.value(),
+          packed.front().passOp(),
+          "front.passOp");
+        Assertions.assertEquals(
+          VK_STENCIL_OP_INCREMENT_AND_CLAMP.value(),
+          packed.front().depthFailOp(),
+          "front.depthFailOp");
+        Assertions.assertEquals(
+          VK_COMPARE_OP_ALWAYS.value(),
+          packed.front().compareOp(),
+          "front.compareOp");
+        Assertions.assertEquals(
+          23,
+          packed.front().compareMask(),
+          "front.compareMask");
+        Assertions.assertEquals(
+          24,
+          packed.front().writeMask(),
+          "front.writeMask");
+        Assertions.assertEquals(
+          25,
+          packed.front().reference(),
+          "front.reference");
+
+        Assertions.assertEquals(
+          VK_STENCIL_OP_INVERT.value(),
+          packed.back().failOp(),
+          "back.failOp");
+        Assertions.assertEquals(
+          VK_STENCIL_OP_REPLACE.value(),
+          packed.back().passOp(),
+          "back.passOp");
+        Assertions.assertEquals(
+          VK_STENCIL_OP_ZERO.value(),
+          packed.back().depthFailOp(),
+          "back.depthFailOp");
+        Assertions.assertEquals(
+          VK_COMPARE_OP_NEVER.value(),
+          packed.back().compareOp(),
+          "back.compareOp");
+        Assertions.assertEquals(
+          33,
+          packed.back().compareMask(),
+          "back.compareMask");
+        Assertions.assertEquals(
+          34,
+          packed.back().writeMask(),
+          "back.writeMask");
+        Assertions.assertEquals(
+          35,
+          packed.back().reference(),
+          "back.reference");
+      }
+    );
+  }
+
   @BeforeEach
   public void testSetup()
   {
@@ -95,75 +180,12 @@ public final class VulkanLWJGLPipelineDepthStencilStateCreateInfosTest
 
     checkPacked(packed);
     checkPacked(
-      VulkanLWJGLPipelineDepthStencilStateCreateInfos.packOptional(this.stack, Optional.of(info)));
+      VulkanLWJGLPipelineDepthStencilStateCreateInfos.packOptional(
+        this.stack,
+        Optional.of(info)));
     Assertions.assertNull(
-      VulkanLWJGLPipelineDepthStencilStateCreateInfos.packOptional(this.stack, Optional.empty()));
-  }
-
-  static void checkPacked(
-    final VkPipelineDepthStencilStateCreateInfo packed)
-  {
-    Assertions.assertNotNull(packed, "VkPipelineDepthStencilStateCreateInfo");
-
-    Assertions.assertAll(
-      () -> {
-        Assertions.assertEquals(0L, packed.pNext());
-      },
-      () -> {
-        Assertions.assertEquals(
-          VK10.VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO,
-          packed.sType());
-      },
-      () -> {
-        Assertions.assertTrue(packed.depthBoundsTestEnable());
-        Assertions.assertTrue(packed.depthTestEnable());
-        Assertions.assertTrue(packed.depthWriteEnable());
-        Assertions.assertTrue(packed.stencilTestEnable());
-        Assertions.assertEquals(
-          VK_COMPARE_OP_LESS_OR_EQUAL.value(), packed.depthCompareOp());
-        Assertions.assertEquals(2.4f, packed.minDepthBounds());
-        Assertions.assertEquals(23.0f, packed.maxDepthBounds());
-
-        Assertions.assertEquals(
-          VK_STENCIL_OP_KEEP.value(),
-          packed.front().failOp(),
-          "front.failOp");
-        Assertions.assertEquals(
-          VK_STENCIL_OP_DECREMENT_AND_CLAMP.value(),
-          packed.front().passOp(),
-          "front.passOp");
-        Assertions.assertEquals(
-          VK_STENCIL_OP_INCREMENT_AND_CLAMP.value(),
-          packed.front().depthFailOp(),
-          "front.depthFailOp");
-        Assertions.assertEquals(
-          VK_COMPARE_OP_ALWAYS.value(),
-          packed.front().compareOp(),
-          "front.compareOp");
-        Assertions.assertEquals(23, packed.front().compareMask(), "front.compareMask");
-        Assertions.assertEquals(24, packed.front().writeMask(), "front.writeMask");
-        Assertions.assertEquals(25, packed.front().reference(), "front.reference");
-
-        Assertions.assertEquals(
-          VK_STENCIL_OP_INVERT.value(),
-          packed.back().failOp(),
-          "back.failOp");
-        Assertions.assertEquals(
-          VK_STENCIL_OP_REPLACE.value(),
-          packed.back().passOp(),
-          "back.passOp");
-        Assertions.assertEquals(
-          VK_STENCIL_OP_ZERO.value(),
-          packed.back().depthFailOp(),
-          "back.depthFailOp");
-        Assertions.assertEquals(
-          VK_COMPARE_OP_NEVER.value(),
-          packed.back().compareOp(),
-          "back.compareOp");
-        Assertions.assertEquals(33, packed.back().compareMask(), "back.compareMask");
-        Assertions.assertEquals(34, packed.back().writeMask(), "back.writeMask");
-        Assertions.assertEquals(35, packed.back().reference(), "back.reference");
-      }
-    );
+      VulkanLWJGLPipelineDepthStencilStateCreateInfos.packOptional(
+        this.stack,
+        Optional.empty()));
   }
 }

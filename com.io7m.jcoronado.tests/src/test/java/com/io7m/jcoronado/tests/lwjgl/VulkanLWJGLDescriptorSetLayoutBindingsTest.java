@@ -100,7 +100,8 @@ public final class VulkanLWJGLDescriptorSetLayoutBindingsTest
     final @Mocked VulkanLWJGLSampler sampler_2)
     throws Exception
   {
-    new Expectations() {{
+    new Expectations()
+    {{
       sampler_0.handle();
       this.result = Long.valueOf(23L);
       sampler_1.handle();

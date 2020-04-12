@@ -36,31 +36,6 @@ public final class VulkanLWJGLPipelineTessellationStateCreateInfosTest
 
   private MemoryStack stack = MemoryStack.create();
 
-  @BeforeEach
-  public void testSetup()
-  {
-    LOG.debug("testSetup");
-    this.stack = this.stack.push();
-  }
-
-  @Test
-  public void testPipelineVertexInputStateCreateInfo()
-  {
-    final var info =
-      VulkanPipelineTessellationStateCreateInfo.builder()
-        .setPatchControlPoints(3)
-        .build();
-
-    final var packed =
-      VulkanLWJGLPipelineTessellationStateCreateInfos.pack(this.stack, info);
-
-    checkPacked(packed);
-    checkPacked(
-      VulkanLWJGLPipelineTessellationStateCreateInfos.packOptional(this.stack, Optional.of(info)));
-    Assertions.assertNull(
-      VulkanLWJGLPipelineTessellationStateCreateInfos.packOptional(this.stack, Optional.empty()));
-  }
-
   static void checkPacked(
     final VkPipelineTessellationStateCreateInfo packed)
   {
@@ -81,5 +56,34 @@ public final class VulkanLWJGLPipelineTessellationStateCreateInfosTest
           packed.patchControlPoints());
       }
     );
+  }
+
+  @BeforeEach
+  public void testSetup()
+  {
+    LOG.debug("testSetup");
+    this.stack = this.stack.push();
+  }
+
+  @Test
+  public void testPipelineVertexInputStateCreateInfo()
+  {
+    final var info =
+      VulkanPipelineTessellationStateCreateInfo.builder()
+        .setPatchControlPoints(3)
+        .build();
+
+    final var packed =
+      VulkanLWJGLPipelineTessellationStateCreateInfos.pack(this.stack, info);
+
+    checkPacked(packed);
+    checkPacked(
+      VulkanLWJGLPipelineTessellationStateCreateInfos.packOptional(
+        this.stack,
+        Optional.of(info)));
+    Assertions.assertNull(
+      VulkanLWJGLPipelineTessellationStateCreateInfos.packOptional(
+        this.stack,
+        Optional.empty()));
   }
 }

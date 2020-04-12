@@ -31,7 +31,8 @@ import java.nio.ByteBuffer;
 
 public final class VulkanLWJGLShaderModulesTest
 {
-  private static final Logger LOG = LoggerFactory.getLogger(VulkanLWJGLShaderModulesTest.class);
+  private static final Logger LOG = LoggerFactory.getLogger(
+    VulkanLWJGLShaderModulesTest.class);
 
   private MemoryStack stack = MemoryStack.create();
 
@@ -64,7 +65,9 @@ public final class VulkanLWJGLShaderModulesTest
 
     Assertions.assertAll(
       () -> {
-        Assertions.assertEquals(VK10.VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO, packed.sType());
+        Assertions.assertEquals(
+          VK10.VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO,
+          packed.sType());
       },
 
       () -> {
@@ -76,7 +79,7 @@ public final class VulkanLWJGLShaderModulesTest
       },
 
       () -> {
-        Assertions.assertEquals(0L, (long) packed.flags());
+        Assertions.assertEquals(0L, packed.flags());
       },
 
       () -> {

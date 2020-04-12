@@ -19,11 +19,16 @@ public final class GenerateLimitsMethodNames
   {
     List.of(VkPhysicalDeviceLimits.class.getMethods())
       .stream()
-      .filter(m -> Objects.equals(m.getDeclaringClass(), VkPhysicalDeviceLimits.class))
+      .filter(m -> Objects.equals(
+        m.getDeclaringClass(),
+        VkPhysicalDeviceLimits.class))
       .filter(m -> !m.getName().startsWith("n"))
       .sorted(Comparator.comparing(Method::getName))
       .forEach(method -> {
-        System.out.printf("@Value.Parameter\n%s %s();\n\n", method.getReturnType().getName(),  method.getName());
+        System.out.printf(
+          "@Value.Parameter\n%s %s();\n\n",
+          method.getReturnType().getName(),
+          method.getName());
       });
   }
 }

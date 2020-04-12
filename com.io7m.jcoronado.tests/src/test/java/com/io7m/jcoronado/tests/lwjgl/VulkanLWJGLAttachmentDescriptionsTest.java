@@ -29,15 +29,19 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
-import static com.io7m.jcoronado.api.VulkanAttachmentLoadOp.*;
-import static com.io7m.jcoronado.api.VulkanAttachmentStoreOp.*;
-import static com.io7m.jcoronado.api.VulkanFormat.*;
-import static com.io7m.jcoronado.api.VulkanImageLayout.*;
-import static com.io7m.jcoronado.api.VulkanSampleCountFlag.*;
+import static com.io7m.jcoronado.api.VulkanAttachmentLoadOp.VK_ATTACHMENT_LOAD_OP_CLEAR;
+import static com.io7m.jcoronado.api.VulkanAttachmentLoadOp.VK_ATTACHMENT_LOAD_OP_DONT_CARE;
+import static com.io7m.jcoronado.api.VulkanAttachmentStoreOp.VK_ATTACHMENT_STORE_OP_DONT_CARE;
+import static com.io7m.jcoronado.api.VulkanAttachmentStoreOp.VK_ATTACHMENT_STORE_OP_STORE;
+import static com.io7m.jcoronado.api.VulkanFormat.VK_FORMAT_B8G8R8A8_UNORM;
+import static com.io7m.jcoronado.api.VulkanImageLayout.VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+import static com.io7m.jcoronado.api.VulkanImageLayout.VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
+import static com.io7m.jcoronado.api.VulkanSampleCountFlag.VK_SAMPLE_COUNT_1_BIT;
 
 public final class VulkanLWJGLAttachmentDescriptionsTest
 {
-  private static final Logger LOG = LoggerFactory.getLogger(VulkanLWJGLAttachmentDescriptionsTest.class);
+  private static final Logger LOG = LoggerFactory.getLogger(
+    VulkanLWJGLAttachmentDescriptionsTest.class);
 
   private MemoryStack stack = MemoryStack.create();
 
@@ -91,12 +95,15 @@ public final class VulkanLWJGLAttachmentDescriptionsTest
         .build();
 
     final var attachments =
-      List.of(description_0,
-              description_1,
-              description_2);
+      List.of(
+        description_0,
+        description_1,
+        description_2);
 
     final var packed =
-      VulkanLWJGLAttachmentDescriptions.packAttachments(this.stack, attachments);
+      VulkanLWJGLAttachmentDescriptions.packAttachments(
+        this.stack,
+        attachments);
 
     for (var index = 0; index < 3; ++index) {
       packed.position(index);
@@ -108,7 +115,8 @@ public final class VulkanLWJGLAttachmentDescriptionsTest
         },
         () -> {
           Assertions.assertEquals(
-            VK10.VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL, packed.initialLayout());
+            VK10.VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
+            packed.initialLayout());
         },
         () -> {
           Assertions.assertEquals(
@@ -159,7 +167,9 @@ public final class VulkanLWJGLAttachmentDescriptionsTest
         .build();
 
     final var packed =
-      VulkanLWJGLAttachmentDescriptions.packAttachment(this.stack, description_0);
+      VulkanLWJGLAttachmentDescriptions.packAttachment(
+        this.stack,
+        description_0);
 
     Assertions.assertAll(
       () -> {
@@ -168,7 +178,8 @@ public final class VulkanLWJGLAttachmentDescriptionsTest
       },
       () -> {
         Assertions.assertEquals(
-          VK10.VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL, packed.initialLayout());
+          VK10.VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
+          packed.initialLayout());
       },
       () -> {
         Assertions.assertEquals(
