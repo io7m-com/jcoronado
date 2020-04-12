@@ -13,7 +13,7 @@ before_install:
 install: true
 
 script:
-  - mvn --errors clean verify site
+  - mvn -Dcom.io7m.jcoronado.tests.noDeviceTests=true --errors clean verify site
   - bash <(curl -s https://codecov.io/bash) -f ./com.io7m.jcoronado.tests/target/site/jacoco-aggregate/jacoco.xml
 
 notifications:
