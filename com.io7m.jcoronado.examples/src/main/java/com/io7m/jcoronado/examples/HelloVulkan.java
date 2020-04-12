@@ -228,7 +228,7 @@ public final class HelloVulkan
        */
 
       final var required_layers =
-        Set.of("VK_LAYER_LUNARG_standard_validation");
+        Set.of("VK_LAYER_KHRONOS_validation");
       final var required_extensions =
         requiredGLFWExtensions();
 
