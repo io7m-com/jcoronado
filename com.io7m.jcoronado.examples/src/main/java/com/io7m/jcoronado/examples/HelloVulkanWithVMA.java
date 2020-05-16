@@ -130,9 +130,11 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Random;
@@ -399,7 +401,11 @@ public final class HelloVulkanWithVMA
        */
 
       final var device_extensions = physical_device.extensions(Optional.empty());
-      device_extensions.forEach(HelloVulkanWithVMA::showPhysicalDeviceAvailableExtension);
+      device_extensions.entrySet()
+        .stream()
+        .sorted(Map.Entry.comparingByKey())
+        .forEach(HelloVulkanWithVMA::showPhysicalDeviceAvailableExtension);
+
       if (!device_extensions.containsKey("VK_KHR_get_memory_requirements2")) {
         throw new VulkanMissingRequiredExtensionsException(
           Set.of("VK_KHR_get_memory_requirements2"),
@@ -2042,13 +2048,12 @@ public final class HelloVulkanWithVMA
   }
 
   private static void showPhysicalDeviceAvailableExtension(
-    final String name,
-    final VulkanExtensionProperties extension)
+    final Map.Entry<String, VulkanExtensionProperties> entry)
   {
     LOG.debug(
       "device available extension: {} 0x{}",
-      extension.name(),
-      Integer.toUnsignedString(extension.version(), 16));
+      entry.getKey(),
+      Integer.toUnsignedString(entry.getValue().version(), 16));
   }
 
   private static Set<String> requiredGLFWExtensions()
