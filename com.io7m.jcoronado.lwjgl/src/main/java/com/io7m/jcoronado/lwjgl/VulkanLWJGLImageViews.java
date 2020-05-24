@@ -108,6 +108,7 @@ public final class VulkanLWJGLImageViews
   {
     return target
       .sType(VK10.VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO)
+      .pNext(0L)
       .components(packComponentMapping(stack, info.components()))
       .flags(VulkanEnumMaps.packValues(info.flags()))
       .format(info.format().value())
