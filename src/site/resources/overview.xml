@@ -8,10 +8,6 @@
          <img src="https://img.shields.io/maven-central/v/com.io7m.jcoronado/com.io7m.jcoronado.png?style=flat-square"
               alt="Maven Central"/>
       </a>
-      <a href="https://www.codacy.com/app/github_79/jcoronado">
-         <img src="https://img.shields.io/codacy/grade/a2c044a2520e423ab9cc051d89a73254.png?style=flat-square"
-              alt="Codacy"/>
-      </a>
       <a href="https://codecov.io/gh/io7m/jcoronado">
          <img src="https://img.shields.io/codecov/c/github/io7m/jcoronado.png?style=flat-square"
               alt="Codecov"/>
