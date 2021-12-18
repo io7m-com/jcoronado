@@ -5,7 +5,6 @@
   <Match>
     <Or>
       <Class name="com.io7m.jcoronado.extensions.khr_surface.api.VulkanSurfaceCapabilitiesKHR"/>
-      "/>
       <Class name="com.io7m.jcoronado.extensions.khr_surface.api.VulkanSurfaceFormatKHR"/>
       <Class name="com.io7m.jcoronado.extensions.khr_swapchain.api.VulkanPresentInfoKHR"/>
       <Class name="com.io7m.jcoronado.extensions.khr_swapchain.api.VulkanSwapChainCreateInfo"/>
@@ -16,6 +15,7 @@
 
       <Class name="com.io7m.jcoronado.vma.VMAAllocationCreateInfo"/>
       <Class name="com.io7m.jcoronado.vma.VMAAllocationInfo"/>
+      <Class name="com.io7m.jcoronado.vma.VMAAllocatorCreateInfo"/>
 
       <Class name="com.io7m.jcoronado.api.VulkanApplicationInfo"/>
       <Class name="com.io7m.jcoronado.api.VulkanAttachmentDescription"/>
@@ -47,10 +47,12 @@
       <Class name="com.io7m.jcoronado.api.VulkanDescriptorSetAllocateInfo"/>
       <Class name="com.io7m.jcoronado.api.VulkanDescriptorSetLayoutBinding"/>
       <Class name="com.io7m.jcoronado.api.VulkanDescriptorSetLayoutCreateInfo"/>
+      <Class name="com.io7m.jcoronado.api.VulkanEventCreateInfo"/>
       <Class name="com.io7m.jcoronado.api.VulkanExtensionProperties"/>
       <Class name="com.io7m.jcoronado.api.VulkanExtent2D"/>
       <Class name="com.io7m.jcoronado.api.VulkanExtent3D"/>
       <Class name="com.io7m.jcoronado.api.VulkanFenceCreateInfo"/>
+      <Class name="com.io7m.jcoronado.api.VulkanFormatProperties"/>
       <Class name="com.io7m.jcoronado.api.VulkanFramebufferCreateInfo"/>
       <Class name="com.io7m.jcoronado.api.VulkanGraphicsPipelineCreateInfo"/>
       <Class name="com.io7m.jcoronado.api.VulkanHostAllocatorCallbacks"/>
@@ -79,6 +81,7 @@
       <Class name="com.io7m.jcoronado.api.VulkanPhysicalDeviceLimits"/>
       <Class name="com.io7m.jcoronado.api.VulkanPhysicalDeviceMemoryProperties"/>
       <Class name="com.io7m.jcoronado.api.VulkanPhysicalDeviceProperties"/>
+      <Class name="com.io7m.jcoronado.api.VulkanPipelineCacheCreateInfo"/>
       <Class name="com.io7m.jcoronado.api.VulkanPipelineColorBlendAttachmentState"/>
       <Class name="com.io7m.jcoronado.api.VulkanPipelineColorBlendStateCreateInfo"/>
       <Class name="com.io7m.jcoronado.api.VulkanPipelineDepthStencilStateCreateInfo"/>
@@ -93,8 +96,8 @@
       <Class name="com.io7m.jcoronado.api.VulkanPipelineViewportStateCreateInfo"/>
       <Class name="com.io7m.jcoronado.api.VulkanPointSizeRange"/>
       <Class name="com.io7m.jcoronado.api.VulkanPushConstantRange"/>
-      <Class name="com.io7m.jcoronado.api.VulkanQueueFamilyProperties"/>
       <Class name="com.io7m.jcoronado.api.VulkanQueryPoolCreateInfo"/>
+      <Class name="com.io7m.jcoronado.api.VulkanQueueFamilyProperties"/>
       <Class name="com.io7m.jcoronado.api.VulkanRectangle2D"/>
       <Class name="com.io7m.jcoronado.api.VulkanRenderPassBeginInfo"/>
       <Class name="com.io7m.jcoronado.api.VulkanRenderPassCreateInfo"/>
@@ -191,6 +194,49 @@
     <Class name="com.io7m.jcoronado.lwjgl.VulkanLWJGLClearValues"/>
     <Method name="packTo"/>
     <Bug pattern="BC_UNCONFIRMED_CAST"/>
+  </Match>
+
+  <!-- These exceptions do not leak internal structures. -->
+  <Match>
+    <And>
+      <Or>
+        <Class name="com.io7m.jcoronado.api.VulkanMissingRequiredExtensionsException"/>
+        <Class name="com.io7m.jcoronado.api.VulkanMissingRequiredLayersException"/>
+        <Class name="com.io7m.jcoronado.api.VulkanMissingRequiredMemoryTypeException"/>
+        <Class name="com.io7m.jcoronado.api.VulkanUncheckedException"/>
+      </Or>
+      <Or>
+        <Bug pattern="EI_EXPOSE_REP"/>
+        <Bug pattern="EI_EXPOSE_REP2"/>
+      </Or>
+    </And>
+  </Match>
+
+  <!-- The class intends to expose an internal logical device! -->
+  <Match>
+    <Class name="com.io7m.jcoronado.vma.VMAAllocatorCreateInfo"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <!-- These classes all intentionally expose fields. -->
+  <Match>
+    <Or>
+      <Class name="com.io7m.jcoronado.lwjgl.VulkanLWJGLCommandBuffer"/>
+      <Class name="com.io7m.jcoronado.lwjgl.VulkanLWJGLHostAllocatorProxy"/>
+      <Class name="com.io7m.jcoronado.lwjgl.VulkanLWJGLInstance"/>
+      <Class name="com.io7m.jcoronado.lwjgl.VulkanLWJGLLogicalDevice"/>
+      <Class name="com.io7m.jcoronado.lwjgl.VulkanLWJGLLogicalDevice"/>
+      <Class name="com.io7m.jcoronado.lwjgl.VulkanLWJGLMappedMemory"/>
+      <Class name="com.io7m.jcoronado.lwjgl.VulkanLWJGLPhysicalDevice"/>
+      <Class name="com.io7m.jcoronado.lwjgl.VulkanLWJGLQueue"/>
+    </Or>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <!-- An exception there indicates a failure to open an internal resource -->
+  <Match>
+    <Class name="com.io7m.jcoronado.api.VulkanErrorCodes"/>
+    <Bug pattern="EXS_EXCEPTION_SOFTENING_NO_CONSTRAINTS"/>
   </Match>
 
   <Match>

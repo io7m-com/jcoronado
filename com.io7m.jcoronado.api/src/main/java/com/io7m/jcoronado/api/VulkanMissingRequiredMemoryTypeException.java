@@ -24,7 +24,8 @@ import java.util.Set;
  * An exception raised by no memory type being available to provide for a specific allocation.
  */
 
-public final class VulkanMissingRequiredMemoryTypeException extends VulkanException
+public final class VulkanMissingRequiredMemoryTypeException extends
+  VulkanException
 {
   private final VulkanMemoryRequirements requirements;
   private final Set<VulkanMemoryPropertyFlag> flags;
@@ -49,10 +50,15 @@ public final class VulkanMissingRequiredMemoryTypeException extends VulkanExcept
     final List<VulkanMemoryType> in_types)
   {
     super(Objects.requireNonNull(message, "message"));
-    this.requirements = Objects.requireNonNull(in_requirements, "requirements");
-    this.flags = Objects.requireNonNull(in_flags, "flags");
-    this.heaps = Objects.requireNonNull(in_heaps, "heaps");
-    this.types = Objects.requireNonNull(in_types, "types");
+
+    this.requirements =
+      Objects.requireNonNull(in_requirements, "requirements");
+    this.flags =
+      Set.copyOf(Objects.requireNonNull(in_flags, "flags"));
+    this.heaps =
+      List.copyOf(Objects.requireNonNull(in_heaps, "heaps"));
+    this.types =
+      List.copyOf(Objects.requireNonNull(in_types, "types"));
   }
 
   /**

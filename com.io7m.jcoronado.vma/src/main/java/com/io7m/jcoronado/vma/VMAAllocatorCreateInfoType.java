@@ -20,6 +20,9 @@ import com.io7m.immutables.styles.ImmutablesStyleType;
 import com.io7m.jcoronado.api.VulkanLogicalDeviceType;
 import org.immutables.value.Value;
 
+import java.util.OptionalInt;
+import java.util.OptionalLong;
+
 /**
  * Information required to create an allocator.
  */
@@ -32,6 +35,19 @@ public interface VMAAllocatorCreateInfoType
    * @return The logical device used for allocations
    */
 
-  @Value.Parameter
   VulkanLogicalDeviceType logicalDevice();
+
+  /**
+   * @return The preferred size of a single VkDeviceMemory block to be allocated from large heaps > 1 GiB.
+   */
+
+  OptionalLong preferredLargeHeapBlockSize();
+
+  /**
+   * @see "https://gpuopen-librariesandsdks.github.io/VulkanMemoryAllocator/html/struct_vma_allocator_create_info.html"
+   *
+   * @return The maximum number of additional frames that are in use at the same time as current frame.
+   */
+
+  OptionalInt frameInUseCount();
 }

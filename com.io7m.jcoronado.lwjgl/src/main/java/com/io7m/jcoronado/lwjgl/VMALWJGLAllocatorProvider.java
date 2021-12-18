@@ -78,31 +78,65 @@ public final class VMALWJGLAllocatorProvider implements VMAAllocatorProviderType
     Objects.requireNonNull(info, "info");
 
     final var device =
-      VulkanLWJGLClassChecks.checkInstanceOf(info.logicalDevice(), VulkanLWJGLLogicalDevice.class);
-    final var phys_device =
+      VulkanLWJGLClassChecks.checkInstanceOf(
+        info.logicalDevice(),
+        VulkanLWJGLLogicalDevice.class
+      );
+
+    final var physicalDevice =
       VulkanLWJGLClassChecks.checkInstanceOf(
         device.physicalDevice(),
-        VulkanLWJGLPhysicalDevice.class);
+        VulkanLWJGLPhysicalDevice.class
+      );
+
     final var instance =
-      VulkanLWJGLClassChecks.checkInstanceOf(phys_device.instance(), VulkanLWJGLInstance.class);
+      VulkanLWJGLClassChecks.checkInstanceOf(
+        physicalDevice.instance(),
+        VulkanLWJGLInstance.class
+      );
 
     try (var stack = this.initial_stack.push()) {
-      final var functions = VmaVulkanFunctions.mallocStack(stack);
-      functions.set(instance.instance(), device.device());
+      final var functions =
+        VmaVulkanFunctions.malloc(stack);
+      final var vkInstance =
+        instance.instance();
+      final var vkDevice =
+        device.device();
+      functions.set(vkInstance, vkDevice);
 
-      final var buffer = stack.mallocPointer(1);
-
+      final var buffer =
+        stack.mallocPointer(1);
       final var cinfo =
-        VmaAllocatorCreateInfo.mallocStack(stack)
-          .device(device.device())
-          .physicalDevice(phys_device.device())
-          .pVulkanFunctions(functions);
+        VmaAllocatorCreateInfo.malloc(stack);
+
+      cinfo.set(
+        0,
+        physicalDevice.device(),
+        vkDevice,
+        info.preferredLargeHeapBlockSize()
+          .orElse(0L),
+        null,
+        null,
+        info.frameInUseCount()
+          .orElse(0),
+        null,
+        null,
+        null,
+        vkInstance,
+        0,
+        null
+      );
 
       VulkanChecks.checkReturnCode(
         Vma.vmaCreateAllocator(cinfo, buffer),
-        "vmaCreateAllocator");
+        "vmaCreateAllocator"
+      );
 
-      return new VMALWJGLAllocator(device, buffer.get(0), device.hostAllocatorProxy());
+      return new VMALWJGLAllocator(
+        device,
+        buffer.get(0),
+        device.hostAllocatorProxy()
+      );
     }
   }
 }

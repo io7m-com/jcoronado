@@ -1,5 +1,5 @@
 /*
- * Copyright © 2018 Mark Raynsford <code@io7m.com> http://io7m.com
+ * Copyright © 2021 Mark Raynsford <code@io7m.com> http://io7m.com
  *
  * Permission to use, copy, modify, and/or distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -14,23 +14,9 @@
  * IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/**
- * Type-safe Vulkan frontend (LWJGL implementation)
- */
+package com.io7m.jcoronado.examples;
 
-module com.io7m.jcoronado.lwjgl
+public interface ExampleType
 {
-  requires transitive com.io7m.jcoronado.api;
-  requires transitive com.io7m.jcoronado.extensions.khr.surface.api;
-  requires transitive com.io7m.jcoronado.vma;
-
-  requires com.io7m.junreachable.core;
-  requires org.slf4j;
-  requires org.lwjgl;
-  requires org.lwjgl.jemalloc;
-  requires org.lwjgl.vulkan;
-  requires org.lwjgl.vma;
-  requires org.lwjgl.glfw;
-
-  exports com.io7m.jcoronado.lwjgl;
+  void execute() throws Exception;
 }

@@ -16,7 +16,6 @@
 
 package com.io7m.jcoronado.api;
 
-import java.util.Collections;
 import java.util.Objects;
 import java.util.Set;
 
@@ -41,8 +40,8 @@ public final class VulkanMissingRequiredLayersException
     final String message)
   {
     super(Objects.requireNonNull(message, "message"));
-    this.missing = Collections.unmodifiableSet(
-      Objects.requireNonNull(in_missing, "missing"));
+    this.missing =
+      Set.copyOf(Objects.requireNonNull(in_missing, "missing"));
   }
 
   /**
