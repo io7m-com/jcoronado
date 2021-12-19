@@ -17,6 +17,8 @@ jobs:
           java-version: 17
       - name: Download Vulkan
         run: Invoke-WebRequest -Uri "https://sdk.lunarg.com/sdk/download/1.2.198.1/windows/VulkanSDK-1.2.198.1-Installer.exe" -OutFile VulkanSDK.exe
+      - name: Show directory
+        run: dir
       - name: Setup Vulkan
         run: VulkanSDK.exe --accept-licenses --default-answer --confirm-command install
       - name: Check Vulkan
