@@ -53,7 +53,7 @@ public final class VulkanLWJGLPipelineDepthStencilStateCreateInfos
     Objects.requireNonNull(info, "info");
 
     final var target =
-      VkPipelineDepthStencilStateCreateInfo.mallocStack(stack);
+      VkPipelineDepthStencilStateCreateInfo.malloc(stack);
 
     return target
       .sType(VK10.VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO)

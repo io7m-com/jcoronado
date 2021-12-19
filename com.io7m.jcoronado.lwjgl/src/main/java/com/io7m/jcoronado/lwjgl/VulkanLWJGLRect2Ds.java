@@ -51,7 +51,7 @@ public final class VulkanLWJGLRect2Ds
     Objects.requireNonNull(stack, "stack");
     Objects.requireNonNull(info, "info");
 
-    return packInto(stack, info, VkRect2D.mallocStack(stack));
+    return packInto(stack, info, VkRect2D.malloc(stack));
   }
 
   /**
@@ -100,7 +100,7 @@ public final class VulkanLWJGLRect2Ds
     return VulkanLWJGLArrays.pack(
       infos,
       VulkanLWJGLRect2Ds::packInto,
-      (sstack, count) -> VkRect2D.mallocStack(count, sstack),
+      (sstack, count) -> VkRect2D.malloc(count, sstack),
       stack);
   }
 
@@ -126,7 +126,7 @@ public final class VulkanLWJGLRect2Ds
     return VulkanLWJGLArrays.packOrNull(
       infos,
       VulkanLWJGLRect2Ds::packInto,
-      (sstack, count) -> VkRect2D.mallocStack(count, sstack),
+      (sstack, count) -> VkRect2D.malloc(count, sstack),
       stack);
   }
 }

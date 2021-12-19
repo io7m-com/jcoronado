@@ -51,7 +51,7 @@ public final class VulkanLWJGLBufferImageCopy
     Objects.requireNonNull(stack, "stack");
     Objects.requireNonNull(info, "info");
 
-    return packInto(stack, info, VkBufferImageCopy.mallocStack(stack));
+    return packInto(stack, info, VkBufferImageCopy.malloc(stack));
   }
 
   /**
@@ -105,7 +105,7 @@ public final class VulkanLWJGLBufferImageCopy
     return VulkanLWJGLArrays.pack(
       infos,
       (sstack, value, output) -> packInto(stack, value, output),
-      (sstack, count) -> VkBufferImageCopy.mallocStack(count, sstack),
+      (sstack, count) -> VkBufferImageCopy.malloc(count, sstack),
       stack);
   }
 
@@ -131,7 +131,7 @@ public final class VulkanLWJGLBufferImageCopy
     return VulkanLWJGLArrays.packOrNull(
       infos,
       (sstack, value, output) -> packInto(stack, value, output),
-      (sstack, count) -> VkBufferImageCopy.mallocStack(count, sstack),
+      (sstack, count) -> VkBufferImageCopy.malloc(count, sstack),
       stack);
   }
 }

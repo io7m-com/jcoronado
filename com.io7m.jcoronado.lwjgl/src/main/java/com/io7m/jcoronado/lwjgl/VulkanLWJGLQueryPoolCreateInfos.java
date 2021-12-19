@@ -51,7 +51,7 @@ public final class VulkanLWJGLQueryPoolCreateInfos
     Objects.requireNonNull(stack, "stack");
     Objects.requireNonNull(info, "create_info");
 
-    return VkQueryPoolCreateInfo.mallocStack(stack)
+    return VkQueryPoolCreateInfo.malloc(stack)
       .set(
         VK10.VK_STRUCTURE_TYPE_QUERY_POOL_CREATE_INFO,
         0L,

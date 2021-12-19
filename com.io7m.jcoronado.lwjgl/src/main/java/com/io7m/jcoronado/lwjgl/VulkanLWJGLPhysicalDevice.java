@@ -328,7 +328,7 @@ public final class VulkanLWJGLPhysicalDevice
       }
 
       final var device_extensions =
-        VkExtensionProperties.mallocStack(size, stack);
+        VkExtensionProperties.malloc(size, stack);
 
       checkReturnCode(
         VK10.vkEnumerateDeviceExtensionProperties(
@@ -374,7 +374,7 @@ public final class VulkanLWJGLPhysicalDevice
       }
 
       final var layers_buffer =
-        VkLayerProperties.mallocStack(size, stack);
+        VkLayerProperties.malloc(size, stack);
 
       checkReturnCode(
         VK10.vkEnumerateDeviceLayerProperties(
@@ -434,7 +434,7 @@ public final class VulkanLWJGLPhysicalDevice
     this.checkNotClosed();
 
     try (var stack = this.stack_initial.push()) {
-      final var vk_properties = VkFormatProperties.mallocStack(stack);
+      final var vk_properties = VkFormatProperties.malloc(stack);
       VK10.vkGetPhysicalDeviceFormatProperties(
         this.device,
         format.value(),
@@ -464,7 +464,7 @@ public final class VulkanLWJGLPhysicalDevice
     Objects.requireNonNull(flags, "flags");
 
     try (var stack = this.stack_initial.push()) {
-      final var vk_properties = VkImageFormatProperties.mallocStack(stack);
+      final var vk_properties = VkImageFormatProperties.malloc(stack);
 
       checkReturnCode(
         VK10.vkGetPhysicalDeviceImageFormatProperties(
@@ -541,7 +541,7 @@ public final class VulkanLWJGLPhysicalDevice
         createPhysicalDeviceFeatures(stack, info);
 
       final var vk_device_create_info =
-        VkDeviceCreateInfo.mallocStack(stack)
+        VkDeviceCreateInfo.malloc(stack)
           .sType(VK10.VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO)
           .pNext(0L)
           .flags(VulkanEnumMaps.packValues(info.flags()))

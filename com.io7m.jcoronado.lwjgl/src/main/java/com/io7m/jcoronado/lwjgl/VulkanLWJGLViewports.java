@@ -51,7 +51,7 @@ public final class VulkanLWJGLViewports
     Objects.requireNonNull(stack, "stack");
     Objects.requireNonNull(info, "info");
 
-    return packInto(info, VkViewport.mallocStack(stack));
+    return packInto(info, VkViewport.malloc(stack));
   }
 
   /**
@@ -101,7 +101,7 @@ public final class VulkanLWJGLViewports
     return VulkanLWJGLArrays.pack(
       infos,
       (stack1, source, target) -> packInto(source, target),
-      (sstack, count) -> VkViewport.mallocStack(count, sstack),
+      (sstack, count) -> VkViewport.malloc(count, sstack),
       stack);
   }
 
@@ -127,7 +127,7 @@ public final class VulkanLWJGLViewports
     return VulkanLWJGLArrays.packOrNull(
       infos,
       (stack1, source, target) -> packInto(source, target),
-      (sstack, count) -> VkViewport.mallocStack(count, sstack),
+      (sstack, count) -> VkViewport.malloc(count, sstack),
       stack);
   }
 }

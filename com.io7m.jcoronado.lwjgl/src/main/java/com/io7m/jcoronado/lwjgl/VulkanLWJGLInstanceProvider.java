@@ -117,7 +117,7 @@ public final class VulkanLWJGLInstanceProvider
       }
 
       final var instance_extensions =
-        VkExtensionProperties.mallocStack(size, stack);
+        VkExtensionProperties.malloc(size, stack);
 
       checkReturnCode(
         VK10.vkEnumerateInstanceExtensionProperties(
@@ -160,7 +160,7 @@ public final class VulkanLWJGLInstanceProvider
       }
 
       final var layers_buffer =
-        VkLayerProperties.mallocStack(size, stack);
+        VkLayerProperties.malloc(size, stack);
 
       checkReturnCode(
         VK10.vkEnumerateInstanceLayerProperties(

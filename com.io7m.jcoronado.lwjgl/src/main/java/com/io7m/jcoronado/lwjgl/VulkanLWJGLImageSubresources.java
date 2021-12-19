@@ -52,7 +52,7 @@ public final class VulkanLWJGLImageSubresources
     Objects.requireNonNull(stack, "stack");
     Objects.requireNonNull(info, "info");
 
-    return packInto(info, VkImageSubresource.mallocStack(stack));
+    return packInto(info, VkImageSubresource.malloc(stack));
   }
 
   /**
@@ -99,7 +99,7 @@ public final class VulkanLWJGLImageSubresources
     return VulkanLWJGLArrays.pack(
       infos,
       (sstack, value, output) -> packInto(value, output),
-      (sstack, count) -> VkImageSubresource.mallocStack(count, sstack),
+      (sstack, count) -> VkImageSubresource.malloc(count, sstack),
       stack);
   }
 
@@ -125,7 +125,7 @@ public final class VulkanLWJGLImageSubresources
     return VulkanLWJGLArrays.packOrNull(
       infos,
       (sstack, value, output) -> packInto(value, output),
-      (sstack, count) -> VkImageSubresource.mallocStack(count, sstack),
+      (sstack, count) -> VkImageSubresource.malloc(count, sstack),
       stack);
   }
 }

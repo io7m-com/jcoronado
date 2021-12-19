@@ -100,7 +100,7 @@ public final class VulkanLWJGLExtKHRSwapChain implements
     final MemoryStack stack,
     final VulkanExtent2D e)
   {
-    return VkExtent2D.mallocStack(stack).set(e.width(), e.height());
+    return VkExtent2D.malloc(stack).set(e.width(), e.height());
   }
 
   private static LongBuffer packSemaphoresX(
@@ -284,7 +284,7 @@ public final class VulkanLWJGLExtKHRSwapChain implements
 
     try (var stack = this.stack_initial.push()) {
       final var vk_info =
-        VkSwapchainCreateInfoKHR.mallocStack(stack)
+        VkSwapchainCreateInfoKHR.malloc(stack)
           .sType(KHRSwapchain.VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR)
           .pNext(0L)
           .minImageCount(info.minimumImageCount())
@@ -348,7 +348,7 @@ public final class VulkanLWJGLExtKHRSwapChain implements
         packSemaphoresX(stack, present_info.waitSemaphores());
 
       final var vk_info =
-        VkPresentInfoKHR.mallocStack(stack)
+        VkPresentInfoKHR.malloc(stack)
           .sType(KHRSwapchain.VK_STRUCTURE_TYPE_PRESENT_INFO_KHR)
           .pNext(0L)
           .pImageIndices(buffer_indices)

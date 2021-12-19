@@ -51,7 +51,7 @@ public final class VulkanLWJGLSemaphoreCreateInfos
     Objects.requireNonNull(stack, "stack");
     Objects.requireNonNull(info, "info");
 
-    return VkSemaphoreCreateInfo.mallocStack(stack)
+    return VkSemaphoreCreateInfo.malloc(stack)
       .sType(VK10.VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO)
       .pNext(0L)
       .flags(VulkanEnumMaps.packValues(info.flags()));

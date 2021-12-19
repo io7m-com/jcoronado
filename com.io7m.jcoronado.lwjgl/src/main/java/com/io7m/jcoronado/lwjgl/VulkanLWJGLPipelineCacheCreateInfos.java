@@ -53,7 +53,7 @@ public final class VulkanLWJGLPipelineCacheCreateInfos
     Objects.requireNonNull(stack, "stack");
     Objects.requireNonNull(info, "info");
 
-    return packInto(info, VkPipelineCacheCreateInfo.mallocStack(stack));
+    return packInto(info, VkPipelineCacheCreateInfo.malloc(stack));
   }
 
   /**
@@ -101,7 +101,7 @@ public final class VulkanLWJGLPipelineCacheCreateInfos
     return VulkanLWJGLArrays.pack(
       infos,
       (sstack, value, output) -> packInto(value, output),
-      (sstack, count) -> VkPipelineCacheCreateInfo.mallocStack(count, sstack),
+      (sstack, count) -> VkPipelineCacheCreateInfo.malloc(count, sstack),
       stack);
   }
 
@@ -127,7 +127,7 @@ public final class VulkanLWJGLPipelineCacheCreateInfos
     return VulkanLWJGLArrays.packOrNull(
       infos,
       (sstack, value, output) -> packInto(value, output),
-      (sstack, count) -> VkPipelineCacheCreateInfo.mallocStack(count, sstack),
+      (sstack, count) -> VkPipelineCacheCreateInfo.malloc(count, sstack),
       stack);
   }
 }

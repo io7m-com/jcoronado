@@ -62,7 +62,7 @@ public final class VulkanLWJGLPipelineShaderStageCreateInfos
         VulkanLWJGLShaderModule.class);
 
     final var target =
-      VkPipelineShaderStageCreateInfo.mallocStack(stack);
+      VkPipelineShaderStageCreateInfo.malloc(stack);
 
     return packInto(stack, info, module, target);
   }
@@ -104,7 +104,7 @@ public final class VulkanLWJGLPipelineShaderStageCreateInfos
     Objects.requireNonNull(stages, "stages");
 
     final var buffer =
-      VkPipelineShaderStageCreateInfo.mallocStack(stages.size(), stack);
+      VkPipelineShaderStageCreateInfo.malloc(stages.size(), stack);
 
     for (var index = 0; index < stages.size(); ++index) {
       final var source =

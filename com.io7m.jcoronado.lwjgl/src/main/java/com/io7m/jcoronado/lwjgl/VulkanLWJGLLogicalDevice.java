@@ -705,7 +705,7 @@ public final class VulkanLWJGLLogicalDevice
       checkInstanceOf(image, VulkanLWJGLImage.class);
 
     try (var stack = this.stack_initial.push()) {
-      final var info = VkMemoryRequirements.mallocStack(stack);
+      final var info = VkMemoryRequirements.malloc(stack);
 
       VK10.vkGetImageMemoryRequirements(this.device, cimage.handle(), info);
 
@@ -1264,7 +1264,7 @@ public final class VulkanLWJGLLogicalDevice
     final var cbuffer = checkInstanceOf(buffer, VulkanLWJGLBuffer.class);
 
     try (var stack = this.stack_initial.push()) {
-      final var info = VkMemoryRequirements.mallocStack(stack);
+      final var info = VkMemoryRequirements.malloc(stack);
 
       VK10.vkGetBufferMemoryRequirements(this.device, cbuffer.handle(), info);
 
@@ -1526,7 +1526,7 @@ public final class VulkanLWJGLLogicalDevice
     this.checkNotClosed();
 
     try (var stack = this.stack_initial.push()) {
-      final var vk_layout = VkSubresourceLayout.mallocStack(stack);
+      final var vk_layout = VkSubresourceLayout.malloc(stack);
 
       VK10.vkGetImageSubresourceLayout(
         this.device,

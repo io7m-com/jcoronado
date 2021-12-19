@@ -54,7 +54,7 @@ public final class VulkanLWJGLImageBlits
     Objects.requireNonNull(stack, "stack");
     Objects.requireNonNull(info, "info");
 
-    return packInto(stack, info, VkImageBlit.mallocStack(stack));
+    return packInto(stack, info, VkImageBlit.malloc(stack));
   }
 
   /**
@@ -112,7 +112,7 @@ public final class VulkanLWJGLImageBlits
     return VulkanLWJGLArrays.pack(
       infos,
       (sstack, value, output) -> packInto(stack, value, output),
-      (sstack, count) -> VkImageBlit.mallocStack(count, sstack),
+      (sstack, count) -> VkImageBlit.malloc(count, sstack),
       stack);
   }
 
@@ -138,7 +138,7 @@ public final class VulkanLWJGLImageBlits
     return VulkanLWJGLArrays.packOrNull(
       infos,
       (sstack, value, output) -> packInto(stack, value, output),
-      (sstack, count) -> VkImageBlit.mallocStack(count, sstack),
+      (sstack, count) -> VkImageBlit.malloc(count, sstack),
       stack);
   }
 }

@@ -60,7 +60,7 @@ public final class VulkanLWJGLRenderPasses
     Objects.requireNonNull(stack, "stack");
     Objects.requireNonNull(info, "info");
 
-    return VkRenderPassCreateInfo.mallocStack(stack)
+    return VkRenderPassCreateInfo.malloc(stack)
       .sType(VK10.VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO)
       .pNext(0L)
       .pAttachments(VulkanLWJGLAttachmentDescriptions.packAttachments(
@@ -79,7 +79,7 @@ public final class VulkanLWJGLRenderPasses
     throws VulkanException
   {
     final var buffer =
-      VkSubpassDescription.mallocStack(subpasses.size(), stack);
+      VkSubpassDescription.malloc(subpasses.size(), stack);
 
     for (var index = 0; index < subpasses.size(); ++index) {
       final var description = subpasses.get(index);

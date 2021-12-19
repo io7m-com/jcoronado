@@ -53,7 +53,7 @@ public final class VulkanLWJGLPipelineInputAssemblyStateCreateInfos
     Objects.requireNonNull(info, "info");
 
     final var target =
-      VkPipelineInputAssemblyStateCreateInfo.mallocStack(stack);
+      VkPipelineInputAssemblyStateCreateInfo.malloc(stack);
 
     return target
       .sType(VK10.VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO)

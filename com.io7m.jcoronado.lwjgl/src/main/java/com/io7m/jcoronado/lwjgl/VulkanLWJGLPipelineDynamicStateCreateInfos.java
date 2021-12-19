@@ -61,7 +61,7 @@ public final class VulkanLWJGLPipelineDynamicStateCreateInfos
     Objects.requireNonNull(info, "info");
 
     final var target =
-      VkPipelineDynamicStateCreateInfo.mallocStack(stack);
+      VkPipelineDynamicStateCreateInfo.malloc(stack);
 
     return target
       .sType(VK10.VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO)

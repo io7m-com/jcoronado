@@ -57,7 +57,7 @@ public final class VulkanLWJGLDescriptorImageInfos
     Objects.requireNonNull(stack, "stack");
     Objects.requireNonNull(info, "info");
 
-    return packInto(info, VkDescriptorImageInfo.mallocStack(stack));
+    return packInto(info, VkDescriptorImageInfo.malloc(stack));
   }
 
   /**
@@ -111,7 +111,7 @@ public final class VulkanLWJGLDescriptorImageInfos
     return VulkanLWJGLArrays.pack(
       infos,
       (sstack, value, output) -> packInto(value, output),
-      (sstack, count) -> VkDescriptorImageInfo.mallocStack(count, sstack),
+      (sstack, count) -> VkDescriptorImageInfo.malloc(count, sstack),
       stack);
   }
 
@@ -137,7 +137,7 @@ public final class VulkanLWJGLDescriptorImageInfos
     return VulkanLWJGLArrays.packOrNull(
       infos,
       (sstack, value, output) -> packInto(value, output),
-      (sstack, count) -> VkDescriptorImageInfo.mallocStack(count, sstack),
+      (sstack, count) -> VkDescriptorImageInfo.malloc(count, sstack),
       stack);
   }
 }

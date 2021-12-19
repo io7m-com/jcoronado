@@ -163,7 +163,7 @@ public final class VulkanLWJGLQueue
 
     try (var stack = this.stack_initial.push()) {
       final var size = submissions.size();
-      final var infos = VkSubmitInfo.mallocStack(size, stack);
+      final var infos = VkSubmitInfo.malloc(size, stack);
       VulkanLWJGLSubmitInfos.packInfos(stack, submissions, infos);
       VulkanChecks.checkReturnCode(
         VK10.vkQueueSubmit(this.queue, infos, cfence),

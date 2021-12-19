@@ -57,7 +57,7 @@ public final class VulkanLWJGLColorBlendAttachmentStates
     }
 
     final var buffer =
-      VkPipelineColorBlendAttachmentState.mallocStack(count, stack);
+      VkPipelineColorBlendAttachmentState.malloc(count, stack);
 
     for (var index = 0; index < count; ++index) {
       final var source = attachments.get(index);

@@ -59,7 +59,7 @@ public final class VulkanLWJGLBufferMemoryBarriers
     Objects.requireNonNull(stack, "stack");
     Objects.requireNonNull(info, "info");
 
-    return packInto(info, VkBufferMemoryBarrier.mallocStack(stack));
+    return packInto(info, VkBufferMemoryBarrier.malloc(stack));
   }
 
   /**
@@ -117,7 +117,7 @@ public final class VulkanLWJGLBufferMemoryBarriers
     return VulkanLWJGLArrays.pack(
       infos,
       (sstack, value, output) -> packInto(value, output),
-      (sstack, count) -> VkBufferMemoryBarrier.mallocStack(count, sstack),
+      (sstack, count) -> VkBufferMemoryBarrier.malloc(count, sstack),
       stack);
   }
 
@@ -143,7 +143,7 @@ public final class VulkanLWJGLBufferMemoryBarriers
     return VulkanLWJGLArrays.packOrNull(
       infos,
       (sstack, value, output) -> packInto(value, output),
-      (sstack, count) -> VkBufferMemoryBarrier.mallocStack(count, sstack),
+      (sstack, count) -> VkBufferMemoryBarrier.malloc(count, sstack),
       stack);
   }
 }

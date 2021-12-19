@@ -54,7 +54,7 @@ public final class VulkanLWJGLSamplerCreateInfos
     Objects.requireNonNull(stack, "stack");
     Objects.requireNonNull(info, "info");
 
-    return packInto(info, VkSamplerCreateInfo.mallocStack(stack));
+    return packInto(info, VkSamplerCreateInfo.malloc(stack));
   }
 
   /**
@@ -119,7 +119,7 @@ public final class VulkanLWJGLSamplerCreateInfos
     return VulkanLWJGLArrays.pack(
       infos,
       (sstack, value, output) -> packInto(value, output),
-      (sstack, count) -> VkSamplerCreateInfo.mallocStack(count, sstack),
+      (sstack, count) -> VkSamplerCreateInfo.malloc(count, sstack),
       stack);
   }
 
@@ -145,7 +145,7 @@ public final class VulkanLWJGLSamplerCreateInfos
     return VulkanLWJGLArrays.packOrNull(
       infos,
       (sstack, value, output) -> packInto(value, output),
-      (sstack, count) -> VkSamplerCreateInfo.mallocStack(count, sstack),
+      (sstack, count) -> VkSamplerCreateInfo.malloc(count, sstack),
       stack);
   }
 }

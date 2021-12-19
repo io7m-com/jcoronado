@@ -56,7 +56,7 @@ public final class VulkanLWJGLDescriptorSetLayoutBindings
     Objects.requireNonNull(stack, "stack");
     Objects.requireNonNull(binding, "binding");
 
-    final var buffer = VkDescriptorSetLayoutBinding.mallocStack(stack);
+    final var buffer = VkDescriptorSetLayoutBinding.malloc(stack);
     packInto(stack, binding, buffer);
     return buffer;
   }

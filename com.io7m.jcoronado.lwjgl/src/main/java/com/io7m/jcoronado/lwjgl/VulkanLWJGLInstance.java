@@ -114,7 +114,7 @@ public final class VulkanLWJGLInstance
       }
 
       final var vk_queue_families =
-        VkQueueFamilyProperties.mallocStack(queue_family_count, stack);
+        VkQueueFamilyProperties.malloc(queue_family_count, stack);
 
       VK10.vkGetPhysicalDeviceQueueFamilyProperties(
         vk_device, count, vk_queue_families);
@@ -600,11 +600,11 @@ public final class VulkanLWJGLInstance
         "vkEnumeratePhysicalDevices");
 
       final var vk_features =
-        VkPhysicalDeviceFeatures.mallocStack(stack);
+        VkPhysicalDeviceFeatures.malloc(stack);
       final var vk_properties =
-        VkPhysicalDeviceProperties.mallocStack(stack);
+        VkPhysicalDeviceProperties.malloc(stack);
       final var vk_memory =
-        VkPhysicalDeviceMemoryProperties.mallocStack(stack);
+        VkPhysicalDeviceMemoryProperties.malloc(stack);
 
       devices = new ArrayList<>(device_count);
       for (var index = 0; index < device_count; ++index) {

@@ -45,7 +45,7 @@ public final class VulkanLWJGLPipelineLayouts
     final MemoryStack stack,
     final List<VulkanPushConstantRange> ranges)
   {
-    final var buffer = VkPushConstantRange.mallocStack(ranges.size(), stack);
+    final var buffer = VkPushConstantRange.malloc(ranges.size(), stack);
     for (var index = 0; index < ranges.size(); ++index) {
       final var source = ranges.get(index);
       final var target = VkPushConstantRange.create(buffer.address(index));
@@ -83,7 +83,7 @@ public final class VulkanLWJGLPipelineLayouts
     Objects.requireNonNull(stack, "stack");
     Objects.requireNonNull(info, "info");
 
-    final var buffer = VkPipelineLayoutCreateInfo.mallocStack(stack);
+    final var buffer = VkPipelineLayoutCreateInfo.malloc(stack);
     packPipelineLayoutCreateInfoInto(stack, info, buffer);
     return buffer;
   }

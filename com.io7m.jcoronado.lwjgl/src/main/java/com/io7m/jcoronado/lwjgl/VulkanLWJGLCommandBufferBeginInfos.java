@@ -51,7 +51,7 @@ public final class VulkanLWJGLCommandBufferBeginInfos
     Objects.requireNonNull(stack, "stack");
     Objects.requireNonNull(info, "info");
 
-    return VkCommandBufferBeginInfo.mallocStack(stack)
+    return VkCommandBufferBeginInfo.malloc(stack)
       .sType(VK10.VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO)
       .pNext(0L)
       .flags(VulkanEnumMaps.packValues(info.flags()))

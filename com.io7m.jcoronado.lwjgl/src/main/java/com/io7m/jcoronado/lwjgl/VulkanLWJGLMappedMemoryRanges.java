@@ -58,7 +58,7 @@ public final class VulkanLWJGLMappedMemoryRanges
     Objects.requireNonNull(stack, "stack");
     Objects.requireNonNull(info, "info");
 
-    return packInto(info, VkMappedMemoryRange.mallocStack(stack));
+    return packInto(info, VkMappedMemoryRange.malloc(stack));
   }
 
   /**
@@ -113,7 +113,7 @@ public final class VulkanLWJGLMappedMemoryRanges
     return VulkanLWJGLArrays.pack(
       infos,
       (sstack, value, output) -> packInto(value, output),
-      (sstack, count) -> VkMappedMemoryRange.mallocStack(count, sstack),
+      (sstack, count) -> VkMappedMemoryRange.malloc(count, sstack),
       stack);
   }
 
@@ -139,7 +139,7 @@ public final class VulkanLWJGLMappedMemoryRanges
     return VulkanLWJGLArrays.packOrNull(
       infos,
       (sstack, value, output) -> packInto(value, output),
-      (sstack, count) -> VkMappedMemoryRange.mallocStack(count, sstack),
+      (sstack, count) -> VkMappedMemoryRange.malloc(count, sstack),
       stack);
   }
 }

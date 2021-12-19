@@ -52,7 +52,7 @@ public final class VulkanLWJGLDescriptorPoolCreateInfos
     Objects.requireNonNull(info, "info");
 
     return packDescriptorPoolCreateInfoInto(
-      stack, info, VkDescriptorPoolCreateInfo.mallocStack(stack));
+      stack, info, VkDescriptorPoolCreateInfo.malloc(stack));
   }
 
   /**
