@@ -15,12 +15,10 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 17
+      - name: Download Vulkan
+        run: Invoke-WebRequest -Uri "https://sdk.lunarg.com/sdk/download/1.2.198.1/windows/VulkanSDK-1.2.198.1-Installer.exe" -OutFile VulkanSDK.exe
       - name: Setup Vulkan
-        if: steps.cache-vulkan-sdk.outputs.cache-hit != 'true'
-        run: |
-          Invoke-WebRequest -Uri "https://sdk.lunarg.com/sdk/download/1.2.198.1/windows/VulkanSDK-1.2.198.1-Installer.exe" -OutFile VulkanSDK.exe
-          $installer = Start-Process -FilePath VulkanSDK.exe -Wait -PassThru -ArgumentList @("--accept-licenses --default-answer --confirm-command install");
-          $installer.WaitForExit();
+        run: VulkanSDK.exe --accept-licenses --default-answer --confirm-command install
       - name: Check Vulkan
         run: vkvia.exe
       - name: Build
