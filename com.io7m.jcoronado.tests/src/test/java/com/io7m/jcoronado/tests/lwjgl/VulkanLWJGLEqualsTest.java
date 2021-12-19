@@ -31,10 +31,13 @@ import com.io7m.jcoronado.lwjgl.VulkanLWJGLQueue;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLRenderPass;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLSemaphore;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLShaderModule;
-import mockit.Mocked;
 import nl.jqno.equalsverifier.EqualsVerifier;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
+@ExtendWith(MockitoExtension.class)
 public final class VulkanLWJGLEqualsTest
 {
   @Test
@@ -127,8 +130,8 @@ public final class VulkanLWJGLEqualsTest
 
   @Test
   public void testVulkanLWJGLLogicalDevice(
-    final @Mocked VulkanLWJGLQueue queue_red,
-    final @Mocked VulkanLWJGLQueue queue_black)
+    final @Mock VulkanLWJGLQueue queue_red,
+    final @Mock VulkanLWJGLQueue queue_black)
   {
     EqualsVerifier.forClass(VulkanLWJGLLogicalDevice.class)
       .withPrefabValues(VulkanLWJGLQueue.class, queue_red, queue_black)
@@ -170,8 +173,8 @@ public final class VulkanLWJGLEqualsTest
 
   @Test
   public void testVulkanLWJGLQueue(
-    final @Mocked VulkanLWJGLLogicalDevice device_red,
-    final @Mocked VulkanLWJGLLogicalDevice device_black)
+    final @Mock VulkanLWJGLLogicalDevice device_red,
+    final @Mock VulkanLWJGLLogicalDevice device_black)
   {
     EqualsVerifier.forClass(VulkanLWJGLQueue.class)
       .withOnlyTheseFields("queue_index", "queue", "properties")

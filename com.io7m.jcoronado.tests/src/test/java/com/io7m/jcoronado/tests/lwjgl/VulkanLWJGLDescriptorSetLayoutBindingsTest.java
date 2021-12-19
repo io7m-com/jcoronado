@@ -19,12 +19,14 @@ package com.io7m.jcoronado.tests.lwjgl;
 import com.io7m.jcoronado.api.VulkanDescriptorSetLayoutBinding;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLDescriptorSetLayoutBindings;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLSampler;
-import mockit.Expectations;
-import mockit.Mocked;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.lwjgl.system.MemoryStack;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,6 +37,7 @@ import java.util.Set;
 import static com.io7m.jcoronado.api.VulkanDescriptorType.VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
 import static com.io7m.jcoronado.api.VulkanShaderStageFlag.VK_SHADER_STAGE_VERTEX_BIT;
 
+@ExtendWith(MockitoExtension.class)
 public final class VulkanLWJGLDescriptorSetLayoutBindingsTest
 {
   private static final Logger LOG = LoggerFactory.getLogger(
@@ -95,20 +98,17 @@ public final class VulkanLWJGLDescriptorSetLayoutBindingsTest
 
   @Test
   public void testDescriptorSetLayoutBinding_0(
-    final @Mocked VulkanLWJGLSampler sampler_0,
-    final @Mocked VulkanLWJGLSampler sampler_1,
-    final @Mocked VulkanLWJGLSampler sampler_2)
+    final @Mock VulkanLWJGLSampler sampler_0,
+    final @Mock VulkanLWJGLSampler sampler_1,
+    final @Mock VulkanLWJGLSampler sampler_2)
     throws Exception
   {
-    new Expectations()
-    {{
-      sampler_0.handle();
-      this.result = Long.valueOf(23L);
-      sampler_1.handle();
-      this.result = Long.valueOf(64L);
-      sampler_2.handle();
-      this.result = Long.valueOf(39L);
-    }};
+    Mockito.when(sampler_0.handle())
+      .thenReturn(23L);
+    Mockito.when(sampler_1.handle())
+      .thenReturn(64L);
+    Mockito.when(sampler_2.handle())
+      .thenReturn(39L);
 
     final var binding =
       VulkanDescriptorSetLayoutBinding.of(

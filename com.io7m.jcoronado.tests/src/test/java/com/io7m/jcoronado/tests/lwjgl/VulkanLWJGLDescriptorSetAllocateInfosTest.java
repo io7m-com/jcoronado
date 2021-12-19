@@ -20,15 +20,18 @@ import com.io7m.jcoronado.api.VulkanDescriptorSetAllocateInfo;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLDescriptorPool;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLDescriptorSetAllocateInfos;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLDescriptorSetLayout;
-import mockit.Expectations;
-import mockit.Mocked;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.lwjgl.system.MemoryStack;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@ExtendWith(MockitoExtension.class)
 public final class VulkanLWJGLDescriptorSetAllocateInfosTest
 {
   private static final Logger LOG = LoggerFactory.getLogger(
@@ -45,20 +48,17 @@ public final class VulkanLWJGLDescriptorSetAllocateInfosTest
 
   @Test
   public void testInfo(
-    final @Mocked VulkanLWJGLDescriptorPool pool,
-    final @Mocked VulkanLWJGLDescriptorSetLayout layout_0,
-    final @Mocked VulkanLWJGLDescriptorSetLayout layout_1)
+    final @Mock VulkanLWJGLDescriptorPool pool,
+    final @Mock VulkanLWJGLDescriptorSetLayout layout_0,
+    final @Mock VulkanLWJGLDescriptorSetLayout layout_1)
     throws Exception
   {
-    new Expectations()
-    {{
-      pool.handle();
-      this.result = Long.valueOf(100L);
-      layout_0.handle();
-      this.result = Long.valueOf(23L);
-      layout_1.handle();
-      this.result = Long.valueOf(64L);
-    }};
+    Mockito.when(pool.handle())
+      .thenReturn(100L);
+    Mockito.when(layout_0.handle())
+      .thenReturn(23L);
+    Mockito.when(layout_1.handle())
+      .thenReturn(64L);
 
     final var info =
       VulkanDescriptorSetAllocateInfo.builder()

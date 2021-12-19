@@ -50,11 +50,13 @@ import com.io7m.jcoronado.lwjgl.VulkanLWJGLGraphicsPipelineCreateInfos;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLPipelineLayout;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLRenderPass;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLShaderModule;
-import mockit.Expectations;
-import mockit.Mocked;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.lwjgl.system.MemoryStack;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -84,6 +86,7 @@ import static com.io7m.jcoronado.api.VulkanStencilOp.VK_STENCIL_OP_ZERO;
 import static com.io7m.jcoronado.api.VulkanVertexInputRate.VK_VERTEX_INPUT_RATE_INSTANCE;
 import static com.io7m.jcoronado.api.VulkanVertexInputRate.VK_VERTEX_INPUT_RATE_VERTEX;
 
+@ExtendWith(MockitoExtension.class)
 public final class VulkanLWJGLGraphicsPipelineCreateInfosTest
 {
   private static final Logger LOG = LoggerFactory.getLogger(
@@ -100,22 +103,17 @@ public final class VulkanLWJGLGraphicsPipelineCreateInfosTest
 
   @Test
   public void testPipelineColorBlendStateCreateInfo(
-    final @Mocked VulkanLWJGLShaderModule module,
-    final @Mocked VulkanLWJGLPipelineLayout layout,
-    final @Mocked VulkanLWJGLRenderPass render_pass)
+    final @Mock VulkanLWJGLShaderModule module,
+    final @Mock VulkanLWJGLPipelineLayout layout,
+    final @Mock VulkanLWJGLRenderPass render_pass)
     throws VulkanException
   {
-    new Expectations()
-    {{
-      module.handle();
-      this.result = Long.valueOf(0x200L);
-
-      layout.handle();
-      this.result = Long.valueOf(0x201L);
-
-      render_pass.handle();
-      this.result = Long.valueOf(0x202L);
-    }};
+    Mockito.when(module.handle())
+      .thenReturn(Long.valueOf(0x200L));
+    Mockito.when(layout.handle())
+      .thenReturn(Long.valueOf(0x201L));
+    Mockito.when(render_pass.handle())
+      .thenReturn(Long.valueOf(0x202L));
 
     final var state =
       VulkanPipelineColorBlendAttachmentState.builder()

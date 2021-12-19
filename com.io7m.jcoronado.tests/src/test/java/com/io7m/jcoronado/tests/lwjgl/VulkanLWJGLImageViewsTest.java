@@ -24,19 +24,22 @@ import com.io7m.jcoronado.api.VulkanImageViewCreateFlag;
 import com.io7m.jcoronado.api.VulkanImageViewCreateInfo;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLImage;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLImageViews;
-import mockit.Expectations;
-import mockit.Mocked;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.vulkan.VK10;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static com.io7m.jcoronado.api.VulkanFormat.VK_FORMAT_B8G8R8A8_UNORM;
 import static com.io7m.jcoronado.api.VulkanImageViewKind.VK_IMAGE_VIEW_TYPE_2D;
 
+@ExtendWith(MockitoExtension.class)
 public final class VulkanLWJGLImageViewsTest
 {
   private static final Logger LOG = LoggerFactory.getLogger(
@@ -53,13 +56,10 @@ public final class VulkanLWJGLImageViewsTest
 
   @Test
   public void testImageViewCreateInfo(
-    final @Mocked VulkanLWJGLImage image)
+    final @Mock VulkanLWJGLImage image)
   {
-    new Expectations()
-    {{
-      image.handle();
-      this.result = Long.valueOf(0x200L);
-    }};
+    Mockito.when(image.handle())
+      .thenReturn(Long.valueOf(0x200L));
 
     final var components =
       VulkanComponentMapping.builder()

@@ -22,16 +22,19 @@ import com.io7m.jcoronado.api.VulkanPushConstantRange;
 import com.io7m.jcoronado.api.VulkanShaderStageFlag;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLDescriptorSetLayout;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLPipelineLayouts;
-import mockit.Expectations;
-import mockit.Mocked;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.vulkan.VK10;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@ExtendWith(MockitoExtension.class)
 public final class VulkanLWJGLPipelineLayoutsTest
 {
   private static final Logger LOG = LoggerFactory.getLogger(
@@ -48,20 +51,17 @@ public final class VulkanLWJGLPipelineLayoutsTest
 
   @Test
   public void testPipelineLayoutCreateInfo(
-    final @Mocked VulkanLWJGLDescriptorSetLayout layout_0,
-    final @Mocked VulkanLWJGLDescriptorSetLayout layout_1,
-    final @Mocked VulkanLWJGLDescriptorSetLayout layout_2)
+    final @Mock VulkanLWJGLDescriptorSetLayout layout_0,
+    final @Mock VulkanLWJGLDescriptorSetLayout layout_1,
+    final @Mock VulkanLWJGLDescriptorSetLayout layout_2)
     throws Exception
   {
-    new Expectations()
-    {{
-      layout_0.handle();
-      this.result = Long.valueOf(0x100L);
-      layout_1.handle();
-      this.result = Long.valueOf(0x101L);
-      layout_2.handle();
-      this.result = Long.valueOf(0x102L);
-    }};
+    Mockito.when(layout_0.handle())
+      .thenReturn(Long.valueOf(0x100L));
+    Mockito.when(layout_1.handle())
+      .thenReturn(Long.valueOf(0x101L));
+    Mockito.when(layout_2.handle())
+      .thenReturn(Long.valueOf(0x102L));
 
     final var push_range_0 =
       VulkanPushConstantRange.builder()

@@ -20,17 +20,20 @@ import com.io7m.jcoronado.api.VulkanDescriptorImageInfo;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLDescriptorImageInfos;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLImageView;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLSampler;
-import mockit.Expectations;
-import mockit.Mocked;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.lwjgl.system.MemoryStack;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static com.io7m.jcoronado.api.VulkanImageLayout.VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
 
+@ExtendWith(MockitoExtension.class)
 public final class VulkanLWJGLDescriptorImageInfosTest
 {
   private static final Logger LOG = LoggerFactory.getLogger(
@@ -47,17 +50,14 @@ public final class VulkanLWJGLDescriptorImageInfosTest
 
   @Test
   public void testInfo(
-    final @Mocked VulkanLWJGLSampler sampler,
-    final @Mocked VulkanLWJGLImageView image_view)
+    final @Mock VulkanLWJGLSampler sampler,
+    final @Mock VulkanLWJGLImageView image_view)
     throws Exception
   {
-    new Expectations()
-    {{
-      sampler.handle();
-      this.result = Long.valueOf(100L);
-      image_view.handle();
-      this.result = Long.valueOf(23L);
-    }};
+    Mockito.when(sampler.handle())
+      .thenReturn(100L);
+    Mockito.when(image_view.handle())
+      .thenReturn(23L);
 
     final var info =
       VulkanDescriptorImageInfo.builder()

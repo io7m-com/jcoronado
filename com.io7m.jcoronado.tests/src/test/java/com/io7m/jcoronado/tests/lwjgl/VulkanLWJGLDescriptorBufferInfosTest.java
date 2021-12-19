@@ -19,15 +19,18 @@ package com.io7m.jcoronado.tests.lwjgl;
 import com.io7m.jcoronado.api.VulkanDescriptorBufferInfo;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLBuffer;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLDescriptorBufferInfos;
-import mockit.Expectations;
-import mockit.Mocked;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.lwjgl.system.MemoryStack;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@ExtendWith(MockitoExtension.class)
 public final class VulkanLWJGLDescriptorBufferInfosTest
 {
   private static final Logger LOG = LoggerFactory.getLogger(
@@ -44,14 +47,11 @@ public final class VulkanLWJGLDescriptorBufferInfosTest
 
   @Test
   public void testInfo(
-    final @Mocked VulkanLWJGLBuffer buffer)
+    final @Mock VulkanLWJGLBuffer buffer)
     throws Exception
   {
-    new Expectations()
-    {{
-      buffer.handle();
-      this.result = Long.valueOf(100L);
-    }};
+    Mockito.when(buffer.handle())
+      .thenReturn(Long.valueOf(100L));
 
     final var info =
       VulkanDescriptorBufferInfo.builder()

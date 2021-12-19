@@ -19,18 +19,21 @@ package com.io7m.jcoronado.tests.lwjgl;
 import com.io7m.jcoronado.api.VulkanCommandBufferCreateInfo;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLCommandBufferCreateInfos;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLCommandPool;
-import mockit.Expectations;
-import mockit.Mocked;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.vulkan.VK10;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static com.io7m.jcoronado.api.VulkanCommandBufferLevel.VK_COMMAND_BUFFER_LEVEL_PRIMARY;
 
+@ExtendWith(MockitoExtension.class)
 public final class VulkanLWJGLCommandBufferCreateInfosTest
 {
   private static final Logger LOG = LoggerFactory.getLogger(
@@ -47,13 +50,10 @@ public final class VulkanLWJGLCommandBufferCreateInfosTest
 
   @Test
   public void testCommandPoolCreateInfo(
-    final @Mocked VulkanLWJGLCommandPool pool)
+    final @Mock VulkanLWJGLCommandPool pool)
   {
-    new Expectations()
-    {{
-      pool.handle();
-      this.result = Long.valueOf(0x300L);
-    }};
+    Mockito.when(pool.handle())
+      .thenReturn(0x300L);
 
     final var info =
       VulkanCommandBufferCreateInfo.builder()

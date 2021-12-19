@@ -21,18 +21,21 @@ import com.io7m.jcoronado.api.VulkanFramebufferCreateInfo;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLFramebufferCreateInfos;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLImageView;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLRenderPass;
-import mockit.Expectations;
-import mockit.Mocked;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.vulkan.VK10;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
+@ExtendWith(MockitoExtension.class)
 public final class VulkanLWJGLFramebufferCreateInfosTest
 {
   private static final Logger LOG = LoggerFactory.getLogger(
@@ -49,15 +52,12 @@ public final class VulkanLWJGLFramebufferCreateInfosTest
 
   @Test
   public void testFramebufferCreateInfo(
-    final @Mocked VulkanLWJGLRenderPass render_pass,
-    final @Mocked VulkanLWJGLImageView image_view)
+    final @Mock VulkanLWJGLRenderPass render_pass,
+    final @Mock VulkanLWJGLImageView image_view)
     throws VulkanException
   {
-    new Expectations()
-    {{
-      render_pass.handle();
-      this.result = Long.valueOf(0x200L);
-    }};
+    Mockito.when(render_pass.handle())
+      .thenReturn(Long.valueOf(0x200L));
 
     final var info =
       VulkanFramebufferCreateInfo.builder()

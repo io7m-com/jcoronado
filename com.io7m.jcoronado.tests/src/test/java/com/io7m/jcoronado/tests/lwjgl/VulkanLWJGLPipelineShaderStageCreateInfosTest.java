@@ -21,19 +21,22 @@ import com.io7m.jcoronado.api.VulkanPipelineShaderStageCreateInfo;
 import com.io7m.jcoronado.api.VulkanShaderStageFlag;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLPipelineShaderStageCreateInfos;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLShaderModule;
-import mockit.Expectations;
-import mockit.Mocked;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.vulkan.VK10;
 import org.lwjgl.vulkan.VkPipelineShaderStageCreateInfo;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
+@ExtendWith(MockitoExtension.class)
 public final class VulkanLWJGLPipelineShaderStageCreateInfosTest
 {
   private static final Logger LOG = LoggerFactory.getLogger(
@@ -93,14 +96,11 @@ public final class VulkanLWJGLPipelineShaderStageCreateInfosTest
 
   @Test
   public void testPipelineShaderStageCreateInfo(
-    final @Mocked VulkanLWJGLShaderModule module)
+    final @Mock VulkanLWJGLShaderModule module)
     throws VulkanIncompatibleClassException
   {
-    new Expectations()
-    {{
-      module.handle();
-      this.result = Long.valueOf(0x200L);
-    }};
+    Mockito.when(module.handle())
+      .thenReturn(Long.valueOf(0x200L));
 
     final var info =
       VulkanPipelineShaderStageCreateInfo.builder()
@@ -141,14 +141,11 @@ public final class VulkanLWJGLPipelineShaderStageCreateInfosTest
 
   @Test
   public void testPipelineShaderStageCreateInfos(
-    final @Mocked VulkanLWJGLShaderModule module)
+    final @Mock VulkanLWJGLShaderModule module)
     throws VulkanIncompatibleClassException
   {
-    new Expectations()
-    {{
-      module.handle();
-      this.result = Long.valueOf(0x200L);
-    }};
+    Mockito.when(module.handle())
+      .thenReturn(Long.valueOf(0x200L));
 
     final var info_0 =
       VulkanPipelineShaderStageCreateInfo.builder()
@@ -165,10 +162,11 @@ public final class VulkanLWJGLPipelineShaderStageCreateInfosTest
         .build();
 
     final var packed =
-      VulkanLWJGLPipelineShaderStageCreateInfos.packAll(this.stack,
-                                                        List.of(
-                                                          info_0,
-                                                          info_1));
+      VulkanLWJGLPipelineShaderStageCreateInfos.packAll(
+        this.stack,
+        List.of(
+          info_0,
+          info_1));
 
     checkPacked(module, packed);
   }
