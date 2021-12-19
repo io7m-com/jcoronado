@@ -25,14 +25,11 @@ import org.immutables.value.Value;
  * @see "VkPhysicalDeviceLimits"
  */
 
-// CHECKSTYLE:OFF
 @VulkanAPIStructType(vulkanStruct = "VkPhysicalDeviceLimits")
 @ImmutablesStyleType
 @Value.Immutable
 public interface VulkanPhysicalDeviceLimitsType
 {
-  //CHECKSTYLE:ON
-
   /**
    * @return the granularity, in bytes, at which buffer or linear image resources, and optimal image
    * resources can be bound to adjacent offsets in the same VkDeviceMemory object without aliasing.

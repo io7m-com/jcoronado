@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!DOCTYPE suppressions PUBLIC
+  "-//Checkstyle//DTD SuppressionFilter Configuration 1.0//EN"
+  "https://checkstyle.org/dtds/suppressions_1_0.dtd">
+
+<suppressions>
+  <!-- Very difficult to break up this implementation. -->
+  <suppress files="VulkanLWJGLLogicalDevice.java"
+            checks="FileLength"/>
+
+  <!-- Not under our control. -->
+  <suppress files="VulkanPhysicalDeviceLimitsType.java"
+            checks="MethodCount"/>
+
+  <!-- Manually copying String -->
+  <suppress files="VulkanLWJGLExtDebugUtils.java"
+            checks="IllegalInstantiation"/>
+</suppressions>
