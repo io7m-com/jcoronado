@@ -33,6 +33,7 @@ final class VulkanLWJGLExtensionsRegistry
     this.extensions_read = Collections.unmodifiableMap(this.extensions);
     this.addExtension(new VulkanLWJGLExtKHRSurface());
     this.addExtension(new VulkanLWJGLExtKHRSwapChain());
+    this.addExtension(new VulkanLWJGLExtDebugUtils());
   }
 
   Map<String, VulkanExtensionType> extensions()

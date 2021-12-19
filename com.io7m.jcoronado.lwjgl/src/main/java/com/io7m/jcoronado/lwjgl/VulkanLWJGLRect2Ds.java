@@ -42,7 +42,6 @@ public final class VulkanLWJGLRect2Ds
    * @param info  A structure
    *
    * @return A packed structure
-   *
    */
 
   public static VkRect2D pack(
@@ -58,12 +57,11 @@ public final class VulkanLWJGLRect2Ds
   /**
    * Pack a structure.
    *
-   * @param stack A stack
+   * @param stack  A stack
    * @param source The input structure
    * @param target The output structure
    *
    * @return A packed structure
-   *
    */
 
   public static VkRect2D packInto(

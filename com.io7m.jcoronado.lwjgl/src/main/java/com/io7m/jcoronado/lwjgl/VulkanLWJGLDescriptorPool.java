@@ -31,7 +31,8 @@ import java.util.Objects;
 public final class VulkanLWJGLDescriptorPool
   extends VulkanLWJGLHandle implements VulkanDescriptorPoolType
 {
-  private static final Logger LOG = LoggerFactory.getLogger(VulkanLWJGLDescriptorPool.class);
+  private static final Logger LOG = LoggerFactory.getLogger(
+    VulkanLWJGLDescriptorPool.class);
 
   private final long handle;
   private final VkDevice device;

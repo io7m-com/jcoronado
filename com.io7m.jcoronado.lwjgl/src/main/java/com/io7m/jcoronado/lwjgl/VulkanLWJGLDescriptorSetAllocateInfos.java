@@ -102,13 +102,17 @@ public final class VulkanLWJGLDescriptorSetAllocateInfos
       stack,
       layouts,
       layout ->
-        VulkanLWJGLClassChecks.checkInstanceOf(layout, VulkanLWJGLDescriptorSetLayout.class)
+        VulkanLWJGLClassChecks.checkInstanceOf(
+            layout,
+            VulkanLWJGLDescriptorSetLayout.class)
           .handle());
   }
 
   private static long packDescriptorPool(final VulkanDescriptorPoolType pool)
     throws VulkanIncompatibleClassException
   {
-    return VulkanLWJGLClassChecks.checkInstanceOf(pool, VulkanLWJGLDescriptorPool.class).handle();
+    return VulkanLWJGLClassChecks.checkInstanceOf(
+      pool,
+      VulkanLWJGLDescriptorPool.class).handle();
   }
 }

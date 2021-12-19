@@ -53,7 +53,8 @@ public interface VulkanSpecializationMapType
   default void checkPreconditions()
   {
     if (!this.data().isDirect()) {
-      throw new IllegalArgumentException("Must use direct byte buffers for specialization data");
+      throw new IllegalArgumentException(
+        "Must use direct byte buffers for specialization data");
     }
   }
 }

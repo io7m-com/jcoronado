@@ -72,9 +72,10 @@ public final class VulkanChecks
         .append(" returned 0x")
         .append(Integer.toUnsignedString(code, 16))
         .append(" (")
-        .append(Integer.toString(code))
+        .append(code)
         .append(") (")
-        .append(VulkanErrorCodes.errorName(code).orElse("Unrecognized error code"))
+        .append(VulkanErrorCodes.errorName(code).orElse(
+          "Unrecognized error code"))
         .append(')')
         .toString());
   }

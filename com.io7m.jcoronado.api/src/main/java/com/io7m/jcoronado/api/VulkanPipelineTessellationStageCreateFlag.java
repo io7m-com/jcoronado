@@ -24,7 +24,8 @@ package com.io7m.jcoronado.api;
  */
 
 @VulkanAPIEnumType(vulkanEnum = "VkPipelineTessellationStateCreateFlags")
-public enum VulkanPipelineTessellationStageCreateFlag implements VulkanEnumBitmaskType
+public enum VulkanPipelineTessellationStageCreateFlag implements
+  VulkanEnumBitmaskType
 {
   /**
    * No flags set.

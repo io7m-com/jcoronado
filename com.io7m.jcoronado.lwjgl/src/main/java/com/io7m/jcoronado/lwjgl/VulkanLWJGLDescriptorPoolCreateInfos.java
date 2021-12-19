@@ -79,7 +79,9 @@ public final class VulkanLWJGLDescriptorPoolCreateInfos
     buffer.flags(VulkanEnumMaps.packValues(info.flags()));
     buffer.maxSets(info.maxSets());
     buffer.pPoolSizes(
-      VulkanLWJGLDescriptorPoolSizes.packDescriptorPoolSizes(stack, info.poolSizes()));
+      VulkanLWJGLDescriptorPoolSizes.packDescriptorPoolSizes(
+        stack,
+        info.poolSizes()));
     return buffer;
   }
 }

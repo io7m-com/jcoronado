@@ -62,7 +62,8 @@ public interface VulkanShaderModuleCreateInfoType
   default void checkPreconditions()
   {
     if (!this.data().isDirect()) {
-      throw new IllegalArgumentException("Must use direct byte buffers for shader modules");
+      throw new IllegalArgumentException(
+        "Must use direct byte buffers for shader modules");
     }
   }
 }

@@ -20,7 +20,11 @@
 
 module com.io7m.jcoronado.lwjgl
 {
+  requires static org.osgi.annotation.bundle;
+  requires static org.osgi.annotation.versioning;
+
   requires transitive com.io7m.jcoronado.api;
+  requires transitive com.io7m.jcoronado.extensions.ext_debug_utils.api;
   requires transitive com.io7m.jcoronado.extensions.khr.surface.api;
   requires transitive com.io7m.jcoronado.vma;
 

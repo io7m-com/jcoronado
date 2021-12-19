@@ -22,7 +22,8 @@ package com.io7m.jcoronado.api;
  */
 
 @VulkanAPIEnumType(vulkanEnum = "VkPipelineViewportStateCreateFlags")
-public enum VulkanPipelineViewportStateCreateFlag implements VulkanEnumBitmaskType
+public enum VulkanPipelineViewportStateCreateFlag implements
+  VulkanEnumBitmaskType
 {
   /**
    * No flags set.

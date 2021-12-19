@@ -103,7 +103,8 @@ public enum VulkanQueryPipelineStatisticFlag implements VulkanEnumBitmaskType
    * evaluation shader is invoked.
    */
 
-  VK_QUERY_PIPELINE_STATISTIC_TESSELLATION_EVALUATION_SHADER_INVOCATIONS_BIT(0x00000200),
+  VK_QUERY_PIPELINE_STATISTIC_TESSELLATION_EVALUATION_SHADER_INVOCATIONS_BIT(
+    0x00000200),
 
   /**
    * Specifies that queries managed by the pool will count the number of compute shader invocations.

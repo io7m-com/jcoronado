@@ -33,7 +33,8 @@ import java.util.Objects;
 
 public final class VulkanHostAllocatorTracker implements VulkanHostAllocatorType
 {
-  private static final Logger LOG = LoggerFactory.getLogger(VulkanHostAllocatorTracker.class);
+  private static final Logger LOG = LoggerFactory.getLogger(
+    VulkanHostAllocatorTracker.class);
 
   private final VulkanHostAllocatorType delegate;
   private final Long2ReferenceOpenHashMap<VulkanSystemAllocationScope> allocation_scopes;
@@ -124,31 +125,41 @@ public final class VulkanHostAllocatorTracker implements VulkanHostAllocatorType
     switch (scope) {
       case VK_SYSTEM_ALLOCATION_SCOPE_COMMAND: {
         final var size = this.allocated_command.get(address);
-        this.allocated_command_size = Math.max(0L, this.allocated_command_size - size);
+        this.allocated_command_size = Math.max(
+          0L,
+          this.allocated_command_size - size);
         this.allocated_command.remove(address);
         break;
       }
       case VK_SYSTEM_ALLOCATION_SCOPE_OBJECT: {
         final var size = this.allocated_object.get(address);
-        this.allocated_object_size = Math.max(0L, this.allocated_object_size - size);
+        this.allocated_object_size = Math.max(
+          0L,
+          this.allocated_object_size - size);
         this.allocated_object.remove(address);
         break;
       }
       case VK_SYSTEM_ALLOCATION_SCOPE_CACHE: {
         final var size = this.allocated_cache.get(address);
-        this.allocated_cache_size = Math.max(0L, this.allocated_cache_size - size);
+        this.allocated_cache_size = Math.max(
+          0L,
+          this.allocated_cache_size - size);
         this.allocated_cache.remove(address);
         break;
       }
       case VK_SYSTEM_ALLOCATION_SCOPE_DEVICE: {
         final var size = this.allocated_device.get(address);
-        this.allocated_device_size = Math.max(0L, this.allocated_device_size - size);
+        this.allocated_device_size = Math.max(
+          0L,
+          this.allocated_device_size - size);
         this.allocated_device.remove(address);
         break;
       }
       case VK_SYSTEM_ALLOCATION_SCOPE_INSTANCE: {
         final var size = this.allocated_instance.get(address);
-        this.allocated_instance_size = Math.max(0L, this.allocated_instance_size - size);
+        this.allocated_instance_size = Math.max(
+          0L,
+          this.allocated_instance_size - size);
         this.allocated_instance.remove(address);
         break;
       }
@@ -192,7 +203,11 @@ public final class VulkanHostAllocatorTracker implements VulkanHostAllocatorType
     }
 
     this.forgetAddressAndSize(address, scope);
-    final var new_address = this.delegate.reallocate(address, size, alignment, scope);
+    final var new_address = this.delegate.reallocate(
+      address,
+      size,
+      alignment,
+      scope);
     this.rememberAddressAndSize(scope, new_address, size);
     return new_address;
   }

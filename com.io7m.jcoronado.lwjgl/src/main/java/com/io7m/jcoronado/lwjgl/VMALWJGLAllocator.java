@@ -50,7 +50,8 @@ import static com.io7m.jcoronado.lwjgl.VulkanLWJGLHandle.Ownership.USER_OWNED;
  * @see "VmaAllocator"
  */
 
-public final class VMALWJGLAllocator extends VulkanLWJGLHandle implements VMAAllocatorType
+public final class VMALWJGLAllocator extends VulkanLWJGLHandle implements
+  VMAAllocatorType
 {
   private static final Logger LOG = LoggerFactory.getLogger(VMALWJGLAllocator.class);
 
@@ -69,7 +70,9 @@ public final class VMALWJGLAllocator extends VulkanLWJGLHandle implements VMAAll
     this.device =
       Objects.requireNonNull(in_device, "device");
     this.host_allocator_proxy =
-      Objects.requireNonNull(in_host_allocator_proxy, "in_host_allocator_proxy");
+      Objects.requireNonNull(
+        in_host_allocator_proxy,
+        "in_host_allocator_proxy");
 
     this.allocator_address = in_allocator_address;
     this.stack_initial = MemoryStack.create();
@@ -165,7 +168,10 @@ public final class VMALWJGLAllocator extends VulkanLWJGLHandle implements VMAAll
       if (vk_device_memory != 0L) {
         device_memory =
           Optional.of(new VulkanLWJGLDeviceMemory(
-            USER_OWNED, this.device.device(), vk_device_memory, this.host_allocator_proxy));
+            USER_OWNED,
+            this.device.device(),
+            vk_device_memory,
+            this.host_allocator_proxy));
       } else {
         device_memory = Optional.empty();
       }
@@ -173,7 +179,7 @@ public final class VMALWJGLAllocator extends VulkanLWJGLHandle implements VMAAll
       final var info =
         VMAAllocationInfo.builder()
           .setDeviceMemory(device_memory)
-          .setMemoryType((long) vk_allocation_info.memoryType())
+          .setMemoryType(vk_allocation_info.memoryType())
           .setOffset(vk_allocation_info.offset())
           .setSize(vk_allocation_info.size())
           .build();
@@ -245,7 +251,10 @@ public final class VMALWJGLAllocator extends VulkanLWJGLHandle implements VMAAll
       if (vk_device_memory != 0L) {
         device_memory =
           Optional.of(new VulkanLWJGLDeviceMemory(
-            USER_OWNED, this.device.device(), vk_device_memory, this.host_allocator_proxy));
+            USER_OWNED,
+            this.device.device(),
+            vk_device_memory,
+            this.host_allocator_proxy));
       } else {
         device_memory = Optional.empty();
       }
@@ -253,7 +262,7 @@ public final class VMALWJGLAllocator extends VulkanLWJGLHandle implements VMAAll
       final var info =
         VMAAllocationInfo.builder()
           .setDeviceMemory(device_memory)
-          .setMemoryType((long) vk_allocation_info.memoryType())
+          .setMemoryType(vk_allocation_info.memoryType())
           .setOffset(vk_allocation_info.offset())
           .setSize(vk_allocation_info.size())
           .build();
@@ -292,7 +301,10 @@ public final class VMALWJGLAllocator extends VulkanLWJGLHandle implements VMAAll
         Long.toUnsignedString(vk_buffer_handle, 16),
         Long.toUnsignedString(vk_allocation_handle, 16));
     }
-    Vma.vmaDestroyBuffer(this.allocator_address, vk_buffer_handle, vk_allocation_handle);
+    Vma.vmaDestroyBuffer(
+      this.allocator_address,
+      vk_buffer_handle,
+      vk_allocation_handle);
   }
 
   private void destroyVmaImage(
@@ -306,7 +318,10 @@ public final class VMALWJGLAllocator extends VulkanLWJGLHandle implements VMAAll
         Long.toUnsignedString(vk_image_handle, 16),
         Long.toUnsignedString(vk_allocation_handle, 16));
     }
-    Vma.vmaDestroyImage(this.allocator_address, vk_image_handle, vk_allocation_handle);
+    Vma.vmaDestroyImage(
+      this.allocator_address,
+      vk_image_handle,
+      vk_allocation_handle);
   }
 
   @Override
@@ -317,13 +332,18 @@ public final class VMALWJGLAllocator extends VulkanLWJGLHandle implements VMAAll
     Objects.requireNonNull(allocation, "allocation");
 
     final VMALWJGLAllocation<?> lwjgl_allocation =
-      VulkanLWJGLClassChecks.checkInstanceOf(allocation, VMALWJGLAllocation.class);
+      VulkanLWJGLClassChecks.checkInstanceOf(
+        allocation,
+        VMALWJGLAllocation.class);
 
     try (var stack = this.stack_initial.push()) {
       final var ptr = stack.mallocPointer(1);
 
       VulkanChecks.checkReturnCode(
-        Vma.vmaMapMemory(this.allocator_address, lwjgl_allocation.allocation, ptr),
+        Vma.vmaMapMemory(
+          this.allocator_address,
+          lwjgl_allocation.allocation,
+          ptr),
         "vmaMapMemory");
 
       return new VMALWJGLMappedMemory(
@@ -409,7 +429,9 @@ public final class VMALWJGLAllocator extends VulkanLWJGLHandle implements VMAAll
     @Override
     public int hashCode()
     {
-      return Objects.hash(this.info.deviceMemory(), Long.valueOf(this.info.offset()));
+      return Objects.hash(
+        this.info.deviceMemory(),
+        Long.valueOf(this.info.offset()));
     }
 
     @Override
@@ -470,7 +492,7 @@ public final class VMALWJGLAllocator extends VulkanLWJGLHandle implements VMAAll
     private final VMALWJGLAllocator allocator;
     private final VMALWJGLAllocation<?> allocation;
     private boolean mapped;
-    private ByteBuffer buffer;
+    private final ByteBuffer buffer;
 
     VMALWJGLMappedMemory(
       final VMALWJGLAllocator in_allocator,
@@ -485,7 +507,9 @@ public final class VMALWJGLAllocator extends VulkanLWJGLHandle implements VMAAll
 
       this.address = in_address;
       this.mapped = true;
-      this.buffer = MemoryUtil.memByteBuffer(in_address, Math.toIntExact(in_size));
+      this.buffer = MemoryUtil.memByteBuffer(
+        in_address,
+        Math.toIntExact(in_size));
     }
 
     @Override
@@ -526,7 +550,9 @@ public final class VMALWJGLAllocator extends VulkanLWJGLHandle implements VMAAll
       if (this.mapped) {
         try {
           if (LOG.isTraceEnabled()) {
-            LOG.trace("unmapping memory: 0x{}", Long.toUnsignedString(this.address, 16));
+            LOG.trace(
+              "unmapping memory: 0x{}",
+              Long.toUnsignedString(this.address, 16));
           }
           Vma.vmaUnmapMemory(this.allocator.allocator_address, this.address);
         } finally {

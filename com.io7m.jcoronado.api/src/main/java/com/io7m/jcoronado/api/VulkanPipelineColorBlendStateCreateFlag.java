@@ -22,7 +22,8 @@ package com.io7m.jcoronado.api;
  */
 
 @VulkanAPIEnumType(vulkanEnum = "VkPipelineColorBlendStateCreateFlags")
-public enum VulkanPipelineColorBlendStateCreateFlag implements VulkanEnumBitmaskType
+public enum VulkanPipelineColorBlendStateCreateFlag implements
+  VulkanEnumBitmaskType
 {
   /**
    * No flags set.

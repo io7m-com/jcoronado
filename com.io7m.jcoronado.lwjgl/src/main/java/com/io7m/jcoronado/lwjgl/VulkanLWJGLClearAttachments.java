@@ -43,7 +43,6 @@ public final class VulkanLWJGLClearAttachments
    * @param info  A structure
    *
    * @return A packed structure
-   *
    */
 
   public static VkClearAttachment pack(
@@ -59,12 +58,11 @@ public final class VulkanLWJGLClearAttachments
   /**
    * Pack a structure.
    *
-   * @param stack A stack
+   * @param stack  A stack
    * @param source The input structure
    * @param target The output structure
    *
    * @return A packed structure
-   *
    */
 
   public static VkClearAttachment packInto(

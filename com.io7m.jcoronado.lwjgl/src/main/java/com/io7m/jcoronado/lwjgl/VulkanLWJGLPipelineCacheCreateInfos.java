@@ -44,7 +44,6 @@ public final class VulkanLWJGLPipelineCacheCreateInfos
    * @param info  A structure
    *
    * @return A packed structure
-   *
    */
 
   public static VkPipelineCacheCreateInfo pack(
@@ -64,7 +63,6 @@ public final class VulkanLWJGLPipelineCacheCreateInfos
    * @param target The output structure
    *
    * @return A packed structure
-   *
    */
 
   public static VkPipelineCacheCreateInfo packInto(

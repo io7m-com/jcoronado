@@ -22,7 +22,8 @@ package com.io7m.jcoronado.api;
  * @see "VkDescriptorSetLayout"
  */
 
-public interface VulkanDescriptorSetLayoutType extends VulkanHandleNonDispatchableType
+public interface VulkanDescriptorSetLayoutType extends
+  VulkanHandleNonDispatchableType
 {
   @VulkanAPIFunctionType(vulkanFunction = "vkDestroyDescriptorSetLayout")
   @Override

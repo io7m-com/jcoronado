@@ -82,7 +82,9 @@ public final class VulkanLWJGLPipelineViewportStateCreateInfos
       final var target = VkRect2D.create(buffer.address(index));
       final var extent = source.extent();
       final var offset = source.offset();
-      target.extent(VkExtent2D.mallocStack(stack).set(extent.width(), extent.height()));
+      target.extent(VkExtent2D.mallocStack(stack).set(
+        extent.width(),
+        extent.height()));
       target.offset(VkOffset2D.mallocStack(stack).set(offset.x(), offset.y()));
     }
     return buffer;

@@ -61,7 +61,9 @@ public final class VulkanLWJGLHostAllocatorProxy implements AutoCloseable
       Objects.requireNonNull(in_pfn_allocate, "pfn_allocate");
       Objects.requireNonNull(in_pfn_free, "pfn_free");
       Objects.requireNonNull(in_pfn_reallocate, "pfn_reallocate");
-      Objects.requireNonNull(in_pfn_internal_allocation, "pfn_internal_allocation");
+      Objects.requireNonNull(
+        in_pfn_internal_allocation,
+        "pfn_internal_allocation");
       Objects.requireNonNull(in_pfn_internal_free, "pfn_internal_free");
     }
 
@@ -99,7 +101,8 @@ public final class VulkanLWJGLHostAllocatorProxy implements AutoCloseable
               VulkanSystemAllocationScope.ofInt(scope)));
 
       final var pfn_free =
-        VkFreeFunction.create((user_data, address) -> java_allocator.deallocate(address));
+        VkFreeFunction.create((user_data, address) -> java_allocator.deallocate(
+          address));
 
       final var pfn_reallocate =
         VkReallocationFunction.create(

@@ -78,6 +78,12 @@ import com.io7m.jcoronado.api.VulkanVersions;
 import com.io7m.jcoronado.api.VulkanVertexInputAttributeDescription;
 import com.io7m.jcoronado.api.VulkanVertexInputBindingDescription;
 import com.io7m.jcoronado.api.VulkanViewport;
+import com.io7m.jcoronado.extensions.ext_debug_utils.api.VulkanDebugUtilsMessageSeverityFlag;
+import com.io7m.jcoronado.extensions.ext_debug_utils.api.VulkanDebugUtilsMessageTypeFlag;
+import com.io7m.jcoronado.extensions.ext_debug_utils.api.VulkanDebugUtilsMessengerCallbackDataEXT;
+import com.io7m.jcoronado.extensions.ext_debug_utils.api.VulkanDebugUtilsMessengerCreateInfoEXT;
+import com.io7m.jcoronado.extensions.ext_debug_utils.api.VulkanDebugUtilsSLF4J;
+import com.io7m.jcoronado.extensions.ext_debug_utils.api.VulkanDebugUtilsType;
 import com.io7m.jcoronado.extensions.khr_surface.api.VulkanExtKHRSurfaceType;
 import com.io7m.jcoronado.extensions.khr_surface.api.VulkanSurfaceCapabilitiesKHR;
 import com.io7m.jcoronado.extensions.khr_surface.api.VulkanSurfaceFormatKHR;
@@ -144,6 +150,10 @@ import static com.io7m.jcoronado.api.VulkanSharingMode.VK_SHARING_MODE_CONCURREN
 import static com.io7m.jcoronado.api.VulkanSharingMode.VK_SHARING_MODE_EXCLUSIVE;
 import static com.io7m.jcoronado.api.VulkanSubpassContents.VK_SUBPASS_CONTENTS_INLINE;
 import static com.io7m.jcoronado.api.VulkanVertexInputRate.VK_VERTEX_INPUT_RATE_VERTEX;
+import static com.io7m.jcoronado.extensions.ext_debug_utils.api.VulkanDebugUtilsMessageSeverityFlag.VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT;
+import static com.io7m.jcoronado.extensions.ext_debug_utils.api.VulkanDebugUtilsMessageSeverityFlag.VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT;
+import static com.io7m.jcoronado.extensions.ext_debug_utils.api.VulkanDebugUtilsMessageSeverityFlag.VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT;
+import static com.io7m.jcoronado.extensions.ext_debug_utils.api.VulkanDebugUtilsMessageSeverityFlag.VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT;
 import static com.io7m.jcoronado.extensions.khr_swapchain.api.VulkanColorSpaceKHR.VK_COLOR_SPACE_SRGB_NONLINEAR_KHR;
 import static com.io7m.jcoronado.extensions.khr_swapchain.api.VulkanCompositeAlphaFlagKHR.VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR;
 import static com.io7m.jcoronado.extensions.khr_swapchain.api.VulkanPresentModeKHR.VK_PRESENT_MODE_FIFO_KHR;
@@ -227,19 +237,27 @@ public final class HelloVulkan implements ExampleType
         instances.layers();
 
       /*
-       * Determine which extensions are required by the window system, and which layers are
-       * required.
+       * Determine which extensions are required by the window system, and
+       * which layers are required.
        */
 
       final var requiredLayers =
-        Set.of("VK_LAYER_KHRONOS_validation");
-      final var required_extensions =
-        requiredGLFWExtensions();
+        Set.of(
+          "VK_LAYER_KHRONOS_validation"
+        );
 
-      availableExtensions.forEach(HelloVulkan::showInstanceAvailableExtension);
-      availableLayers.forEach(HelloVulkan::showInstanceAvailableLayer);
-      required_extensions.forEach(HelloVulkan::showInstanceRequiredExtension);
-      requiredLayers.forEach(HelloVulkan::showInstanceRequiredLayer);
+      final var requiredExtensions = new HashSet<String>();
+      requiredExtensions.addAll(requiredGLFWExtensions());
+      requiredExtensions.add("VK_EXT_debug_utils");
+
+      availableExtensions
+        .forEach(HelloVulkan::showInstanceAvailableExtension);
+      availableLayers
+        .forEach(HelloVulkan::showInstanceAvailableLayer);
+      requiredExtensions
+        .forEach(HelloVulkan::showInstanceRequiredExtension);
+      requiredLayers
+        .forEach(HelloVulkan::showInstanceRequiredLayer);
 
       /*
        * Filter the available extensions and layers based on the requirements expressed above.
@@ -250,7 +268,7 @@ public final class HelloVulkan implements ExampleType
         VulkanExtensions.filterRequiredExtensions(
           availableExtensions,
           Set.of(),
-          required_extensions);
+          requiredExtensions);
 
       final var enableLayers =
         VulkanLayers.filterRequiredLayers(
@@ -279,6 +297,30 @@ public final class HelloVulkan implements ExampleType
         resources.add(instances.createInstance(
           instanceCreateInfo,
           Optional.of(hostAllocatorTracker)));
+
+      /*
+       * Enable debug messages.
+       */
+
+      final var debug =
+        instance.findEnabledExtension(
+          "VK_EXT_debug_utils",
+          VulkanDebugUtilsType.class
+        ).orElseThrow(() -> {
+          return new IllegalStateException(
+            "Missing VK_EXT_debug_utils extension");
+        });
+
+      resources.add(
+        debug.createDebugUtilsMessenger(
+          instance,
+          VulkanDebugUtilsMessengerCreateInfoEXT.builder()
+            .setSeverity(EnumSet.allOf(VulkanDebugUtilsMessageSeverityFlag.class))
+            .setType(EnumSet.allOf(VulkanDebugUtilsMessageTypeFlag.class))
+            .setCallback(new VulkanDebugUtilsSLF4J(LOG))
+            .build()
+        )
+      );
 
       /*
        * Get access to the VK_KHR_surface extension in order to produce a renderable

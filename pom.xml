@@ -31,6 +31,7 @@
     <module>com.io7m.jcoronado.tests.device</module>
     <module>com.io7m.jcoronado.tests</module>
     <module>com.io7m.jcoronado.vma</module>
+    <module>com.io7m.jcoronado.extensions.ext_debug_utils.api</module>
   </modules>
 
   <properties>
@@ -118,6 +119,16 @@
         <groupId>org.osgi</groupId>
         <artifactId>org.osgi.service.component.annotations</artifactId>
         <version>1.4.0</version>
+      </dependency>
+      <dependency>
+        <groupId>org.osgi</groupId>
+        <artifactId>org.osgi.annotation.bundle</artifactId>
+        <version>1.1.1</version>
+      </dependency>
+      <dependency>
+        <groupId>org.osgi</groupId>
+        <artifactId>org.osgi.annotation.versioning</artifactId>
+        <version>1.1.2</version>
       </dependency>
       <dependency>
         <groupId>org.lwjgl.osgi</groupId>

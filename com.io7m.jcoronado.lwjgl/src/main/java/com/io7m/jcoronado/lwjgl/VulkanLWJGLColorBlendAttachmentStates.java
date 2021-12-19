@@ -61,7 +61,8 @@ public final class VulkanLWJGLColorBlendAttachmentStates
 
     for (var index = 0; index < count; ++index) {
       final var source = attachments.get(index);
-      final var target = VkPipelineColorBlendAttachmentState.create(buffer.address(index));
+      final var target = VkPipelineColorBlendAttachmentState.create(buffer.address(
+        index));
       packInto(source, target);
     }
     return buffer;

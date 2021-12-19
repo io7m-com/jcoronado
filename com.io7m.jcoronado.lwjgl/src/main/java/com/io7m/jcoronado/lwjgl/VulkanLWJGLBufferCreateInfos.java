@@ -72,6 +72,9 @@ public final class VulkanLWJGLBufferCreateInfos
     final List<Integer> integers)
     throws VulkanException
   {
-    return VulkanLWJGLIntegerArrays.packIntsOrNull(stack, integers, Integer::intValue);
+    return VulkanLWJGLIntegerArrays.packIntsOrNull(
+      stack,
+      integers,
+      Integer::intValue);
   }
 }

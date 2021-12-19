@@ -80,9 +80,13 @@ public final class VulkanLWJGLDescriptorImageInfos
     Objects.requireNonNull(target, "target");
 
     return target
-      .sampler(checkInstanceOf(source.sampler(), VulkanLWJGLSampler.class).handle())
+      .sampler(checkInstanceOf(
+        source.sampler(),
+        VulkanLWJGLSampler.class).handle())
       .imageLayout(source.imageLayout().value())
-      .imageView(checkInstanceOf(source.imageView(), VulkanLWJGLImageView.class).handle());
+      .imageView(checkInstanceOf(
+        source.imageView(),
+        VulkanLWJGLImageView.class).handle());
   }
 
   /**

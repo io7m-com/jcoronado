@@ -29,7 +29,8 @@ import java.util.Objects;
  * An LWJGL based implementation of the {@link VulkanTemporaryAllocatorType} interface.
  */
 
-public final class VulkanLWJGLTemporaryAllocator implements VulkanTemporaryAllocatorType
+public final class VulkanLWJGLTemporaryAllocator implements
+  VulkanTemporaryAllocatorType
 {
   private static final Logger LOG =
     LoggerFactory.getLogger(VulkanLWJGLTemporaryAllocator.class);
@@ -122,7 +123,7 @@ public final class VulkanLWJGLTemporaryAllocator implements VulkanTemporaryAlloc
     Objects.requireNonNull(receiver, "receiver");
 
     return this.withAllocationBuffer(
-      (long) data.length,
+      data.length,
       alignment,
       address -> {
         address.put(data);

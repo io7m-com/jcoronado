@@ -42,7 +42,6 @@ public final class VulkanLWJGLViewports
    * @param info  A structure
    *
    * @return A packed structure
-   *
    */
 
   public static VkViewport pack(
@@ -62,7 +61,6 @@ public final class VulkanLWJGLViewports
    * @param target The output structure
    *
    * @return A packed structure
-   *
    */
 
   public static VkViewport packInto(

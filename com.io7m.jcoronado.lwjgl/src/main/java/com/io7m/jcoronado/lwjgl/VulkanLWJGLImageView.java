@@ -29,7 +29,8 @@ import java.util.Objects;
  * LWJGL {@link VulkanImageViewType}.
  */
 
-public final class VulkanLWJGLImageView extends VulkanLWJGLHandle implements VulkanImageViewType
+public final class VulkanLWJGLImageView extends VulkanLWJGLHandle implements
+  VulkanImageViewType
 {
   private static final Logger LOG = LoggerFactory.getLogger(VulkanLWJGLImageView.class);
 
@@ -99,7 +100,10 @@ public final class VulkanLWJGLImageView extends VulkanLWJGLHandle implements Vul
     if (LOG.isTraceEnabled()) {
       LOG.trace("destroying image view: {}", this);
     }
-    VK10.vkDestroyImageView(this.device, this.handle, this.hostAllocatorProxy().callbackBuffer());
+    VK10.vkDestroyImageView(
+      this.device,
+      this.handle,
+      this.hostAllocatorProxy().callbackBuffer());
   }
 
   @Override

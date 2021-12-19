@@ -84,7 +84,9 @@ public final class VulkanLWJGLBufferMemoryBarriers
     return target
       .sType(VK10.VK_STRUCTURE_TYPE_BUFFER_MEMORY_BARRIER)
       .pNext(0L)
-      .buffer(checkInstanceOf(source.buffer(), VulkanLWJGLBuffer.class).handle())
+      .buffer(checkInstanceOf(
+        source.buffer(),
+        VulkanLWJGLBuffer.class).handle())
       .dstAccessMask(VulkanEnumMaps.packValues(source.targetAccessMask()))
       .dstQueueFamilyIndex(source.targetQueueFamilyIndex())
       .offset(source.offset())

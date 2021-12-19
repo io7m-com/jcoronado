@@ -20,6 +20,9 @@
 
 module com.io7m.jcoronado.allocation.tracker
 {
+  requires static org.osgi.annotation.bundle;
+  requires static org.osgi.annotation.versioning;
+
   requires com.io7m.jcoronado.api;
   requires org.slf4j;
   requires it.unimi.dsi.fastutil;

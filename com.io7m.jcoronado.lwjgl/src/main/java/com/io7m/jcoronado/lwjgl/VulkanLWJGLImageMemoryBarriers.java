@@ -91,7 +91,9 @@ public final class VulkanLWJGLImageMemoryBarriers
       .image(checkInstanceOf(source.image(), VulkanLWJGLImage.class).handle())
       .newLayout(source.newLayout().value())
       .oldLayout(source.oldLayout().value())
-      .subresourceRange(VulkanLWJGLImageSubresourceRanges.pack(stack, source.subresourceRange()))
+      .subresourceRange(VulkanLWJGLImageSubresourceRanges.pack(
+        stack,
+        source.subresourceRange()))
       .srcAccessMask(VulkanEnumMaps.packValues(source.sourceAccessMask()))
       .srcQueueFamilyIndex(source.sourceQueueFamilyIndex());
   }

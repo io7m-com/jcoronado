@@ -20,6 +20,8 @@
 
 module com.io7m.jcoronado.api
 {
+  requires static org.osgi.annotation.bundle;
+  requires static org.osgi.annotation.versioning;
   requires static org.immutables.value;
   requires static com.io7m.immutables.style;
 

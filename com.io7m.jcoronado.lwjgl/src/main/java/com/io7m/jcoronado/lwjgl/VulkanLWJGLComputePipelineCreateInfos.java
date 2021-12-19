@@ -83,7 +83,9 @@ public final class VulkanLWJGLComputePipelineCreateInfos
       0L,
       VulkanEnumMaps.packValues(source.flags()),
       VulkanLWJGLPipelineShaderStageCreateInfos.pack(stack, source.stage()),
-      checkInstanceOf(source.layout(), VulkanLWJGLPipelineLayout.class).handle(),
+      checkInstanceOf(
+        source.layout(),
+        VulkanLWJGLPipelineLayout.class).handle(),
       mapBasePipelineHandle(source),
       source.basePipelineIndex().orElse(-1));
   }
@@ -95,8 +97,10 @@ public final class VulkanLWJGLComputePipelineCreateInfos
     try {
       return source.basePipeline().map(pipe -> {
         try {
-          return Long.valueOf(checkInstanceOf(pipe, VulkanLWJGLPipeline.class).handle());
-        } catch (VulkanIncompatibleClassException e) {
+          return Long.valueOf(checkInstanceOf(
+            pipe,
+            VulkanLWJGLPipeline.class).handle());
+        } catch (final VulkanIncompatibleClassException e) {
           throw new VulkanUncheckedException(e);
         }
       }).orElse(Long.valueOf(0L)).longValue();

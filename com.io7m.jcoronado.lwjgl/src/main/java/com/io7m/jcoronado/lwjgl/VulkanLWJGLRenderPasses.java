@@ -63,9 +63,13 @@ public final class VulkanLWJGLRenderPasses
     return VkRenderPassCreateInfo.mallocStack(stack)
       .sType(VK10.VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO)
       .pNext(0L)
-      .pAttachments(VulkanLWJGLAttachmentDescriptions.packAttachments(stack, info.attachments()))
+      .pAttachments(VulkanLWJGLAttachmentDescriptions.packAttachments(
+        stack,
+        info.attachments()))
       .pSubpasses(packSubpasses(stack, info.subpasses()))
-      .pDependencies(VulkanLWJGLSubpasses.packSubpassDependencies(stack, info.dependencies()))
+      .pDependencies(VulkanLWJGLSubpasses.packSubpassDependencies(
+        stack,
+        info.dependencies()))
       .flags(VulkanEnumMaps.packValues(info.flags()));
   }
 
@@ -116,7 +120,9 @@ public final class VulkanLWJGLRenderPasses
   {
     if (resolve.size() > 0) {
       buffer.pResolveAttachments(
-        VulkanLWJGLAttachmentReferences.packAttachmentReferences(stack, resolve));
+        VulkanLWJGLAttachmentReferences.packAttachmentReferences(
+          stack,
+          resolve));
     } else {
       buffer.pResolveAttachments(null);
     }
@@ -168,6 +174,9 @@ public final class VulkanLWJGLRenderPasses
     final List<Integer> integers)
     throws VulkanException
   {
-    return VulkanLWJGLIntegerArrays.packIntsOrNull(stack, integers, Integer::intValue);
+    return VulkanLWJGLIntegerArrays.packIntsOrNull(
+      stack,
+      integers,
+      Integer::intValue);
   }
 }

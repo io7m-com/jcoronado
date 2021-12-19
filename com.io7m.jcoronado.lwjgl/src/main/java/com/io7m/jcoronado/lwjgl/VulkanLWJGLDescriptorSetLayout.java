@@ -31,7 +31,8 @@ import java.util.Objects;
 public final class VulkanLWJGLDescriptorSetLayout
   extends VulkanLWJGLHandle implements VulkanDescriptorSetLayoutType
 {
-  private static final Logger LOG = LoggerFactory.getLogger(VulkanLWJGLDescriptorSetLayout.class);
+  private static final Logger LOG = LoggerFactory.getLogger(
+    VulkanLWJGLDescriptorSetLayout.class);
 
   private final long handle;
   private final VkDevice device;

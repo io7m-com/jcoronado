@@ -30,7 +30,8 @@ import java.util.Objects;
 public final class VulkanLWJGLDescriptorSet
   extends VulkanLWJGLHandle implements VulkanDescriptorSetType
 {
-  private static final Logger LOG = LoggerFactory.getLogger(VulkanLWJGLDescriptorSet.class);
+  private static final Logger LOG = LoggerFactory.getLogger(
+    VulkanLWJGLDescriptorSet.class);
 
   private final long handle;
   private final VkDevice device;

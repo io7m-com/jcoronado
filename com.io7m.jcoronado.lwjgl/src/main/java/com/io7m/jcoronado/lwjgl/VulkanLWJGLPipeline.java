@@ -28,7 +28,8 @@ import java.util.Objects;
  * A pipeline.
  */
 
-public final class VulkanLWJGLPipeline extends VulkanLWJGLHandle implements VulkanPipelineType
+public final class VulkanLWJGLPipeline extends VulkanLWJGLHandle implements
+  VulkanPipelineType
 {
   private static final Logger LOG = LoggerFactory.getLogger(VulkanLWJGLPipeline.class);
 
@@ -87,7 +88,10 @@ public final class VulkanLWJGLPipeline extends VulkanLWJGLHandle implements Vulk
     if (LOG.isTraceEnabled()) {
       LOG.trace("destroying pipeline: {}", this);
     }
-    VK10.vkDestroyPipeline(this.device, this.handle, this.hostAllocatorProxy().callbackBuffer());
+    VK10.vkDestroyPipeline(
+      this.device,
+      this.handle,
+      this.hostAllocatorProxy().callbackBuffer());
   }
 
   /**

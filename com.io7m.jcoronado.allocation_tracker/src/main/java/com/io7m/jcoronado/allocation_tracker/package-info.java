@@ -18,4 +18,9 @@
  * Type-safe Vulkan frontend (Allocation tracker)
  */
 
+@Export
+@Version("1.0.0")
 package com.io7m.jcoronado.allocation_tracker;
+
+import org.osgi.annotation.bundle.Export;
+import org.osgi.annotation.versioning.Version;

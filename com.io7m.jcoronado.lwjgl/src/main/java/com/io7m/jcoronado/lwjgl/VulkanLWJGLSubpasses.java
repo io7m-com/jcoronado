@@ -78,7 +78,9 @@ public final class VulkanLWJGLSubpasses
   {
     Objects.requireNonNull(stack, "stack");
     Objects.requireNonNull(dependency, "dependency");
-    return packSubpassDependencyInto(dependency, VkSubpassDependency.mallocStack(stack));
+    return packSubpassDependencyInto(
+      dependency,
+      VkSubpassDependency.mallocStack(stack));
   }
 
   private static VkSubpassDependency packSubpassDependencyInto(

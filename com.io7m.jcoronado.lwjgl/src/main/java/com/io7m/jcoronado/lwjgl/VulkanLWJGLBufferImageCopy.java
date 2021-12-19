@@ -78,7 +78,9 @@ public final class VulkanLWJGLBufferImageCopy
       .bufferRowLength(source.bufferRowLength())
       .imageExtent(VulkanLWJGLExtent3Ds.pack(stack, source.imageExtent()))
       .imageOffset(VulkanLWJGLOffset3Ds.pack(stack, source.imageOffset()))
-      .imageSubresource(VulkanLWJGLImageSubresourceLayers.pack(stack, source.imageSubresource()));
+      .imageSubresource(VulkanLWJGLImageSubresourceLayers.pack(
+        stack,
+        source.imageSubresource()));
   }
 
   /**

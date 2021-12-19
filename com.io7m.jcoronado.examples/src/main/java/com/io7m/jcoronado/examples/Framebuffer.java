@@ -42,6 +42,11 @@ import com.io7m.jcoronado.api.VulkanResourceException;
 import com.io7m.jcoronado.api.VulkanSubpassDescription;
 import com.io7m.jcoronado.api.VulkanUncheckedException;
 import com.io7m.jcoronado.api.VulkanVersions;
+import com.io7m.jcoronado.extensions.ext_debug_utils.api.VulkanDebugUtilsMessageSeverityFlag;
+import com.io7m.jcoronado.extensions.ext_debug_utils.api.VulkanDebugUtilsMessageTypeFlag;
+import com.io7m.jcoronado.extensions.ext_debug_utils.api.VulkanDebugUtilsMessengerCreateInfoEXT;
+import com.io7m.jcoronado.extensions.ext_debug_utils.api.VulkanDebugUtilsSLF4J;
+import com.io7m.jcoronado.extensions.ext_debug_utils.api.VulkanDebugUtilsType;
 import com.io7m.jcoronado.lwjgl.VMALWJGLAllocatorProvider;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLHostAllocatorJeMalloc;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLInstanceProvider;
@@ -55,6 +60,7 @@ import org.lwjgl.glfw.GLFWVulkan;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -142,13 +148,19 @@ public final class Framebuffer implements ExampleType
 
       final var requiredLayers =
         Set.of("VK_LAYER_KHRONOS_validation");
-      final var required_extensions =
-        requiredGLFWExtensions();
 
-      availableExtensions.forEach(Framebuffer::showInstanceAvailableExtension);
-      availableLayers.forEach(Framebuffer::showInstanceAvailableLayer);
-      required_extensions.forEach(Framebuffer::showInstanceRequiredExtension);
-      requiredLayers.forEach(Framebuffer::showInstanceRequiredLayer);
+      final var requiredExtensions = new HashSet<String>();
+      requiredExtensions.addAll(requiredGLFWExtensions());
+      requiredExtensions.add("VK_EXT_debug_utils");
+
+      availableExtensions
+        .forEach(Framebuffer::showInstanceAvailableExtension);
+      availableLayers
+        .forEach(Framebuffer::showInstanceAvailableLayer);
+      requiredExtensions
+        .forEach(Framebuffer::showInstanceRequiredExtension);
+      requiredLayers
+        .forEach(Framebuffer::showInstanceRequiredLayer);
 
       /*
        * Filter the available extensions and layers based on the requirements expressed above.
@@ -162,7 +174,7 @@ public final class Framebuffer implements ExampleType
         VulkanExtensions.filterRequiredExtensions(
           availableExtensions,
           optionalExtensions,
-          required_extensions);
+          requiredExtensions);
 
       final var optionalLayers =
         Set.<String>of();
@@ -194,6 +206,30 @@ public final class Framebuffer implements ExampleType
         resources.add(instances.createInstance(
           createInfo,
           Optional.of(hostAllocator)));
+
+      /*
+       * Enable debug messages.
+       */
+
+      final var debug =
+        instance.findEnabledExtension(
+          "VK_EXT_debug_utils",
+          VulkanDebugUtilsType.class
+        ).orElseThrow(() -> {
+          return new IllegalStateException(
+            "Missing VK_EXT_debug_utils extension");
+        });
+
+      resources.add(
+        debug.createDebugUtilsMessenger(
+          instance,
+          VulkanDebugUtilsMessengerCreateInfoEXT.builder()
+            .setSeverity(EnumSet.allOf(VulkanDebugUtilsMessageSeverityFlag.class))
+            .setType(EnumSet.allOf(VulkanDebugUtilsMessageTypeFlag.class))
+            .setCallback(new VulkanDebugUtilsSLF4J(LOG))
+            .build()
+        )
+      );
 
       /*
        * List the available physical devices and pick the "best" one.

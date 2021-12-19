@@ -20,7 +20,8 @@ package com.io7m.jcoronado.api;
  * @see "VkPipelineLayout"
  */
 
-public interface VulkanPipelineLayoutType extends VulkanHandleNonDispatchableType
+public interface VulkanPipelineLayoutType extends
+  VulkanHandleNonDispatchableType
 {
   @VulkanAPIFunctionType(vulkanFunction = "vkDestroyPipelineLayout")
   @Override

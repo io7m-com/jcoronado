@@ -75,7 +75,10 @@ public final class VulkanLWJGLPipelineDynamicStateCreateInfos
     final List<VulkanDynamicState> states)
     throws VulkanException
   {
-    return VulkanLWJGLIntegerArrays.packIntsOrNull(stack, states, VulkanDynamicState::value);
+    return VulkanLWJGLIntegerArrays.packIntsOrNull(
+      stack,
+      states,
+      VulkanDynamicState::value);
   }
 
   /**
@@ -101,7 +104,7 @@ public final class VulkanLWJGLPipelineDynamicStateCreateInfos
       return info.map(iinfo -> {
         try {
           return pack(stack, iinfo);
-        } catch (VulkanException e) {
+        } catch (final VulkanException e) {
           throw new VulkanUncheckedException(e);
         }
       }).orElse(null);

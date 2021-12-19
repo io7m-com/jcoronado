@@ -31,7 +31,8 @@ import java.util.Objects;
 public final class VulkanLWJGLPipelineLayout
   extends VulkanLWJGLHandle implements VulkanPipelineLayoutType
 {
-  private static final Logger LOG = LoggerFactory.getLogger(VulkanLWJGLPipelineLayout.class);
+  private static final Logger LOG = LoggerFactory.getLogger(
+    VulkanLWJGLPipelineLayout.class);
 
   private final long handle;
   private final VkDevice device;

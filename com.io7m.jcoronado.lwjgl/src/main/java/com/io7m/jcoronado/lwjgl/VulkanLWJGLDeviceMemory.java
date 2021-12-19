@@ -31,7 +31,8 @@ import java.util.Objects;
 public final class VulkanLWJGLDeviceMemory
   extends VulkanLWJGLHandle implements VulkanDeviceMemoryType
 {
-  private static final Logger LOG = LoggerFactory.getLogger(VulkanLWJGLDeviceMemory.class);
+  private static final Logger LOG = LoggerFactory.getLogger(
+    VulkanLWJGLDeviceMemory.class);
 
   private final long handle;
   private final VkDevice device;
@@ -88,7 +89,10 @@ public final class VulkanLWJGLDeviceMemory
     if (LOG.isTraceEnabled()) {
       LOG.trace("freeing device memory: {}", this);
     }
-    VK10.vkFreeMemory(this.device, this.handle, this.hostAllocatorProxy().callbackBuffer());
+    VK10.vkFreeMemory(
+      this.device,
+      this.handle,
+      this.hostAllocatorProxy().callbackBuffer());
   }
 
   long handle()

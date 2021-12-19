@@ -104,6 +104,11 @@ import com.io7m.jcoronado.api.VulkanVertexInputAttributeDescription;
 import com.io7m.jcoronado.api.VulkanVertexInputBindingDescription;
 import com.io7m.jcoronado.api.VulkanViewport;
 import com.io7m.jcoronado.api.VulkanWriteDescriptorSet;
+import com.io7m.jcoronado.extensions.ext_debug_utils.api.VulkanDebugUtilsMessageSeverityFlag;
+import com.io7m.jcoronado.extensions.ext_debug_utils.api.VulkanDebugUtilsMessageTypeFlag;
+import com.io7m.jcoronado.extensions.ext_debug_utils.api.VulkanDebugUtilsMessengerCreateInfoEXT;
+import com.io7m.jcoronado.extensions.ext_debug_utils.api.VulkanDebugUtilsSLF4J;
+import com.io7m.jcoronado.extensions.ext_debug_utils.api.VulkanDebugUtilsType;
 import com.io7m.jcoronado.extensions.khr_surface.api.VulkanExtKHRSurfaceType;
 import com.io7m.jcoronado.extensions.khr_surface.api.VulkanSurfaceCapabilitiesKHR;
 import com.io7m.jcoronado.extensions.khr_surface.api.VulkanSurfaceFormatKHR;
@@ -329,14 +334,22 @@ public final class HelloVulkanWithVMA implements ExampleType
        */
 
       final var requiredLayers =
-        Set.of("VK_LAYER_KHRONOS_validation");
-      final var requiredExtensions =
-        requiredGLFWExtensions();
+        Set.of(
+          "VK_LAYER_KHRONOS_validation"
+        );
 
-      availableExtensions.forEach(HelloVulkanWithVMA::showInstanceAvailableExtension);
-      availableLayers.forEach(HelloVulkanWithVMA::showInstanceAvailableLayer);
-      requiredExtensions.forEach(HelloVulkanWithVMA::showInstanceRequiredExtension);
-      requiredLayers.forEach(HelloVulkanWithVMA::showInstanceRequiredLayer);
+      final var requiredExtensions = new HashSet<String>();
+      requiredExtensions.addAll(requiredGLFWExtensions());
+      requiredExtensions.add("VK_EXT_debug_utils");
+
+      availableExtensions
+        .forEach(HelloVulkanWithVMA::showInstanceAvailableExtension);
+      availableLayers
+        .forEach(HelloVulkanWithVMA::showInstanceAvailableLayer);
+      requiredExtensions
+        .forEach(HelloVulkanWithVMA::showInstanceRequiredExtension);
+      requiredLayers
+        .forEach(HelloVulkanWithVMA::showInstanceRequiredLayer);
 
       /*
        * Filter the available extensions and layers based on the requirements expressed above.
@@ -369,6 +382,30 @@ public final class HelloVulkanWithVMA implements ExampleType
 
       final var instance =
         resources.add(instances.createInstance(createInfo, Optional.of(hostAllocator)));
+
+      /*
+       * Enable debug messages.
+       */
+
+      final var debug =
+        instance.findEnabledExtension(
+          "VK_EXT_debug_utils",
+          VulkanDebugUtilsType.class
+        ).orElseThrow(() -> {
+          return new IllegalStateException(
+            "Missing VK_EXT_debug_utils extension");
+        });
+
+      resources.add(
+        debug.createDebugUtilsMessenger(
+          instance,
+          VulkanDebugUtilsMessengerCreateInfoEXT.builder()
+            .setSeverity(EnumSet.allOf(VulkanDebugUtilsMessageSeverityFlag.class))
+            .setType(EnumSet.allOf(VulkanDebugUtilsMessageTypeFlag.class))
+            .setCallback(new VulkanDebugUtilsSLF4J(LOG))
+            .build()
+        )
+      );
 
       /*
        * Get access to the VK_KHR_surface extension in order to produce a renderable

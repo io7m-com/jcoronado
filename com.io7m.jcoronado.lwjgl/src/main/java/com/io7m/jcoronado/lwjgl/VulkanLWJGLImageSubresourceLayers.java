@@ -43,7 +43,6 @@ public final class VulkanLWJGLImageSubresourceLayers
    * @param info  A structure
    *
    * @return A packed structure
-   *
    */
 
   public static VkImageSubresourceLayers pack(
@@ -63,7 +62,6 @@ public final class VulkanLWJGLImageSubresourceLayers
    * @param target The output structure
    *
    * @return A packed structure
-   *
    */
 
   public static VkImageSubresourceLayers packInto(

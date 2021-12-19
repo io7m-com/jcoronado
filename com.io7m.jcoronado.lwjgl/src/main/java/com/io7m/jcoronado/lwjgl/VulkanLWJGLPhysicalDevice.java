@@ -435,7 +435,10 @@ public final class VulkanLWJGLPhysicalDevice
 
     try (var stack = this.stack_initial.push()) {
       final var vk_properties = VkFormatProperties.mallocStack(stack);
-      VK10.vkGetPhysicalDeviceFormatProperties(this.device, format.value(), vk_properties);
+      VK10.vkGetPhysicalDeviceFormatProperties(
+        this.device,
+        format.value(),
+        vk_properties);
 
       return VulkanFormatProperties.builder()
         .setBufferFeatures(mapBufferFeatures(vk_properties))
@@ -519,7 +522,9 @@ public final class VulkanLWJGLPhysicalDevice
 
     if (LOG.isDebugEnabled()) {
       LOG.debug("creating logical device");
-      enabled_extensions.forEach(name -> LOG.debug("enabling extension: {}", name));
+      enabled_extensions.forEach(name -> LOG.debug(
+        "enabling extension: {}",
+        name));
       enabled_layers.forEach(name -> LOG.debug("enabling layer: {}", name));
     }
 

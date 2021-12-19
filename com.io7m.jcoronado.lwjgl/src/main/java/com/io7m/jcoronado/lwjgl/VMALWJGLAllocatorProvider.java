@@ -108,6 +108,10 @@ public final class VMALWJGLAllocatorProvider implements VMAAllocatorProviderType
         stack.mallocPointer(1);
       final var cinfo =
         VmaAllocatorCreateInfo.malloc(stack);
+      final var vkVulkanFunctions =
+        VmaVulkanFunctions.malloc(stack);
+
+      vkVulkanFunctions.set(vkInstance, vkDevice);
 
       cinfo.set(
         0,
@@ -120,7 +124,7 @@ public final class VMALWJGLAllocatorProvider implements VMAAllocatorProviderType
         info.frameInUseCount()
           .orElse(0),
         null,
-        null,
+        vkVulkanFunctions,
         null,
         vkInstance,
         0,

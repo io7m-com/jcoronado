@@ -31,7 +31,8 @@ import java.util.Objects;
 public final class VulkanLWJGLPipelineCache
   extends VulkanLWJGLHandle implements VulkanPipelineCacheType
 {
-  private static final Logger LOG = LoggerFactory.getLogger(VulkanLWJGLPipelineCache.class);
+  private static final Logger LOG = LoggerFactory.getLogger(
+    VulkanLWJGLPipelineCache.class);
 
   private final long handle;
   private final VkDevice device;

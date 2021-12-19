@@ -62,7 +62,8 @@ public final class VulkanLWJGLGraphicsPipelineCreateInfos
 
     for (var index = 0; index < pipeline_infos.size(); ++index) {
       final var source = pipeline_infos.get(index);
-      final var target = VkGraphicsPipelineCreateInfo.create(buffer.address(index));
+      final var target = VkGraphicsPipelineCreateInfo.create(buffer.address(
+        index));
       packInto(stack, source, target);
     }
 
@@ -114,7 +115,9 @@ public final class VulkanLWJGLGraphicsPipelineCreateInfos
       VulkanLWJGLPipelineViewportStateCreateInfos.packOptional(
         stack, source.viewportState()));
     target.pStages(
-      VulkanLWJGLPipelineShaderStageCreateInfos.packAll(stack, source.stages()));
+      VulkanLWJGLPipelineShaderStageCreateInfos.packAll(
+        stack,
+        source.stages()));
   }
 
   private static void packIntoSubpass(
@@ -141,7 +144,9 @@ public final class VulkanLWJGLGraphicsPipelineCreateInfos
     throws VulkanIncompatibleClassException
   {
     final var layout_l =
-      VulkanLWJGLClassChecks.checkInstanceOf(source.layout(), VulkanLWJGLPipelineLayout.class);
+      VulkanLWJGLClassChecks.checkInstanceOf(
+        source.layout(),
+        VulkanLWJGLPipelineLayout.class);
     target.layout(layout_l.handle());
   }
 
@@ -152,7 +157,9 @@ public final class VulkanLWJGLGraphicsPipelineCreateInfos
   {
     final var bp = source.basePipeline();
     if (bp.isPresent()) {
-      final var bppl = VulkanLWJGLClassChecks.checkInstanceOf(bp.get(), VulkanLWJGLPipeline.class);
+      final var bppl = VulkanLWJGLClassChecks.checkInstanceOf(
+        bp.get(),
+        VulkanLWJGLPipeline.class);
       target.basePipelineHandle(bppl.handle());
     }
   }

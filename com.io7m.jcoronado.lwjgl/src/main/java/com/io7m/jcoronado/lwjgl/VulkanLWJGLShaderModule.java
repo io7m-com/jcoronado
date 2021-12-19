@@ -31,7 +31,8 @@ import java.util.Objects;
 public final class VulkanLWJGLShaderModule
   extends VulkanLWJGLHandle implements VulkanShaderModuleType
 {
-  private static final Logger LOG = LoggerFactory.getLogger(VulkanLWJGLShaderModule.class);
+  private static final Logger LOG = LoggerFactory.getLogger(
+    VulkanLWJGLShaderModule.class);
 
   private final long handle;
   private final VkDevice device;

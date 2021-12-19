@@ -28,7 +28,8 @@ import java.util.Objects;
  * An event.
  */
 
-public final class VulkanLWJGLEvent extends VulkanLWJGLHandle implements VulkanEventType
+public final class VulkanLWJGLEvent extends VulkanLWJGLHandle implements
+  VulkanEventType
 {
   private static final Logger LOG = LoggerFactory.getLogger(VulkanLWJGLEvent.class);
 
@@ -87,7 +88,10 @@ public final class VulkanLWJGLEvent extends VulkanLWJGLHandle implements VulkanE
     if (LOG.isTraceEnabled()) {
       LOG.trace("destroying fence: {}", this);
     }
-    VK10.vkDestroyEvent(this.device, this.handle, this.hostAllocatorProxy().callbackBuffer());
+    VK10.vkDestroyEvent(
+      this.device,
+      this.handle,
+      this.hostAllocatorProxy().callbackBuffer());
   }
 
   /**

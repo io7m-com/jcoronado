@@ -57,7 +57,9 @@ public final class VulkanLWJGLPipelineShaderStageCreateInfos
     Objects.requireNonNull(info, "info");
 
     final var module =
-      VulkanLWJGLClassChecks.checkInstanceOf(info.module(), VulkanLWJGLShaderModule.class);
+      VulkanLWJGLClassChecks.checkInstanceOf(
+        info.module(),
+        VulkanLWJGLShaderModule.class);
 
     final var target =
       VkPipelineShaderStageCreateInfo.mallocStack(stack);
@@ -108,7 +110,9 @@ public final class VulkanLWJGLPipelineShaderStageCreateInfos
       final var source =
         stages.get(index);
       final var module =
-        VulkanLWJGLClassChecks.checkInstanceOf(source.module(), VulkanLWJGLShaderModule.class);
+        VulkanLWJGLClassChecks.checkInstanceOf(
+          source.module(),
+          VulkanLWJGLShaderModule.class);
       final var target =
         VkPipelineShaderStageCreateInfo.create(buffer.address(index));
       packInto(stack, source, module, target);

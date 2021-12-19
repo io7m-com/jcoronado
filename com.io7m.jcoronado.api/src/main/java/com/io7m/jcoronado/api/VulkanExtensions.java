@@ -70,7 +70,8 @@ public final class VulkanExtensions
 
       final var builder = new StringBuilder(64);
       final var separator = System.lineSeparator();
-      builder.append("Required extensions are missing from the Vulkan implementation.")
+      builder.append(
+          "Required extensions are missing from the Vulkan implementation.")
         .append(separator)
         .append("  Missing:")
         .append(separator);
@@ -81,7 +82,9 @@ public final class VulkanExtensions
         builder.append(separator);
       }
 
-      throw new VulkanMissingRequiredExtensionsException(missing, builder.toString());
+      throw new VulkanMissingRequiredExtensionsException(
+        missing,
+        builder.toString());
     }
 
     return enable_extensions;

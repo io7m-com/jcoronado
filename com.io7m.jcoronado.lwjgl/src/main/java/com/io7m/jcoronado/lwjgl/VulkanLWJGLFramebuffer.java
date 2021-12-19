@@ -28,9 +28,11 @@ import java.util.Objects;
  * LWJGL {@link VulkanFramebufferType}.
  */
 
-public final class VulkanLWJGLFramebuffer extends VulkanLWJGLHandle implements VulkanFramebufferType
+public final class VulkanLWJGLFramebuffer extends VulkanLWJGLHandle implements
+  VulkanFramebufferType
 {
-  private static final Logger LOG = LoggerFactory.getLogger(VulkanLWJGLFramebuffer.class);
+  private static final Logger LOG = LoggerFactory.getLogger(
+    VulkanLWJGLFramebuffer.class);
 
   private final long handle;
   private final VkDevice device;
@@ -87,7 +89,10 @@ public final class VulkanLWJGLFramebuffer extends VulkanLWJGLHandle implements V
     if (LOG.isTraceEnabled()) {
       LOG.trace("destroying framebuffer: {}", this);
     }
-    VK10.vkDestroyFramebuffer(this.device, this.handle, this.hostAllocatorProxy().callbackBuffer());
+    VK10.vkDestroyFramebuffer(
+      this.device,
+      this.handle,
+      this.hostAllocatorProxy().callbackBuffer());
   }
 
   long handle()

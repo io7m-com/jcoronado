@@ -96,7 +96,12 @@ public final class VulkanLWJGLDescriptorSetLayoutBindings
     final var stage_flags =
       VulkanEnumMaps.packValues(source.stageFlags());
 
-    target.set(binding_index, descriptor_type, descriptor_count, stage_flags, samplers);
+    target.set(
+      binding_index,
+      descriptor_type,
+      descriptor_count,
+      stage_flags,
+      samplers);
     return target;
   }
 }

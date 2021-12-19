@@ -20,7 +20,8 @@ package com.io7m.jcoronado.api;
  * @see "VkDescriptorPool"
  */
 
-public interface VulkanDescriptorPoolType extends VulkanHandleNonDispatchableType
+public interface VulkanDescriptorPoolType extends
+  VulkanHandleNonDispatchableType
 {
   @VulkanAPIFunctionType(vulkanFunction = "vkDestroyDescriptorPool")
   @Override

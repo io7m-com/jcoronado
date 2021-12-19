@@ -76,7 +76,8 @@ public interface VulkanSubmitInfoType
       final var separator = System.lineSeparator();
       throw new IllegalArgumentException(
         new StringBuilder(64)
-          .append("Number of wait semaphores must match the number of stage masks.")
+          .append(
+            "Number of wait semaphores must match the number of stage masks.")
           .append(separator)
           .append("  Semaphores:  ")
           .append(size_0)

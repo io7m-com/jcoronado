@@ -28,7 +28,8 @@ import java.util.Objects;
  * LWJGL {@link VulkanQueryPoolType}.
  */
 
-public final class VulkanLWJGLQueryPool extends VulkanLWJGLHandle implements VulkanQueryPoolType
+public final class VulkanLWJGLQueryPool extends VulkanLWJGLHandle implements
+  VulkanQueryPoolType
 {
   private static final Logger LOG = LoggerFactory.getLogger(VulkanLWJGLQueryPool.class);
 
@@ -87,7 +88,10 @@ public final class VulkanLWJGLQueryPool extends VulkanLWJGLHandle implements Vul
     if (LOG.isTraceEnabled()) {
       LOG.trace("destroying query pool: {}", this);
     }
-    VK10.vkDestroyQueryPool(this.device, this.handle, this.hostAllocatorProxy().callbackBuffer());
+    VK10.vkDestroyQueryPool(
+      this.device,
+      this.handle,
+      this.hostAllocatorProxy().callbackBuffer());
   }
 
   /**

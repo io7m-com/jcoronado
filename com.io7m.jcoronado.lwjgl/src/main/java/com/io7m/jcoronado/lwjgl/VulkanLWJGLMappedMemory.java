@@ -53,7 +53,9 @@ public final class VulkanLWJGLMappedMemory implements VulkanMappedMemoryType
     this.memory = Objects.requireNonNull(in_cmemory, "memory");
     this.flush = Objects.requireNonNull(flush_callback, "flush_callback");
     this.mapped = true;
-    this.buffer = MemoryUtil.memByteBuffer(in_address, Math.toIntExact(in_size));
+    this.buffer = MemoryUtil.memByteBuffer(
+      in_address,
+      Math.toIntExact(in_size));
   }
 
   @Override
@@ -89,7 +91,9 @@ public final class VulkanLWJGLMappedMemory implements VulkanMappedMemoryType
       try {
         final var address = this.memory.handle();
         if (LOG.isTraceEnabled()) {
-          LOG.trace("unmapping memory: 0x{}", Long.toUnsignedString(address, 16));
+          LOG.trace(
+            "unmapping memory: 0x{}",
+            Long.toUnsignedString(address, 16));
         }
         VK10.vkUnmapMemory(this.device, address);
       } finally {

@@ -69,7 +69,8 @@ public final class VulkanLayers
 
       final var builder = new StringBuilder(64);
       final var separator = System.lineSeparator();
-      builder.append("Required layers are missing from the Vulkan implementation.")
+      builder.append(
+          "Required layers are missing from the Vulkan implementation.")
         .append(separator)
         .append("  Missing:")
         .append(separator);
@@ -80,7 +81,9 @@ public final class VulkanLayers
         builder.append(separator);
       }
 
-      throw new VulkanMissingRequiredLayersException(missing, builder.toString());
+      throw new VulkanMissingRequiredLayersException(
+        missing,
+        builder.toString());
     }
 
     return enable_layers;

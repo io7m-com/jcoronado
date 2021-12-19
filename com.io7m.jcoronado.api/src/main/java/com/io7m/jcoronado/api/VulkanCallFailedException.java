@@ -55,7 +55,9 @@ public final class VulkanCallFailedException extends VulkanException
       return false;
     }
     final var that = (VulkanCallFailedException) o;
-    return this.code == that.code && Objects.equals(this.function, that.function);
+    return this.code == that.code && Objects.equals(
+      this.function,
+      that.function);
   }
 
   @Override

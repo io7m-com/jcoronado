@@ -43,7 +43,9 @@ public final class VulkanLWJGLImageViews
     final MemoryStack stack,
     final VulkanImageSubresourceRange range)
   {
-    return packSubresourceRangeInto(range, VkImageSubresourceRange.mallocStack(stack));
+    return packSubresourceRangeInto(
+      range,
+      VkImageSubresourceRange.mallocStack(stack));
   }
 
   private static VkImageSubresourceRange packSubresourceRangeInto(
@@ -62,7 +64,9 @@ public final class VulkanLWJGLImageViews
     final MemoryStack stack,
     final VulkanComponentMapping components)
   {
-    return packComponentMappingInto(components, VkComponentMapping.mallocStack(stack));
+    return packComponentMappingInto(
+      components,
+      VkComponentMapping.mallocStack(stack));
   }
 
   private static VkComponentMapping packComponentMappingInto(

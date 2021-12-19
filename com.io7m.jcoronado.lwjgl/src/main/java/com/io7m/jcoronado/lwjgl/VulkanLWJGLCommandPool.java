@@ -28,9 +28,11 @@ import java.util.Objects;
  * LWJGL {@link VulkanCommandPoolType}.
  */
 
-public final class VulkanLWJGLCommandPool extends VulkanLWJGLHandle implements VulkanCommandPoolType
+public final class VulkanLWJGLCommandPool extends VulkanLWJGLHandle implements
+  VulkanCommandPoolType
 {
-  private static final Logger LOG = LoggerFactory.getLogger(VulkanLWJGLCommandPool.class);
+  private static final Logger LOG = LoggerFactory.getLogger(
+    VulkanLWJGLCommandPool.class);
 
   private final long handle;
   private final VkDevice device;
@@ -87,7 +89,10 @@ public final class VulkanLWJGLCommandPool extends VulkanLWJGLHandle implements V
     if (LOG.isTraceEnabled()) {
       LOG.trace("destroying command pool: {}", this);
     }
-    VK10.vkDestroyCommandPool(this.device, this.handle, this.hostAllocatorProxy().callbackBuffer());
+    VK10.vkDestroyCommandPool(
+      this.device,
+      this.handle,
+      this.hostAllocatorProxy().callbackBuffer());
   }
 
   /**

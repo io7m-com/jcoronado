@@ -83,7 +83,10 @@ public final class VulkanLWJGLSubmitInfos
     final List<VulkanPipelineStageFlag> stages)
     throws VulkanException
   {
-    return VulkanLWJGLIntegerArrays.packIntsOrNull(stack, stages, VulkanPipelineStageFlag::value);
+    return VulkanLWJGLIntegerArrays.packIntsOrNull(
+      stack,
+      stages,
+      VulkanPipelineStageFlag::value);
   }
 
   private static LongBuffer packSemaphores(
@@ -108,7 +111,9 @@ public final class VulkanLWJGLSubmitInfos
       stack,
       command_buffers,
       command_buffer ->
-        VulkanLWJGLClassChecks.checkInstanceOf(command_buffer, VulkanLWJGLCommandBuffer.class)
+        VulkanLWJGLClassChecks.checkInstanceOf(
+            command_buffer,
+            VulkanLWJGLCommandBuffer.class)
           .handle()
           .address());
   }

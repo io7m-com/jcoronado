@@ -64,7 +64,9 @@ public final class VulkanLWJGLPipelineColorBlendStateCreateInfos
 
     packLogicOp(target, info.logicOp());
     packBlendConstants(target, info.blendConstants());
-    target.pAttachments(VulkanLWJGLColorBlendAttachmentStates.packAll(stack, info.attachments()));
+    target.pAttachments(VulkanLWJGLColorBlendAttachmentStates.packAll(
+      stack,
+      info.attachments()));
     return target;
   }
 

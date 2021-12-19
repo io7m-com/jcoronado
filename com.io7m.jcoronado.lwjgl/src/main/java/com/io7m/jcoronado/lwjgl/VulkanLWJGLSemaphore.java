@@ -28,7 +28,8 @@ import java.util.Objects;
  * A semaphore.
  */
 
-public final class VulkanLWJGLSemaphore extends VulkanLWJGLHandle implements VulkanSemaphoreType
+public final class VulkanLWJGLSemaphore extends VulkanLWJGLHandle implements
+  VulkanSemaphoreType
 {
   private static final Logger LOG = LoggerFactory.getLogger(VulkanLWJGLSemaphore.class);
 
@@ -87,7 +88,10 @@ public final class VulkanLWJGLSemaphore extends VulkanLWJGLHandle implements Vul
     if (LOG.isTraceEnabled()) {
       LOG.trace("destroying semaphore: {}", this);
     }
-    VK10.vkDestroySemaphore(this.device, this.handle, this.hostAllocatorProxy().callbackBuffer());
+    VK10.vkDestroySemaphore(
+      this.device,
+      this.handle,
+      this.hostAllocatorProxy().callbackBuffer());
   }
 
   /**

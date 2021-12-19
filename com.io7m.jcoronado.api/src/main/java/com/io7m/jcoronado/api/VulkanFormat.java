@@ -1390,7 +1390,7 @@ public enum VulkanFormat implements VulkanEnumIntegerType
   VK_FORMAT_ASTC_12x12_SRGB_BLOCK(184);
 
   private static final Map<Integer, VulkanFormat> VALUES =
-    VulkanEnumMaps.map(VulkanFormat.values());
+    VulkanEnumMaps.map(values());
 
   private final int value;
 

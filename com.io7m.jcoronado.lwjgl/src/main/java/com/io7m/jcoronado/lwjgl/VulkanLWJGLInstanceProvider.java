@@ -126,7 +126,8 @@ public final class VulkanLWJGLInstanceProvider
           instance_extensions),
         "vkEnumerateInstanceExtensionProperties");
 
-      final HashMap<String, VulkanExtensionProperties> available_extensions = new HashMap<>(size);
+      final HashMap<String, VulkanExtensionProperties> available_extensions = new HashMap<>(
+        size);
       for (var index = 0; index < size; ++index) {
         instance_extensions.position(index);
         final var extension =
@@ -199,7 +200,9 @@ public final class VulkanLWJGLInstanceProvider
     if (LOG.isDebugEnabled()) {
       LOG.debug("creating instance");
       enabled_layers.forEach(layer -> LOG.debug("enabling layer: {}", layer));
-      enabled_extensions.forEach(extension -> LOG.debug("enabling extension: {}", extension));
+      enabled_extensions.forEach(extension -> LOG.debug(
+        "enabling extension: {}",
+        extension));
     }
 
     try (var stack = this.initial_stack.push()) {
@@ -216,7 +219,7 @@ public final class VulkanLWJGLInstanceProvider
         stack.ASCII(app_info.engineName());
 
       final var application_info =
-        VkApplicationInfo.mallocStack(stack)
+        VkApplicationInfo.malloc(stack)
           .sType(VK10.VK_STRUCTURE_TYPE_APPLICATION_INFO)
           .pNext(0L)
           .pApplicationName(app_name_ptr)
@@ -228,7 +231,7 @@ public final class VulkanLWJGLInstanceProvider
       LOG.trace("application_info: {}", application_info);
 
       final var instance_info =
-        VkInstanceCreateInfo.mallocStack(stack)
+        VkInstanceCreateInfo.malloc(stack)
           .sType(VK10.VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO)
           .pNext(0L)
           .flags(0)
@@ -238,13 +241,17 @@ public final class VulkanLWJGLInstanceProvider
 
       LOG.trace("instance_info: {}", instance_info);
 
-      final var instance_ptr = stack.mallocPointer(1);
+      final var instance_ptr =
+        stack.mallocPointer(1);
 
       final var allocator_proxy =
         VulkanLWJGLHostAllocatorProxy.create(stack, allocator);
 
       final var err =
-        VK10.vkCreateInstance(instance_info, allocator_proxy.callbackBuffer(), instance_ptr);
+        VK10.vkCreateInstance(
+          instance_info,
+          allocator_proxy.callbackBuffer(),
+          instance_ptr);
       checkReturnCode(err, "vkCreateInstance");
 
       final var instance =
@@ -255,7 +262,11 @@ public final class VulkanLWJGLInstanceProvider
       final var enabled =
         this.extensions.ofNames(info.enabledExtensions());
 
-      return new VulkanLWJGLInstance(instance, this.extensions, enabled, allocator_proxy);
+      return new VulkanLWJGLInstance(
+        instance,
+        this.extensions,
+        enabled,
+        allocator_proxy);
     }
   }
 

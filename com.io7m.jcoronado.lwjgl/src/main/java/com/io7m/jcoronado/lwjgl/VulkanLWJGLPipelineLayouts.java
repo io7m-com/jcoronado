@@ -97,7 +97,9 @@ public final class VulkanLWJGLPipelineLayouts
     return buffer
       .sType(VK10.VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO)
       .pNext(0L)
-      .pPushConstantRanges(packPushConstantRanges(stack, info.pushConstantRanges()))
+      .pPushConstantRanges(packPushConstantRanges(
+        stack,
+        info.pushConstantRanges()))
       .pSetLayouts(packSetLayouts(stack, info.setLayouts()))
       .flags(VulkanEnumMaps.packValues(info.flags()));
   }

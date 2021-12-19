@@ -26,7 +26,8 @@ import org.lwjgl.system.jemalloc.JEmalloc;
  * A JeMalloc based host allocator.
  */
 
-public final class VulkanLWJGLHostAllocatorJeMalloc implements VulkanHostAllocatorType
+public final class VulkanLWJGLHostAllocatorJeMalloc implements
+  VulkanHostAllocatorType
 {
   /**
    * Construct an allocator.

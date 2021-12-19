@@ -16,8 +16,10 @@
 
 package com.io7m.jcoronado.api;
 
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Supplier;
 
 /**
  * Functions over enum ←→ integer maps.
@@ -31,7 +33,7 @@ public final class VulkanEnumMaps
   }
 
   /**
-   * Bitwise OR the integer values of all of the given constants.
+   * Bitwise OR the integer values of all the given constants.
    *
    * @param values The values
    * @param <T>    The precise type of enum
@@ -47,6 +49,31 @@ public final class VulkanEnumMaps
       result |= constant.value();
     }
     return result;
+  }
+
+  /**
+   * Unpack flag values from a given integer.
+   *
+   * @param enumClass  The enum class
+   * @param enumValues A function that returns the result of the enum's values() method.
+   * @param flags      The flags value
+   * @param <T>        The precise type of enum
+   *
+   * @return The integer-packed values
+   */
+
+  public static <T extends Enum<T> & VulkanEnumBitmaskType> EnumSet<T> unpackValues(
+    final Class<T> enumClass,
+    final Supplier<T[]> enumValues,
+    final int flags)
+  {
+    final var results = EnumSet.noneOf(enumClass);
+    for (final var enumValue : enumValues.get()) {
+      if ((flags & enumValue.value()) == enumValue.value()) {
+        results.add(enumValue);
+      }
+    }
+    return results;
   }
 
   /**

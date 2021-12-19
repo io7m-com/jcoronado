@@ -27,7 +27,8 @@ import java.util.Objects;
  * LWJGL {@link VulkanImageType}.
  */
 
-public final class VulkanLWJGLImage extends VulkanLWJGLHandle implements VulkanImageType
+public final class VulkanLWJGLImage extends VulkanLWJGLHandle implements
+  VulkanImageType
 {
   private static final Logger LOG = LoggerFactory.getLogger(VulkanLWJGLImage.class);
 

@@ -28,7 +28,8 @@ import java.util.Objects;
  * A fence.
  */
 
-public final class VulkanLWJGLFence extends VulkanLWJGLHandle implements VulkanFenceType
+public final class VulkanLWJGLFence extends VulkanLWJGLHandle implements
+  VulkanFenceType
 {
   private static final Logger LOG = LoggerFactory.getLogger(VulkanLWJGLFence.class);
 
@@ -87,7 +88,10 @@ public final class VulkanLWJGLFence extends VulkanLWJGLHandle implements VulkanF
     if (LOG.isTraceEnabled()) {
       LOG.trace("destroying fence: {}", this);
     }
-    VK10.vkDestroyFence(this.device, this.handle, this.hostAllocatorProxy().callbackBuffer());
+    VK10.vkDestroyFence(
+      this.device,
+      this.handle,
+      this.hostAllocatorProxy().callbackBuffer());
   }
 
   /**

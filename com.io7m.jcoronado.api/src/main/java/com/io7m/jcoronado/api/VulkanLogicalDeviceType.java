@@ -204,7 +204,9 @@ public interface VulkanLogicalDeviceType extends VulkanHandleDispatchableType
     final VulkanMappedMemoryRange range)
     throws VulkanException
   {
-    this.flushMappedMemoryRanges(List.of(Objects.requireNonNull(range, "range")));
+    this.flushMappedMemoryRanges(List.of(Objects.requireNonNull(
+      range,
+      "range")));
   }
 
   /**
@@ -355,7 +357,9 @@ public interface VulkanLogicalDeviceType extends VulkanHandleDispatchableType
     throws VulkanException
   {
     Objects.requireNonNull(pipeline_info, "pipeline_info");
-    return this.createGraphicsPipelines(pipeline_cache, List.of(pipeline_info)).get(0);
+    return this.createGraphicsPipelines(
+      pipeline_cache,
+      List.of(pipeline_info)).get(0);
   }
 
   /**
@@ -402,25 +406,6 @@ public interface VulkanLogicalDeviceType extends VulkanHandleDispatchableType
   VulkanMemoryRequirements getImageMemoryRequirements(
     VulkanImageType image)
     throws VulkanException;
-
-  /**
-   * The result of fetching data for a pipeline cache.
-   */
-
-  enum VulkanPipelineCacheDataResult
-  {
-    /**
-     * Specifies that fetching data for a pipeline cache succeeded.
-     */
-
-    VK_PIPELINE_CACHE_SUCCESS,
-
-    /**
-     * Specifies that fetching data for a pipeline cache failed due to the buffer being too small.
-     */
-
-    VK_PIPELINE_CACHE_INCOMPLETE
-  }
 
   /**
    * Retrieve the data store for the pipeline cache.
@@ -474,7 +459,9 @@ public interface VulkanLogicalDeviceType extends VulkanHandleDispatchableType
     final List<VulkanGraphicsPipelineCreateInfo> pipeline_infos)
     throws VulkanException
   {
-    return this.createGraphicsPipelines(Optional.of(pipeline_cache), pipeline_infos);
+    return this.createGraphicsPipelines(
+      Optional.of(pipeline_cache),
+      pipeline_infos);
   }
 
   /**
@@ -573,11 +560,11 @@ public interface VulkanLogicalDeviceType extends VulkanHandleDispatchableType
     throws VulkanException
   {
     return this.createCommandBuffers(
-      VulkanCommandBufferCreateInfo.builder()
-        .setPool(pool)
-        .setLevel(level)
-        .setCount(1)
-        .build())
+        VulkanCommandBufferCreateInfo.builder()
+          .setPool(pool)
+          .setLevel(level)
+          .setCount(1)
+          .build())
       .get(0);
   }
 
@@ -710,26 +697,6 @@ public interface VulkanLogicalDeviceType extends VulkanHandleDispatchableType
   @VulkanAPIFunctionType(vulkanFunction = "vkDeviceWaitIdle")
   void waitIdle()
     throws VulkanException;
-
-  /**
-   * The result of waiting.
-   */
-
-  enum VulkanWaitStatus
-  {
-    /**
-     * Specifies that waiting for a condition succeeded (the condition became  {@code true}).
-     */
-
-    VK_WAIT_SUCCEEDED,
-
-    /**
-     * Specifies that waiting for a condition timed out (the condition did not become  {@code
-     * true}).
-     */
-
-    VK_WAIT_TIMED_OUT
-  }
 
   /**
    * Wait for one or more fences to become signaled.
@@ -937,25 +904,6 @@ public interface VulkanLogicalDeviceType extends VulkanHandleDispatchableType
     throws VulkanException;
 
   /**
-   * The status of an event.
-   */
-
-  enum VulkanEventStatus
-  {
-    /**
-     * The event is signaled.
-     */
-
-    VK_EVENT_SET,
-
-    /**
-     * The event is unsignaled.
-     */
-
-    VK_EVENT_RESET
-  }
-
-  /**
    * Retrieve the status of an event object.
    *
    * @param event The event
@@ -970,25 +918,6 @@ public interface VulkanLogicalDeviceType extends VulkanHandleDispatchableType
   VulkanEventStatus getEventStatus(
     VulkanEventType event)
     throws VulkanException;
-
-  /**
-   * The status of an event.
-   */
-
-  enum VulkanFenceStatus
-  {
-    /**
-     * The fence is signaled.
-     */
-
-    VK_FENCE_SIGNALLED,
-
-    /**
-     * The fence is unsignaled.
-     */
-
-    VK_FENCE_UNSIGNALLED
-  }
 
   /**
    * Retrieve the status of a fence object.
@@ -1080,7 +1009,9 @@ public interface VulkanLogicalDeviceType extends VulkanHandleDispatchableType
     throws VulkanException
   {
     Objects.requireNonNull(pipeline_info, "pipeline_info");
-    return this.createComputePipelines(pipeline_cache, List.of(pipeline_info)).get(0);
+    return this.createComputePipelines(
+      pipeline_cache,
+      List.of(pipeline_info)).get(0);
   }
 
   /**
@@ -1117,7 +1048,9 @@ public interface VulkanLogicalDeviceType extends VulkanHandleDispatchableType
     final List<VulkanComputePipelineCreateInfo> pipeline_infos)
     throws VulkanException
   {
-    return this.createComputePipelines(Optional.of(pipeline_cache), pipeline_infos);
+    return this.createComputePipelines(
+      Optional.of(pipeline_cache),
+      pipeline_infos);
   }
 
   /**
@@ -1136,5 +1069,82 @@ public interface VulkanLogicalDeviceType extends VulkanHandleDispatchableType
     throws VulkanException
   {
     return this.createComputePipelines(Optional.empty(), pipeline_infos);
+  }
+
+  /**
+   * The result of fetching data for a pipeline cache.
+   */
+
+  enum VulkanPipelineCacheDataResult
+  {
+    /**
+     * Specifies that fetching data for a pipeline cache succeeded.
+     */
+
+    VK_PIPELINE_CACHE_SUCCESS,
+
+    /**
+     * Specifies that fetching data for a pipeline cache failed due to the buffer being too small.
+     */
+
+    VK_PIPELINE_CACHE_INCOMPLETE
+  }
+
+  /**
+   * The result of waiting.
+   */
+
+  enum VulkanWaitStatus
+  {
+    /**
+     * Specifies that waiting for a condition succeeded (the condition became  {@code true}).
+     */
+
+    VK_WAIT_SUCCEEDED,
+
+    /**
+     * Specifies that waiting for a condition timed out (the condition did not become  {@code
+     * true}).
+     */
+
+    VK_WAIT_TIMED_OUT
+  }
+
+  /**
+   * The status of an event.
+   */
+
+  enum VulkanEventStatus
+  {
+    /**
+     * The event is signaled.
+     */
+
+    VK_EVENT_SET,
+
+    /**
+     * The event is unsignaled.
+     */
+
+    VK_EVENT_RESET
+  }
+
+  /**
+   * The status of an event.
+   */
+
+  enum VulkanFenceStatus
+  {
+    /**
+     * The fence is signaled.
+     */
+
+    VK_FENCE_SIGNALLED,
+
+    /**
+     * The fence is unsignaled.
+     */
+
+    VK_FENCE_UNSIGNALLED
   }
 }

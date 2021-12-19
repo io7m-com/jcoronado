@@ -99,7 +99,10 @@ public final class VulkanLWJGLQueue
   public int hashCode()
   {
 
-    return Objects.hash(this.queue, this.properties, Integer.valueOf(this.queue_index));
+    return Objects.hash(
+      this.queue,
+      this.properties,
+      Integer.valueOf(this.queue_index));
   }
 
   @Override
@@ -151,7 +154,9 @@ public final class VulkanLWJGLQueue
 
     final long cfence;
     if (fence.isPresent()) {
-      cfence = VulkanLWJGLClassChecks.checkInstanceOf(fence.get(), VulkanLWJGLFence.class).handle();
+      cfence = VulkanLWJGLClassChecks.checkInstanceOf(
+        fence.get(),
+        VulkanLWJGLFence.class).handle();
     } else {
       cfence = VK10.VK_NULL_HANDLE;
     }

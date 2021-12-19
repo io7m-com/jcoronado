@@ -36,7 +36,9 @@ abstract class VulkanLWJGLHandle implements VulkanHandleType
     this.ownership =
       Objects.requireNonNull(in_ownership, "ownership");
     this.host_allocator_proxy =
-      Objects.requireNonNull(in_host_allocator_proxy, "in_host_allocator_proxy");
+      Objects.requireNonNull(
+        in_host_allocator_proxy,
+        "in_host_allocator_proxy");
   }
 
   protected final VulkanLWJGLHostAllocatorProxy hostAllocatorProxy()

@@ -20,7 +20,8 @@ package com.io7m.jcoronado.api;
  * @see "VkDescriptorUpdateTemplate"
  */
 
-public interface VulkanDescriptorUpdateTemplateType extends VulkanHandleNonDispatchableType
+public interface VulkanDescriptorUpdateTemplateType extends
+  VulkanHandleNonDispatchableType
 {
 
 }

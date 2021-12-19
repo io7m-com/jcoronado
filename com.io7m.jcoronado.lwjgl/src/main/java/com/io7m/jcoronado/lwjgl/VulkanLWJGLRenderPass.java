@@ -28,9 +28,11 @@ import java.util.Objects;
  * LWJGL {@link VulkanRenderPassType}.
  */
 
-public final class VulkanLWJGLRenderPass extends VulkanLWJGLHandle implements VulkanRenderPassType
+public final class VulkanLWJGLRenderPass extends VulkanLWJGLHandle implements
+  VulkanRenderPassType
 {
-  private static final Logger LOG = LoggerFactory.getLogger(VulkanLWJGLRenderPass.class);
+  private static final Logger LOG = LoggerFactory.getLogger(
+    VulkanLWJGLRenderPass.class);
 
   private final long handle;
   private final VkDevice device;
@@ -87,7 +89,10 @@ public final class VulkanLWJGLRenderPass extends VulkanLWJGLHandle implements Vu
     if (LOG.isTraceEnabled()) {
       LOG.trace("destroying render pass: {}", this);
     }
-    VK10.vkDestroyRenderPass(this.device, this.handle, this.hostAllocatorProxy().callbackBuffer());
+    VK10.vkDestroyRenderPass(
+      this.device,
+      this.handle,
+      this.hostAllocatorProxy().callbackBuffer());
   }
 
   /**

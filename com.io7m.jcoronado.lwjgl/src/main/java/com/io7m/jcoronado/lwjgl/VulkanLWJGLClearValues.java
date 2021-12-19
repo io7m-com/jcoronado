@@ -201,6 +201,8 @@ public final class VulkanLWJGLClearValues
     Objects.requireNonNull(stack, "stack");
     Objects.requireNonNull(source, "source");
 
-    return packToDepthStencil(source, VkClearDepthStencilValue.mallocStack(stack));
+    return packToDepthStencil(
+      source,
+      VkClearDepthStencilValue.mallocStack(stack));
   }
 }

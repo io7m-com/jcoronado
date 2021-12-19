@@ -20,7 +20,8 @@ package com.io7m.jcoronado.api;
  * @see "VkSamplerYcbcrConversion"
  */
 
-public interface VulkanSamplerYcbcrConversionType extends VulkanHandleNonDispatchableType
+public interface VulkanSamplerYcbcrConversionType extends
+  VulkanHandleNonDispatchableType
 {
 
 }

@@ -24,7 +24,8 @@ package com.io7m.jcoronado.api;
  */
 
 @VulkanAPIEnumType(vulkanEnum = "VkPipelineDepthStencilStateCreateFlags")
-public enum VulkanPipelineDepthStencilStateCreateFlag implements VulkanEnumBitmaskType
+public enum VulkanPipelineDepthStencilStateCreateFlag implements
+  VulkanEnumBitmaskType
 {
   /**
    * No flags set.

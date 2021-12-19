@@ -27,7 +27,8 @@ import java.util.Objects;
  * LWJGL {@link VulkanBufferType}.
  */
 
-public final class VulkanLWJGLBuffer extends VulkanLWJGLHandle implements VulkanBufferType
+public final class VulkanLWJGLBuffer extends VulkanLWJGLHandle implements
+  VulkanBufferType
 {
   private static final Logger LOG = LoggerFactory.getLogger(VulkanLWJGLBuffer.class);
 

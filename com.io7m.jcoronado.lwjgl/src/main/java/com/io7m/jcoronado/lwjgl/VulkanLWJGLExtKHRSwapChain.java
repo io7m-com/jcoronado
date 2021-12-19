@@ -57,7 +57,8 @@ import static com.io7m.jcoronado.lwjgl.VulkanLWJGLHandle.Ownership.VULKAN_OWNED;
  * Access to the {@code VK_KHR_swapchain} extension.
  */
 
-public final class VulkanLWJGLExtKHRSwapChain implements VulkanExtKHRSwapChainType
+public final class VulkanLWJGLExtKHRSwapChain implements
+  VulkanExtKHRSwapChainType
 {
   private static final Logger LOG =
     LoggerFactory.getLogger(VulkanLWJGLExtKHRSwapChain.class);
@@ -74,7 +75,10 @@ public final class VulkanLWJGLExtKHRSwapChain implements VulkanExtKHRSwapChainTy
     final List<Integer> integers)
     throws VulkanException
   {
-    return VulkanLWJGLIntegerArrays.packIntsOrNull(stack, integers, Integer::intValue);
+    return VulkanLWJGLIntegerArrays.packIntsOrNull(
+      stack,
+      integers,
+      Integer::intValue);
   }
 
   private static long mapOldSwapChain(
@@ -83,8 +87,10 @@ public final class VulkanLWJGLExtKHRSwapChain implements VulkanExtKHRSwapChainTy
     return swap_chain.map(chain -> {
       try {
         return Long.valueOf(
-          VulkanLWJGLClassChecks.checkInstanceOf(chain, VulkanLWJGLKHRSwapChain.class).chain());
-      } catch (VulkanIncompatibleClassException e) {
+          VulkanLWJGLClassChecks.checkInstanceOf(
+            chain,
+            VulkanLWJGLKHRSwapChain.class).chain());
+      } catch (final VulkanIncompatibleClassException e) {
         throw new VulkanUncheckedException(e);
       }
     }).orElse(Long.valueOf(0L)).longValue();
@@ -105,7 +111,9 @@ public final class VulkanLWJGLExtKHRSwapChain implements VulkanExtKHRSwapChainTy
     return VulkanLWJGLIntegerArrays.packLongsOrNull(
       stack,
       semaphores,
-      value -> VulkanLWJGLClassChecks.checkInstanceOf(value, VulkanLWJGLSemaphore.class).handle());
+      value -> VulkanLWJGLClassChecks.checkInstanceOf(
+        value,
+        VulkanLWJGLSemaphore.class).handle());
   }
 
   private static IntBuffer packImageIndices(
@@ -113,7 +121,10 @@ public final class VulkanLWJGLExtKHRSwapChain implements VulkanExtKHRSwapChainTy
     final List<Integer> indices)
     throws VulkanException
   {
-    return VulkanLWJGLIntegerArrays.packIntsOrNull(stack, indices, Integer::intValue);
+    return VulkanLWJGLIntegerArrays.packIntsOrNull(
+      stack,
+      indices,
+      Integer::intValue);
   }
 
   private static LongBuffer packSwapChains(
@@ -149,7 +160,11 @@ public final class VulkanLWJGLExtKHRSwapChain implements VulkanExtKHRSwapChainTy
     final var count = new int[1];
 
     VulkanChecks.checkReturnCode(
-      KHRSwapchain.vkGetSwapchainImagesKHR(chain.device.device(), chain.chain, count, null),
+      KHRSwapchain.vkGetSwapchainImagesKHR(
+        chain.device.device(),
+        chain.chain,
+        count,
+        null),
       "vkGetSwapchainImagesKHR");
 
     final var image_count = count[0];
@@ -159,7 +174,11 @@ public final class VulkanLWJGLExtKHRSwapChain implements VulkanExtKHRSwapChainTy
 
     final var images = new long[image_count];
     VulkanChecks.checkReturnCode(
-      KHRSwapchain.vkGetSwapchainImagesKHR(chain.device.device(), chain.chain, count, images),
+      KHRSwapchain.vkGetSwapchainImagesKHR(
+        chain.device.device(),
+        chain.chain,
+        count,
+        images),
       "vkGetSwapchainImagesKHR");
 
     return LongStream.of(images)
@@ -184,7 +203,9 @@ public final class VulkanLWJGLExtKHRSwapChain implements VulkanExtKHRSwapChainTy
     final long semaphore_handle;
     if (semaphore != null) {
       semaphore_handle =
-        VulkanLWJGLClassChecks.checkInstanceOf(semaphore, VulkanLWJGLSemaphore.class).handle();
+        VulkanLWJGLClassChecks.checkInstanceOf(
+          semaphore,
+          VulkanLWJGLSemaphore.class).handle();
     } else {
       semaphore_handle = VK10.VK_NULL_HANDLE;
     }
@@ -192,7 +213,9 @@ public final class VulkanLWJGLExtKHRSwapChain implements VulkanExtKHRSwapChainTy
     final long fence_handle;
     if (fence != null) {
       fence_handle =
-        VulkanLWJGLClassChecks.checkInstanceOf(fence, VulkanLWJGLFence.class).handle();
+        VulkanLWJGLClassChecks.checkInstanceOf(
+          fence,
+          VulkanLWJGLFence.class).handle();
     } else {
       fence_handle = VK10.VK_NULL_HANDLE;
     }
@@ -248,7 +271,9 @@ public final class VulkanLWJGLExtKHRSwapChain implements VulkanExtKHRSwapChainTy
     Objects.requireNonNull(info, "info");
 
     final var device =
-      VulkanLWJGLClassChecks.checkInstanceOf(in_device, VulkanLWJGLLogicalDevice.class);
+      VulkanLWJGLClassChecks.checkInstanceOf(
+        in_device,
+        VulkanLWJGLLogicalDevice.class);
 
     Objects.requireNonNull(info, "info");
 
@@ -273,18 +298,26 @@ public final class VulkanLWJGLExtKHRSwapChain implements VulkanExtKHRSwapChainTy
           .compositeAlpha(VulkanEnumMaps.packValues(info.compositeAlpha()))
           .presentMode(info.presentMode().value())
           .clipped(info.clipped())
-          .pQueueFamilyIndices(packQueueIndices(stack, info.queueFamilyIndices()))
+          .pQueueFamilyIndices(packQueueIndices(
+            stack,
+            info.queueFamilyIndices()))
           .surface(surface.handle())
           .oldSwapchain(mapOldSwapChain(info.oldSwapChain()));
 
       final var swapchain = new long[1];
       VulkanChecks.checkReturnCode(
-        KHRSwapchain.vkCreateSwapchainKHR(device.device(), vk_info, null, swapchain),
+        KHRSwapchain.vkCreateSwapchainKHR(
+          device.device(),
+          vk_info,
+          null,
+          swapchain),
         "vkCreateSwapchainKHR");
 
       final var swapchain_address = swapchain[0];
       if (LOG.isDebugEnabled()) {
-        LOG.debug("created swapchain: {}", Long.toUnsignedString(swapchain_address, 16));
+        LOG.debug(
+          "created swapchain: {}",
+          Long.toUnsignedString(swapchain_address, 16));
       }
       return new VulkanLWJGLKHRSwapChain(
         this, device, swapchain_address, device.hostAllocatorProxy());
@@ -382,7 +415,10 @@ public final class VulkanLWJGLExtKHRSwapChain implements VulkanExtKHRSwapChainTy
         LOG.trace("destroying swapchain: {}", this);
       }
 
-      KHRSwapchain.vkDestroySwapchainKHR(this.device.device(), this.chain, null);
+      KHRSwapchain.vkDestroySwapchainKHR(
+        this.device.device(),
+        this.chain,
+        null);
     }
 
     @Override

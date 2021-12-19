@@ -97,7 +97,9 @@ public final class VulkanLWJGLImageCreateInfos
       .samples(VulkanEnumMaps.packValues(source.samples()))
       .tiling(source.tiling().value())
       .usage(VulkanEnumMaps.packValues(source.usage()))
-      .pQueueFamilyIndices(packQueueFamilies(stack, source.queueFamilyIndices()));
+      .pQueueFamilyIndices(packQueueFamilies(
+        stack,
+        source.queueFamilyIndices()));
   }
 
   private static IntBuffer packQueueFamilies(
@@ -105,6 +107,9 @@ public final class VulkanLWJGLImageCreateInfos
     final List<Integer> integers)
     throws VulkanException
   {
-    return VulkanLWJGLIntegerArrays.packIntsOrNull(stack, integers, Integer::intValue);
+    return VulkanLWJGLIntegerArrays.packIntsOrNull(
+      stack,
+      integers,
+      Integer::intValue);
   }
 }

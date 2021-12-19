@@ -29,9 +29,11 @@ import java.util.Objects;
  * LWJGL {@link VulkanBufferViewType}.
  */
 
-public final class VulkanLWJGLBufferView extends VulkanLWJGLHandle implements VulkanBufferViewType
+public final class VulkanLWJGLBufferView extends VulkanLWJGLHandle implements
+  VulkanBufferViewType
 {
-  private static final Logger LOG = LoggerFactory.getLogger(VulkanLWJGLBufferView.class);
+  private static final Logger LOG = LoggerFactory.getLogger(
+    VulkanLWJGLBufferView.class);
 
   private final long handle;
   private final VkDevice device;
@@ -92,7 +94,10 @@ public final class VulkanLWJGLBufferView extends VulkanLWJGLHandle implements Vu
       LOG.trace("destroying buffer view: {}", this);
     }
 
-    VK10.vkDestroyBufferView(this.device, this.handle, this.hostAllocatorProxy().callbackBuffer());
+    VK10.vkDestroyBufferView(
+      this.device,
+      this.handle,
+      this.hostAllocatorProxy().callbackBuffer());
   }
 
   /**

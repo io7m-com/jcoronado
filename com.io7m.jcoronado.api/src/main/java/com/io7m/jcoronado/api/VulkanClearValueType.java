@@ -141,7 +141,8 @@ public interface VulkanClearValueType
   @VulkanAPIStructType(vulkanStruct = "VkClearValue")
   @ImmutablesStyleType
   @Value.Immutable
-  interface VulkanClearValueColorIntegerSignedType extends VulkanClearValueColorType
+  interface VulkanClearValueColorIntegerSignedType extends
+    VulkanClearValueColorType
   {
     @Override
     default ColorType colorType()
@@ -185,7 +186,8 @@ public interface VulkanClearValueType
   @VulkanAPIStructType(vulkanStruct = "VkClearValue")
   @ImmutablesStyleType
   @Value.Immutable
-  interface VulkanClearValueColorIntegerUnsignedType extends VulkanClearValueColorType
+  interface VulkanClearValueColorIntegerUnsignedType extends
+    VulkanClearValueColorType
   {
     @Override
     default ColorType colorType()
@@ -229,7 +231,8 @@ public interface VulkanClearValueType
   @VulkanAPIStructType(vulkanStruct = "VkClearValue")
   @ImmutablesStyleType
   @Value.Immutable
-  interface VulkanClearValueColorFloatingPointType extends VulkanClearValueColorType
+  interface VulkanClearValueColorFloatingPointType extends
+    VulkanClearValueColorType
   {
     @Override
     default ColorType colorType()

@@ -28,7 +28,8 @@ import java.util.Objects;
  * A sampler.
  */
 
-public final class VulkanLWJGLSampler extends VulkanLWJGLHandle implements VulkanSamplerType
+public final class VulkanLWJGLSampler extends VulkanLWJGLHandle implements
+  VulkanSamplerType
 {
   private static final Logger LOG = LoggerFactory.getLogger(VulkanLWJGLSampler.class);
 
@@ -87,7 +88,10 @@ public final class VulkanLWJGLSampler extends VulkanLWJGLHandle implements Vulka
     if (LOG.isTraceEnabled()) {
       LOG.trace("destroying sampler: {}", this);
     }
-    VK10.vkDestroySampler(this.device, this.handle, this.hostAllocatorProxy().callbackBuffer());
+    VK10.vkDestroySampler(
+      this.device,
+      this.handle,
+      this.hostAllocatorProxy().callbackBuffer());
   }
 
   /**
