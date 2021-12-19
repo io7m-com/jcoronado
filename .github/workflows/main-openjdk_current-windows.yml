@@ -20,7 +20,7 @@ jobs:
       - name: Show directory
         run: dir
       - name: Setup Vulkan
-        run: VulkanSDK.exe --accept-licenses --default-answer --confirm-command install
+        run: .\VulkanSDK.exe --accept-licenses --default-answer --confirm-command install
       - name: Check Vulkan
         run: vkvia.exe
       - name: Build
