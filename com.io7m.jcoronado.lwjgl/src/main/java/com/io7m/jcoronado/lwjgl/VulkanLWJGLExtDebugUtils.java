@@ -164,7 +164,7 @@ public final class VulkanLWJGLExtDebugUtils implements VulkanDebugUtilsType
         EXTDebugUtils.vkCreateDebugUtilsMessengerEXT(
           lwjglInstance.instance(),
           lwjglInfo,
-          null,
+          lwjglInstance.hostAllocatorProxy().callbackBuffer(),
           buffer
         ),
         "vkCreateDebugUtilsMessengerEXT"
