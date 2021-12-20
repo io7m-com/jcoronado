@@ -229,6 +229,10 @@ public final class GenerateREADME
         return "https://www.khronos.org/registry/vulkan/specs/1.1-extensions/html/vkspec.html#VK_KHR_surface";
       }
 
+      case "VK_EXT_debug_utils": {
+        return "https://www.khronos.org/registry/vulkan/specs/1.2-extensions/man/html/VK_EXT_debug_utils.html";
+      }
+
       case "VK_KHR_swapchain": {
         return "https://www.khronos.org/registry/vulkan/specs/1.1-extensions/html/vkspec.html#VK_KHR_swapchain";
       }
