@@ -77,10 +77,12 @@ public final class VulkanLWJGLDescriptorBufferInfos
     Objects.requireNonNull(source, "source");
     Objects.requireNonNull(target, "target");
 
+    final var lwjglBuffer =
+      VulkanLWJGLClassChecks.checkInstanceOf(
+        source.buffer(), VulkanLWJGLBuffer.class);
+
     return target
-      .buffer(VulkanLWJGLClassChecks.checkInstanceOf(
-        source.buffer(),
-        VulkanLWJGLBuffer.class).handle())
+      .buffer(lwjglBuffer.handle())
       .offset(source.offset())
       .range(source.range());
   }

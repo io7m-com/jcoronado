@@ -90,21 +90,33 @@ public final class VulkanLWJGLWriteDescriptorSets
     final var dst_set =
       checkInstanceOf(source.destinationSet(), VulkanLWJGLDescriptorSet.class);
 
-    final var buffer_infos = source.bufferInfos();
-    final var image_infos = source.imageInfos();
-    final var texel_views = source.texelBufferViews();
+    final var bufferInfos =
+      source.bufferInfos();
+    final var imageInfos =
+      source.imageInfos();
+    final var texelViews =
+      source.texelBufferViews();
 
-    return target
+    final var targetBufferInfos =
+      packListOrNull(stack, bufferInfos);
+    final var targetImageInfos =
+      packListOrNull(stack, imageInfos);
+    final var targetTexelBufferViews =
+      packLongsOrNull(stack, texelViews, VulkanLWJGLWriteDescriptorSets::viewHandle);
+
+    target
       .sType(VK10.VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET)
       .pNext(0L)
-      .pBufferInfo(packListOrNull(stack, buffer_infos))
-      .pImageInfo(packListOrNull(stack, image_infos))
-      .pTexelBufferView(packLongsOrNull(
-        stack, texel_views, VulkanLWJGLWriteDescriptorSets::viewHandle))
+      .pBufferInfo(targetBufferInfos)
+      .pImageInfo(targetImageInfos)
+      .pTexelBufferView(targetTexelBufferViews)
       .descriptorType(source.descriptorType().value())
+      .descriptorCount(source.descriptorCount())
       .dstArrayElement(source.destinationArrayElement())
       .dstBinding(source.destinationBinding())
       .dstSet(dst_set.handle());
+
+    return target;
   }
 
   /**

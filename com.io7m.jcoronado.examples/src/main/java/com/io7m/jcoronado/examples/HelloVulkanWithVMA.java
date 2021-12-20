@@ -1162,80 +1162,85 @@ public final class HelloVulkanWithVMA implements ExampleType
   private static List<VulkanDescriptorSetType> createDescriptorSets(
     final CloseableCollectionType<VulkanException> resources,
     final VulkanLogicalDeviceType device,
-    final VulkanKHRSwapChainType swap_chain,
-    final ArrayList<VulkanBufferType> uniform_buffers,
+    final VulkanKHRSwapChainType swapChain,
+    final ArrayList<VulkanBufferType> uniformBuffers,
     final Texture texture,
-    final VulkanDescriptorSetLayoutType descriptor_set_layout)
+    final VulkanDescriptorSetLayoutType descriptorSetLayout)
     throws VulkanException
   {
-    final var image_count = swap_chain.images().size();
+    final var imageCount = swapChain.images().size();
 
-    final var descriptor_pool_uniform_buffer =
-      VulkanDescriptorPoolSize.of(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, image_count);
-    final var descriptor_pool_sampler =
-      VulkanDescriptorPoolSize.of(VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, image_count);
+    LOG.trace(
+      "swap chain has {} images, allocating {} descriptor sets",
+      imageCount,
+      imageCount);
 
-    final var descriptor_pool_create_info =
+    final var descriptorPoolUniformBuffer =
+      VulkanDescriptorPoolSize.of(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, imageCount);
+    final var descriptorPoolSampler =
+      VulkanDescriptorPoolSize.of(VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, imageCount);
+
+    final var descriptorPoolCreateInfo =
       VulkanDescriptorPoolCreateInfo.builder()
-        .setMaxSets(image_count)
-        .addPoolSizes(descriptor_pool_uniform_buffer)
-        .addPoolSizes(descriptor_pool_sampler)
+        .setMaxSets(imageCount)
+        .addPoolSizes(descriptorPoolUniformBuffer)
+        .addPoolSizes(descriptorPoolSampler)
         .build();
 
-    final var descriptor_pool =
-      resources.add(device.createDescriptorPool(descriptor_pool_create_info));
+    final var descriptorPool =
+      resources.add(device.createDescriptorPool(descriptorPoolCreateInfo));
 
-    final var descriptor_set_layouts =
-      IntStream.range(0, image_count)
-        .mapToObj(ignore -> descriptor_set_layout)
+    final var descriptorSetLayouts =
+      IntStream.range(0, imageCount)
+        .mapToObj(ignore -> descriptorSetLayout)
         .collect(Collectors.toList());
 
-    final var descriptor_sets =
+    final var descriptorSets =
       device.allocateDescriptorSets(
         VulkanDescriptorSetAllocateInfo.builder()
-          .setSetLayouts(descriptor_set_layouts)
-          .setDescriptorPool(descriptor_pool)
+          .setSetLayouts(descriptorSetLayouts)
+          .setDescriptorPool(descriptorPool)
           .build());
 
-    for (var index = 0; index < image_count; ++index) {
-      final var uniform_buffer_info =
+    for (var index = 0; index < imageCount; ++index) {
+      final var uniformBufferInfo =
         VulkanDescriptorBufferInfo.builder()
-          .setBuffer(uniform_buffers.get(index))
+          .setBuffer(uniformBuffers.get(index))
           .setOffset(0L)
           .setRange(UNIFORM_BUFFER_SIZE)
           .build();
 
-      final var uniform_buffer_write =
+      final var uniformBufferWrite =
         VulkanWriteDescriptorSet.builder()
           .setDestinationBinding(0)
-          .setDestinationSet(descriptor_sets.get(index))
+          .setDestinationSet(descriptorSets.get(index))
           .setDescriptorType(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER)
           .setDescriptorCount(1)
-          .addBufferInfos(uniform_buffer_info)
+          .addBufferInfos(uniformBufferInfo)
           .build();
 
-      final var image_info =
+      final var imageInfo =
         VulkanDescriptorImageInfo.builder()
           .setImageView(texture.image_view)
           .setImageLayout(VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL)
           .setSampler(texture.sampler)
           .build();
 
-      final var image_write =
+      final var imageWrite =
         VulkanWriteDescriptorSet.builder()
           .setDestinationBinding(1)
-          .setDestinationSet(descriptor_sets.get(index))
+          .setDestinationSet(descriptorSets.get(index))
           .setDescriptorType(VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER)
           .setDescriptorCount(1)
-          .addImageInfos(image_info)
+          .addImageInfos(imageInfo)
           .build();
 
       LOG.trace("updating descriptor set {}", Integer.valueOf(index));
       device.updateDescriptorSets(
-        List.of(uniform_buffer_write, image_write),
+        List.of(uniformBufferWrite, imageWrite),
         List.of());
     }
-    return descriptor_sets;
+    return descriptorSets;
   }
 
   /**
