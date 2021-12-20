@@ -24,4 +24,4 @@ jobs:
       - name: Append Path
         run: echo "C:\VulkanSDK\1.2.198.1\Bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
       - name: Build
-        run: mvn --errors clean verify site
+        run: mvn -DskipTests=true --errors clean verify site
