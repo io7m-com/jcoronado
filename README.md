@@ -21,6 +21,19 @@ of the package is to make Vulkan feel like a Java API, without sacrificing
 performance. Internally, the package uses the excellent [LWJGL3](https://www.lwjgl.org/)
 Vulkan bindings, and adds a thin layer of immutable types and interfaces.
 
+## Features
+
+* Type-safe [Vulkan](https://www.vulkan.org/) frontend
+* Strong separation of API and implementation to allow for switching to different bindings at compile-time
+* Extensive use of `try-with-resources` to prevent resource leaks
+* Strongly-typed interfaces with a heavy emphasis on immutable value types
+* Type-safe extension mechanism
+* Fully documented (JavaDoc)
+* Example code included
+* [OSGi](https://www.osgi.org/) ready.
+* [JPMS](https://en.wikipedia.org/wiki/Java_Platform_Module_System) ready.
+* ISC license
+
 ## Structs
 
 | jcoronado | Vulkan |
