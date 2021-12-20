@@ -34,6 +34,23 @@ Vulkan bindings, and adds a thin layer of immutable types and interfaces.
 * [JPMS](https://en.wikipedia.org/wiki/Java_Platform_Module_System) ready.
 * ISC license
 
+## Building
+
+Install a Vulkan SDK. On Linux, there will be almost certainly be distribution
+packages available with names such as `vulkan-validationlayers`, `vulkan-tools`,
+etc. On Windows, install the [LunarG SDK](https://vulkan.lunarg.com/). On
+Windows, ensure that you have the right vendor drivers installed for your
+graphics card; if you don't do this, the library (and the test suite) will
+raise exceptions with messages such as "Missing `vulkan-1.dll`".
+
+Then run:
+
+```
+$ mvn clean package
+```
+
+If this step fails, it's a bug. Please report it!
+
 ## Structs
 
 | jcoronado | Vulkan |
