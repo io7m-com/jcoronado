@@ -13,6 +13,14 @@ jcoronado
 | OpenJDK Current | Linux    | [![Build (OpenJDK Current, Linux)](https://img.shields.io/github/workflow/status/io7m/jcoronado/main-openjdk_current-linux)](https://github.com/io7m/jcoronado/actions?query=workflow%3Amain-openjdk_current-linux)
 | OpenJDK Current | Windows  | [![Build (OpenJDK Current, Windows)](https://img.shields.io/github/workflow/status/io7m/jcoronado/main-openjdk_current-windows)](https://github.com/io7m/jcoronado/actions?query=workflow%3Amain-openjdk_current-windows)
 
+## Background
+
+The `jcoronado` package provides a very thin layer over the [Vulkan](https://www.vulkan.org/)
+API that intends to provide some degree of memory and type safety. The intention
+of the package is to make Vulkan feel like a Java API, without sacrificing
+performance. Internally, the package uses the excellent [LWJGL3](https://www.lwjgl.org/)
+Vulkan bindings, and adds a thin layer of immutable types and interfaces.
+
 ## Structs
 
 | jcoronado | Vulkan |
