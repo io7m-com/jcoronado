@@ -624,6 +624,34 @@ public final class VulkanLWJGLCommandBuffer
   }
 
   @Override
+  public void executeCommands(
+    final List<VulkanCommandBufferType> commandBuffers)
+    throws VulkanException
+  {
+    Objects.requireNonNull(commandBuffers, "commandBuffers");
+
+    this.checkNotClosed();
+
+    try (var stack = this.stack_initial.push()) {
+      final var pointers =
+        stack.mallocPointer(commandBuffers.size());
+
+      for (int index = 0; index < commandBuffers.size(); ++index) {
+        final var secondary =
+          checkInstanceOf(
+            commandBuffers.get(index),
+            VulkanLWJGLCommandBuffer.class);
+        pointers.put(index, secondary.handle.address());
+      }
+
+      VK10.vkCmdExecuteCommands(
+        this.handle,
+        pointers
+      );
+    }
+  }
+
+  @Override
   public @VulkanExternallySynchronizedType void fillBuffer(
     final VulkanBufferType buffer,
     final long offset,

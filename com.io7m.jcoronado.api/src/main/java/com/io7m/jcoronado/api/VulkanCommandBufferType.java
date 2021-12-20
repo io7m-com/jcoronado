@@ -587,6 +587,20 @@ public interface VulkanCommandBufferType extends VulkanHandleDispatchableType
     throws VulkanException;
 
   /**
+   * Execute a secondary command buffer from a primary command buffer.
+   *
+   * @param commandBuffers The buffers to be executed
+   *
+   * @throws VulkanException On errors
+   */
+
+  @VulkanAPIFunctionType(vulkanFunction = "vkCmdExecuteCommands")
+  @VulkanExternallySynchronizedType
+  void executeCommands(
+    List<VulkanCommandBufferType> commandBuffers)
+    throws VulkanException;
+
+  /**
    * Fill a region of a buffer with a fixed value.
    *
    * @param buffer The buffer to be filled.
