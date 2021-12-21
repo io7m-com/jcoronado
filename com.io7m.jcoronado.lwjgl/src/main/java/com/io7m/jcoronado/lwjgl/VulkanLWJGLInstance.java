@@ -22,6 +22,7 @@ import com.io7m.jcoronado.api.VulkanComputeWorkGroupSize;
 import com.io7m.jcoronado.api.VulkanException;
 import com.io7m.jcoronado.api.VulkanExtensionType;
 import com.io7m.jcoronado.api.VulkanExtent3D;
+import com.io7m.jcoronado.api.VulkanInstanceCreateInfo;
 import com.io7m.jcoronado.api.VulkanInstanceType;
 import com.io7m.jcoronado.api.VulkanLineWidthRange;
 import com.io7m.jcoronado.api.VulkanMemoryHeap;
@@ -29,6 +30,9 @@ import com.io7m.jcoronado.api.VulkanMemoryHeapFlag;
 import com.io7m.jcoronado.api.VulkanMemoryPropertyFlag;
 import com.io7m.jcoronado.api.VulkanMemoryType;
 import com.io7m.jcoronado.api.VulkanPhysicalDeviceFeatures;
+import com.io7m.jcoronado.api.VulkanPhysicalDeviceFeatures10;
+import com.io7m.jcoronado.api.VulkanPhysicalDeviceFeatures11;
+import com.io7m.jcoronado.api.VulkanPhysicalDeviceFeatures12;
 import com.io7m.jcoronado.api.VulkanPhysicalDeviceLimits;
 import com.io7m.jcoronado.api.VulkanPhysicalDeviceMemoryProperties;
 import com.io7m.jcoronado.api.VulkanPhysicalDeviceProperties;
@@ -36,20 +40,25 @@ import com.io7m.jcoronado.api.VulkanPhysicalDeviceType;
 import com.io7m.jcoronado.api.VulkanPointSizeRange;
 import com.io7m.jcoronado.api.VulkanQueueFamilyProperties;
 import com.io7m.jcoronado.api.VulkanQueueFamilyPropertyFlag;
+import com.io7m.jcoronado.api.VulkanVersion;
 import com.io7m.jcoronado.api.VulkanVersions;
 import com.io7m.jcoronado.api.VulkanViewportBoundsRange;
 import com.io7m.jcoronado.api.VulkanViewportDimensions;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.vulkan.VK10;
+import org.lwjgl.vulkan.VK11;
 import org.lwjgl.vulkan.VkExtent3D;
 import org.lwjgl.vulkan.VkInstance;
 import org.lwjgl.vulkan.VkMemoryHeap;
 import org.lwjgl.vulkan.VkMemoryType;
 import org.lwjgl.vulkan.VkPhysicalDevice;
 import org.lwjgl.vulkan.VkPhysicalDeviceFeatures;
+import org.lwjgl.vulkan.VkPhysicalDeviceFeatures2;
 import org.lwjgl.vulkan.VkPhysicalDeviceLimits;
 import org.lwjgl.vulkan.VkPhysicalDeviceMemoryProperties;
 import org.lwjgl.vulkan.VkPhysicalDeviceProperties;
+import org.lwjgl.vulkan.VkPhysicalDeviceVulkan11Features;
+import org.lwjgl.vulkan.VkPhysicalDeviceVulkan12Features;
 import org.lwjgl.vulkan.VkQueueFamilyProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -65,6 +74,10 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Stream;
 
+import static org.lwjgl.vulkan.VK11.VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FEATURES_2;
+import static org.lwjgl.vulkan.VK12.VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_1_FEATURES;
+import static org.lwjgl.vulkan.VK12.VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_2_FEATURES;
+
 /**
  * LWJGL {@link VkInstance}
  */
@@ -75,27 +88,31 @@ public final class VulkanLWJGLInstance
   private static final Logger LOG = LoggerFactory.getLogger(VulkanLWJGLInstance.class);
 
   private final VkInstance instance;
-  private final MemoryStack initial_stack;
-  private final Map<String, VulkanExtensionType> extensions_enabled_read_only;
-  private final VulkanLWJGLExtensionsRegistry extension_registry;
+  private final MemoryStack initialStack;
+  private final Map<String, VulkanExtensionType> extensionsEnabledReadOnly;
+  private final VulkanInstanceCreateInfo info;
+  private final VulkanLWJGLExtensionsRegistry extensionsRegistry;
 
   VulkanLWJGLInstance(
-    final VkInstance in_instance,
-    final VulkanLWJGLExtensionsRegistry in_extension_registry,
-    final Map<String, VulkanExtensionType> in_extensions_enabled,
-    final VulkanLWJGLHostAllocatorProxy in_host_allocator_proxy)
+    final VkInstance inInstance,
+    final VulkanInstanceCreateInfo inInfo,
+    final VulkanLWJGLExtensionsRegistry inExtensionRegistry,
+    final Map<String, VulkanExtensionType> inExtensionsEnabled,
+    final VulkanLWJGLHostAllocatorProxy inHostAllocatorProxy)
   {
-    super(Ownership.USER_OWNED, in_host_allocator_proxy);
+    super(Ownership.USER_OWNED, inHostAllocatorProxy);
 
     this.instance =
-      Objects.requireNonNull(in_instance, "instance");
-    this.extension_registry =
-      Objects.requireNonNull(in_extension_registry, "extension_registry");
-    this.initial_stack =
+      Objects.requireNonNull(inInstance, "instance");
+    this.info =
+      Objects.requireNonNull(inInfo, "info");
+    this.extensionsRegistry =
+      Objects.requireNonNull(inExtensionRegistry, "extension_registry");
+    this.initialStack =
       MemoryStack.create();
-    this.extensions_enabled_read_only =
+    this.extensionsEnabledReadOnly =
       Collections.unmodifiableMap(
-        Objects.requireNonNull(in_extensions_enabled, "in_extensions"));
+        Objects.requireNonNull(inExtensionsEnabled, "in_extensions"));
   }
 
   private static List<VulkanQueueFamilyProperties> parsePhysicalDeviceQueueFamilies(
@@ -290,185 +307,346 @@ public final class VulkanLWJGLInstance
   }
 
   /**
-   * This method is not hand-written: See features-set.sh
+   * This method is not hand-written: See GenerateFeatures10MethodNamesImmutable.
    */
 
-  private static VulkanPhysicalDeviceFeatures parsePhysicalDeviceFeatures(
-    final VkPhysicalDeviceFeatures vk_features)
+  private static VulkanPhysicalDeviceFeatures10 parsePhysicalDeviceFeatures10(
+    final VkPhysicalDeviceFeatures vkFeatures)
   {
-    return VulkanPhysicalDeviceFeatures.builder()
-      .setAlphaToOne(vk_features.alphaToOne())
-      .setDepthBiasClamp(vk_features.depthBiasClamp())
-      .setDepthBounds(vk_features.depthBounds())
-      .setDepthClamp(vk_features.depthClamp())
-      .setDrawIndirectFirstInstance(vk_features.drawIndirectFirstInstance())
-      .setDualSrcBlend(vk_features.dualSrcBlend())
-      .setFillModeNonSolid(vk_features.fillModeNonSolid())
-      .setFragmentStoresAndAtomics(vk_features.fragmentStoresAndAtomics())
-      .setFullDrawIndexUint32(vk_features.fullDrawIndexUint32())
-      .setGeometryShader(vk_features.geometryShader())
-      .setImageCubeArray(vk_features.imageCubeArray())
-      .setIndependentBlend(vk_features.independentBlend())
-      .setInheritedQueries(vk_features.inheritedQueries())
-      .setLargePoints(vk_features.largePoints())
-      .setLogicOp(vk_features.logicOp())
-      .setMultiDrawIndirect(vk_features.multiDrawIndirect())
-      .setMultiViewport(vk_features.multiViewport())
-      .setOcclusionQueryPrecise(vk_features.occlusionQueryPrecise())
-      .setPipelineStatisticsQuery(vk_features.pipelineStatisticsQuery())
-      .setRobustBufferAccess(vk_features.robustBufferAccess())
-      .setSamplerAnisotropy(vk_features.samplerAnisotropy())
-      .setSampleRateShading(vk_features.sampleRateShading())
-      .setShaderClipDistance(vk_features.shaderClipDistance())
-      .setShaderCullDistance(vk_features.shaderCullDistance())
-      .setShaderFloat64(vk_features.shaderFloat64())
-      .setShaderImageGatherExtended(vk_features.shaderImageGatherExtended())
-      .setShaderInt16(vk_features.shaderInt16())
-      .setShaderInt64(vk_features.shaderInt64())
-      .setShaderResourceMinLod(vk_features.shaderResourceMinLod())
-      .setShaderResourceResidency(vk_features.shaderResourceResidency())
-      .setShaderSampledImageArrayDynamicIndexing(vk_features.shaderSampledImageArrayDynamicIndexing())
-      .setShaderStorageBufferArrayDynamicIndexing(vk_features.shaderStorageBufferArrayDynamicIndexing())
-      .setShaderStorageImageArrayDynamicIndexing(vk_features.shaderStorageImageArrayDynamicIndexing())
-      .setShaderStorageImageExtendedFormats(vk_features.shaderStorageImageExtendedFormats())
-      .setShaderStorageImageMultisample(vk_features.shaderStorageImageMultisample())
-      .setShaderStorageImageReadWithoutFormat(vk_features.shaderStorageImageReadWithoutFormat())
-      .setShaderStorageImageWriteWithoutFormat(vk_features.shaderStorageImageWriteWithoutFormat())
-      .setShaderTessellationAndGeometryPointSize(vk_features.shaderTessellationAndGeometryPointSize())
-      .setShaderUniformBufferArrayDynamicIndexing(vk_features.shaderUniformBufferArrayDynamicIndexing())
-      .setSparseBinding(vk_features.sparseBinding())
-      .setSparseResidency16Samples(vk_features.sparseResidency16Samples())
-      .setSparseResidency2Samples(vk_features.sparseResidency2Samples())
-      .setSparseResidency4Samples(vk_features.sparseResidency4Samples())
-      .setSparseResidency8Samples(vk_features.sparseResidency8Samples())
-      .setSparseResidencyAliased(vk_features.sparseResidencyAliased())
-      .setSparseResidencyBuffer(vk_features.sparseResidencyBuffer())
-      .setSparseResidencyImage2D(vk_features.sparseResidencyImage2D())
-      .setSparseResidencyImage3D(vk_features.sparseResidencyImage3D())
-      .setTessellationShader(vk_features.tessellationShader())
-      .setTextureCompressionASTC_LDR(vk_features.textureCompressionASTC_LDR())
-      .setTextureCompressionBC(vk_features.textureCompressionBC())
-      .setTextureCompressionETC2(vk_features.textureCompressionETC2())
-      .setVariableMultisampleRate(vk_features.variableMultisampleRate())
-      .setVertexPipelineStoresAndAtomics(vk_features.vertexPipelineStoresAndAtomics())
-      .setWideLines(vk_features.wideLines())
+    return VulkanPhysicalDeviceFeatures10.builder()
+      .setAlphaToOne(
+        vkFeatures.alphaToOne())
+      .setDepthBiasClamp(
+        vkFeatures.depthBiasClamp())
+      .setDepthBounds(
+        vkFeatures.depthBounds())
+      .setDepthClamp(
+        vkFeatures.depthClamp())
+      .setDrawIndirectFirstInstance(
+        vkFeatures.drawIndirectFirstInstance())
+      .setDualSrcBlend(
+        vkFeatures.dualSrcBlend())
+      .setFillModeNonSolid(
+        vkFeatures.fillModeNonSolid())
+      .setFragmentStoresAndAtomics(
+        vkFeatures.fragmentStoresAndAtomics())
+      .setFullDrawIndexUint32(
+        vkFeatures.fullDrawIndexUint32())
+      .setGeometryShader(
+        vkFeatures.geometryShader())
+      .setImageCubeArray(
+        vkFeatures.imageCubeArray())
+      .setIndependentBlend(
+        vkFeatures.independentBlend())
+      .setInheritedQueries(
+        vkFeatures.inheritedQueries())
+      .setLargePoints(
+        vkFeatures.largePoints())
+      .setLogicOp(
+        vkFeatures.logicOp())
+      .setMultiDrawIndirect(
+        vkFeatures.multiDrawIndirect())
+      .setMultiViewport(
+        vkFeatures.multiViewport())
+      .setOcclusionQueryPrecise(
+        vkFeatures.occlusionQueryPrecise())
+      .setPipelineStatisticsQuery(
+        vkFeatures.pipelineStatisticsQuery())
+      .setRobustBufferAccess(
+        vkFeatures.robustBufferAccess())
+      .setSamplerAnisotropy(
+        vkFeatures.samplerAnisotropy())
+      .setSampleRateShading(
+        vkFeatures.sampleRateShading())
+      .setShaderClipDistance(
+        vkFeatures.shaderClipDistance())
+      .setShaderCullDistance(
+        vkFeatures.shaderCullDistance())
+      .setShaderFloat64(
+        vkFeatures.shaderFloat64())
+      .setShaderImageGatherExtended(
+        vkFeatures.shaderImageGatherExtended())
+      .setShaderInt16(
+        vkFeatures.shaderInt16())
+      .setShaderInt64(
+        vkFeatures.shaderInt64())
+      .setShaderResourceMinLod(
+        vkFeatures.shaderResourceMinLod())
+      .setShaderResourceResidency(
+        vkFeatures.shaderResourceResidency())
+      .setShaderSampledImageArrayDynamicIndexing(
+        vkFeatures.shaderSampledImageArrayDynamicIndexing())
+      .setShaderStorageBufferArrayDynamicIndexing(
+        vkFeatures.shaderStorageBufferArrayDynamicIndexing())
+      .setShaderStorageImageArrayDynamicIndexing(
+        vkFeatures.shaderStorageImageArrayDynamicIndexing())
+      .setShaderStorageImageExtendedFormats(
+        vkFeatures.shaderStorageImageExtendedFormats())
+      .setShaderStorageImageMultisample(
+        vkFeatures.shaderStorageImageMultisample())
+      .setShaderStorageImageReadWithoutFormat(
+        vkFeatures.shaderStorageImageReadWithoutFormat())
+      .setShaderStorageImageWriteWithoutFormat(
+        vkFeatures.shaderStorageImageWriteWithoutFormat())
+      .setShaderTessellationAndGeometryPointSize(
+        vkFeatures.shaderTessellationAndGeometryPointSize())
+      .setShaderUniformBufferArrayDynamicIndexing(
+        vkFeatures.shaderUniformBufferArrayDynamicIndexing())
+      .setSparseBinding(
+        vkFeatures.sparseBinding())
+      .setSparseResidency16Samples(
+        vkFeatures.sparseResidency16Samples())
+      .setSparseResidency2Samples(
+        vkFeatures.sparseResidency2Samples())
+      .setSparseResidency4Samples(
+        vkFeatures.sparseResidency4Samples())
+      .setSparseResidency8Samples(
+        vkFeatures.sparseResidency8Samples())
+      .setSparseResidencyAliased(
+        vkFeatures.sparseResidencyAliased())
+      .setSparseResidencyBuffer(
+        vkFeatures.sparseResidencyBuffer())
+      .setSparseResidencyImage2D(
+        vkFeatures.sparseResidencyImage2D())
+      .setSparseResidencyImage3D(
+        vkFeatures.sparseResidencyImage3D())
+      .setTessellationShader(
+        vkFeatures.tessellationShader())
+      .setTextureCompressionASTC_LDR(
+        vkFeatures.textureCompressionASTC_LDR())
+      .setTextureCompressionBC(
+        vkFeatures.textureCompressionBC())
+      .setTextureCompressionETC2(
+        vkFeatures.textureCompressionETC2())
+      .setVariableMultisampleRate(
+        vkFeatures.variableMultisampleRate())
+      .setVertexPipelineStoresAndAtomics(
+        vkFeatures.vertexPipelineStoresAndAtomics())
+      .setWideLines(
+        vkFeatures.wideLines())
       .build();
   }
 
   /**
-   * This method is not hand-written: See limits-set.sh
+   * This method is not hand-written: See GenerateLimitsMethodNamesImmutable.
    */
 
   private static VulkanPhysicalDeviceLimits parsePhysicalDeviceLimits(
-    final VkPhysicalDeviceLimits vk_limits)
+    final VkPhysicalDeviceLimits vkLimits)
   {
     return VulkanPhysicalDeviceLimits.builder()
-      .setBufferImageGranularity(vk_limits.bufferImageGranularity())
-      .setDiscreteQueuePriorities(vk_limits.discreteQueuePriorities())
-      .setFramebufferColorSampleCounts(vk_limits.framebufferColorSampleCounts())
-      .setFramebufferDepthSampleCounts(vk_limits.framebufferDepthSampleCounts())
-      .setFramebufferNoAttachmentsSampleCounts(vk_limits.framebufferNoAttachmentsSampleCounts())
-      .setFramebufferStencilSampleCounts(vk_limits.framebufferStencilSampleCounts())
-      .setLineWidthGranularity(vk_limits.lineWidthGranularity())
-      .setLineWidthRange(parseLineWidthRange(vk_limits.lineWidthRange()))
-      .setMaxBoundDescriptorSets(vk_limits.maxBoundDescriptorSets())
-      .setMaxClipDistances(vk_limits.maxClipDistances())
-      .setMaxColorAttachments(vk_limits.maxColorAttachments())
-      .setMaxCombinedClipAndCullDistances(vk_limits.maxCombinedClipAndCullDistances())
-      .setMaxComputeSharedMemorySize(vk_limits.maxComputeSharedMemorySize())
-      .setMaxComputeWorkGroupCount(parseComputeWorkGroupCount(vk_limits.maxComputeWorkGroupCount()))
-      .setMaxComputeWorkGroupInvocations(vk_limits.maxComputeWorkGroupInvocations())
-      .setMaxComputeWorkGroupSize(parseComputeWorkGroupSize(vk_limits.maxComputeWorkGroupSize()))
-      .setMaxCullDistances(vk_limits.maxCullDistances())
-      .setMaxDescriptorSetInputAttachments(vk_limits.maxDescriptorSetInputAttachments())
-      .setMaxDescriptorSetSampledImages(vk_limits.maxDescriptorSetSampledImages())
-      .setMaxDescriptorSetSamplers(vk_limits.maxDescriptorSetSamplers())
-      .setMaxDescriptorSetStorageBuffersDynamic(vk_limits.maxDescriptorSetStorageBuffersDynamic())
-      .setMaxDescriptorSetStorageBuffers(vk_limits.maxDescriptorSetStorageBuffers())
-      .setMaxDescriptorSetStorageImages(vk_limits.maxDescriptorSetStorageImages())
-      .setMaxDescriptorSetUniformBuffersDynamic(vk_limits.maxDescriptorSetUniformBuffersDynamic())
-      .setMaxDescriptorSetUniformBuffers(vk_limits.maxDescriptorSetUniformBuffers())
-      .setMaxDrawIndexedIndexValue(vk_limits.maxDrawIndexedIndexValue())
-      .setMaxDrawIndirectCount(vk_limits.maxDrawIndirectCount())
-      .setMaxFragmentCombinedOutputResources(vk_limits.maxFragmentCombinedOutputResources())
-      .setMaxFragmentDualSrcAttachments(vk_limits.maxFragmentDualSrcAttachments())
-      .setMaxFragmentInputComponents(vk_limits.maxFragmentInputComponents())
-      .setMaxFragmentOutputAttachments(vk_limits.maxFragmentOutputAttachments())
-      .setMaxFramebufferHeight(vk_limits.maxFramebufferHeight())
-      .setMaxFramebufferLayers(vk_limits.maxFramebufferLayers())
-      .setMaxFramebufferWidth(vk_limits.maxFramebufferWidth())
-      .setMaxGeometryInputComponents(vk_limits.maxGeometryInputComponents())
-      .setMaxGeometryOutputComponents(vk_limits.maxGeometryOutputComponents())
-      .setMaxGeometryOutputVertices(vk_limits.maxGeometryOutputVertices())
-      .setMaxGeometryShaderInvocations(vk_limits.maxGeometryShaderInvocations())
-      .setMaxGeometryTotalOutputComponents(vk_limits.maxGeometryTotalOutputComponents())
-      .setMaxImageArrayLayers(vk_limits.maxImageArrayLayers())
-      .setMaxImageDimension1D(vk_limits.maxImageDimension1D())
-      .setMaxImageDimension2D(vk_limits.maxImageDimension2D())
-      .setMaxImageDimension3D(vk_limits.maxImageDimension3D())
-      .setMaxImageDimensionCube(vk_limits.maxImageDimensionCube())
-      .setMaxInterpolationOffset(vk_limits.maxInterpolationOffset())
-      .setMaxMemoryAllocationCount(vk_limits.maxMemoryAllocationCount())
-      .setMaxPerStageDescriptorInputAttachments(vk_limits.maxPerStageDescriptorInputAttachments())
-      .setMaxPerStageDescriptorSampledImages(vk_limits.maxPerStageDescriptorSampledImages())
-      .setMaxPerStageDescriptorSamplers(vk_limits.maxPerStageDescriptorSamplers())
-      .setMaxPerStageDescriptorStorageBuffers(vk_limits.maxPerStageDescriptorStorageBuffers())
-      .setMaxPerStageDescriptorStorageImages(vk_limits.maxPerStageDescriptorStorageImages())
-      .setMaxPerStageDescriptorUniformBuffers(vk_limits.maxPerStageDescriptorUniformBuffers())
-      .setMaxPerStageResources(vk_limits.maxPerStageResources())
-      .setMaxPushConstantsSize(vk_limits.maxPushConstantsSize())
-      .setMaxSampleMaskWords(vk_limits.maxSampleMaskWords())
-      .setMaxSamplerAllocationCount(vk_limits.maxSamplerAllocationCount())
-      .setMaxSamplerAnisotropy(vk_limits.maxSamplerAnisotropy())
-      .setMaxSamplerLodBias(vk_limits.maxSamplerLodBias())
-      .setMaxStorageBufferRange(vk_limits.maxStorageBufferRange())
-      .setMaxTessellationControlPerPatchOutputComponents(vk_limits.maxTessellationControlPerPatchOutputComponents())
-      .setMaxTessellationControlPerVertexInputComponents(vk_limits.maxTessellationControlPerVertexInputComponents())
-      .setMaxTessellationControlPerVertexOutputComponents(vk_limits.maxTessellationControlPerVertexOutputComponents())
-      .setMaxTessellationControlTotalOutputComponents(vk_limits.maxTessellationControlTotalOutputComponents())
-      .setMaxTessellationEvaluationInputComponents(vk_limits.maxTessellationEvaluationInputComponents())
-      .setMaxTessellationEvaluationOutputComponents(vk_limits.maxTessellationEvaluationOutputComponents())
-      .setMaxTessellationGenerationLevel(vk_limits.maxTessellationGenerationLevel())
-      .setMaxTessellationPatchSize(vk_limits.maxTessellationPatchSize())
-      .setMaxTexelBufferElements(vk_limits.maxTexelBufferElements())
-      .setMaxTexelGatherOffset(vk_limits.maxTexelGatherOffset())
-      .setMaxTexelOffset(vk_limits.maxTexelOffset())
-      .setMaxUniformBufferRange(vk_limits.maxUniformBufferRange())
-      .setMaxVertexInputAttributeOffset(vk_limits.maxVertexInputAttributeOffset())
-      .setMaxVertexInputAttributes(vk_limits.maxVertexInputAttributes())
-      .setMaxVertexInputBindings(vk_limits.maxVertexInputBindings())
-      .setMaxVertexInputBindingStride(vk_limits.maxVertexInputBindingStride())
-      .setMaxVertexOutputComponents(vk_limits.maxVertexOutputComponents())
-      .setMaxViewportDimensions(parseViewportDimensions(vk_limits.maxViewportDimensions()))
-      .setMaxViewports(vk_limits.maxViewports())
-      .setMinInterpolationOffset(vk_limits.minInterpolationOffset())
-      .setMinMemoryMapAlignment(vk_limits.minMemoryMapAlignment())
-      .setMinStorageBufferOffsetAlignment(vk_limits.minStorageBufferOffsetAlignment())
-      .setMinTexelBufferOffsetAlignment(vk_limits.minTexelBufferOffsetAlignment())
-      .setMinTexelGatherOffset(vk_limits.minTexelGatherOffset())
-      .setMinTexelOffset(vk_limits.minTexelOffset())
-      .setMinUniformBufferOffsetAlignment(vk_limits.minUniformBufferOffsetAlignment())
-      .setMipmapPrecisionBits(vk_limits.mipmapPrecisionBits())
-      .setNonCoherentAtomSize(vk_limits.nonCoherentAtomSize())
-      .setOptimalBufferCopyOffsetAlignment(vk_limits.optimalBufferCopyOffsetAlignment())
-      .setOptimalBufferCopyRowPitchAlignment(vk_limits.optimalBufferCopyRowPitchAlignment())
-      .setPointSizeGranularity(vk_limits.pointSizeGranularity())
-      .setPointSizeRange(parsePointSizeRange(vk_limits.pointSizeRange()))
-      .setSampledImageColorSampleCounts(vk_limits.sampledImageColorSampleCounts())
-      .setSampledImageDepthSampleCounts(vk_limits.sampledImageDepthSampleCounts())
-      .setSampledImageIntegerSampleCounts(vk_limits.sampledImageIntegerSampleCounts())
-      .setSampledImageStencilSampleCounts(vk_limits.sampledImageStencilSampleCounts())
-      .setSparseAddressSpaceSize(vk_limits.sparseAddressSpaceSize())
-      .setStandardSampleLocations(vk_limits.standardSampleLocations())
-      .setStorageImageSampleCounts(vk_limits.storageImageSampleCounts())
-      .setStrictLines(vk_limits.strictLines())
-      .setSubPixelInterpolationOffsetBits(vk_limits.subPixelInterpolationOffsetBits())
-      .setSubPixelPrecisionBits(vk_limits.subPixelPrecisionBits())
-      .setSubTexelPrecisionBits(vk_limits.subTexelPrecisionBits())
-      .setTimestampComputeAndGraphics(vk_limits.timestampComputeAndGraphics())
-      .setTimestampPeriod(vk_limits.timestampPeriod())
-      .setViewportBoundsRange(parseViewportBoundsRange(vk_limits.viewportBoundsRange()))
-      .setViewportSubPixelBits(vk_limits.viewportSubPixelBits())
+      .setBufferImageGranularity(
+        vkLimits.bufferImageGranularity())
+      .setDiscreteQueuePriorities(
+        vkLimits.discreteQueuePriorities())
+      .setFramebufferColorSampleCounts(
+        vkLimits.framebufferColorSampleCounts())
+      .setFramebufferDepthSampleCounts(
+        vkLimits.framebufferDepthSampleCounts())
+      .setFramebufferNoAttachmentsSampleCounts(
+        vkLimits.framebufferNoAttachmentsSampleCounts())
+      .setFramebufferStencilSampleCounts(
+        vkLimits.framebufferStencilSampleCounts())
+      .setLineWidthGranularity(
+        vkLimits.lineWidthGranularity())
+      .setLineWidthRange(parseLineWidthRange(
+        vkLimits.lineWidthRange()))
+      .setMaxBoundDescriptorSets(
+        vkLimits.maxBoundDescriptorSets())
+      .setMaxClipDistances(
+        vkLimits.maxClipDistances())
+      .setMaxColorAttachments(
+        vkLimits.maxColorAttachments())
+      .setMaxCombinedClipAndCullDistances(
+        vkLimits.maxCombinedClipAndCullDistances())
+      .setMaxComputeSharedMemorySize(
+        vkLimits.maxComputeSharedMemorySize())
+      .setMaxComputeWorkGroupCount(parseComputeWorkGroupCount(
+        vkLimits.maxComputeWorkGroupCount()))
+      .setMaxComputeWorkGroupInvocations(
+        vkLimits.maxComputeWorkGroupInvocations())
+      .setMaxComputeWorkGroupSize(parseComputeWorkGroupSize(
+        vkLimits.maxComputeWorkGroupSize()))
+      .setMaxCullDistances(
+        vkLimits.maxCullDistances())
+      .setMaxDescriptorSetInputAttachments(
+        vkLimits.maxDescriptorSetInputAttachments())
+      .setMaxDescriptorSetSampledImages(
+        vkLimits.maxDescriptorSetSampledImages())
+      .setMaxDescriptorSetSamplers(
+        vkLimits.maxDescriptorSetSamplers())
+      .setMaxDescriptorSetStorageBuffersDynamic(
+        vkLimits.maxDescriptorSetStorageBuffersDynamic())
+      .setMaxDescriptorSetStorageBuffers(
+        vkLimits.maxDescriptorSetStorageBuffers())
+      .setMaxDescriptorSetStorageImages(
+        vkLimits.maxDescriptorSetStorageImages())
+      .setMaxDescriptorSetUniformBuffersDynamic(
+        vkLimits.maxDescriptorSetUniformBuffersDynamic())
+      .setMaxDescriptorSetUniformBuffers(
+        vkLimits.maxDescriptorSetUniformBuffers())
+      .setMaxDrawIndexedIndexValue(
+        vkLimits.maxDrawIndexedIndexValue())
+      .setMaxDrawIndirectCount(
+        vkLimits.maxDrawIndirectCount())
+      .setMaxFragmentCombinedOutputResources(
+        vkLimits.maxFragmentCombinedOutputResources())
+      .setMaxFragmentDualSrcAttachments(
+        vkLimits.maxFragmentDualSrcAttachments())
+      .setMaxFragmentInputComponents(
+        vkLimits.maxFragmentInputComponents())
+      .setMaxFragmentOutputAttachments(
+        vkLimits.maxFragmentOutputAttachments())
+      .setMaxFramebufferHeight(
+        vkLimits.maxFramebufferHeight())
+      .setMaxFramebufferLayers(
+        vkLimits.maxFramebufferLayers())
+      .setMaxFramebufferWidth(
+        vkLimits.maxFramebufferWidth())
+      .setMaxGeometryInputComponents(
+        vkLimits.maxGeometryInputComponents())
+      .setMaxGeometryOutputComponents(
+        vkLimits.maxGeometryOutputComponents())
+      .setMaxGeometryOutputVertices(
+        vkLimits.maxGeometryOutputVertices())
+      .setMaxGeometryShaderInvocations(
+        vkLimits.maxGeometryShaderInvocations())
+      .setMaxGeometryTotalOutputComponents(
+        vkLimits.maxGeometryTotalOutputComponents())
+      .setMaxImageArrayLayers(
+        vkLimits.maxImageArrayLayers())
+      .setMaxImageDimension1D(
+        vkLimits.maxImageDimension1D())
+      .setMaxImageDimension2D(
+        vkLimits.maxImageDimension2D())
+      .setMaxImageDimension3D(
+        vkLimits.maxImageDimension3D())
+      .setMaxImageDimensionCube(
+        vkLimits.maxImageDimensionCube())
+      .setMaxInterpolationOffset(
+        vkLimits.maxInterpolationOffset())
+      .setMaxMemoryAllocationCount(
+        vkLimits.maxMemoryAllocationCount())
+      .setMaxPerStageDescriptorInputAttachments(
+        vkLimits.maxPerStageDescriptorInputAttachments())
+      .setMaxPerStageDescriptorSampledImages(
+        vkLimits.maxPerStageDescriptorSampledImages())
+      .setMaxPerStageDescriptorSamplers(
+        vkLimits.maxPerStageDescriptorSamplers())
+      .setMaxPerStageDescriptorStorageBuffers(
+        vkLimits.maxPerStageDescriptorStorageBuffers())
+      .setMaxPerStageDescriptorStorageImages(
+        vkLimits.maxPerStageDescriptorStorageImages())
+      .setMaxPerStageDescriptorUniformBuffers(
+        vkLimits.maxPerStageDescriptorUniformBuffers())
+      .setMaxPerStageResources(
+        vkLimits.maxPerStageResources())
+      .setMaxPushConstantsSize(
+        vkLimits.maxPushConstantsSize())
+      .setMaxSampleMaskWords(
+        vkLimits.maxSampleMaskWords())
+      .setMaxSamplerAllocationCount(
+        vkLimits.maxSamplerAllocationCount())
+      .setMaxSamplerAnisotropy(
+        vkLimits.maxSamplerAnisotropy())
+      .setMaxSamplerLodBias(
+        vkLimits.maxSamplerLodBias())
+      .setMaxStorageBufferRange(
+        vkLimits.maxStorageBufferRange())
+      .setMaxTessellationControlPerPatchOutputComponents(
+        vkLimits.maxTessellationControlPerPatchOutputComponents())
+      .setMaxTessellationControlPerVertexInputComponents(
+        vkLimits.maxTessellationControlPerVertexInputComponents())
+      .setMaxTessellationControlPerVertexOutputComponents(
+        vkLimits.maxTessellationControlPerVertexOutputComponents())
+      .setMaxTessellationControlTotalOutputComponents(
+        vkLimits.maxTessellationControlTotalOutputComponents())
+      .setMaxTessellationEvaluationInputComponents(
+        vkLimits.maxTessellationEvaluationInputComponents())
+      .setMaxTessellationEvaluationOutputComponents(
+        vkLimits.maxTessellationEvaluationOutputComponents())
+      .setMaxTessellationGenerationLevel(
+        vkLimits.maxTessellationGenerationLevel())
+      .setMaxTessellationPatchSize(
+        vkLimits.maxTessellationPatchSize())
+      .setMaxTexelBufferElements(
+        vkLimits.maxTexelBufferElements())
+      .setMaxTexelGatherOffset(
+        vkLimits.maxTexelGatherOffset())
+      .setMaxTexelOffset(
+        vkLimits.maxTexelOffset())
+      .setMaxUniformBufferRange(
+        vkLimits.maxUniformBufferRange())
+      .setMaxVertexInputAttributeOffset(
+        vkLimits.maxVertexInputAttributeOffset())
+      .setMaxVertexInputAttributes(
+        vkLimits.maxVertexInputAttributes())
+      .setMaxVertexInputBindings(
+        vkLimits.maxVertexInputBindings())
+      .setMaxVertexInputBindingStride(
+        vkLimits.maxVertexInputBindingStride())
+      .setMaxVertexOutputComponents(
+        vkLimits.maxVertexOutputComponents())
+      .setMaxViewportDimensions(parseViewportDimensions(
+        vkLimits.maxViewportDimensions()))
+      .setMaxViewports(
+        vkLimits.maxViewports())
+      .setMinInterpolationOffset(
+        vkLimits.minInterpolationOffset())
+      .setMinMemoryMapAlignment(
+        vkLimits.minMemoryMapAlignment())
+      .setMinStorageBufferOffsetAlignment(
+        vkLimits.minStorageBufferOffsetAlignment())
+      .setMinTexelBufferOffsetAlignment(
+        vkLimits.minTexelBufferOffsetAlignment())
+      .setMinTexelGatherOffset(
+        vkLimits.minTexelGatherOffset())
+      .setMinTexelOffset(
+        vkLimits.minTexelOffset())
+      .setMinUniformBufferOffsetAlignment(
+        vkLimits.minUniformBufferOffsetAlignment())
+      .setMipmapPrecisionBits(
+        vkLimits.mipmapPrecisionBits())
+      .setNonCoherentAtomSize(
+        vkLimits.nonCoherentAtomSize())
+      .setOptimalBufferCopyOffsetAlignment(
+        vkLimits.optimalBufferCopyOffsetAlignment())
+      .setOptimalBufferCopyRowPitchAlignment(
+        vkLimits.optimalBufferCopyRowPitchAlignment())
+      .setPointSizeGranularity(
+        vkLimits.pointSizeGranularity())
+      .setPointSizeRange(parsePointSizeRange(
+        vkLimits.pointSizeRange()))
+      .setSampledImageColorSampleCounts(
+        vkLimits.sampledImageColorSampleCounts())
+      .setSampledImageDepthSampleCounts(
+        vkLimits.sampledImageDepthSampleCounts())
+      .setSampledImageIntegerSampleCounts(
+        vkLimits.sampledImageIntegerSampleCounts())
+      .setSampledImageStencilSampleCounts(
+        vkLimits.sampledImageStencilSampleCounts())
+      .setSparseAddressSpaceSize(
+        vkLimits.sparseAddressSpaceSize())
+      .setStandardSampleLocations(
+        vkLimits.standardSampleLocations())
+      .setStorageImageSampleCounts(
+        vkLimits.storageImageSampleCounts())
+      .setStrictLines(
+        vkLimits.strictLines())
+      .setSubPixelInterpolationOffsetBits(
+        vkLimits.subPixelInterpolationOffsetBits())
+      .setSubPixelPrecisionBits(
+        vkLimits.subPixelPrecisionBits())
+      .setSubTexelPrecisionBits(
+        vkLimits.subTexelPrecisionBits())
+      .setTimestampComputeAndGraphics(
+        vkLimits.timestampComputeAndGraphics())
+      .setTimestampPeriod(
+        vkLimits.timestampPeriod())
+      .setViewportBoundsRange(parseViewportBoundsRange(
+        vkLimits.viewportBoundsRange()))
+      .setViewportSubPixelBits(
+        vkLimits.viewportSubPixelBits())
       .build();
   }
 
@@ -522,6 +700,216 @@ public final class VulkanLWJGLInstance
       buffer.get(1));
   }
 
+  private static VulkanPhysicalDeviceFeatures parseAllFeatures(
+    final MemoryStack stack,
+    final VkPhysicalDevice vkDevice,
+    final VulkanVersion requestedApiVersion)
+  {
+    /*
+     * For Vulkan 1.0, we need to call the plain vkGetPhysicalDeviceFeatures
+     * function.
+     */
+
+    if (requestedApiVersion.major() == 1 && requestedApiVersion.minor() == 0) {
+      LOG.debug(
+        "requested API version is {}; physical device features retrieved using vkGetPhysicalDeviceFeatures",
+        requestedApiVersion.toHumanString()
+      );
+
+      final var vkFeatures =
+        VkPhysicalDeviceFeatures.calloc(stack);
+
+      VK10.vkGetPhysicalDeviceFeatures(vkDevice, vkFeatures);
+
+      final var features10 =
+        parsePhysicalDeviceFeatures10(vkFeatures);
+      final var features11 =
+        VulkanPhysicalDeviceFeatures11.builder()
+          .build();
+      final var features12 =
+        VulkanPhysicalDeviceFeatures12.builder()
+          .build();
+
+      return VulkanPhysicalDeviceFeatures.builder()
+        .setFeatures10(features10)
+        .setFeatures11(features11)
+        .setFeatures12(features12)
+        .build();
+    }
+
+    /*
+     * For newer versions of Vulkan, we call vkGetPhysicalDeviceFeatures2
+     * and fetch all the new embedded structures.
+     */
+
+    final var vkFeatures12 =
+      VkPhysicalDeviceVulkan12Features.calloc(stack);
+    vkFeatures12.sType(VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_2_FEATURES);
+
+    final var vkFeatures11 =
+      VkPhysicalDeviceVulkan11Features.calloc(stack);
+    vkFeatures11.sType(VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_1_FEATURES);
+
+    final var vkFeatures =
+      VkPhysicalDeviceFeatures2.calloc(stack);
+    vkFeatures.sType(VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FEATURES_2);
+
+    vkFeatures11.pNext(vkFeatures12.address());
+    vkFeatures.pNext(vkFeatures11.address());
+
+    LOG.debug(
+      "requested API version is {}; physical device features retrieved using vkGetPhysicalDeviceFeatures2",
+      requestedApiVersion.toHumanString()
+    );
+
+    VK11.vkGetPhysicalDeviceFeatures2(vkDevice, vkFeatures);
+
+    final var features10 =
+      parsePhysicalDeviceFeatures10(vkFeatures.features());
+    final var features11 =
+      parsePhysicalDeviceFeatures11(vkFeatures11);
+    final var features12 =
+      parsePhysicalDeviceFeatures12(vkFeatures12);
+
+    return VulkanPhysicalDeviceFeatures.builder()
+      .setFeatures10(features10)
+      .setFeatures11(features11)
+      .setFeatures12(features12)
+      .build();
+  }
+
+  private static VulkanPhysicalDeviceFeatures12 parsePhysicalDeviceFeatures12(
+    final VkPhysicalDeviceVulkan12Features features12)
+  {
+    return VulkanPhysicalDeviceFeatures12.builder()
+      .setBufferDeviceAddress(
+        features12.bufferDeviceAddress())
+      .setBufferDeviceAddressCaptureReplay(
+        features12.bufferDeviceAddressCaptureReplay())
+      .setBufferDeviceAddressMultiDevice(
+        features12.bufferDeviceAddressMultiDevice())
+      .setDescriptorBindingPartiallyBound(
+        features12.descriptorBindingPartiallyBound())
+      .setDescriptorBindingSampledImageUpdateAfterBind(
+        features12.descriptorBindingSampledImageUpdateAfterBind())
+      .setDescriptorBindingStorageBufferUpdateAfterBind(
+        features12.descriptorBindingStorageBufferUpdateAfterBind())
+      .setDescriptorBindingStorageImageUpdateAfterBind(
+        features12.descriptorBindingStorageImageUpdateAfterBind())
+      .setDescriptorBindingStorageTexelBufferUpdateAfterBind(
+        features12.descriptorBindingStorageTexelBufferUpdateAfterBind())
+      .setDescriptorBindingUniformBufferUpdateAfterBind(
+        features12.descriptorBindingUniformBufferUpdateAfterBind())
+      .setDescriptorBindingUniformTexelBufferUpdateAfterBind(
+        features12.descriptorBindingUniformTexelBufferUpdateAfterBind())
+      .setDescriptorBindingUpdateUnusedWhilePending(
+        features12.descriptorBindingUpdateUnusedWhilePending())
+      .setDescriptorBindingVariableDescriptorCount(
+        features12.descriptorBindingVariableDescriptorCount())
+      .setDescriptorIndexing(
+        features12.descriptorIndexing())
+      .setDrawIndirectCount(
+        features12.drawIndirectCount())
+      .setHostQueryReset(
+        features12.hostQueryReset())
+      .setImagelessFramebuffer(
+        features12.imagelessFramebuffer())
+      .setRuntimeDescriptorArray(
+        features12.runtimeDescriptorArray())
+      .setSamplerFilterMinmax(
+        features12.samplerFilterMinmax())
+      .setSamplerMirrorClampToEdge(
+        features12.samplerMirrorClampToEdge())
+      .setScalarBlockLayout(
+        features12.scalarBlockLayout())
+      .setSeparateDepthStencilLayouts(
+        features12.separateDepthStencilLayouts())
+      .setShaderBufferInt64Atomics(
+        features12.shaderBufferInt64Atomics())
+      .setShaderFloat16(
+        features12.shaderFloat16())
+      .setShaderInputAttachmentArrayDynamicIndexing(
+        features12.shaderInputAttachmentArrayDynamicIndexing())
+      .setShaderInputAttachmentArrayNonUniformIndexing(
+        features12.shaderInputAttachmentArrayNonUniformIndexing())
+      .setShaderInt8(
+        features12.shaderInt8())
+      .setShaderOutputLayer(
+        features12.shaderOutputLayer())
+      .setShaderOutputViewportIndex(
+        features12.shaderOutputViewportIndex())
+      .setShaderSampledImageArrayNonUniformIndexing(
+        features12.shaderSampledImageArrayNonUniformIndexing())
+      .setShaderSharedInt64Atomics(
+        features12.shaderSharedInt64Atomics())
+      .setShaderStorageBufferArrayNonUniformIndexing(
+        features12.shaderStorageBufferArrayNonUniformIndexing())
+      .setShaderStorageImageArrayNonUniformIndexing(
+        features12.shaderStorageImageArrayNonUniformIndexing())
+      .setShaderStorageTexelBufferArrayDynamicIndexing(
+        features12.shaderStorageTexelBufferArrayDynamicIndexing())
+      .setShaderStorageTexelBufferArrayNonUniformIndexing(
+        features12.shaderStorageTexelBufferArrayNonUniformIndexing())
+      .setShaderSubgroupExtendedTypes(
+        features12.shaderSubgroupExtendedTypes())
+      .setShaderUniformBufferArrayNonUniformIndexing(
+        features12.shaderUniformBufferArrayNonUniformIndexing())
+      .setShaderUniformTexelBufferArrayDynamicIndexing(
+        features12.shaderUniformTexelBufferArrayDynamicIndexing())
+      .setShaderUniformTexelBufferArrayNonUniformIndexing(
+        features12.shaderUniformTexelBufferArrayNonUniformIndexing())
+      .setStorageBuffer8BitAccess(
+        features12.storageBuffer8BitAccess())
+      .setStoragePushConstant8(
+        features12.storagePushConstant8())
+      .setSubgroupBroadcastDynamicId(
+        features12.subgroupBroadcastDynamicId())
+      .setTimelineSemaphore(
+        features12.timelineSemaphore())
+      .setUniformAndStorageBuffer8BitAccess(
+        features12.uniformAndStorageBuffer8BitAccess())
+      .setUniformBufferStandardLayout(
+        features12.uniformBufferStandardLayout())
+      .setVulkanMemoryModel(
+        features12.vulkanMemoryModel())
+      .setVulkanMemoryModelAvailabilityVisibilityChains(
+        features12.vulkanMemoryModelAvailabilityVisibilityChains())
+      .setVulkanMemoryModelDeviceScope(
+        features12.vulkanMemoryModelDeviceScope())
+      .build();
+  }
+
+  private static VulkanPhysicalDeviceFeatures11 parsePhysicalDeviceFeatures11(
+    final VkPhysicalDeviceVulkan11Features features11)
+  {
+    return VulkanPhysicalDeviceFeatures11.builder()
+      .setMultiview(
+        features11.multiview())
+      .setMultiviewGeometryShader(
+        features11.multiviewGeometryShader())
+      .setMultiviewTessellationShader(
+        features11.multiviewTessellationShader())
+      .setProtectedMemory(
+        features11.protectedMemory())
+      .setSamplerYcbcrConversion(
+        features11.samplerYcbcrConversion())
+      .setShaderDrawParameters(
+        features11.shaderDrawParameters())
+      .setStorageBuffer16BitAccess(
+        features11.storageBuffer16BitAccess())
+      .setStorageInputOutput16(
+        features11.storageInputOutput16())
+      .setStoragePushConstant16(
+        features11.storagePushConstant16())
+      .setUniformAndStorageBuffer16BitAccess(
+        features11.uniformAndStorageBuffer16BitAccess())
+      .setVariablePointers(
+        features11.variablePointers())
+      .setVariablePointersStorageBuffer(
+        features11.variablePointersStorageBuffer())
+      .build();
+  }
+
   @Override
   public boolean equals(final Object o)
   {
@@ -543,7 +931,7 @@ public final class VulkanLWJGLInstance
 
   VulkanLWJGLExtensionsRegistry extensionRegistry()
   {
-    return this.extension_registry;
+    return this.extensionsRegistry;
   }
 
   @Override
@@ -581,46 +969,49 @@ public final class VulkanLWJGLInstance
     this.checkNotClosed();
 
     final ArrayList<VulkanPhysicalDeviceType> devices;
-    try (var stack = this.initial_stack.push()) {
+    try (var stack = this.initialStack.push()) {
       final var count = new int[1];
       VulkanChecks.checkReturnCode(
         VK10.vkEnumeratePhysicalDevices(this.instance, count, null),
         "vkEnumeratePhysicalDevices");
 
-      final var device_count = count[0];
-      if (device_count == 0) {
+      final var deviceCount = count[0];
+      if (deviceCount == 0) {
         return Stream.empty();
       }
 
-      final var vk_physical_devices =
-        stack.mallocPointer(device_count);
+      final var vkPhysicalDevices =
+        stack.mallocPointer(deviceCount);
       VulkanChecks.checkReturnCode(
         VK10.vkEnumeratePhysicalDevices(
-          this.instance, count, vk_physical_devices),
+          this.instance, count, vkPhysicalDevices),
         "vkEnumeratePhysicalDevices");
 
-      final var vk_features =
-        VkPhysicalDeviceFeatures.malloc(stack);
-      final var vk_properties =
+      final var vkProperties =
         VkPhysicalDeviceProperties.malloc(stack);
-      final var vk_memory =
+      final var vkMemory =
         VkPhysicalDeviceMemoryProperties.malloc(stack);
 
-      devices = new ArrayList<>(device_count);
-      for (var index = 0; index < device_count; ++index) {
-        vk_physical_devices.position(index);
+      devices = new ArrayList<>(deviceCount);
+      for (var index = 0; index < deviceCount; ++index) {
+        vkPhysicalDevices.position(index);
 
-        final var device_ptr = vk_physical_devices.get();
-        final var vk_device = new VkPhysicalDevice(device_ptr, this.instance);
+        final var devicePtr =
+          vkPhysicalDevices.get();
+        final var vkDevice =
+          new VkPhysicalDevice(devicePtr, this.instance);
+
+        final var version =
+          VulkanVersions.decode(this.info.applicationInfo().vulkanAPIVersion());
 
         final var device =
           this.parsePhysicalDevice(
             stack,
-            vk_device,
+            vkDevice,
             index,
-            vk_features,
-            vk_properties,
-            vk_memory);
+            vkProperties,
+            vkMemory,
+            version);
 
         devices.add(device);
       }
@@ -632,41 +1023,47 @@ public final class VulkanLWJGLInstance
   @Override
   public Map<String, VulkanExtensionType> enabledExtensions()
   {
-    return this.extensions_enabled_read_only;
+    return this.extensionsEnabledReadOnly;
   }
 
   private VulkanLWJGLPhysicalDevice parsePhysicalDevice(
     final MemoryStack stack,
-    final VkPhysicalDevice vk_device,
+    final VkPhysicalDevice vkDevice,
     final int index,
-    final VkPhysicalDeviceFeatures vk_features,
-    final VkPhysicalDeviceProperties vk_properties,
-    final VkPhysicalDeviceMemoryProperties vk_memory)
+    final VkPhysicalDeviceProperties vkProperties,
+    final VkPhysicalDeviceMemoryProperties vkMemory,
+    final VulkanVersion apiVersion)
   {
-    VK10.vkGetPhysicalDeviceProperties(vk_device, vk_properties);
-    VK10.vkGetPhysicalDeviceFeatures(vk_device, vk_features);
-    VK10.vkGetPhysicalDeviceMemoryProperties(vk_device, vk_memory);
+    VK10.vkGetPhysicalDeviceProperties(vkDevice, vkProperties);
 
     final var properties =
-      parsePhysicalDeviceProperties(vk_properties, index);
-    final var limits =
-      parsePhysicalDeviceLimits(vk_properties.limits());
+      parsePhysicalDeviceProperties(vkProperties, index);
     final var features =
-      parsePhysicalDeviceFeatures(vk_features);
+      parseAllFeatures(
+        stack,
+        vkDevice,
+        apiVersion
+      );
+
+    VK10.vkGetPhysicalDeviceMemoryProperties(vkDevice, vkMemory);
+
+    final var limits =
+      parsePhysicalDeviceLimits(vkProperties.limits());
     final var memory =
-      parsePhysicalDeviceMemoryProperties(vk_memory);
+      parsePhysicalDeviceMemoryProperties(vkMemory);
     final var queue_families =
-      parsePhysicalDeviceQueueFamilies(stack, vk_device);
+      parsePhysicalDeviceQueueFamilies(stack, vkDevice);
 
     return new VulkanLWJGLPhysicalDevice(
       this,
-      vk_device,
+      vkDevice,
       properties,
       limits,
       features,
       memory,
       queue_families,
-      this.hostAllocatorProxy());
+      this.hostAllocatorProxy()
+    );
   }
 
   VkInstance instance()

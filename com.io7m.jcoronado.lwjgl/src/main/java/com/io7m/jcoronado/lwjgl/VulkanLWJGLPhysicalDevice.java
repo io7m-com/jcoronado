@@ -35,6 +35,7 @@ import com.io7m.jcoronado.api.VulkanLogicalDeviceCreateInfo;
 import com.io7m.jcoronado.api.VulkanLogicalDeviceQueueCreateInfo;
 import com.io7m.jcoronado.api.VulkanLogicalDeviceType;
 import com.io7m.jcoronado.api.VulkanPhysicalDeviceFeatures;
+import com.io7m.jcoronado.api.VulkanPhysicalDeviceFeatures10;
 import com.io7m.jcoronado.api.VulkanPhysicalDeviceLimits;
 import com.io7m.jcoronado.api.VulkanPhysicalDeviceMemoryProperties;
 import com.io7m.jcoronado.api.VulkanPhysicalDeviceProperties;
@@ -125,8 +126,8 @@ public final class VulkanLWJGLPhysicalDevice
     final VkPhysicalDeviceFeatures vk_features;
     final var features_opt = info.features();
     if (features_opt.isPresent()) {
-      vk_features = VkPhysicalDeviceFeatures.callocStack(stack);
-      packPhysicalDeviceFeatures(vk_features, features_opt.get());
+      vk_features = VkPhysicalDeviceFeatures.malloc(stack);
+      packPhysicalDeviceFeatures10(vk_features, features_opt.get().features10());
     } else {
       vk_features = null;
     }
@@ -137,9 +138,9 @@ public final class VulkanLWJGLPhysicalDevice
    * This method was not hand-written. See: features-set2.sh
    */
 
-  private static void packPhysicalDeviceFeatures(
+  private static void packPhysicalDeviceFeatures10(
     final VkPhysicalDeviceFeatures vk_features,
-    final VulkanPhysicalDeviceFeatures features)
+    final VulkanPhysicalDeviceFeatures10 features)
   {
     vk_features
       .alphaToOne(features.alphaToOne())
@@ -205,7 +206,7 @@ public final class VulkanLWJGLPhysicalDevice
   {
     final var queue_count = infos.size();
     final var vk_queue_buffer =
-      VkDeviceQueueCreateInfo.callocStack(queue_count, stack);
+      VkDeviceQueueCreateInfo.malloc(queue_count, stack);
 
     for (var index = 0; index < queue_count; ++index) {
       final var queue_info = infos.get(index);

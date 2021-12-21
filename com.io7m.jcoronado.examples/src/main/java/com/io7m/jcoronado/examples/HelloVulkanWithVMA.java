@@ -135,7 +135,6 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.List;
@@ -231,36 +230,6 @@ public final class HelloVulkanWithVMA implements ExampleType
   private static final int VERTEX_UV_SIZE = 2 * 4;
   private static final int VERTEX_SIZE = VERTEX_POSITION_SIZE + VERTEX_COLOR_SIZE + VERTEX_UV_SIZE;
   private static final long UNIFORM_BUFFER_SIZE = 4L;
-
-  private static final class Vertex
-  {
-    public final double x;
-    public final double y;
-    public final double r;
-    public final double g;
-    public final double b;
-    public final double u;
-    public final double v;
-
-    public Vertex(
-      final double in_x,
-      final double in_y,
-      final double in_r,
-      final double in_g,
-      final double in_b,
-      final double in_u,
-      final double in_v)
-    {
-      this.x = in_x;
-      this.y = in_y;
-      this.r = in_r;
-      this.g = in_g;
-      this.b = in_b;
-      this.u = in_u;
-      this.v = in_v;
-    }
-  }
-
   private static final List<Vertex> VERTICES =
     List.of(
       new Vertex(0.0, -0.5, 1.0, 0.0, 0.0, 0.0, 0.0),
@@ -270,548 +239,6 @@ public final class HelloVulkanWithVMA implements ExampleType
   public HelloVulkanWithVMA()
   {
 
-  }
-
-  @Override
-  public void execute()
-    throws VulkanException, IOException
-  {
-    GLFW_ERROR_CALLBACK.set();
-
-    final var hostAllocatorMain =
-      new VulkanLWJGLHostAllocatorJeMalloc();
-    final var hostAllocator =
-      new VulkanHostAllocatorTracker(hostAllocatorMain);
-
-    final var finished = new AtomicBoolean(false);
-
-    /*
-     * Start a background thread that waits for the user to type a single character into the
-     * terminal, and sets the "finished" flag when that happens.
-     */
-
-    final var exec = Executors.newFixedThreadPool(1);
-    exec.execute(() -> {
-      try {
-        System.in.read();
-        LOG.debug("finished");
-        finished.set(true);
-      } catch (final IOException e) {
-        LOG.error("i/o error: ", e);
-      }
-    });
-
-    /*
-     * Create an allocator for temporary objects.
-     */
-
-    final var alloc =
-      VulkanLWJGLTemporaryAllocator.create();
-
-    final Supplier<VulkanException> exceptionSupplier =
-      () -> new VulkanResourceException("Could not close one or more resources.");
-
-    try (var resources = CloseableCollection.create(exceptionSupplier)) {
-      final var window = createWindow();
-
-      /*
-       * Create an instance provider.
-       */
-
-      final var instances =
-        VulkanLWJGLInstanceProvider.create();
-
-      LOG.debug("instance provider: {} {}", instances.providerName(), instances.providerVersion());
-
-      final var availableExtensions =
-        instances.extensions();
-      final var availableLayers =
-        instances.layers();
-
-      /*
-       * Determine which extensions are required by the window system, and which layers are
-       * required.
-       */
-
-      final var requiredLayers =
-        Set.of(
-          "VK_LAYER_KHRONOS_validation"
-        );
-
-      final var requiredExtensions = new HashSet<String>();
-      requiredExtensions.addAll(requiredGLFWExtensions());
-      requiredExtensions.add("VK_EXT_debug_utils");
-
-      availableExtensions
-        .forEach(HelloVulkanWithVMA::showInstanceAvailableExtension);
-      availableLayers
-        .forEach(HelloVulkanWithVMA::showInstanceAvailableLayer);
-      requiredExtensions
-        .forEach(HelloVulkanWithVMA::showInstanceRequiredExtension);
-      requiredLayers
-        .forEach(HelloVulkanWithVMA::showInstanceRequiredLayer);
-
-      /*
-       * Filter the available extensions and layers based on the requirements expressed above.
-       * If any required extensions are not available, an exception is raised.
-       */
-
-      final var enableExtensions =
-        VulkanExtensions.filterRequiredExtensions(
-          availableExtensions, Set.of(), requiredExtensions);
-      final var enableLayers =
-        VulkanLayers.filterRequiredLayers(
-          availableLayers, Set.of(), requiredLayers);
-
-      /*
-       * Create a new instance.
-       */
-
-      final var createInfo =
-        VulkanInstanceCreateInfo.builder()
-          .setApplicationInfo(
-            VulkanApplicationInfo.of(
-              "com.io7m.jcoronado.tests.Demo",
-              VulkanVersions.encode(0, 0, 1),
-              "com.io7m.jcoronado.tests",
-              VulkanVersions.encode(0, 0, 1),
-              VulkanVersions.encode(1, 0, 0)))
-          .setEnabledExtensions(enableExtensions)
-          .setEnabledLayers(enableLayers)
-          .build();
-
-      final var instance =
-        resources.add(instances.createInstance(createInfo, Optional.of(hostAllocator)));
-
-      /*
-       * Enable debug messages.
-       */
-
-      final var debug =
-        instance.findEnabledExtension(
-          "VK_EXT_debug_utils",
-          VulkanDebugUtilsType.class
-        ).orElseThrow(() -> {
-          return new IllegalStateException(
-            "Missing VK_EXT_debug_utils extension");
-        });
-
-      resources.add(
-        debug.createDebugUtilsMessenger(
-          instance,
-          VulkanDebugUtilsMessengerCreateInfoEXT.builder()
-            .setSeverity(EnumSet.allOf(VulkanDebugUtilsMessageSeverityFlag.class))
-            .setType(EnumSet.allOf(VulkanDebugUtilsMessageTypeFlag.class))
-            .setCallback(new VulkanDebugUtilsSLF4J(LOG))
-            .build()
-        )
-      );
-
-      /*
-       * Get access to the VK_KHR_surface extension in order to produce a renderable
-       * surface from the created window.
-       */
-
-      final var khrSurfaceExt =
-        instance.findEnabledExtension("VK_KHR_surface", VulkanExtKHRSurfaceType.class)
-          .orElseThrow(() -> new IllegalStateException("Missing VK_KHR_surface extension"));
-
-      final var surface =
-        khrSurfaceExt.surfaceFromWindow(instance, window);
-
-      /*
-       * List the available physical devices and pick the "best" one.
-       */
-
-      final var physicalDevices =
-        instance.physicalDevices();
-      final var physicalDevice =
-        resources.add(pickPhysicalDeviceOrAbort(khrSurfaceExt, surface, physicalDevices));
-
-      LOG.debug("physical device: {}", physicalDevice);
-
-      for (final var format : VulkanFormat.values()) {
-        final var properties = physicalDevice.formatProperties(format);
-
-        LOG.trace(
-          "physical device: format {} -> linear  {}", format, properties.linearTilingFeatures());
-        LOG.trace(
-          "physical device: format {} -> optimal {}", format, properties.optimalTilingFeatures());
-        LOG.trace(
-          "physical device: format {} -> buffer  {}", format, properties.bufferFeatures());
-      }
-
-      /*
-       * Require the VK_KHR_get_memory_requirements2 extension in order to use VMA.
-       */
-
-      final var deviceExtensions =
-        physicalDevice.extensions(Optional.empty());
-
-      deviceExtensions.entrySet()
-        .stream()
-        .sorted(Map.Entry.comparingByKey())
-        .forEach(HelloVulkanWithVMA::showPhysicalDeviceAvailableExtension);
-
-      if (!deviceExtensions.containsKey("VK_KHR_get_memory_requirements2")) {
-        throw new VulkanMissingRequiredExtensionsException(
-          Set.of("VK_KHR_get_memory_requirements2"),
-          "Missing required extension");
-      }
-
-      /*
-       * Determine the format, presentation mode, and size of the surface that will be
-       * used for rendering.
-       */
-
-      final var surfaceFormat =
-        pickSurfaceFormat(physicalDevice, khrSurfaceExt, surface);
-      final var surfacePresent =
-        pickPresentationMode(physicalDevice, khrSurfaceExt, surface);
-      final var surfaceCaps =
-        khrSurfaceExt.surfaceCapabilities(physicalDevice, surface);
-      final var surfaceExtent =
-        pickExtent(surfaceCaps);
-
-      LOG.debug("selected surface format: {}", surfaceFormat);
-      LOG.debug("selected surface presentation mode: {}", surfacePresent);
-      LOG.debug("selected surface extent: {}", surfaceExtent);
-
-      /*
-       * We know that the selected physical device has a graphics queue family, and a queue
-       * family for presentation. We don't know if these are the same queue families or not.
-       * The VK_QUEUE_GRAPHICS_BIT implies VK_QUEUE_TRANSFER_BIT, so just searching for
-       * VK_QUEUE_GRAPHICS_BIT is enough for both.
-       */
-
-      final var graphicsQueueProps =
-        physicalDevice.queueFamilies()
-          .stream()
-          .filter(queue -> queue.queueFlags().contains(VK_QUEUE_GRAPHICS_BIT))
-          .findFirst()
-          .orElseThrow(() -> new IllegalStateException("Could not find graphics queue"));
-
-      final var presentationQueueProps =
-        khrSurfaceExt.surfaceSupport(physicalDevice, surface)
-          .stream()
-          .findFirst()
-          .orElseThrow(() -> new IllegalStateException("Could not find presentation queue"));
-
-      /*
-       * Put together the information needed to create a logical device. In this case,
-       * all that is really needed is to specify the creation of one or more queues.
-       */
-
-      final var logicalDeviceInfoBuilder =
-        VulkanLogicalDeviceCreateInfo.builder();
-
-      logicalDeviceInfoBuilder.addQueueCreateInfos(
-        VulkanLogicalDeviceQueueCreateInfo.builder()
-          .setQueueCount(1)
-          .setQueueFamilyIndex(graphicsQueueProps.queueFamilyIndex())
-          .setQueuePriorities(1.0f)
-          .build());
-
-      if (graphicsQueueProps.queueFamilyIndex() != presentationQueueProps.queueFamilyIndex()) {
-        logicalDeviceInfoBuilder.addQueueCreateInfos(
-          VulkanLogicalDeviceQueueCreateInfo.builder()
-            .setQueueCount(1)
-            .setQueueFamilyIndex(presentationQueueProps.queueFamilyIndex())
-            .setQueuePriorities(1.0f)
-            .build());
-      }
-
-      /*
-       * Create the logical device.
-       */
-
-      final var device = resources.add(
-        physicalDevice.createLogicalDevice(
-          logicalDeviceInfoBuilder
-            .addEnabledExtensions("VK_KHR_swapchain")
-            .addEnabledExtensions("VK_KHR_get_memory_requirements2")
-            .build()));
-
-      LOG.debug("logical device: {}", device);
-
-      /*
-       * Create a VMA allocator.
-       */
-
-      final var vmaAllocators =
-        VMALWJGLAllocatorProvider.create();
-
-      LOG.debug(
-        "vma allocator provider: {} {}",
-        vmaAllocators.providerName(),
-        vmaAllocators.providerVersion());
-
-      final var vmaCreateInfo =
-        VMAAllocatorCreateInfo.builder()
-          .setFrameInUseCount(OptionalInt.empty())
-          .setLogicalDevice(device)
-          .build();
-
-      final var vmaAllocator =
-        resources.add(vmaAllocators.createAllocator(vmaCreateInfo));
-
-      /*
-       * Find the graphics and presentation queues.
-       */
-
-      final var graphicsQueue =
-        device.queue(graphicsQueueProps.queueFamilyIndex(), 0)
-          .orElseThrow(() -> new IllegalStateException("Could not find graphics queue"));
-      final var presentationQueue =
-        device.queue(presentationQueueProps.queueFamilyIndex(), 0)
-          .orElseThrow(() -> new IllegalStateException("Could not find presentation queue"));
-
-      LOG.debug("graphics queue: {}", graphicsQueue);
-      LOG.debug("presentation queue: {}", presentationQueue);
-
-      /*
-       * Create a swap chain used to display images onscreen.
-       */
-
-      final var khrSwapchainExt =
-        getSwapChainExtension(device);
-
-      final var swapChain =
-        resources.add(createSwapChain(
-          khrSwapchainExt,
-          surface,
-          surfaceFormat,
-          surfacePresent,
-          surfaceCaps,
-          surfaceExtent,
-          device,
-          graphicsQueue,
-          presentationQueue));
-
-      final var images = swapChain.images();
-
-      final var views =
-        images.stream()
-          .map(image -> createImageViewForImage(surfaceFormat, device, image))
-          .map(resources::add)
-          .collect(Collectors.toList());
-
-      /*
-       * Create a command pools and buffers. If the graphics and presentation queues are separate,
-       * then separate command pools are required. A separate command buffer pool is created for
-       * transfer commands because those commands are short-lived.
-       */
-
-      final var graphicsPoolInfo =
-        VulkanCommandPoolCreateInfo.builder()
-          .setQueueFamilyIndex(graphicsQueue.queueIndex())
-          .build();
-
-      final var graphicsCommandPool =
-        resources.add(device.createCommandPool(graphicsPoolInfo));
-
-      final var graphicsCommandBufferCount =
-        swapChain.images()
-          .size();
-
-      final var graphicsCommandBufferInfo =
-        VulkanCommandBufferCreateInfo.builder()
-          .setCount(graphicsCommandBufferCount)
-          .setLevel(VK_COMMAND_BUFFER_LEVEL_PRIMARY)
-          .setPool(graphicsCommandPool)
-          .build();
-
-      final var graphicsCommandBuffers =
-        device.createCommandBuffers(graphicsCommandBufferInfo);
-
-      final var transferPoolInfo =
-        VulkanCommandPoolCreateInfo.builder()
-          .setQueueFamilyIndex(graphicsQueue.queueIndex())
-          .build();
-
-      final var transferCommandPool =
-        resources.add(device.createCommandPool(transferPoolInfo));
-
-      /*
-       * Create and upload textures.
-       */
-
-      final var texture =
-        createTexture(resources, device, vmaAllocator, graphicsQueue, transferCommandPool);
-
-      /*
-       * Allocate one uniform buffer per frame.
-       */
-
-      final var uniformBuffers =
-        createUniformBuffers(resources, vmaAllocator, swapChain);
-
-      /*
-       * Load a shader module.
-       */
-
-      final var shaders =
-        resources.add(createShaderModule(device, alloc, readShaderModule("shaders.spv")));
-
-      /*
-       * Configure descriptor sets for the shader.
-       */
-
-      final var descriptorSetLayout =
-        createDescriptorSetLayout(resources, device);
-      final var descriptorSets =
-        createDescriptorSets(
-          resources,
-          device,
-          swapChain,
-          uniformBuffers,
-          texture,
-          descriptorSetLayout);
-
-      final var pipelineLayoutInfo =
-        VulkanPipelineLayoutCreateInfo.builder()
-          .addSetLayouts(descriptorSetLayout)
-          .build();
-
-      final var pipelineLayout =
-        resources.add(device.createPipelineLayout(pipelineLayoutInfo));
-
-      /*
-       * Create a render pass.
-       */
-
-      final var renderPass =
-        createRenderPass(resources, surfaceFormat, device);
-
-      /*
-       * Create a pipeline for rendering.
-       */
-
-      final var pipeline =
-        resources.add(createPipeline(
-          surfaceExtent, device, shaders, pipelineLayout, renderPass));
-
-      /*
-       * Create framebuffers.
-       */
-
-      final List<VulkanFramebufferType> framebuffers =
-        new ArrayList<>(images.size());
-
-      for (var index = 0; index < images.size(); ++index) {
-        final var framebufferInfo =
-          VulkanFramebufferCreateInfo.builder()
-            .addAttachments(views.get(index))
-            .setHeight(surfaceExtent.height())
-            .setWidth(surfaceExtent.width())
-            .setLayers(1)
-            .setRenderPass(renderPass)
-            .build();
-
-        framebuffers.add(resources.add(device.createFramebuffer(framebufferInfo)));
-      }
-
-      /*
-       * Create a vertex buffer.
-       */
-
-      final var vertexBuffer =
-        createVertexBuffer(resources, vmaAllocator);
-
-      /*
-       * Create index buffer.
-       */
-
-      final var indexBuffer =
-        createIndexBuffer(resources, vmaAllocator);
-
-      /*
-       * Create a pair of semaphores for synchronizing command execution.
-       */
-
-      final var renderFinished =
-        resources.add(device.createSemaphore(VulkanSemaphoreCreateInfo.builder().build()));
-      final var imageAvailable =
-        resources.add(device.createSemaphore(VulkanSemaphoreCreateInfo.builder().build()));
-
-      /*
-       * Start recording commands.
-       */
-
-      for (var index = 0; index < graphicsCommandBufferCount; ++index) {
-        final var framebuffer = framebuffers.get(index);
-        final var graphicsCommandBuffer = graphicsCommandBuffers.get(index);
-
-        final var beginInfo =
-          VulkanCommandBufferBeginInfo.builder()
-            .addFlags(VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT)
-            .build();
-
-        final var renderInfo =
-          VulkanRenderPassBeginInfo.builder()
-            .setFramebuffer(framebuffer)
-            .setRenderArea(VulkanRectangle2D.of(VulkanOffset2D.of(0, 0), surfaceExtent))
-            .setRenderPass(renderPass)
-            .addClearValues(VulkanClearValueColorFloatingPoint.of(0.0f, 0.0f, 0.0f, 1.0f))
-            .build();
-
-        graphicsCommandBuffer.beginCommandBuffer(beginInfo);
-        graphicsCommandBuffer.beginRenderPass(renderInfo, VK_SUBPASS_CONTENTS_INLINE);
-        graphicsCommandBuffer.bindPipeline(VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline);
-        graphicsCommandBuffer.bindVertexBuffers(
-          0, 1, List.of(vertexBuffer), List.of(Long.valueOf(0L)));
-        graphicsCommandBuffer.bindIndexBuffer(indexBuffer, 0L, VK_INDEX_TYPE_UINT16);
-        graphicsCommandBuffer.bindDescriptorSets(
-          VK_PIPELINE_BIND_POINT_GRAPHICS,
-          pipelineLayout,
-          0,
-          List.of(descriptorSets.get(index)),
-          List.of());
-        graphicsCommandBuffer.drawIndexed(3, 1, 0, 0, 0);
-        graphicsCommandBuffer.endRenderPass();
-        graphicsCommandBuffer.endCommandBuffer();
-      }
-
-      /*
-       * Start rendering frames.
-       */
-
-      var frame = 0;
-      while (!finished.get()) {
-        drawFrame(
-          khrSwapchainExt,
-          swapChain,
-          imageAvailable,
-          renderFinished,
-          graphicsCommandBuffers,
-          graphicsQueue,
-          presentationQueue);
-
-        if (frame % 10_000 == 0) {
-          showMemoryStatistics(hostAllocator);
-        }
-        ++frame;
-      }
-
-      /*
-       * Wait until the device is idle before exiting.
-       */
-
-      LOG.debug("waiting for device to idle");
-      device.waitIdle();
-
-    } catch (final VulkanException e) {
-      LOG.error("vulkan error: ", e);
-      throw e;
-    } finally {
-      GLFW_ERROR_CALLBACK.close();
-      exec.shutdown();
-      try {
-        exec.awaitTermination(5L, SECONDS);
-      } catch (final InterruptedException e) {
-        Thread.currentThread().interrupt();
-      }
-    }
   }
 
   private static void showMemoryStatistics(
@@ -839,29 +266,13 @@ public final class HelloVulkanWithVMA implements ExampleType
       Double.valueOf((double) host_allocator.allocatedInstanceScopeOctets() / 1_000_000.0));
   }
 
-  private static final class Texture
-  {
-    final VulkanImageViewType image_view;
-    final VulkanSamplerType sampler;
-
-    public Texture(
-      final VulkanImageViewType in_image_view,
-      final VulkanSamplerType in_sampler)
-    {
-      this.image_view = Objects.requireNonNull(in_image_view, "image_view");
-      this.sampler = Objects.requireNonNull(in_sampler, "sampler");
-    }
-  }
-
   /**
    * Create a texture by:
    *
-   * 1. Allocating a staging buffer on the CPU
-   * 2. Populating the staging buffer
-   * 3. Allocating an image on the GPU
-   * 4. Copying the staging buffer to the image
-   * 5. Creating an image view for the image
-   * 6. Creating a sampler for the image
+   * 1. Allocating a staging buffer on the CPU 2. Populating the staging buffer
+   * 3. Allocating an image on the GPU 4. Copying the staging buffer to the
+   * image 5. Creating an image view for the image 6. Creating a sampler for the
+   * image
    */
 
   private static Texture createTexture(
@@ -878,9 +289,18 @@ public final class HelloVulkanWithVMA implements ExampleType
     final var texture_format = VK_FORMAT_R8G8B8A8_UNORM;
 
     final var staging_result =
-      createTextureStagingBuffer(resources, vma_allocator, texture_width, texture_height);
+      createTextureStagingBuffer(
+        resources,
+        vma_allocator,
+        texture_width,
+        texture_height);
     final var gpu_result =
-      createTextureGPU(resources, vma_allocator, texture_width, texture_height, texture_format);
+      createTextureGPU(
+        resources,
+        vma_allocator,
+        texture_width,
+        texture_height,
+        texture_format);
 
     final var gpu_image = gpu_result.result();
     final var cpu_buffer = staging_result.result();
@@ -958,7 +378,9 @@ public final class HelloVulkanWithVMA implements ExampleType
     final int texture_height)
     throws VulkanException
   {
-    try (var commands = device.createCommandBuffer(command_pool, VK_COMMAND_BUFFER_LEVEL_PRIMARY)) {
+    try (var commands = device.createCommandBuffer(
+      command_pool,
+      VK_COMMAND_BUFFER_LEVEL_PRIMARY)) {
       commands.beginCommandBuffer(VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT);
 
       commands.copyBufferToImage(
@@ -969,7 +391,10 @@ public final class HelloVulkanWithVMA implements ExampleType
                   .setBufferImageHeight(0)
                   .setBufferOffset(0L)
                   .setBufferRowLength(0)
-                  .setImageExtent(VulkanExtent3D.of(texture_width, texture_height, 1))
+                  .setImageExtent(VulkanExtent3D.of(
+                    texture_width,
+                    texture_height,
+                    1))
                   .setImageOffset(VulkanOffset3D.of(0, 0, 0))
                   .setImageSubresource(
                     VulkanImageSubresourceLayers.builder()
@@ -1036,7 +461,9 @@ public final class HelloVulkanWithVMA implements ExampleType
       throw new UnsupportedOperationException("Unsupported layout transition");
     }
 
-    try (var commands = device.createCommandBuffer(command_pool, VK_COMMAND_BUFFER_LEVEL_PRIMARY)) {
+    try (var commands = device.createCommandBuffer(
+      command_pool,
+      VK_COMMAND_BUFFER_LEVEL_PRIMARY)) {
       commands.beginCommandBuffer(VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT);
 
       commands.pipelineBarrier(
@@ -1049,7 +476,10 @@ public final class HelloVulkanWithVMA implements ExampleType
 
       commands.endCommandBuffer();
 
-      LOG.trace("submitting image transition {} -> {} barrier", old_layout, new_layout);
+      LOG.trace(
+        "submitting image transition {} -> {} barrier",
+        old_layout,
+        new_layout);
       queue.submit(List.of(VulkanSubmitInfo.builder()
                              .addCommandBuffers(commands)
                              .build()));
@@ -1099,7 +529,9 @@ public final class HelloVulkanWithVMA implements ExampleType
         .build();
 
     final var texture_result =
-      vma_allocator.createImage(vma_gpu_alloc_create_info, texture_buffer_create_info);
+      vma_allocator.createImage(
+        vma_gpu_alloc_create_info,
+        texture_buffer_create_info);
 
     resources.add(texture_result.result());
     return texture_result;
@@ -1129,7 +561,8 @@ public final class HelloVulkanWithVMA implements ExampleType
         .build();
 
     final var size =
-      Integer.toUnsignedLong(texture_width) * Integer.toUnsignedLong(texture_height) * 4L;
+      Integer.toUnsignedLong(texture_width) * Integer.toUnsignedLong(
+        texture_height) * 4L;
 
     final var texture_staging_buffer_create_info =
       VulkanBufferCreateInfo.builder()
@@ -1139,7 +572,9 @@ public final class HelloVulkanWithVMA implements ExampleType
         .build();
 
     final var staging_buffer_result =
-      vma_allocator.createBuffer(vma_cpu_alloc_create_info, texture_staging_buffer_create_info);
+      vma_allocator.createBuffer(
+        vma_cpu_alloc_create_info,
+        texture_staging_buffer_create_info);
 
     resources.add(staging_buffer_result.result());
 
@@ -1176,9 +611,13 @@ public final class HelloVulkanWithVMA implements ExampleType
       imageCount);
 
     final var descriptorPoolUniformBuffer =
-      VulkanDescriptorPoolSize.of(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, imageCount);
+      VulkanDescriptorPoolSize.of(
+        VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
+        imageCount);
     final var descriptorPoolSampler =
-      VulkanDescriptorPoolSize.of(VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, imageCount);
+      VulkanDescriptorPoolSize.of(
+        VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
+        imageCount);
 
     final var descriptorPoolCreateInfo =
       VulkanDescriptorPoolCreateInfo.builder()
@@ -1274,7 +713,8 @@ public final class HelloVulkanWithVMA implements ExampleType
         .addBindings(sampler_binding)
         .build();
 
-    return resources.add(device.createDescriptorSetLayout(descriptor_set_layout_create_info));
+    return resources.add(device.createDescriptorSetLayout(
+      descriptor_set_layout_create_info));
   }
 
   /**
@@ -1284,8 +724,8 @@ public final class HelloVulkanWithVMA implements ExampleType
    *
    * We don't want multisampling.
    *
-   * Reads from the image attachment should behave as if the attachment has been cleared before
-   * rendering.
+   * Reads from the image attachment should behave as if the attachment has been
+   * cleared before rendering.
    *
    * Writes to the image attachment should be stored in the image.
    *
@@ -1293,7 +733,8 @@ public final class HelloVulkanWithVMA implements ExampleType
    *
    * We don't care about the initial layout of the image.
    *
-   * The final layout of the image must be something usable for presentation to the screen.
+   * The final layout of the image must be something usable for presentation to
+   * the screen.
    */
 
   private static VulkanRenderPassType createRenderPass(
@@ -1419,7 +860,9 @@ public final class HelloVulkanWithVMA implements ExampleType
 
     final var viewport_state_info =
       VulkanPipelineViewportStateCreateInfo.builder()
-        .addScissors(VulkanRectangle2D.of(VulkanOffset2D.of(0, 0), surface_extent))
+        .addScissors(VulkanRectangle2D.of(
+          VulkanOffset2D.of(0, 0),
+          surface_extent))
         .addViewports(VulkanViewport.of(
           0.0f,
           0.0f,
@@ -1504,7 +947,9 @@ public final class HelloVulkanWithVMA implements ExampleType
         .build();
 
     final var vma_index_buffer_result =
-      vma_allocator.createBuffer(vma_alloc_create_info, index_buffer_create_info);
+      vma_allocator.createBuffer(
+        vma_alloc_create_info,
+        index_buffer_create_info);
 
     final var index_buffer =
       resources.add(vma_index_buffer_result.result());
@@ -1551,7 +996,9 @@ public final class HelloVulkanWithVMA implements ExampleType
         .build();
 
     final var vma_vertex_buffer_result =
-      vma_allocator.createBuffer(vma_alloc_create_info, vertex_buffer_create_info);
+      vma_allocator.createBuffer(
+        vma_alloc_create_info,
+        vertex_buffer_create_info);
 
     final var vertex_buffer =
       resources.add(vma_vertex_buffer_result.result());
@@ -1628,7 +1075,9 @@ public final class HelloVulkanWithVMA implements ExampleType
     final var uniform_buffers = new ArrayList<VulkanBufferType>(swap_chain.images().size());
     for (var index = 0; index < swap_chain.images().size(); ++index) {
       final var vma_uniform_buffer_result =
-        vma_allocator.createBuffer(vma_alloc_create_info, uniform_buffer_create_info);
+        vma_allocator.createBuffer(
+          vma_alloc_create_info,
+          uniform_buffer_create_info);
 
       final var uniform_buffer =
         resources.add(vma_uniform_buffer_result.result());
@@ -1671,7 +1120,9 @@ public final class HelloVulkanWithVMA implements ExampleType
      */
 
     final var acquisition =
-      swap_chain.acquireImageWithSemaphore(0xffff_ffff_ffff_ffffL, image_available);
+      swap_chain.acquireImageWithSemaphore(
+        0xffff_ffff_ffff_ffffL,
+        image_available);
 
     final var image_index_option = acquisition.imageIndex();
     if (!image_index_option.isPresent()) {
@@ -1733,7 +1184,10 @@ public final class HelloVulkanWithVMA implements ExampleType
       data,
       4L,
       buffer -> device.createShaderModule(
-        VulkanShaderModuleCreateInfo.of(Set.of(), buffer, (long) buffer.capacity())));
+        VulkanShaderModuleCreateInfo.of(
+          Set.of(),
+          buffer,
+          buffer.capacity())));
   }
 
   private static byte[] readShaderModule(
@@ -1794,7 +1248,9 @@ public final class HelloVulkanWithVMA implements ExampleType
     final var surface_alpha_flags =
       Set.of(VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR);
 
-    LOG.debug("swap chain image count: {}", Integer.valueOf(minimum_image_count));
+    LOG.debug(
+      "swap chain image count: {}",
+      Integer.valueOf(minimum_image_count));
     LOG.debug("swap chain image mode: {}", image_sharing_mode);
 
     final var swap_chain_create_info =
@@ -1831,8 +1287,11 @@ public final class HelloVulkanWithVMA implements ExampleType
     final VulkanLogicalDeviceType device)
     throws VulkanException
   {
-    return device.findEnabledExtension("VK_KHR_swapchain", VulkanExtKHRSwapChainType.class)
-      .orElseThrow(() -> new IllegalStateException("Missing VK_KHR_swapchain extension"));
+    return device.findEnabledExtension(
+        "VK_KHR_swapchain",
+        VulkanExtKHRSwapChainType.class)
+      .orElseThrow(() -> new IllegalStateException(
+        "Missing VK_KHR_swapchain extension"));
   }
 
   private static VulkanSharingMode pickImageSharingMode(
@@ -1986,7 +1445,10 @@ public final class HelloVulkanWithVMA implements ExampleType
       return devices.stream()
         .filter(HelloVulkanWithVMA::physicalDeviceHasSwapChainExtension)
         .filter(HelloVulkanWithVMA::physicalDeviceHasGraphicsQueue)
-        .filter(device -> physicalDeviceHasPresentationQueue(khr_surface_ext, surface, device))
+        .filter(device -> physicalDeviceHasPresentationQueue(
+          khr_surface_ext,
+          surface,
+          device))
         .findFirst();
     } catch (final VulkanUncheckedException e) {
       throw e.getCause();
@@ -2043,7 +1505,8 @@ public final class HelloVulkanWithVMA implements ExampleType
         device.properties().name());
 
       final var queues = device.queueFamilies();
-      return queues.stream().anyMatch(queue -> queue.queueFlags().contains(VK_QUEUE_GRAPHICS_BIT));
+      return queues.stream().anyMatch(queue -> queue.queueFlags().contains(
+        VK_QUEUE_GRAPHICS_BIT));
     } catch (final VulkanException e) {
       throw new VulkanUncheckedException(e);
     }
@@ -2131,5 +1594,635 @@ public final class HelloVulkanWithVMA implements ExampleType
       required.add(glfw_required_extensions.getStringASCII());
     }
     return required;
+  }
+
+  @Override
+  public void execute()
+    throws VulkanException, IOException
+  {
+    GLFW_ERROR_CALLBACK.set();
+
+    final var hostAllocatorMain =
+      new VulkanLWJGLHostAllocatorJeMalloc();
+    final var hostAllocator =
+      new VulkanHostAllocatorTracker(hostAllocatorMain);
+
+    final var finished = new AtomicBoolean(false);
+
+    /*
+     * Start a background thread that waits for the user to type a single character into the
+     * terminal, and sets the "finished" flag when that happens.
+     */
+
+    final var exec = Executors.newFixedThreadPool(1);
+    exec.execute(() -> {
+      try {
+        System.in.read();
+        LOG.debug("finished");
+        finished.set(true);
+      } catch (final IOException e) {
+        LOG.error("i/o error: ", e);
+      }
+    });
+
+    /*
+     * Create an allocator for temporary objects.
+     */
+
+    final var alloc =
+      VulkanLWJGLTemporaryAllocator.create();
+
+    final Supplier<VulkanException> exceptionSupplier =
+      () -> new VulkanResourceException("Could not close one or more resources.");
+
+    try (var resources = CloseableCollection.create(exceptionSupplier)) {
+      final var window = createWindow();
+
+      /*
+       * Create an instance provider.
+       */
+
+      final var instances =
+        VulkanLWJGLInstanceProvider.create();
+
+      LOG.debug(
+        "instance provider: {} {}",
+        instances.providerName(),
+        instances.providerVersion());
+
+      final var supported = instances.findSupportedInstanceVersion();
+      LOG.debug("supported instance version is: {}", supported.toHumanString());
+
+      final var availableExtensions =
+        instances.extensions();
+      final var availableLayers =
+        instances.layers();
+
+      /*
+       * Determine which extensions are required by the window system, and which layers are
+       * required.
+       */
+
+      final var requiredLayers =
+        Set.of(
+          "VK_LAYER_KHRONOS_validation"
+        );
+
+      final var requiredExtensions = new HashSet<String>();
+      requiredExtensions.addAll(requiredGLFWExtensions());
+      requiredExtensions.add("VK_EXT_debug_utils");
+
+      availableExtensions
+        .forEach(HelloVulkanWithVMA::showInstanceAvailableExtension);
+      availableLayers
+        .forEach(HelloVulkanWithVMA::showInstanceAvailableLayer);
+      requiredExtensions
+        .forEach(HelloVulkanWithVMA::showInstanceRequiredExtension);
+      requiredLayers
+        .forEach(HelloVulkanWithVMA::showInstanceRequiredLayer);
+
+      /*
+       * Filter the available extensions and layers based on the requirements expressed above.
+       * If any required extensions are not available, an exception is raised.
+       */
+
+      final var enableExtensions =
+        VulkanExtensions.filterRequiredExtensions(
+          availableExtensions, Set.of(), requiredExtensions);
+      final var enableLayers =
+        VulkanLayers.filterRequiredLayers(
+          availableLayers, Set.of(), requiredLayers);
+
+      /*
+       * Create a new instance.
+       */
+
+      final var createInfo =
+        VulkanInstanceCreateInfo.builder()
+          .setApplicationInfo(
+            VulkanApplicationInfo.of(
+              "com.io7m.jcoronado.tests.Demo",
+              VulkanVersions.encode(0, 0, 1),
+              "com.io7m.jcoronado.tests",
+              VulkanVersions.encode(0, 0, 1),
+              VulkanVersions.encode(1, 0, 0)))
+          .setEnabledExtensions(enableExtensions)
+          .setEnabledLayers(enableLayers)
+          .build();
+
+      final var instance =
+        resources.add(instances.createInstance(
+          createInfo,
+          Optional.of(hostAllocator)));
+
+      /*
+       * Enable debug messages.
+       */
+
+      final var debug =
+        instance.findEnabledExtension(
+          "VK_EXT_debug_utils",
+          VulkanDebugUtilsType.class
+        ).orElseThrow(() -> {
+          return new IllegalStateException(
+            "Missing VK_EXT_debug_utils extension");
+        });
+
+      resources.add(
+        debug.createDebugUtilsMessenger(
+          instance,
+          VulkanDebugUtilsMessengerCreateInfoEXT.builder()
+            .setSeverity(EnumSet.allOf(VulkanDebugUtilsMessageSeverityFlag.class))
+            .setType(EnumSet.allOf(VulkanDebugUtilsMessageTypeFlag.class))
+            .setCallback(new VulkanDebugUtilsSLF4J(LOG))
+            .build()
+        )
+      );
+
+      /*
+       * Get access to the VK_KHR_surface extension in order to produce a renderable
+       * surface from the created window.
+       */
+
+      final var khrSurfaceExt =
+        instance.findEnabledExtension(
+            "VK_KHR_surface",
+            VulkanExtKHRSurfaceType.class)
+          .orElseThrow(() -> new IllegalStateException(
+            "Missing VK_KHR_surface extension"));
+
+      final var surface =
+        khrSurfaceExt.surfaceFromWindow(instance, window);
+
+      /*
+       * List the available physical devices and pick the "best" one.
+       */
+
+      final var physicalDevices =
+        instance.physicalDevices();
+      final var physicalDevice =
+        resources.add(pickPhysicalDeviceOrAbort(
+          khrSurfaceExt,
+          surface,
+          physicalDevices));
+
+      LOG.debug("physical device: {}", physicalDevice);
+
+      for (final var format : VulkanFormat.values()) {
+        final var properties = physicalDevice.formatProperties(format);
+
+        LOG.trace(
+          "physical device: format {} -> linear  {}",
+          format,
+          properties.linearTilingFeatures());
+        LOG.trace(
+          "physical device: format {} -> optimal {}",
+          format,
+          properties.optimalTilingFeatures());
+        LOG.trace(
+          "physical device: format {} -> buffer  {}",
+          format,
+          properties.bufferFeatures());
+      }
+
+      /*
+       * Require the VK_KHR_get_memory_requirements2 extension in order to use VMA.
+       */
+
+      final var deviceExtensions =
+        physicalDevice.extensions(Optional.empty());
+
+      deviceExtensions.entrySet()
+        .stream()
+        .sorted(Map.Entry.comparingByKey())
+        .forEach(HelloVulkanWithVMA::showPhysicalDeviceAvailableExtension);
+
+      if (!deviceExtensions.containsKey("VK_KHR_get_memory_requirements2")) {
+        throw new VulkanMissingRequiredExtensionsException(
+          Set.of("VK_KHR_get_memory_requirements2"),
+          "Missing required extension");
+      }
+
+      /*
+       * Determine the format, presentation mode, and size of the surface that will be
+       * used for rendering.
+       */
+
+      final var surfaceFormat =
+        pickSurfaceFormat(physicalDevice, khrSurfaceExt, surface);
+      final var surfacePresent =
+        pickPresentationMode(physicalDevice, khrSurfaceExt, surface);
+      final var surfaceCaps =
+        khrSurfaceExt.surfaceCapabilities(physicalDevice, surface);
+      final var surfaceExtent =
+        pickExtent(surfaceCaps);
+
+      LOG.debug("selected surface format: {}", surfaceFormat);
+      LOG.debug("selected surface presentation mode: {}", surfacePresent);
+      LOG.debug("selected surface extent: {}", surfaceExtent);
+
+      /*
+       * We know that the selected physical device has a graphics queue family, and a queue
+       * family for presentation. We don't know if these are the same queue families or not.
+       * The VK_QUEUE_GRAPHICS_BIT implies VK_QUEUE_TRANSFER_BIT, so just searching for
+       * VK_QUEUE_GRAPHICS_BIT is enough for both.
+       */
+
+      final var graphicsQueueProps =
+        physicalDevice.queueFamilies()
+          .stream()
+          .filter(queue -> queue.queueFlags().contains(VK_QUEUE_GRAPHICS_BIT))
+          .findFirst()
+          .orElseThrow(() -> new IllegalStateException(
+            "Could not find graphics queue"));
+
+      final var presentationQueueProps =
+        khrSurfaceExt.surfaceSupport(physicalDevice, surface)
+          .stream()
+          .findFirst()
+          .orElseThrow(() -> new IllegalStateException(
+            "Could not find presentation queue"));
+
+      /*
+       * Put together the information needed to create a logical device. In this case,
+       * all that is really needed is to specify the creation of one or more queues.
+       */
+
+      final var logicalDeviceInfoBuilder =
+        VulkanLogicalDeviceCreateInfo.builder();
+
+      logicalDeviceInfoBuilder.addQueueCreateInfos(
+        VulkanLogicalDeviceQueueCreateInfo.builder()
+          .setQueueCount(1)
+          .setQueueFamilyIndex(graphicsQueueProps.queueFamilyIndex())
+          .setQueuePriorities(1.0f)
+          .build());
+
+      if (graphicsQueueProps.queueFamilyIndex() != presentationQueueProps.queueFamilyIndex()) {
+        logicalDeviceInfoBuilder.addQueueCreateInfos(
+          VulkanLogicalDeviceQueueCreateInfo.builder()
+            .setQueueCount(1)
+            .setQueueFamilyIndex(presentationQueueProps.queueFamilyIndex())
+            .setQueuePriorities(1.0f)
+            .build());
+      }
+
+      /*
+       * Create the logical device.
+       */
+
+      final var device = resources.add(
+        physicalDevice.createLogicalDevice(
+          logicalDeviceInfoBuilder
+            .addEnabledExtensions("VK_KHR_swapchain")
+            .addEnabledExtensions("VK_KHR_get_memory_requirements2")
+            .build()));
+
+      LOG.debug("logical device: {}", device);
+
+      /*
+       * Create a VMA allocator.
+       */
+
+      final var vmaAllocators =
+        VMALWJGLAllocatorProvider.create();
+
+      LOG.debug(
+        "vma allocator provider: {} {}",
+        vmaAllocators.providerName(),
+        vmaAllocators.providerVersion());
+
+      final var vmaCreateInfo =
+        VMAAllocatorCreateInfo.builder()
+          .setFrameInUseCount(OptionalInt.empty())
+          .setLogicalDevice(device)
+          .build();
+
+      final var vmaAllocator =
+        resources.add(vmaAllocators.createAllocator(vmaCreateInfo));
+
+      /*
+       * Find the graphics and presentation queues.
+       */
+
+      final var graphicsQueue =
+        device.queue(graphicsQueueProps.queueFamilyIndex(), 0)
+          .orElseThrow(() -> new IllegalStateException(
+            "Could not find graphics queue"));
+      final var presentationQueue =
+        device.queue(presentationQueueProps.queueFamilyIndex(), 0)
+          .orElseThrow(() -> new IllegalStateException(
+            "Could not find presentation queue"));
+
+      LOG.debug("graphics queue: {}", graphicsQueue);
+      LOG.debug("presentation queue: {}", presentationQueue);
+
+      /*
+       * Create a swap chain used to display images onscreen.
+       */
+
+      final var khrSwapchainExt =
+        getSwapChainExtension(device);
+
+      final var swapChain =
+        resources.add(createSwapChain(
+          khrSwapchainExt,
+          surface,
+          surfaceFormat,
+          surfacePresent,
+          surfaceCaps,
+          surfaceExtent,
+          device,
+          graphicsQueue,
+          presentationQueue));
+
+      final var images = swapChain.images();
+
+      final var views =
+        images.stream()
+          .map(image -> createImageViewForImage(surfaceFormat, device, image))
+          .map(resources::add)
+          .collect(Collectors.toList());
+
+      /*
+       * Create a command pools and buffers. If the graphics and presentation queues are separate,
+       * then separate command pools are required. A separate command buffer pool is created for
+       * transfer commands because those commands are short-lived.
+       */
+
+      final var graphicsPoolInfo =
+        VulkanCommandPoolCreateInfo.builder()
+          .setQueueFamilyIndex(graphicsQueue.queueIndex())
+          .build();
+
+      final var graphicsCommandPool =
+        resources.add(device.createCommandPool(graphicsPoolInfo));
+
+      final var graphicsCommandBufferCount =
+        swapChain.images()
+          .size();
+
+      final var graphicsCommandBufferInfo =
+        VulkanCommandBufferCreateInfo.builder()
+          .setCount(graphicsCommandBufferCount)
+          .setLevel(VK_COMMAND_BUFFER_LEVEL_PRIMARY)
+          .setPool(graphicsCommandPool)
+          .build();
+
+      final var graphicsCommandBuffers =
+        device.createCommandBuffers(graphicsCommandBufferInfo);
+
+      final var transferPoolInfo =
+        VulkanCommandPoolCreateInfo.builder()
+          .setQueueFamilyIndex(graphicsQueue.queueIndex())
+          .build();
+
+      final var transferCommandPool =
+        resources.add(device.createCommandPool(transferPoolInfo));
+
+      /*
+       * Create and upload textures.
+       */
+
+      final var texture =
+        createTexture(
+          resources,
+          device,
+          vmaAllocator,
+          graphicsQueue,
+          transferCommandPool);
+
+      /*
+       * Allocate one uniform buffer per frame.
+       */
+
+      final var uniformBuffers =
+        createUniformBuffers(resources, vmaAllocator, swapChain);
+
+      /*
+       * Load a shader module.
+       */
+
+      final var shaders =
+        resources.add(createShaderModule(
+          device,
+          alloc,
+          readShaderModule("shaders.spv")));
+
+      /*
+       * Configure descriptor sets for the shader.
+       */
+
+      final var descriptorSetLayout =
+        createDescriptorSetLayout(resources, device);
+      final var descriptorSets =
+        createDescriptorSets(
+          resources,
+          device,
+          swapChain,
+          uniformBuffers,
+          texture,
+          descriptorSetLayout);
+
+      final var pipelineLayoutInfo =
+        VulkanPipelineLayoutCreateInfo.builder()
+          .addSetLayouts(descriptorSetLayout)
+          .build();
+
+      final var pipelineLayout =
+        resources.add(device.createPipelineLayout(pipelineLayoutInfo));
+
+      /*
+       * Create a render pass.
+       */
+
+      final var renderPass =
+        createRenderPass(resources, surfaceFormat, device);
+
+      /*
+       * Create a pipeline for rendering.
+       */
+
+      final var pipeline =
+        resources.add(createPipeline(
+          surfaceExtent, device, shaders, pipelineLayout, renderPass));
+
+      /*
+       * Create framebuffers.
+       */
+
+      final List<VulkanFramebufferType> framebuffers =
+        new ArrayList<>(images.size());
+
+      for (var index = 0; index < images.size(); ++index) {
+        final var framebufferInfo =
+          VulkanFramebufferCreateInfo.builder()
+            .addAttachments(views.get(index))
+            .setHeight(surfaceExtent.height())
+            .setWidth(surfaceExtent.width())
+            .setLayers(1)
+            .setRenderPass(renderPass)
+            .build();
+
+        framebuffers.add(resources.add(device.createFramebuffer(framebufferInfo)));
+      }
+
+      /*
+       * Create a vertex buffer.
+       */
+
+      final var vertexBuffer =
+        createVertexBuffer(resources, vmaAllocator);
+
+      /*
+       * Create index buffer.
+       */
+
+      final var indexBuffer =
+        createIndexBuffer(resources, vmaAllocator);
+
+      /*
+       * Create a pair of semaphores for synchronizing command execution.
+       */
+
+      final var renderFinished =
+        resources.add(device.createSemaphore(VulkanSemaphoreCreateInfo.builder().build()));
+      final var imageAvailable =
+        resources.add(device.createSemaphore(VulkanSemaphoreCreateInfo.builder().build()));
+
+      /*
+       * Start recording commands.
+       */
+
+      for (var index = 0; index < graphicsCommandBufferCount; ++index) {
+        final var framebuffer = framebuffers.get(index);
+        final var graphicsCommandBuffer = graphicsCommandBuffers.get(index);
+
+        final var beginInfo =
+          VulkanCommandBufferBeginInfo.builder()
+            .addFlags(VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT)
+            .build();
+
+        final var renderInfo =
+          VulkanRenderPassBeginInfo.builder()
+            .setFramebuffer(framebuffer)
+            .setRenderArea(VulkanRectangle2D.of(
+              VulkanOffset2D.of(0, 0),
+              surfaceExtent))
+            .setRenderPass(renderPass)
+            .addClearValues(VulkanClearValueColorFloatingPoint.of(
+              0.0f,
+              0.0f,
+              0.0f,
+              1.0f))
+            .build();
+
+        graphicsCommandBuffer.beginCommandBuffer(beginInfo);
+        graphicsCommandBuffer.beginRenderPass(
+          renderInfo,
+          VK_SUBPASS_CONTENTS_INLINE);
+        graphicsCommandBuffer.bindPipeline(
+          VK_PIPELINE_BIND_POINT_GRAPHICS,
+          pipeline);
+        graphicsCommandBuffer.bindVertexBuffers(
+          0, 1, List.of(vertexBuffer), List.of(Long.valueOf(0L)));
+        graphicsCommandBuffer.bindIndexBuffer(
+          indexBuffer,
+          0L,
+          VK_INDEX_TYPE_UINT16);
+        graphicsCommandBuffer.bindDescriptorSets(
+          VK_PIPELINE_BIND_POINT_GRAPHICS,
+          pipelineLayout,
+          0,
+          List.of(descriptorSets.get(index)),
+          List.of());
+        graphicsCommandBuffer.drawIndexed(3, 1, 0, 0, 0);
+        graphicsCommandBuffer.endRenderPass();
+        graphicsCommandBuffer.endCommandBuffer();
+      }
+
+      /*
+       * Start rendering frames.
+       */
+
+      var frame = 0;
+      while (!finished.get()) {
+        drawFrame(
+          khrSwapchainExt,
+          swapChain,
+          imageAvailable,
+          renderFinished,
+          graphicsCommandBuffers,
+          graphicsQueue,
+          presentationQueue);
+
+        if (frame % 10_000 == 0) {
+          showMemoryStatistics(hostAllocator);
+        }
+        ++frame;
+      }
+
+      /*
+       * Wait until the device is idle before exiting.
+       */
+
+      LOG.debug("waiting for device to idle");
+      device.waitIdle();
+
+    } catch (final VulkanException e) {
+      LOG.error("vulkan error: ", e);
+      throw e;
+    } finally {
+      GLFW_ERROR_CALLBACK.close();
+      exec.shutdown();
+      try {
+        exec.awaitTermination(5L, SECONDS);
+      } catch (final InterruptedException e) {
+        Thread.currentThread().interrupt();
+      }
+    }
+  }
+
+  private static final class Vertex
+  {
+    public final double x;
+    public final double y;
+    public final double r;
+    public final double g;
+    public final double b;
+    public final double u;
+    public final double v;
+
+    public Vertex(
+      final double in_x,
+      final double in_y,
+      final double in_r,
+      final double in_g,
+      final double in_b,
+      final double in_u,
+      final double in_v)
+    {
+      this.x = in_x;
+      this.y = in_y;
+      this.r = in_r;
+      this.g = in_g;
+      this.b = in_b;
+      this.u = in_u;
+      this.v = in_v;
+    }
+  }
+
+  private static final class Texture
+  {
+    final VulkanImageViewType image_view;
+    final VulkanSamplerType sampler;
+
+    public Texture(
+      final VulkanImageViewType in_image_view,
+      final VulkanSamplerType in_sampler)
+    {
+      this.image_view = Objects.requireNonNull(in_image_view, "image_view");
+      this.sampler = Objects.requireNonNull(in_sampler, "sampler");
+    }
   }
 }

@@ -38,6 +38,13 @@ public interface VulkanInstanceProviderType
   String providerVersion();
 
   /**
+   * @return The supported instance version
+   */
+
+  @VulkanAPIFunctionType(vulkanFunction = "vkEnumerateInstanceVersion")
+  VulkanVersion findSupportedInstanceVersion();
+
+  /**
    * @return The available instance extensions
    *
    * @throws VulkanException On errors

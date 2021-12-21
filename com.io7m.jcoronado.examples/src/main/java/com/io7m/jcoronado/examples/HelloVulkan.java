@@ -80,7 +80,6 @@ import com.io7m.jcoronado.api.VulkanVertexInputBindingDescription;
 import com.io7m.jcoronado.api.VulkanViewport;
 import com.io7m.jcoronado.extensions.ext_debug_utils.api.VulkanDebugUtilsMessageSeverityFlag;
 import com.io7m.jcoronado.extensions.ext_debug_utils.api.VulkanDebugUtilsMessageTypeFlag;
-import com.io7m.jcoronado.extensions.ext_debug_utils.api.VulkanDebugUtilsMessengerCallbackDataEXT;
 import com.io7m.jcoronado.extensions.ext_debug_utils.api.VulkanDebugUtilsMessengerCreateInfoEXT;
 import com.io7m.jcoronado.extensions.ext_debug_utils.api.VulkanDebugUtilsSLF4J;
 import com.io7m.jcoronado.extensions.ext_debug_utils.api.VulkanDebugUtilsType;
@@ -150,10 +149,6 @@ import static com.io7m.jcoronado.api.VulkanSharingMode.VK_SHARING_MODE_CONCURREN
 import static com.io7m.jcoronado.api.VulkanSharingMode.VK_SHARING_MODE_EXCLUSIVE;
 import static com.io7m.jcoronado.api.VulkanSubpassContents.VK_SUBPASS_CONTENTS_INLINE;
 import static com.io7m.jcoronado.api.VulkanVertexInputRate.VK_VERTEX_INPUT_RATE_VERTEX;
-import static com.io7m.jcoronado.extensions.ext_debug_utils.api.VulkanDebugUtilsMessageSeverityFlag.VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT;
-import static com.io7m.jcoronado.extensions.ext_debug_utils.api.VulkanDebugUtilsMessageSeverityFlag.VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT;
-import static com.io7m.jcoronado.extensions.ext_debug_utils.api.VulkanDebugUtilsMessageSeverityFlag.VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT;
-import static com.io7m.jcoronado.extensions.ext_debug_utils.api.VulkanDebugUtilsMessageSeverityFlag.VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT;
 import static com.io7m.jcoronado.extensions.khr_swapchain.api.VulkanColorSpaceKHR.VK_COLOR_SPACE_SRGB_NONLINEAR_KHR;
 import static com.io7m.jcoronado.extensions.khr_swapchain.api.VulkanCompositeAlphaFlagKHR.VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR;
 import static com.io7m.jcoronado.extensions.khr_swapchain.api.VulkanPresentModeKHR.VK_PRESENT_MODE_FIFO_KHR;
@@ -175,6 +170,516 @@ public final class HelloVulkan implements ExampleType
   public HelloVulkan()
   {
 
+  }
+
+  /**
+   * Draw a single frame.
+   */
+
+  private static void drawFrame(
+    final VulkanExtKHRSwapChainType khrSwapchainExt,
+    final VulkanKHRSwapChainType swapChain,
+    final VulkanSemaphoreType imageAvailable,
+    final VulkanSemaphoreType renderFinished,
+    final List<VulkanCommandBufferType> graphicsCommandBuffers,
+    final VulkanQueueType graphicsQueue,
+    final VulkanQueueType queuePresentation)
+    throws VulkanException
+  {
+    /*
+     * Try to acquire an image from the swap chain, waiting indefinitely until one is available.
+     * There isn't really anything sensible that we can do if an image can't be acquired in this
+     * example code, so all that will happen is that the code will immediately try again.
+     */
+
+    final var acquisition =
+      swapChain.acquireImageWithSemaphore(
+        0xffff_ffff_ffff_ffffL,
+        imageAvailable);
+
+    final var imageIndexOption = acquisition.imageIndex();
+    if (!imageIndexOption.isPresent()) {
+      LOG.error("could not acquire image");
+      return;
+    }
+
+    final var imageIndex =
+      imageIndexOption.getAsInt();
+    final var graphicsCommandBuffer =
+      graphicsCommandBuffers.get(imageIndex);
+
+    /*
+     * Wait until the image is available (via the image available semaphore) before writing
+     * any color data to the image. When writing has completed, signal that rendering has finished
+     * (via the render finished semaphore).
+     */
+
+    final var submitInfo =
+      VulkanSubmitInfo.builder()
+        .addWaitSemaphores(imageAvailable)
+        .addWaitStageMasks(VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT)
+        .addCommandBuffers(graphicsCommandBuffer)
+        .addSignalSemaphores(renderFinished)
+        .build();
+
+    graphicsQueue.submit(List.of(submitInfo), Optional.empty());
+
+    /*
+     * Tell the presentation queue to present.
+     */
+
+    final var presentationInfo =
+      VulkanPresentInfoKHR.builder()
+        .addImageIndices(imageIndex)
+        .addSwapChains(swapChain)
+        .addWaitSemaphores(renderFinished)
+        .build();
+
+    khrSwapchainExt.queuePresent(queuePresentation, presentationInfo);
+
+    /*
+     * Wait until the presentation operation has finished before continuing. The reason for doing
+     * this is that it's possible to submit new work to the GPU at a vastly quicker rate than it
+     * can actually process it, meaning the queue of commands grows indefinitely and gives the
+     * appearance of a memory leak. Waiting for the presentation queue is not the most efficient
+     * way that this can be handled (because it implies that the GPU is waiting when it could
+     * otherwise be rendering the next frame), but it is the simplest.
+     */
+
+    queuePresentation.waitIdle();
+  }
+
+  private static VulkanShaderModuleType createShaderModule(
+    final VulkanLogicalDeviceType device,
+    final VulkanTemporaryAllocatorType allocator,
+    final byte[] data)
+    throws VulkanException
+  {
+    return allocator.withAllocationBufferInitialized(
+      data,
+      4L,
+      buffer -> device.createShaderModule(
+        VulkanShaderModuleCreateInfo.of(
+          Set.of(),
+          buffer,
+          buffer.capacity())));
+  }
+
+  private static byte[] readShaderModule(
+    final String name)
+    throws IOException
+  {
+    try (var input = HelloVulkan.class.getResourceAsStream(name)) {
+      return input.readAllBytes();
+    }
+  }
+
+  private static VulkanImageViewType createImageViewForImage(
+    final VulkanSurfaceFormatKHR surfaceFormat,
+    final VulkanLogicalDeviceType device,
+    final VulkanImageType image)
+  {
+    try {
+      final var range =
+        VulkanImageSubresourceRange.of(
+          Set.of(VK_IMAGE_ASPECT_COLOR_BIT),
+          0,
+          1,
+          0,
+          1);
+
+      final Set<VulkanImageViewCreateFlag> flags = Set.of();
+      return device.createImageView(VulkanImageViewCreateInfo.of(
+        flags,
+        image,
+        VK_IMAGE_VIEW_TYPE_2D,
+        surfaceFormat.format(),
+        VulkanComponentMapping.of(
+          VK_COMPONENT_SWIZZLE_IDENTITY,
+          VK_COMPONENT_SWIZZLE_IDENTITY,
+          VK_COMPONENT_SWIZZLE_IDENTITY,
+          VK_COMPONENT_SWIZZLE_IDENTITY),
+        range)
+      );
+    } catch (final VulkanException e) {
+      throw new VulkanUncheckedException(e);
+    }
+  }
+
+  private static VulkanKHRSwapChainType createSwapChain(
+    final VulkanExtKHRSwapChainType khrSwapchainExt,
+    final VulkanExtKHRSurfaceType.VulkanKHRSurfaceType surface,
+    final VulkanSurfaceFormatKHR surfaceFormat,
+    final VulkanPresentModeKHR surfacePresent,
+    final VulkanSurfaceCapabilitiesKHR surfaceCaps,
+    final VulkanExtent2D surfaceExtent,
+    final VulkanLogicalDeviceType device,
+    final VulkanQueueType graphicsQueue,
+    final VulkanQueueType presentationQueue)
+    throws VulkanException
+  {
+    final var minimumImageCount =
+      pickMinimumImageCount(surfaceCaps);
+    final List<Integer> queueIndices = new ArrayList<>();
+    final var imageSharingMode =
+      pickImageSharingMode(graphicsQueue, presentationQueue, queueIndices);
+    final var imageUsageFlags =
+      Set.of(VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT);
+    final var surfaceAlphaFlags =
+      Set.of(VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR);
+
+    LOG.debug(
+      "swap chain image count: {}",
+      Integer.valueOf(minimumImageCount));
+    LOG.debug("swap chain image mode: {}", imageSharingMode);
+
+    final var swapChainCreateInfo =
+      VulkanSwapChainCreateInfo.of(
+        surface,
+        minimumImageCount,
+        surfaceFormat.format(),
+        surfaceFormat.colorSpace(),
+        surfaceExtent,
+        1,
+        imageUsageFlags,
+        imageSharingMode,
+        queueIndices,
+        surfaceCaps.currentTransform(),
+        surfaceAlphaFlags,
+        surfacePresent,
+        true,
+        Optional.empty()
+      );
+
+    return khrSwapchainExt.swapChainCreate(device, swapChainCreateInfo);
+  }
+
+  private static VulkanPhysicalDeviceType pickPhysicalDeviceOrAbort(
+    final VulkanExtKHRSurfaceType khrSurfaceExt,
+    final VulkanExtKHRSurfaceType.VulkanKHRSurfaceType surface,
+    final List<VulkanPhysicalDeviceType> physicalDevices)
+    throws VulkanException
+  {
+    return pickPhysicalDevice(khrSurfaceExt, surface, physicalDevices)
+      .orElseThrow(() -> new IllegalStateException("No suitable device found"));
+  }
+
+  private static VulkanExtKHRSwapChainType getSwapChainExtension(
+    final VulkanLogicalDeviceType device)
+    throws VulkanException
+  {
+    return device.findEnabledExtension(
+        "VK_KHR_swapchain",
+        VulkanExtKHRSwapChainType.class)
+      .orElseThrow(() -> new IllegalStateException(
+        "Missing VK_KHR_swapchain extension"));
+  }
+
+  private static VulkanSharingMode pickImageSharingMode(
+    final VulkanQueueType graphicsQueue,
+    final VulkanQueueType presentationQueue,
+    final List<Integer> queueIndices)
+  {
+    /*
+     * If the graphics and presentation queues are separate families, then add the indices of
+     * those families into the given list and enable concurrent sharing mode. Otherwise, don't
+     * add any indices, and use exclusive sharing mode.
+     */
+
+    final var graphicsFamily =
+      graphicsQueue.queueFamilyProperties().queueFamilyIndex();
+    final var presentationFamily =
+      presentationQueue.queueFamilyProperties().queueFamilyIndex();
+
+    if (graphicsFamily != presentationFamily) {
+      queueIndices.add(Integer.valueOf(graphicsFamily));
+      queueIndices.add(Integer.valueOf(presentationFamily));
+      return VK_SHARING_MODE_CONCURRENT;
+    }
+    return VK_SHARING_MODE_EXCLUSIVE;
+  }
+
+  private static int pickMinimumImageCount(
+    final VulkanSurfaceCapabilitiesKHR surfaceCaps)
+  {
+    /*
+     * Select the minimum number of images required to do double-buffering.
+     */
+
+    final var count = surfaceCaps.minImageCount();
+    if (surfaceCaps.maxImageCount() > 0 && count > surfaceCaps.maxImageCount()) {
+      return surfaceCaps.maxImageCount();
+    }
+    return count;
+  }
+
+  private static VulkanExtent2D pickExtent(
+    final VulkanSurfaceCapabilitiesKHR surfaceCaps)
+  {
+    /*
+     * Work out the extent of the rendered image based on the implementation-defined supported
+     * limits.
+     */
+
+    if (surfaceCaps.currentExtent().width() != 0xffff_ffff) {
+      return surfaceCaps.currentExtent();
+    }
+
+    return VulkanExtent2D.of(
+      Math.max(
+        surfaceCaps.minImageExtent().width(),
+        Math.min(surfaceCaps.maxImageExtent().width(), 640)),
+      Math.max(
+        surfaceCaps.minImageExtent().height(),
+        Math.min(surfaceCaps.maxImageExtent().height(), 480))
+    );
+  }
+
+  private static VulkanPresentModeKHR pickPresentationMode(
+    final VulkanPhysicalDeviceType device,
+    final VulkanExtKHRSurfaceType khrSurfaceExt,
+    final VulkanExtKHRSurfaceType.VulkanKHRSurfaceType surface)
+    throws VulkanException
+  {
+    /*
+     * Pick the best presentation mode available.
+     */
+
+    final var modes =
+      khrSurfaceExt.surfacePresentModes(device, surface);
+
+    var preferred = VK_PRESENT_MODE_FIFO_KHR;
+    for (final var mode : modes) {
+      if (mode == VK_PRESENT_MODE_MAILBOX_KHR) {
+        return mode;
+      }
+      if (mode == VK_PRESENT_MODE_IMMEDIATE_KHR) {
+        preferred = mode;
+      }
+    }
+
+    return preferred;
+  }
+
+  private static VulkanSurfaceFormatKHR pickSurfaceFormat(
+    final VulkanPhysicalDeviceType device,
+    final VulkanExtKHRSurfaceType khrSurfaceExt,
+    final VulkanExtKHRSurfaceType.VulkanKHRSurfaceType surface)
+    throws VulkanException
+  {
+    final var formats =
+      khrSurfaceExt.surfaceFormats(device, surface);
+
+    /*
+     * If there are no formats, try a commonly supported one.
+     */
+
+    if (formats.isEmpty()) {
+      return VulkanSurfaceFormatKHR.of(
+        VK_FORMAT_B8G8R8A8_UNORM,
+        VK_COLOR_SPACE_SRGB_NONLINEAR_KHR);
+    }
+
+    /*
+     * If there's one VK_FORMAT_UNDEFINED format, then this means that the implementation
+     * doesn't have a preferred format and anything can be used.
+     */
+
+    if (formats.size() == 1) {
+      final var format0 = formats.get(0);
+      if (format0.format() == VK_FORMAT_UNDEFINED) {
+        return VulkanSurfaceFormatKHR.of(
+          VK_FORMAT_B8G8R8A8_UNORM,
+          VK_COLOR_SPACE_SRGB_NONLINEAR_KHR);
+      }
+    }
+
+    /*
+     * Otherwise, look for a linear BGRA unsigned normalized format, with an SRGB color space.
+     */
+
+    for (final var format : formats) {
+      if (format.format() == VK_FORMAT_B8G8R8A8_UNORM
+        && format.colorSpace() == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR) {
+        return format;
+      }
+    }
+
+    /*
+     * Otherwise, use whatever was first.
+     */
+
+    return formats.get(0);
+  }
+
+  private static Optional<VulkanPhysicalDeviceType> pickPhysicalDevice(
+    final VulkanExtKHRSurfaceType khrSurfaceExt,
+    final VulkanExtKHRSurfaceType.VulkanKHRSurfaceType surface,
+    final List<VulkanPhysicalDeviceType> devices)
+    throws VulkanException
+  {
+    /*
+     * Consider a device usable if it has a queue capable of graphics operations, and a queue
+     * capable of presentation operations (these do not need to be the same queue).
+     *
+     * Then, arbitrarily pick the first one matching these requirements. Real programs should
+     * give the user control over the selection.
+     */
+
+    try {
+      return devices.stream()
+        .filter(HelloVulkan::physicalDeviceHasSwapChainExtension)
+        .filter(HelloVulkan::physicalDeviceHasGraphicsQueue)
+        .filter(device -> physicalDeviceHasPresentationQueue(
+          khrSurfaceExt,
+          surface,
+          device))
+        .findFirst();
+    } catch (final VulkanUncheckedException e) {
+      throw e.getCause();
+    }
+  }
+
+  private static boolean physicalDeviceHasSwapChainExtension(
+    final VulkanPhysicalDeviceType device)
+  {
+    /*
+     * Determine if the device supports the swapchain extension.
+     */
+
+    try {
+      LOG.debug(
+        "checking device \"{}\" for VK_KHR_swapchain support",
+        device.properties().name());
+
+      return device.extensions(Optional.empty()).containsKey("VK_KHR_swapchain");
+    } catch (final VulkanException e) {
+      throw new VulkanUncheckedException(e);
+    }
+  }
+
+  private static boolean physicalDeviceHasPresentationQueue(
+    final VulkanExtKHRSurfaceType khrSurfaceExt,
+    final VulkanExtKHRSurfaceType.VulkanKHRSurfaceType surface,
+    final VulkanPhysicalDeviceType device)
+  {
+    /*
+     * Determine which, if any, of the available queues are capable of "presentation". That
+     * is, rendering to a surface that will appear onscreen.
+     */
+
+    try {
+      LOG.debug(
+        "checking device \"{}\" for presentation support",
+        device.properties().name());
+
+      final var queues_presentable =
+        khrSurfaceExt.surfaceSupport(device, surface);
+      return !queues_presentable.isEmpty();
+    } catch (final VulkanException e) {
+      throw new VulkanUncheckedException(e);
+    }
+  }
+
+  private static boolean physicalDeviceHasGraphicsQueue(
+    final VulkanPhysicalDeviceType device)
+  {
+    try {
+      LOG.debug(
+        "checking device \"{}\" for graphics queue support",
+        device.properties().name());
+
+      final var queues = device.queueFamilies();
+      return queues.stream().anyMatch(queue -> queue.queueFlags().contains(
+        VK_QUEUE_GRAPHICS_BIT));
+    } catch (final VulkanException e) {
+      throw new VulkanUncheckedException(e);
+    }
+  }
+
+  private static long createWindow()
+  {
+    if (!GLFW.glfwInit()) {
+      throw new IllegalStateException(
+        "Unable to initialize GLFW");
+    }
+
+    if (!GLFWVulkan.glfwVulkanSupported()) {
+      throw new IllegalStateException(
+        "Cannot find a compatible Vulkan installable client driver (ICD)");
+    }
+
+    /*
+     * Specify NO_API: If this is not done, trying to use the KHR_surface extension will
+     * result in a VK_ERROR_NATIVE_WINDOW_IN_USE_KHR error code.
+     */
+
+    GLFW.glfwWindowHint(GLFW.GLFW_CLIENT_API, GLFW.GLFW_NO_API);
+
+    final var window =
+      GLFW.glfwCreateWindow(640, 480, "com.io7m.jcoronado.tests.Demo", 0L, 0L);
+    if (window == 0L) {
+      throw new IllegalStateException("Could not create window");
+    }
+    return window;
+  }
+
+  private static void showInstanceRequiredLayer(
+    final String name)
+  {
+    LOG.debug("instance required layer: {}", name);
+  }
+
+  private static void showInstanceRequiredExtension(
+    final String name)
+  {
+    LOG.debug("instance required extension: {}", name);
+  }
+
+  private static void showInstanceAvailableLayer(
+    final String name,
+    final VulkanLayerProperties layer)
+  {
+    LOG.debug(
+      "instance available layer: {}: {}, specification 0x{} implementation 0x{}",
+      layer.name(),
+      layer.description(),
+      Integer.toUnsignedString(layer.specificationVersion(), 16),
+      Integer.toUnsignedString(layer.implementationVersion(), 16));
+  }
+
+  private static void showInstanceAvailableExtension(
+    final String name,
+    final VulkanExtensionProperties extension)
+  {
+    LOG.debug(
+      "instance available extension: {} 0x{}",
+      extension.name(),
+      Integer.toUnsignedString(extension.version(), 16));
+  }
+
+  private static void showPhysicalDeviceAvailableExtension(
+    final String name,
+    final VulkanExtensionProperties extension)
+  {
+    LOG.debug(
+      "device available extension: {} 0x{}",
+      extension.name(),
+      Integer.toUnsignedString(extension.version(), 16));
+  }
+
+  private static Set<String> requiredGLFWExtensions()
+  {
+    final var glfwRequiredExtensions =
+      GLFWVulkan.glfwGetRequiredInstanceExtensions();
+
+    final HashSet<String> required =
+      new HashSet<>(glfwRequiredExtensions.capacity());
+    for (var index = 0; index < glfwRequiredExtensions.capacity(); ++index) {
+      glfwRequiredExtensions.position(index);
+      required.add(glfwRequiredExtensions.getStringASCII());
+    }
+    return required;
   }
 
   @Override
@@ -230,6 +735,9 @@ public final class HelloVulkan implements ExampleType
         "instance provider: {} {}",
         instances.providerName(),
         instances.providerVersion());
+
+      final var supported = instances.findSupportedInstanceVersion();
+      LOG.debug("supported instance version is: {}", supported.toHumanString());
 
       final var availableExtensions =
         instances.extensions();
@@ -917,515 +1425,5 @@ public final class HelloVulkan implements ExampleType
         Thread.currentThread().interrupt();
       }
     }
-  }
-
-  /**
-   * Draw a single frame.
-   */
-
-  private static void drawFrame(
-    final VulkanExtKHRSwapChainType khrSwapchainExt,
-    final VulkanKHRSwapChainType swapChain,
-    final VulkanSemaphoreType imageAvailable,
-    final VulkanSemaphoreType renderFinished,
-    final List<VulkanCommandBufferType> graphicsCommandBuffers,
-    final VulkanQueueType graphicsQueue,
-    final VulkanQueueType queuePresentation)
-    throws VulkanException
-  {
-    /*
-     * Try to acquire an image from the swap chain, waiting indefinitely until one is available.
-     * There isn't really anything sensible that we can do if an image can't be acquired in this
-     * example code, so all that will happen is that the code will immediately try again.
-     */
-
-    final var acquisition =
-      swapChain.acquireImageWithSemaphore(
-        0xffff_ffff_ffff_ffffL,
-        imageAvailable);
-
-    final var imageIndexOption = acquisition.imageIndex();
-    if (!imageIndexOption.isPresent()) {
-      LOG.error("could not acquire image");
-      return;
-    }
-
-    final var imageIndex =
-      imageIndexOption.getAsInt();
-    final var graphicsCommandBuffer =
-      graphicsCommandBuffers.get(imageIndex);
-
-    /*
-     * Wait until the image is available (via the image available semaphore) before writing
-     * any color data to the image. When writing has completed, signal that rendering has finished
-     * (via the render finished semaphore).
-     */
-
-    final var submitInfo =
-      VulkanSubmitInfo.builder()
-        .addWaitSemaphores(imageAvailable)
-        .addWaitStageMasks(VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT)
-        .addCommandBuffers(graphicsCommandBuffer)
-        .addSignalSemaphores(renderFinished)
-        .build();
-
-    graphicsQueue.submit(List.of(submitInfo), Optional.empty());
-
-    /*
-     * Tell the presentation queue to present.
-     */
-
-    final var presentationInfo =
-      VulkanPresentInfoKHR.builder()
-        .addImageIndices(imageIndex)
-        .addSwapChains(swapChain)
-        .addWaitSemaphores(renderFinished)
-        .build();
-
-    khrSwapchainExt.queuePresent(queuePresentation, presentationInfo);
-
-    /*
-     * Wait until the presentation operation has finished before continuing. The reason for doing
-     * this is that it's possible to submit new work to the GPU at a vastly quicker rate than it
-     * can actually process it, meaning the queue of commands grows indefinitely and gives the
-     * appearance of a memory leak. Waiting for the presentation queue is not the most efficient
-     * way that this can be handled (because it implies that the GPU is waiting when it could
-     * otherwise be rendering the next frame), but it is the simplest.
-     */
-
-    queuePresentation.waitIdle();
-  }
-
-  private static VulkanShaderModuleType createShaderModule(
-    final VulkanLogicalDeviceType device,
-    final VulkanTemporaryAllocatorType allocator,
-    final byte[] data)
-    throws VulkanException
-  {
-    return allocator.withAllocationBufferInitialized(
-      data,
-      4L,
-      buffer -> device.createShaderModule(
-        VulkanShaderModuleCreateInfo.of(
-          Set.of(),
-          buffer,
-          (long) buffer.capacity())));
-  }
-
-  private static byte[] readShaderModule(
-    final String name)
-    throws IOException
-  {
-    try (var input = HelloVulkan.class.getResourceAsStream(name)) {
-      return input.readAllBytes();
-    }
-  }
-
-  private static VulkanImageViewType createImageViewForImage(
-    final VulkanSurfaceFormatKHR surfaceFormat,
-    final VulkanLogicalDeviceType device,
-    final VulkanImageType image)
-  {
-    try {
-      final var range =
-        VulkanImageSubresourceRange.of(
-          Set.of(VK_IMAGE_ASPECT_COLOR_BIT),
-          0,
-          1,
-          0,
-          1);
-
-      final Set<VulkanImageViewCreateFlag> flags = Set.of();
-      return device.createImageView(VulkanImageViewCreateInfo.of(
-        flags,
-        image,
-        VK_IMAGE_VIEW_TYPE_2D,
-        surfaceFormat.format(),
-        VulkanComponentMapping.of(
-          VK_COMPONENT_SWIZZLE_IDENTITY,
-          VK_COMPONENT_SWIZZLE_IDENTITY,
-          VK_COMPONENT_SWIZZLE_IDENTITY,
-          VK_COMPONENT_SWIZZLE_IDENTITY),
-        range)
-      );
-    } catch (final VulkanException e) {
-      throw new VulkanUncheckedException(e);
-    }
-  }
-
-  private static VulkanKHRSwapChainType createSwapChain(
-    final VulkanExtKHRSwapChainType khrSwapchainExt,
-    final VulkanExtKHRSurfaceType.VulkanKHRSurfaceType surface,
-    final VulkanSurfaceFormatKHR surfaceFormat,
-    final VulkanPresentModeKHR surfacePresent,
-    final VulkanSurfaceCapabilitiesKHR surfaceCaps,
-    final VulkanExtent2D surfaceExtent,
-    final VulkanLogicalDeviceType device,
-    final VulkanQueueType graphicsQueue,
-    final VulkanQueueType presentationQueue)
-    throws VulkanException
-  {
-    final var minimumImageCount =
-      pickMinimumImageCount(surfaceCaps);
-    final List<Integer> queueIndices = new ArrayList<>();
-    final var imageSharingMode =
-      pickImageSharingMode(graphicsQueue, presentationQueue, queueIndices);
-    final var imageUsageFlags =
-      Set.of(VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT);
-    final var surfaceAlphaFlags =
-      Set.of(VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR);
-
-    LOG.debug(
-      "swap chain image count: {}",
-      Integer.valueOf(minimumImageCount));
-    LOG.debug("swap chain image mode: {}", imageSharingMode);
-
-    final var swapChainCreateInfo =
-      VulkanSwapChainCreateInfo.of(
-        surface,
-        minimumImageCount,
-        surfaceFormat.format(),
-        surfaceFormat.colorSpace(),
-        surfaceExtent,
-        1,
-        imageUsageFlags,
-        imageSharingMode,
-        queueIndices,
-        surfaceCaps.currentTransform(),
-        surfaceAlphaFlags,
-        surfacePresent,
-        true,
-        Optional.empty()
-      );
-
-    return khrSwapchainExt.swapChainCreate(device, swapChainCreateInfo);
-  }
-
-  private static VulkanPhysicalDeviceType pickPhysicalDeviceOrAbort(
-    final VulkanExtKHRSurfaceType khrSurfaceExt,
-    final VulkanExtKHRSurfaceType.VulkanKHRSurfaceType surface,
-    final List<VulkanPhysicalDeviceType> physicalDevices)
-    throws VulkanException
-  {
-    return pickPhysicalDevice(khrSurfaceExt, surface, physicalDevices)
-      .orElseThrow(() -> new IllegalStateException("No suitable device found"));
-  }
-
-  private static VulkanExtKHRSwapChainType getSwapChainExtension(
-    final VulkanLogicalDeviceType device)
-    throws VulkanException
-  {
-    return device.findEnabledExtension(
-        "VK_KHR_swapchain",
-        VulkanExtKHRSwapChainType.class)
-      .orElseThrow(() -> new IllegalStateException(
-        "Missing VK_KHR_swapchain extension"));
-  }
-
-  private static VulkanSharingMode pickImageSharingMode(
-    final VulkanQueueType graphicsQueue,
-    final VulkanQueueType presentationQueue,
-    final List<Integer> queueIndices)
-  {
-    /*
-     * If the graphics and presentation queues are separate families, then add the indices of
-     * those families into the given list and enable concurrent sharing mode. Otherwise, don't
-     * add any indices, and use exclusive sharing mode.
-     */
-
-    final var graphicsFamily =
-      graphicsQueue.queueFamilyProperties().queueFamilyIndex();
-    final var presentationFamily =
-      presentationQueue.queueFamilyProperties().queueFamilyIndex();
-
-    if (graphicsFamily != presentationFamily) {
-      queueIndices.add(Integer.valueOf(graphicsFamily));
-      queueIndices.add(Integer.valueOf(presentationFamily));
-      return VK_SHARING_MODE_CONCURRENT;
-    }
-    return VK_SHARING_MODE_EXCLUSIVE;
-  }
-
-  private static int pickMinimumImageCount(
-    final VulkanSurfaceCapabilitiesKHR surfaceCaps)
-  {
-    /*
-     * Select the minimum number of images required to do double-buffering.
-     */
-
-    final var count = surfaceCaps.minImageCount();
-    if (surfaceCaps.maxImageCount() > 0 && count > surfaceCaps.maxImageCount()) {
-      return surfaceCaps.maxImageCount();
-    }
-    return count;
-  }
-
-  private static VulkanExtent2D pickExtent(
-    final VulkanSurfaceCapabilitiesKHR surfaceCaps)
-  {
-    /*
-     * Work out the extent of the rendered image based on the implementation-defined supported
-     * limits.
-     */
-
-    if (surfaceCaps.currentExtent().width() != 0xffff_ffff) {
-      return surfaceCaps.currentExtent();
-    }
-
-    return VulkanExtent2D.of(
-      Math.max(
-        surfaceCaps.minImageExtent().width(),
-        Math.min(surfaceCaps.maxImageExtent().width(), 640)),
-      Math.max(
-        surfaceCaps.minImageExtent().height(),
-        Math.min(surfaceCaps.maxImageExtent().height(), 480))
-    );
-  }
-
-  private static VulkanPresentModeKHR pickPresentationMode(
-    final VulkanPhysicalDeviceType device,
-    final VulkanExtKHRSurfaceType khrSurfaceExt,
-    final VulkanExtKHRSurfaceType.VulkanKHRSurfaceType surface)
-    throws VulkanException
-  {
-    /*
-     * Pick the best presentation mode available.
-     */
-
-    final var modes =
-      khrSurfaceExt.surfacePresentModes(device, surface);
-
-    var preferred = VK_PRESENT_MODE_FIFO_KHR;
-    for (final var mode : modes) {
-      if (mode == VK_PRESENT_MODE_MAILBOX_KHR) {
-        return mode;
-      }
-      if (mode == VK_PRESENT_MODE_IMMEDIATE_KHR) {
-        preferred = mode;
-      }
-    }
-
-    return preferred;
-  }
-
-  private static VulkanSurfaceFormatKHR pickSurfaceFormat(
-    final VulkanPhysicalDeviceType device,
-    final VulkanExtKHRSurfaceType khrSurfaceExt,
-    final VulkanExtKHRSurfaceType.VulkanKHRSurfaceType surface)
-    throws VulkanException
-  {
-    final var formats =
-      khrSurfaceExt.surfaceFormats(device, surface);
-
-    /*
-     * If there are no formats, try a commonly supported one.
-     */
-
-    if (formats.isEmpty()) {
-      return VulkanSurfaceFormatKHR.of(
-        VK_FORMAT_B8G8R8A8_UNORM,
-        VK_COLOR_SPACE_SRGB_NONLINEAR_KHR);
-    }
-
-    /*
-     * If there's one VK_FORMAT_UNDEFINED format, then this means that the implementation
-     * doesn't have a preferred format and anything can be used.
-     */
-
-    if (formats.size() == 1) {
-      final var format0 = formats.get(0);
-      if (format0.format() == VK_FORMAT_UNDEFINED) {
-        return VulkanSurfaceFormatKHR.of(
-          VK_FORMAT_B8G8R8A8_UNORM,
-          VK_COLOR_SPACE_SRGB_NONLINEAR_KHR);
-      }
-    }
-
-    /*
-     * Otherwise, look for a linear BGRA unsigned normalized format, with an SRGB color space.
-     */
-
-    for (final var format : formats) {
-      if (format.format() == VK_FORMAT_B8G8R8A8_UNORM
-        && format.colorSpace() == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR) {
-        return format;
-      }
-    }
-
-    /*
-     * Otherwise, use whatever was first.
-     */
-
-    return formats.get(0);
-  }
-
-  private static Optional<VulkanPhysicalDeviceType> pickPhysicalDevice(
-    final VulkanExtKHRSurfaceType khrSurfaceExt,
-    final VulkanExtKHRSurfaceType.VulkanKHRSurfaceType surface,
-    final List<VulkanPhysicalDeviceType> devices)
-    throws VulkanException
-  {
-    /*
-     * Consider a device usable if it has a queue capable of graphics operations, and a queue
-     * capable of presentation operations (these do not need to be the same queue).
-     *
-     * Then, arbitrarily pick the first one matching these requirements. Real programs should
-     * give the user control over the selection.
-     */
-
-    try {
-      return devices.stream()
-        .filter(HelloVulkan::physicalDeviceHasSwapChainExtension)
-        .filter(HelloVulkan::physicalDeviceHasGraphicsQueue)
-        .filter(device -> physicalDeviceHasPresentationQueue(
-          khrSurfaceExt,
-          surface,
-          device))
-        .findFirst();
-    } catch (final VulkanUncheckedException e) {
-      throw e.getCause();
-    }
-  }
-
-  private static boolean physicalDeviceHasSwapChainExtension(
-    final VulkanPhysicalDeviceType device)
-  {
-    /*
-     * Determine if the device supports the swapchain extension.
-     */
-
-    try {
-      LOG.debug(
-        "checking device \"{}\" for VK_KHR_swapchain support",
-        device.properties().name());
-
-      return device.extensions(Optional.empty()).containsKey("VK_KHR_swapchain");
-    } catch (final VulkanException e) {
-      throw new VulkanUncheckedException(e);
-    }
-  }
-
-  private static boolean physicalDeviceHasPresentationQueue(
-    final VulkanExtKHRSurfaceType khrSurfaceExt,
-    final VulkanExtKHRSurfaceType.VulkanKHRSurfaceType surface,
-    final VulkanPhysicalDeviceType device)
-  {
-    /*
-     * Determine which, if any, of the available queues are capable of "presentation". That
-     * is, rendering to a surface that will appear onscreen.
-     */
-
-    try {
-      LOG.debug(
-        "checking device \"{}\" for presentation support",
-        device.properties().name());
-
-      final var queues_presentable =
-        khrSurfaceExt.surfaceSupport(device, surface);
-      return !queues_presentable.isEmpty();
-    } catch (final VulkanException e) {
-      throw new VulkanUncheckedException(e);
-    }
-  }
-
-  private static boolean physicalDeviceHasGraphicsQueue(
-    final VulkanPhysicalDeviceType device)
-  {
-    try {
-      LOG.debug(
-        "checking device \"{}\" for graphics queue support",
-        device.properties().name());
-
-      final var queues = device.queueFamilies();
-      return queues.stream().anyMatch(queue -> queue.queueFlags().contains(
-        VK_QUEUE_GRAPHICS_BIT));
-    } catch (final VulkanException e) {
-      throw new VulkanUncheckedException(e);
-    }
-  }
-
-  private static long createWindow()
-  {
-    if (!GLFW.glfwInit()) {
-      throw new IllegalStateException(
-        "Unable to initialize GLFW");
-    }
-
-    if (!GLFWVulkan.glfwVulkanSupported()) {
-      throw new IllegalStateException(
-        "Cannot find a compatible Vulkan installable client driver (ICD)");
-    }
-
-    /*
-     * Specify NO_API: If this is not done, trying to use the KHR_surface extension will
-     * result in a VK_ERROR_NATIVE_WINDOW_IN_USE_KHR error code.
-     */
-
-    GLFW.glfwWindowHint(GLFW.GLFW_CLIENT_API, GLFW.GLFW_NO_API);
-
-    final var window =
-      GLFW.glfwCreateWindow(640, 480, "com.io7m.jcoronado.tests.Demo", 0L, 0L);
-    if (window == 0L) {
-      throw new IllegalStateException("Could not create window");
-    }
-    return window;
-  }
-
-  private static void showInstanceRequiredLayer(
-    final String name)
-  {
-    LOG.debug("instance required layer: {}", name);
-  }
-
-  private static void showInstanceRequiredExtension(
-    final String name)
-  {
-    LOG.debug("instance required extension: {}", name);
-  }
-
-  private static void showInstanceAvailableLayer(
-    final String name,
-    final VulkanLayerProperties layer)
-  {
-    LOG.debug(
-      "instance available layer: {}: {}, specification 0x{} implementation 0x{}",
-      layer.name(),
-      layer.description(),
-      Integer.toUnsignedString(layer.specificationVersion(), 16),
-      Integer.toUnsignedString(layer.implementationVersion(), 16));
-  }
-
-  private static void showInstanceAvailableExtension(
-    final String name,
-    final VulkanExtensionProperties extension)
-  {
-    LOG.debug(
-      "instance available extension: {} 0x{}",
-      extension.name(),
-      Integer.toUnsignedString(extension.version(), 16));
-  }
-
-  private static void showPhysicalDeviceAvailableExtension(
-    final String name,
-    final VulkanExtensionProperties extension)
-  {
-    LOG.debug(
-      "device available extension: {} 0x{}",
-      extension.name(),
-      Integer.toUnsignedString(extension.version(), 16));
-  }
-
-  private static Set<String> requiredGLFWExtensions()
-  {
-    final var glfwRequiredExtensions =
-      GLFWVulkan.glfwGetRequiredInstanceExtensions();
-
-    final HashSet<String> required =
-      new HashSet<>(glfwRequiredExtensions.capacity());
-    for (var index = 0; index < glfwRequiredExtensions.capacity(); ++index) {
-      glfwRequiredExtensions.position(index);
-      required.add(glfwRequiredExtensions.getStringASCII());
-    }
-    return required;
   }
 }

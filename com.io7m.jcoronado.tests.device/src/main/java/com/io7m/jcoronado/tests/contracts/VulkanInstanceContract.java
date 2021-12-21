@@ -16,12 +16,16 @@
 
 package com.io7m.jcoronado.tests.contracts;
 
+import com.io7m.jcoronado.api.VulkanApplicationInfo;
 import com.io7m.jcoronado.api.VulkanException;
+import com.io7m.jcoronado.api.VulkanInstanceCreateInfo;
 import com.io7m.jcoronado.api.VulkanInstanceProviderType;
+import com.io7m.jcoronado.api.VulkanVersions;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
 import java.util.Optional;
 
 public abstract class VulkanInstanceContract extends VulkanOnDeviceContract
@@ -29,28 +33,124 @@ public abstract class VulkanInstanceContract extends VulkanOnDeviceContract
   protected abstract VulkanInstanceProviderType instanceProvider();
 
   @Test
-  public final void testInstance()
+  public final void testInstanceVulkan10()
     throws VulkanException
   {
     Assumptions.assumeTrue(this.shouldRun(), "Test should run");
 
     final var provider = this.instanceProvider();
     final var logger = this.logger();
-    try (var instance = provider.createInstance(VulkanInstanceInfo.info(), Optional.empty())) {
+
+    final var info =
+      VulkanInstanceCreateInfo.builder()
+        .setApplicationInfo(
+          VulkanApplicationInfo.of(
+            "com.io7m.jcoronado.tests.Test",
+            VulkanVersions.encode(0, 0, 1),
+            "com.io7m.jcoronado.tests",
+            VulkanVersions.encode(0, 0, 1),
+            VulkanVersions.encode(1, 0, 0)))
+        .setEnabledExtensions(List.of())
+        .setEnabledLayers(List.of("VK_LAYER_KHRONOS_validation"))
+        .build();
+
+    try (var instance =
+           provider.createInstance(info, Optional.empty())) {
       instance.enabledExtensions().forEach(
         (name, extension) -> logger.debug("extension: {}", extension.name()));
     }
   }
 
   @Test
-  public final void testInstancePhysicalDevices()
+  public final void testInstanceVulkanHighest()
     throws VulkanException
   {
     Assumptions.assumeTrue(this.shouldRun(), "Test should run");
 
     final var provider = this.instanceProvider();
     final var logger = this.logger();
-    try (var instance = provider.createInstance(VulkanInstanceInfo.info(), Optional.empty())) {
+
+    final var supported =
+      provider.findSupportedInstanceVersion();
+
+    final var info =
+      VulkanInstanceCreateInfo.builder()
+        .setApplicationInfo(
+          VulkanApplicationInfo.of(
+            "com.io7m.jcoronado.tests.Test",
+            VulkanVersions.encode(0, 0, 1),
+            "com.io7m.jcoronado.tests",
+            VulkanVersions.encode(0, 0, 1),
+            VulkanVersions.encode(supported)))
+        .setEnabledExtensions(List.of())
+        .setEnabledLayers(List.of("VK_LAYER_KHRONOS_validation"))
+        .build();
+
+    try (var instance =
+           provider.createInstance(info, Optional.empty())) {
+      instance.enabledExtensions().forEach(
+        (name, extension) -> logger.debug("extension: {}", extension.name()));
+    }
+  }
+
+  @Test
+  public final void testInstancePhysicalDevices10()
+    throws VulkanException
+  {
+    Assumptions.assumeTrue(this.shouldRun(), "Test should run");
+
+    final var info =
+      VulkanInstanceCreateInfo.builder()
+        .setApplicationInfo(
+          VulkanApplicationInfo.of(
+            "com.io7m.jcoronado.tests.Test",
+            VulkanVersions.encode(0, 0, 1),
+            "com.io7m.jcoronado.tests",
+            VulkanVersions.encode(0, 0, 1),
+            VulkanVersions.encode(1, 0, 0)))
+        .setEnabledExtensions(List.of())
+        .setEnabledLayers(List.of("VK_LAYER_KHRONOS_validation"))
+        .build();
+
+    final var provider = this.instanceProvider();
+    final var logger = this.logger();
+    try (var instance =
+           provider.createInstance(info, Optional.empty())) {
+      final var devices = instance.physicalDevices();
+      Assertions.assertTrue(devices.size() > 0, "At least one device required");
+      for (final var device : devices) {
+        logger.debug("device: {}", device.properties().name());
+      }
+    }
+  }
+
+  @Test
+  public final void testInstancePhysicalDevicesHighest()
+    throws VulkanException
+  {
+    Assumptions.assumeTrue(this.shouldRun(), "Test should run");
+
+    final var provider = this.instanceProvider();
+
+    final var supported =
+      provider.findSupportedInstanceVersion();
+
+    final var info =
+      VulkanInstanceCreateInfo.builder()
+        .setApplicationInfo(
+          VulkanApplicationInfo.of(
+            "com.io7m.jcoronado.tests.Test",
+            VulkanVersions.encode(0, 0, 1),
+            "com.io7m.jcoronado.tests",
+            VulkanVersions.encode(0, 0, 1),
+            VulkanVersions.encode(supported)))
+        .setEnabledExtensions(List.of())
+        .setEnabledLayers(List.of("VK_LAYER_KHRONOS_validation"))
+        .build();
+
+    final var logger = this.logger();
+    try (var instance =
+           provider.createInstance(info, Optional.empty())) {
       final var devices = instance.physicalDevices();
       Assertions.assertTrue(devices.size() > 0, "At least one device required");
       for (final var device : devices) {

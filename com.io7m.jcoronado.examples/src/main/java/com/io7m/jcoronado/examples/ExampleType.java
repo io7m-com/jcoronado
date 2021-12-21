@@ -18,5 +18,6 @@ package com.io7m.jcoronado.examples;
 
 public interface ExampleType
 {
-  void execute() throws Exception;
+  void execute()
+    throws Exception;
 }

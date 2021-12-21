@@ -7,9 +7,9 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
-public final class GenerateFeaturesToVkFeatures
+public final class GenerateFeatures10ToVkFeatures
 {
-  private GenerateFeaturesToVkFeatures()
+  private GenerateFeatures10ToVkFeatures()
   {
 
   }

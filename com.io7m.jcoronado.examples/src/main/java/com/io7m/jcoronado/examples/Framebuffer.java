@@ -50,7 +50,6 @@ import com.io7m.jcoronado.extensions.ext_debug_utils.api.VulkanDebugUtilsType;
 import com.io7m.jcoronado.lwjgl.VMALWJGLAllocatorProvider;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLHostAllocatorJeMalloc;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLInstanceProvider;
-import com.io7m.jcoronado.lwjgl.VulkanLWJGLTemporaryAllocator;
 import com.io7m.jcoronado.vma.VMAAllocationCreateInfo;
 import com.io7m.jcoronado.vma.VMAAllocatorCreateInfo;
 import com.io7m.jmulticlose.core.CloseableCollection;
@@ -100,6 +99,133 @@ public final class Framebuffer implements ExampleType
 
   }
 
+  private static void showMemoryStatistics(
+    final VulkanHostAllocatorTracker host_allocator)
+  {
+    LOG.debug(
+      "allocated command scoped memory:  {} octets ({}MB)",
+      Long.valueOf(host_allocator.allocatedCommandScopeOctets()),
+      Double.valueOf((double) host_allocator.allocatedCommandScopeOctets() / 1_000_000.0));
+    LOG.debug(
+      "allocated object scoped memory:   {} octets ({}MB)",
+      Long.valueOf(host_allocator.allocatedObjectScopeOctets()),
+      Double.valueOf((double) host_allocator.allocatedObjectScopeOctets() / 1_000_000.0));
+    LOG.debug(
+      "allocated cache scoped memory:    {} octets ({}MB)",
+      Long.valueOf(host_allocator.allocatedCacheScopeOctets()),
+      Double.valueOf((double) host_allocator.allocatedCacheScopeOctets() / 1_000_000.0));
+    LOG.debug(
+      "allocated device scoped memory:   {} octets ({}MB)",
+      Long.valueOf(host_allocator.allocatedDeviceScopeOctets()),
+      Double.valueOf((double) host_allocator.allocatedDeviceScopeOctets() / 1_000_000.0));
+    LOG.debug(
+      "allocated instance scoped memory: {} octets ({}MB)",
+      Long.valueOf(host_allocator.allocatedInstanceScopeOctets()),
+      Double.valueOf((double) host_allocator.allocatedInstanceScopeOctets() / 1_000_000.0));
+  }
+
+  private static VulkanPhysicalDeviceType pickPhysicalDeviceOrAbort(
+    final List<VulkanPhysicalDeviceType> physical_devices)
+    throws VulkanException
+  {
+    return pickPhysicalDevice(physical_devices)
+      .orElseThrow(() -> new IllegalStateException("No suitable device found"));
+  }
+
+  private static Optional<VulkanPhysicalDeviceType> pickPhysicalDevice(
+    final List<VulkanPhysicalDeviceType> devices)
+    throws VulkanException
+  {
+    /*
+     * Consider a device usable if it has a queue capable of graphics operations, and a queue
+     * capable of presentation operations (these do not need to be the same queue).
+     *
+     * Then, arbitrarily pick the first one matching these requirements. Real programs should
+     * give the user control over the selection.
+     */
+
+    try {
+      return devices.stream()
+        .filter(Framebuffer::physicalDeviceHasGraphicsQueue)
+        .findFirst();
+    } catch (final VulkanUncheckedException e) {
+      throw e.getCause();
+    }
+  }
+
+  private static boolean physicalDeviceHasGraphicsQueue(
+    final VulkanPhysicalDeviceType device)
+  {
+    try {
+      LOG.debug(
+        "checking device \"{}\" for graphics queue support",
+        device.properties().name());
+
+      final var queues = device.queueFamilies();
+      return queues.stream().anyMatch(queue -> queue.queueFlags().contains(
+        VK_QUEUE_GRAPHICS_BIT));
+    } catch (final VulkanException e) {
+      throw new VulkanUncheckedException(e);
+    }
+  }
+
+  private static void showInstanceRequiredLayer(
+    final String name)
+  {
+    LOG.debug("instance required layer: {}", name);
+  }
+
+  private static void showInstanceRequiredExtension(
+    final String name)
+  {
+    LOG.debug("instance required extension: {}", name);
+  }
+
+  private static void showInstanceAvailableLayer(
+    final String name,
+    final VulkanLayerProperties layer)
+  {
+    LOG.debug(
+      "instance available layer: {}: {}, specification 0x{} implementation 0x{}",
+      layer.name(),
+      layer.description(),
+      Integer.toUnsignedString(layer.specificationVersion(), 16),
+      Integer.toUnsignedString(layer.implementationVersion(), 16));
+  }
+
+  private static void showInstanceAvailableExtension(
+    final String name,
+    final VulkanExtensionProperties extension)
+  {
+    LOG.debug(
+      "instance available extension: {} 0x{}",
+      extension.name(),
+      Integer.toUnsignedString(extension.version(), 16));
+  }
+
+  private static void showPhysicalDeviceAvailableExtension(
+    final Map.Entry<String, VulkanExtensionProperties> entry)
+  {
+    LOG.debug(
+      "device available extension: {} 0x{}",
+      entry.getKey(),
+      Integer.toUnsignedString(entry.getValue().version(), 16));
+  }
+
+  private static Set<String> requiredGLFWExtensions()
+  {
+    final var glfw_required_extensions =
+      GLFWVulkan.glfwGetRequiredInstanceExtensions();
+
+    final HashSet<String> required =
+      new HashSet<>(glfw_required_extensions.capacity());
+    for (var index = 0; index < glfw_required_extensions.capacity(); ++index) {
+      glfw_required_extensions.position(index);
+      required.add(glfw_required_extensions.getStringASCII());
+    }
+    return required;
+  }
+
   @Override
   public void execute()
     throws Exception
@@ -111,13 +237,6 @@ public final class Framebuffer implements ExampleType
       new VulkanLWJGLHostAllocatorJeMalloc();
     final var hostAllocator =
       new VulkanHostAllocatorTracker(hostAllocatorMain);
-
-    /*
-     * Create an allocator for temporary objects.
-     */
-
-    final var alloc =
-      VulkanLWJGLTemporaryAllocator.create();
 
     final Supplier<VulkanException> exceptionSupplier =
       () -> new VulkanResourceException("Could not close one or more resources.");
@@ -135,6 +254,9 @@ public final class Framebuffer implements ExampleType
         "instance provider: {} {}",
         instances.providerName(),
         instances.providerVersion());
+
+      final var supported = instances.findSupportedInstanceVersion();
+      LOG.debug("supported instance version is: {}", supported.toHumanString());
 
       final var availableExtensions =
         instances.extensions();
@@ -451,132 +573,5 @@ public final class Framebuffer implements ExampleType
     } finally {
       GLFW_ERROR_CALLBACK.close();
     }
-  }
-
-  private static void showMemoryStatistics(
-    final VulkanHostAllocatorTracker host_allocator)
-  {
-    LOG.debug(
-      "allocated command scoped memory:  {} octets ({}MB)",
-      Long.valueOf(host_allocator.allocatedCommandScopeOctets()),
-      Double.valueOf((double) host_allocator.allocatedCommandScopeOctets() / 1_000_000.0));
-    LOG.debug(
-      "allocated object scoped memory:   {} octets ({}MB)",
-      Long.valueOf(host_allocator.allocatedObjectScopeOctets()),
-      Double.valueOf((double) host_allocator.allocatedObjectScopeOctets() / 1_000_000.0));
-    LOG.debug(
-      "allocated cache scoped memory:    {} octets ({}MB)",
-      Long.valueOf(host_allocator.allocatedCacheScopeOctets()),
-      Double.valueOf((double) host_allocator.allocatedCacheScopeOctets() / 1_000_000.0));
-    LOG.debug(
-      "allocated device scoped memory:   {} octets ({}MB)",
-      Long.valueOf(host_allocator.allocatedDeviceScopeOctets()),
-      Double.valueOf((double) host_allocator.allocatedDeviceScopeOctets() / 1_000_000.0));
-    LOG.debug(
-      "allocated instance scoped memory: {} octets ({}MB)",
-      Long.valueOf(host_allocator.allocatedInstanceScopeOctets()),
-      Double.valueOf((double) host_allocator.allocatedInstanceScopeOctets() / 1_000_000.0));
-  }
-
-  private static VulkanPhysicalDeviceType pickPhysicalDeviceOrAbort(
-    final List<VulkanPhysicalDeviceType> physical_devices)
-    throws VulkanException
-  {
-    return pickPhysicalDevice(physical_devices)
-      .orElseThrow(() -> new IllegalStateException("No suitable device found"));
-  }
-
-  private static Optional<VulkanPhysicalDeviceType> pickPhysicalDevice(
-    final List<VulkanPhysicalDeviceType> devices)
-    throws VulkanException
-  {
-    /*
-     * Consider a device usable if it has a queue capable of graphics operations, and a queue
-     * capable of presentation operations (these do not need to be the same queue).
-     *
-     * Then, arbitrarily pick the first one matching these requirements. Real programs should
-     * give the user control over the selection.
-     */
-
-    try {
-      return devices.stream()
-        .filter(Framebuffer::physicalDeviceHasGraphicsQueue)
-        .findFirst();
-    } catch (final VulkanUncheckedException e) {
-      throw e.getCause();
-    }
-  }
-
-  private static boolean physicalDeviceHasGraphicsQueue(
-    final VulkanPhysicalDeviceType device)
-  {
-    try {
-      LOG.debug(
-        "checking device \"{}\" for graphics queue support",
-        device.properties().name());
-
-      final var queues = device.queueFamilies();
-      return queues.stream().anyMatch(queue -> queue.queueFlags().contains(
-        VK_QUEUE_GRAPHICS_BIT));
-    } catch (final VulkanException e) {
-      throw new VulkanUncheckedException(e);
-    }
-  }
-
-  private static void showInstanceRequiredLayer(
-    final String name)
-  {
-    LOG.debug("instance required layer: {}", name);
-  }
-
-  private static void showInstanceRequiredExtension(
-    final String name)
-  {
-    LOG.debug("instance required extension: {}", name);
-  }
-
-  private static void showInstanceAvailableLayer(
-    final String name,
-    final VulkanLayerProperties layer)
-  {
-    LOG.debug(
-      "instance available layer: {}: {}, specification 0x{} implementation 0x{}",
-      layer.name(),
-      layer.description(),
-      Integer.toUnsignedString(layer.specificationVersion(), 16),
-      Integer.toUnsignedString(layer.implementationVersion(), 16));
-  }
-
-  private static void showInstanceAvailableExtension(
-    final String name,
-    final VulkanExtensionProperties extension)
-  {
-    LOG.debug(
-      "instance available extension: {} 0x{}",
-      extension.name(),
-      Integer.toUnsignedString(extension.version(), 16));
-  }
-
-  private static void showPhysicalDeviceAvailableExtension(
-    final Map.Entry<String, VulkanExtensionProperties> entry)
-  {
-    LOG.debug(
-      "device available extension: {} 0x{}",
-      entry.getKey(),
-      Integer.toUnsignedString(entry.getValue().version(), 16));
-  }
-
-  private static Set<String> requiredGLFWExtensions()
-  {
-    final var glfw_required_extensions =
-      GLFWVulkan.glfwGetRequiredInstanceExtensions();
-
-    final HashSet<String> required =
-      new HashSet<>(glfw_required_extensions.capacity());
-    for (var index = 0; index < glfw_required_extensions.capacity(); ++index) {
-      glfw_required_extensions.position(index);
-      required.add(glfw_required_extensions.getStringASCII());
-    }
-    return required;
   }
 }
