@@ -433,11 +433,11 @@ public final class HelloVulkanWithVMA implements ExampleType
       for (final var format : VulkanFormat.values()) {
         final var properties = physicalDevice.formatProperties(format);
 
-        LOG.debug(
+        LOG.trace(
           "physical device: format {} -> linear  {}", format, properties.linearTilingFeatures());
-        LOG.debug(
+        LOG.trace(
           "physical device: format {} -> optimal {}", format, properties.optimalTilingFeatures());
-        LOG.debug(
+        LOG.trace(
           "physical device: format {} -> buffer  {}", format, properties.bufferFeatures());
       }
 

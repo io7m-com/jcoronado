@@ -104,6 +104,10 @@ public final class VulkanLWJGLExtDebugUtils implements VulkanDebugUtilsType
   private static String copyString(
     final ByteBuffer messageBuffer)
   {
+    if (messageBuffer == null) {
+      return "(null)";
+    }
+
     final var messageBytes = new byte[messageBuffer.capacity()];
     messageBuffer.get(messageBytes);
     return new String(messageBytes, UTF_8);
