@@ -166,6 +166,7 @@ If this step fails, it's a bug. Please report it!
 | VulkanBufferViewCreateFlag | [VkBufferViewCreateFlags](https://www.khronos.org/registry/vulkan/specs/1.1-extensions/man/html/VkBufferViewCreateFlags.html) |
 | VulkanColorComponentFlag | [VkColorComponentFlags](https://www.khronos.org/registry/vulkan/specs/1.1-extensions/man/html/VkColorComponentFlags.html) |
 | VulkanCommandBufferLevel | [VkCommandBufferLevel](https://www.khronos.org/registry/vulkan/specs/1.1-extensions/man/html/VkCommandBufferLevel.html) |
+| VulkanCommandBufferResetFlag | [VkCommandBufferResetFlagBits](https://www.khronos.org/registry/vulkan/specs/1.1-extensions/man/html/VkCommandBufferResetFlagBits.html) |
 | VulkanCommandBufferUsageFlag | [VkCommandBufferUsageFlags](https://www.khronos.org/registry/vulkan/specs/1.1-extensions/man/html/VkCommandBufferUsageFlags.html) |
 | VulkanCommandPoolCreateFlag | [VkCommandPoolCreateFlags](https://www.khronos.org/registry/vulkan/specs/1.1-extensions/man/html/VkCommandPoolCreateFlags.html) |
 | VulkanCommandPoolResetFlag | [VkCommandPoolResetFlagBits](https://www.khronos.org/registry/vulkan/specs/1.1-extensions/man/html/VkCommandPoolResetFlagBits.html) |
@@ -281,6 +282,7 @@ If this step fails, it's a bug. Please report it!
 | VulkanCommandBufferType.fillBuffer() | [vkCmdFillBuffer](https://www.khronos.org/registry/vulkan/specs/1.1-extensions/man/html/vkCmdFillBuffer.html) |
 | VulkanCommandBufferType.nextSubpass() | [vkCmdNextSubpass](https://www.khronos.org/registry/vulkan/specs/1.1-extensions/man/html/vkCmdNextSubpass.html) |
 | VulkanCommandBufferType.pipelineBarrier() | [vkCmdPipelineBarrier](https://www.khronos.org/registry/vulkan/specs/1.1-extensions/man/html/vkCmdPipelineBarrier.html) |
+| VulkanCommandBufferType.reset() | [vkResetCommandBuffer](https://www.khronos.org/registry/vulkan/specs/1.1-extensions/man/html/vkResetCommandBuffer.html) |
 | VulkanCommandBufferType.resetEvent() | [vkCmdResetEvent](https://www.khronos.org/registry/vulkan/specs/1.1-extensions/man/html/vkCmdResetEvent.html) |
 | VulkanCommandBufferType.resetQueryPool() | [vkCmdResetQueryPool](https://www.khronos.org/registry/vulkan/specs/1.1-extensions/man/html/vkCmdResetQueryPool.html) |
 | VulkanCommandBufferType.setBlendConstants() | [vkCmdSetBlendConstants](https://www.khronos.org/registry/vulkan/specs/1.1-extensions/man/html/vkCmdSetBlendConstants.html) |
@@ -456,7 +458,6 @@ If this step fails, it's a bug. Please report it!
 * `vkQueueBindSparse`
 * `vkQueueSetPerformanceConfigurationINTEL`
 * `vkReleasePerformanceConfigurationINTEL`
-* `vkResetCommandBuffer`
 * `vkResetQueryPool`
 * `vkSignalSemaphore`
 * `vkTrimCommandPool`
@@ -464,6 +465,6 @@ If this step fails, it's a bug. Please report it!
 * `vkUpdateDescriptorSetWithTemplate`
 * `vkWaitSemaphores`
 
-125 of 193 functions implemented
+126 of 193 functions implemented
 
-Coverage: 64.77%
+Coverage: 65.28%

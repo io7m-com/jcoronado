@@ -26,6 +26,7 @@ import com.io7m.jcoronado.api.VulkanClearAttachment;
 import com.io7m.jcoronado.api.VulkanClearRectangle;
 import com.io7m.jcoronado.api.VulkanClearValueDepthStencil;
 import com.io7m.jcoronado.api.VulkanCommandBufferBeginInfo;
+import com.io7m.jcoronado.api.VulkanCommandBufferResetFlag;
 import com.io7m.jcoronado.api.VulkanCommandBufferType;
 import com.io7m.jcoronado.api.VulkanDependencyFlag;
 import com.io7m.jcoronado.api.VulkanDescriptorSetType;
@@ -972,6 +973,21 @@ public final class VulkanLWJGLCommandBuffer
         VulkanLWJGLBufferMemoryBarriers.packList(stack, buffer_memory_barriers),
         VulkanLWJGLImageMemoryBarriers.packList(stack, image_memory_barriers));
     }
+  }
+
+  @Override
+  public void reset(
+    final Set<VulkanCommandBufferResetFlag> flags)
+    throws VulkanException
+  {
+    Objects.requireNonNull(flags, "flags");
+
+    this.checkNotClosed();
+
+    VK10.vkResetCommandBuffer(
+      this.handle,
+      VulkanEnumMaps.packValues(flags)
+    );
   }
 
   /**

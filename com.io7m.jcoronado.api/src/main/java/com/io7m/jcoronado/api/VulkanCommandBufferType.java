@@ -113,7 +113,8 @@ public interface VulkanCommandBufferType extends VulkanHandleDispatchableType
    * Specify how commands in the first subpass of a render pass are provided.
    *
    * @param info     The begin info
-   * @param contents Specifies how the commands in the first subpass will be provided.
+   * @param contents Specifies how the commands in the first subpass will be
+   *                 provided.
    *
    * @throws VulkanException On errors
    */
@@ -144,9 +145,10 @@ public interface VulkanCommandBufferType extends VulkanHandleDispatchableType
   /**
    * Bind vertex buffers to a command buffer.
    *
-   * @param first_binding The index of the first vertex input binding whose state is updated by the
-   *                      command
-   * @param binding_count The number of vertex input bindings whose state is updated by the command
+   * @param first_binding The index of the first vertex input binding whose
+   *                      state is updated by the command
+   * @param binding_count The number of vertex input bindings whose state is
+   *                      updated by the command
    * @param buffers       An array of buffer handles
    * @param offsets       An array of buffer offsets
    *
@@ -166,8 +168,8 @@ public interface VulkanCommandBufferType extends VulkanHandleDispatchableType
    * Bind index buffer to a command buffer.
    *
    * @param buffer     The index buffer
-   * @param offset     The starting offset in bytes within buffer used in index buffer address
-   *                   calculations
+   * @param offset     The starting offset in bytes within buffer used in index
+   *                   buffer address calculations
    * @param index_type The type of indices
    *
    * @throws VulkanException On errors
@@ -186,7 +188,8 @@ public interface VulkanCommandBufferType extends VulkanHandleDispatchableType
    *
    * @param pipeline_bind_point The pipeline bind point
    * @param layout              The pipeline layout
-   * @param first_set           The set number of the first descriptor set to be bound
+   * @param first_set           The set number of the first descriptor set to be
+   *                            bound
    * @param descriptor_sets     The descriptor sets
    * @param dynamic_offsets     An array of dynamic offsets
    *
@@ -211,7 +214,8 @@ public interface VulkanCommandBufferType extends VulkanHandleDispatchableType
    * @param target_image        The target image
    * @param target_image_layout The target image layout
    * @param regions             The regions that will be used to blit
-   * @param filter              The filter to apply if the blits require scaling
+   * @param filter              The filter to apply if the blits require
+   *                            scaling
    *
    * @throws VulkanException On errors
    */
@@ -235,7 +239,8 @@ public interface VulkanCommandBufferType extends VulkanHandleDispatchableType
    * @param target_image        The target image
    * @param target_image_layout The target image layout
    * @param region              The regions that will be used to blit
-   * @param filter              The filter to apply if the blits require scaling
+   * @param filter              The filter to apply if the blits require
+   *                            scaling
    *
    * @throws VulkanException On errors
    */
@@ -374,8 +379,8 @@ public interface VulkanCommandBufferType extends VulkanHandleDispatchableType
    * Clear regions within bound framebuffer attachments.
    *
    * @param attachments The attachments to clear and the clear values to use
-   * @param rectangles  An array of structures defining regions within each selected attachment to
-   *                    clear
+   * @param rectangles  An array of structures defining regions within each
+   *                    selected attachment to clear
    *
    * @throws VulkanException On errors
    */
@@ -391,7 +396,8 @@ public interface VulkanCommandBufferType extends VulkanHandleDispatchableType
    * Clear regions within bound framebuffer attachments.
    *
    * @param attachment The attachment to clear and the clear values to use
-   * @param rectangle  A structure defining a region within each selected attachment to clear
+   * @param rectangle  A structure defining a region within each selected
+   *                   attachment to clear
    *
    * @throws VulkanException On errors
    */
@@ -410,8 +416,8 @@ public interface VulkanCommandBufferType extends VulkanHandleDispatchableType
    * Clear regions within bound framebuffer attachments.
    *
    * @param attachment The attachment to clear and the clear values to use
-   * @param rectangles An array of structures defining regions within each selected attachment to
-   *                   clear
+   * @param rectangles An array of structures defining regions within each
+   *                   selected attachment to clear
    *
    * @throws VulkanException On errors
    */
@@ -430,7 +436,8 @@ public interface VulkanCommandBufferType extends VulkanHandleDispatchableType
    * Clear regions within bound framebuffer attachments.
    *
    * @param attachment The attachment to clear and the clear values to use
-   * @param rectangle  A structure defining a region within each selected attachment to clear
+   * @param rectangle  A structure defining a region within each selected
+   *                   attachment to clear
    *
    * @throws VulkanException On errors
    */
@@ -488,9 +495,12 @@ public interface VulkanCommandBufferType extends VulkanHandleDispatchableType
   /**
    * Dispatch compute work items.
    *
-   * @param group_count_x The number of local workgroups to dispatch in the X dimension.
-   * @param group_count_y The number of local workgroups to dispatch in the Y dimension.
-   * @param group_count_z The number of local workgroups to dispatch in the Z dimension.
+   * @param group_count_x The number of local workgroups to dispatch in the X
+   *                      dimension.
+   * @param group_count_y The number of local workgroups to dispatch in the Y
+   *                      dimension.
+   * @param group_count_z The number of local workgroups to dispatch in the Z
+   *                      dimension.
    *
    * @throws VulkanException On errors
    */
@@ -529,8 +539,8 @@ public interface VulkanCommandBufferType extends VulkanHandleDispatchableType
    * @param vertex_count   The number of vertices to draw.
    * @param instance_count The number of instances to draw.
    * @param first_vertex   The index of the first vertex to draw.
-   * @param vertex_offset  The value added to the vertex index before indexing into the vertex
-   *                       buffer.
+   * @param vertex_offset  The value added to the vertex index before indexing
+   *                       into the vertex buffer.
    * @param first_instance The instance ID of the first instance to draw.
    *
    * @throws VulkanException On errors
@@ -552,7 +562,8 @@ public interface VulkanCommandBufferType extends VulkanHandleDispatchableType
    * @param buffer     The buffer containing draw parameters.
    * @param offset     The byte offset into buffer where parameters begin.
    * @param draw_count The number of draws to execute, and can be zero.
-   * @param stride     The byte stride between successive sets of draw parameters.
+   * @param stride     The byte stride between successive sets of draw
+   *                   parameters.
    *
    * @throws VulkanException On errors
    */
@@ -572,7 +583,8 @@ public interface VulkanCommandBufferType extends VulkanHandleDispatchableType
    * @param buffer     The buffer containing draw parameters.
    * @param offset     The byte offset into buffer where parameters begin.
    * @param draw_count The number of draws to execute, and can be zero.
-   * @param stride     The byte stride between successive sets of draw parameters.
+   * @param stride     The byte stride between successive sets of draw
+   *                   parameters.
    *
    * @throws VulkanException On errors
    */
@@ -604,14 +616,16 @@ public interface VulkanCommandBufferType extends VulkanHandleDispatchableType
    * Fill a region of a buffer with a fixed value.
    *
    * @param buffer The buffer to be filled.
-   * @param offset The byte offset into the buffer at which to start filling, and must be a multiple
-   *               of 4.
-   * @param size   The number of bytes to fill, and must be either a multiple of 4, or VK_WHOLE_SIZE
-   *               to fill the range from offset to the end of the buffer. If VK_WHOLE_SIZE is used
-   *               and the remaining size of the buffer is not a multiple of 4, then the nearest
+   * @param offset The byte offset into the buffer at which to start filling,
+   *               and must be a multiple of 4.
+   * @param size   The number of bytes to fill, and must be either a multiple of
+   *               4, or VK_WHOLE_SIZE to fill the range from offset to the end
+   *               of the buffer. If VK_WHOLE_SIZE is used and the remaining
+   *               size of the buffer is not a multiple of 4, then the nearest
    *               smaller multiple is used.
-   * @param data   The 4-byte word written repeatedly to the buffer to fill size bytes of data. The
-   *               data word is written to memory according to the host endianness.
+   * @param data   The 4-byte word written repeatedly to the buffer to fill size
+   *               bytes of data. The data word is written to memory according
+   *               to the host endianness.
    *
    * @throws VulkanException On errors
    */
@@ -641,8 +655,8 @@ public interface VulkanCommandBufferType extends VulkanHandleDispatchableType
    *
    * @param source_stage_mask      The source stage mask
    * @param target_stage_mask      The target state mask
-   * @param dependency_flags       Flags specifying how execution and memory dependencies are
-   *                               formed.
+   * @param dependency_flags       Flags specifying how execution and memory
+   *                               dependencies are formed.
    * @param memory_barriers        A list of memory barriers
    * @param buffer_memory_barriers A list of buffer memory barriers
    * @param image_memory_barriers  A list of image memory barriers
@@ -664,8 +678,9 @@ public interface VulkanCommandBufferType extends VulkanHandleDispatchableType
   /**
    * Transition to the next subpass of a render pass.
    *
-   * @param contents Specifies how the commands in the next subpass will be provided, in the same
-   *                 fashion as the corresponding parameter of vkCmdBeginRenderPass.
+   * @param contents Specifies how the commands in the next subpass will be
+   *                 provided, in the same fashion as the corresponding
+   *                 parameter of vkCmdBeginRenderPass.
    *
    * @throws VulkanException On errors
    */
@@ -691,11 +706,12 @@ public interface VulkanCommandBufferType extends VulkanHandleDispatchableType
   /**
    * Set the depth bias dynamic state.
    *
-   * @param depth_bias_constant_factor A scalar factor controlling the constant depth value added to
-   *                                   each fragment.
-   * @param depth_bias_clamp           The maximum (or minimum) depth bias of a fragment.
-   * @param depth_bias_slope_factor    A scalar factor applied to a fragment’s slope in depth bias
-   *                                   calculations.
+   * @param depth_bias_constant_factor A scalar factor controlling the constant
+   *                                   depth value added to each fragment.
+   * @param depth_bias_clamp           The maximum (or minimum) depth bias of a
+   *                                   fragment.
+   * @param depth_bias_slope_factor    A scalar factor applied to a fragment’s
+   *                                   slope in depth bias calculations.
    *
    * @throws VulkanException On errors
    */
@@ -711,10 +727,10 @@ public interface VulkanCommandBufferType extends VulkanHandleDispatchableType
   /**
    * Set the depth bounds test values for a command buffer.
    *
-   * @param min_depth_bounds The lower bound of the range of depth values used in the depth bounds
-   *                         test.
-   * @param max_depth_bounds The upper bound of the range of depth values used in the depth bounds
-   *                         test.
+   * @param min_depth_bounds The lower bound of the range of depth values used
+   *                         in the depth bounds test.
+   * @param max_depth_bounds The upper bound of the range of depth values used
+   *                         in the depth bounds test.
    *
    * @throws VulkanException On errors
    */
@@ -729,8 +745,8 @@ public interface VulkanCommandBufferType extends VulkanHandleDispatchableType
   /**
    * Set the values of blend constants.
    *
-   * @param constants The R, G, B, and A components of the blend constant color used in blending,
-   *                  depending on the blend factor.
+   * @param constants The R, G, B, and A components of the blend constant color
+   *                  used in blending, depending on the blend factor.
    *
    * @throws VulkanException On errors
    */
@@ -744,8 +760,8 @@ public interface VulkanCommandBufferType extends VulkanHandleDispatchableType
   /**
    * Set the stencil reference.
    *
-   * @param face_mask A set of flags specifying the set of stencil state for which to update the
-   *                  reference value.
+   * @param face_mask A set of flags specifying the set of stencil state for
+   *                  which to update the reference value.
    * @param reference The new value to use as the stencil reference value.
    *
    * @throws VulkanException On errors
@@ -761,8 +777,8 @@ public interface VulkanCommandBufferType extends VulkanHandleDispatchableType
   /**
    * Set the stencil compare mask.
    *
-   * @param face_mask A set of flags specifying the set of stencil state for which to update the
-   *                  reference value.
+   * @param face_mask A set of flags specifying the set of stencil state for
+   *                  which to update the reference value.
    * @param mask      The new value to use as the stencil compare mask value.
    *
    * @throws VulkanException On errors
@@ -778,8 +794,8 @@ public interface VulkanCommandBufferType extends VulkanHandleDispatchableType
   /**
    * Set the stencil write mask.
    *
-   * @param face_mask A set of flags specifying the set of stencil state for which to update the
-   *                  reference value.
+   * @param face_mask A set of flags specifying the set of stencil state for
+   *                  which to update the reference value.
    * @param mask      The new value to use as the stencil write mask value.
    *
    * @throws VulkanException On errors
@@ -795,7 +811,8 @@ public interface VulkanCommandBufferType extends VulkanHandleDispatchableType
   /**
    * Set the dynamic scissor rectangles on a command buffer.
    *
-   * @param first_scissor The index of the first scissor whose state is updated by the command.
+   * @param first_scissor The index of the first scissor whose state is updated
+   *                      by the command.
    * @param rectangles    An array of structures defining scissor rectangles.
    *
    * @throws VulkanException On errors
@@ -811,7 +828,8 @@ public interface VulkanCommandBufferType extends VulkanHandleDispatchableType
   /**
    * Set the viewport on a command buffer.
    *
-   * @param first_viewport The index of the first viewport whose state is updated by the command.
+   * @param first_viewport The index of the first viewport whose state is
+   *                       updated by the command.
    * @param viewports      An array of structures defining viewport rectangles.
    *
    * @throws VulkanException On errors
@@ -828,7 +846,8 @@ public interface VulkanCommandBufferType extends VulkanHandleDispatchableType
    * Set an event object to signaled state.
    *
    * @param event The event
-   * @param mask  The source stage mask used to determine when the event is signaled.
+   * @param mask  The source stage mask used to determine when the event is
+   *              signaled.
    *
    * @throws VulkanException On errors
    */
@@ -844,7 +863,8 @@ public interface VulkanCommandBufferType extends VulkanHandleDispatchableType
    * Reset an event object to non-signaled state.
    *
    * @param event The event
-   * @param mask  The source stage mask used to determine when the event is signaled.
+   * @param mask  The source stage mask used to determine when the event is
+   *              signaled.
    *
    * @throws VulkanException On errors
    */
@@ -925,6 +945,19 @@ public interface VulkanCommandBufferType extends VulkanHandleDispatchableType
     List<VulkanMemoryBarrier> memory_barriers,
     List<VulkanBufferMemoryBarrier> buffer_memory_barriers,
     List<VulkanImageMemoryBarrier> image_memory_barriers)
+    throws VulkanException;
+
+  /**
+   * Reset a command buffer to the initial state.
+   *
+   * @param flags The flags
+   *
+   * @throws VulkanException On errors
+   */
+
+  @VulkanAPIFunctionType(vulkanFunction = "vkResetCommandBuffer")
+  @VulkanExternallySynchronizedType
+  void reset(Set<VulkanCommandBufferResetFlag> flags)
     throws VulkanException;
 }
 

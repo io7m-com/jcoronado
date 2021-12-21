@@ -116,6 +116,9 @@ If this step fails, it's a bug. Please report it!
 | VulkanMemoryRequirementsType | [VkMemoryRequirements](https://www.khronos.org/registry/vulkan/specs/1.1-extensions/man/html/VkMemoryRequirements.html) |
 | VulkanOffset2DType | [VkOffset2D](https://www.khronos.org/registry/vulkan/specs/1.1-extensions/man/html/VkOffset2D.html) |
 | VulkanOffset3DType | [VkOffset3D](https://www.khronos.org/registry/vulkan/specs/1.1-extensions/man/html/VkOffset3D.html) |
+| VulkanPhysicalDeviceFeatures10Type | [VkPhysicalDeviceFeatures](https://www.khronos.org/registry/vulkan/specs/1.1-extensions/man/html/VkPhysicalDeviceFeatures.html) |
+| VulkanPhysicalDeviceFeatures11Type | [VkPhysicalDeviceVulkan11Features](https://www.khronos.org/registry/vulkan/specs/1.1-extensions/man/html/VkPhysicalDeviceVulkan11Features.html) |
+| VulkanPhysicalDeviceFeatures12Type | [VkPhysicalDeviceVulkan12Features](https://www.khronos.org/registry/vulkan/specs/1.1-extensions/man/html/VkPhysicalDeviceVulkan12Features.html) |
 | VulkanPhysicalDeviceFeaturesType | [VkPhysicalDeviceFeatures](https://www.khronos.org/registry/vulkan/specs/1.1-extensions/man/html/VkPhysicalDeviceFeatures.html) |
 | VulkanPhysicalDeviceLimitsType | [VkPhysicalDeviceLimits](https://www.khronos.org/registry/vulkan/specs/1.1-extensions/man/html/VkPhysicalDeviceLimits.html) |
 | VulkanPhysicalDeviceMemoryPropertiesType | [VkPhysicalDeviceMemoryProperties](https://www.khronos.org/registry/vulkan/specs/1.1-extensions/man/html/VkPhysicalDeviceMemoryProperties.html) |
@@ -178,6 +181,7 @@ If this step fails, it's a bug. Please report it!
 | VulkanBufferViewCreateFlag | [VkBufferViewCreateFlags](https://www.khronos.org/registry/vulkan/specs/1.1-extensions/man/html/VkBufferViewCreateFlags.html) |
 | VulkanColorComponentFlag | [VkColorComponentFlags](https://www.khronos.org/registry/vulkan/specs/1.1-extensions/man/html/VkColorComponentFlags.html) |
 | VulkanCommandBufferLevel | [VkCommandBufferLevel](https://www.khronos.org/registry/vulkan/specs/1.1-extensions/man/html/VkCommandBufferLevel.html) |
+| VulkanCommandBufferResetFlag | [VkCommandBufferResetFlagBits](https://www.khronos.org/registry/vulkan/specs/1.1-extensions/man/html/VkCommandBufferResetFlagBits.html) |
 | VulkanCommandBufferUsageFlag | [VkCommandBufferUsageFlags](https://www.khronos.org/registry/vulkan/specs/1.1-extensions/man/html/VkCommandBufferUsageFlags.html) |
 | VulkanCommandPoolCreateFlag | [VkCommandPoolCreateFlags](https://www.khronos.org/registry/vulkan/specs/1.1-extensions/man/html/VkCommandPoolCreateFlags.html) |
 | VulkanCommandPoolResetFlag | [VkCommandPoolResetFlagBits](https://www.khronos.org/registry/vulkan/specs/1.1-extensions/man/html/VkCommandPoolResetFlagBits.html) |
@@ -293,6 +297,7 @@ If this step fails, it's a bug. Please report it!
 | VulkanCommandBufferType.fillBuffer() | [vkCmdFillBuffer](https://www.khronos.org/registry/vulkan/specs/1.1-extensions/man/html/vkCmdFillBuffer.html) |
 | VulkanCommandBufferType.nextSubpass() | [vkCmdNextSubpass](https://www.khronos.org/registry/vulkan/specs/1.1-extensions/man/html/vkCmdNextSubpass.html) |
 | VulkanCommandBufferType.pipelineBarrier() | [vkCmdPipelineBarrier](https://www.khronos.org/registry/vulkan/specs/1.1-extensions/man/html/vkCmdPipelineBarrier.html) |
+| VulkanCommandBufferType.reset() | [vkResetCommandBuffer](https://www.khronos.org/registry/vulkan/specs/1.1-extensions/man/html/vkResetCommandBuffer.html) |
 | VulkanCommandBufferType.resetEvent() | [vkCmdResetEvent](https://www.khronos.org/registry/vulkan/specs/1.1-extensions/man/html/vkCmdResetEvent.html) |
 | VulkanCommandBufferType.resetQueryPool() | [vkCmdResetQueryPool](https://www.khronos.org/registry/vulkan/specs/1.1-extensions/man/html/vkCmdResetQueryPool.html) |
 | VulkanCommandBufferType.setBlendConstants() | [vkCmdSetBlendConstants](https://www.khronos.org/registry/vulkan/specs/1.1-extensions/man/html/vkCmdSetBlendConstants.html) |
@@ -319,6 +324,7 @@ If this step fails, it's a bug. Please report it!
 | VulkanImageViewType.close() | [vkDestroyImageView](https://www.khronos.org/registry/vulkan/specs/1.1-extensions/man/html/vkDestroyImageView.html) |
 | VulkanInstanceProviderType.createInstance() | [vkCreateInstance](https://www.khronos.org/registry/vulkan/specs/1.1-extensions/man/html/vkCreateInstance.html) |
 | VulkanInstanceProviderType.extensions() | [vkEnumerateInstanceExtensionProperties](https://www.khronos.org/registry/vulkan/specs/1.1-extensions/man/html/vkEnumerateInstanceExtensionProperties.html) |
+| VulkanInstanceProviderType.findSupportedInstanceVersion() | [vkEnumerateInstanceVersion](https://www.khronos.org/registry/vulkan/specs/1.1-extensions/man/html/vkEnumerateInstanceVersion.html) |
 | VulkanInstanceProviderType.layers() | [vkEnumerateInstanceLayerProperties](https://www.khronos.org/registry/vulkan/specs/1.1-extensions/man/html/vkEnumerateInstanceLayerProperties.html) |
 | VulkanInstanceType.close() | [vkDestroyInstance](https://www.khronos.org/registry/vulkan/specs/1.1-extensions/man/html/vkDestroyInstance.html) |
 | VulkanInstanceType.enumeratePhysicalDevices() | [vkEnumeratePhysicalDevices](https://www.khronos.org/registry/vulkan/specs/1.1-extensions/man/html/vkEnumeratePhysicalDevices.html) |
@@ -429,7 +435,6 @@ If this step fails, it's a bug. Please report it!
 * `vkCreateStreamDescriptorSurfaceGGP`
 * `vkDestroyDescriptorUpdateTemplate`
 * `vkDestroySamplerYcbcrConversion`
-* `vkEnumerateInstanceVersion`
 * `vkEnumeratePhysicalDeviceGroups`
 * `vkFreeCommandBuffers`
 * `vkFreeDescriptorSets`
@@ -468,7 +473,6 @@ If this step fails, it's a bug. Please report it!
 * `vkQueueBindSparse`
 * `vkQueueSetPerformanceConfigurationINTEL`
 * `vkReleasePerformanceConfigurationINTEL`
-* `vkResetCommandBuffer`
 * `vkResetQueryPool`
 * `vkSignalSemaphore`
 * `vkTrimCommandPool`
@@ -476,7 +480,7 @@ If this step fails, it's a bug. Please report it!
 * `vkUpdateDescriptorSetWithTemplate`
 * `vkWaitSemaphores`
 
-124 of 193 functions implemented
+126 of 193 functions implemented
 
-Coverage: 64.25%
+Coverage: 65.28%
 
