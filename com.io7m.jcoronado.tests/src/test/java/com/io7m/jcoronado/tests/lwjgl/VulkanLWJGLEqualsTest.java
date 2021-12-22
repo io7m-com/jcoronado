@@ -21,6 +21,7 @@ import com.io7m.jcoronado.lwjgl.VulkanLWJGLBufferView;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLCommandBuffer;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLCommandPool;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLDescriptorSetLayout;
+import com.io7m.jcoronado.lwjgl.VulkanLWJGLDeviceMemory;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLFramebuffer;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLImage;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLImageView;
@@ -29,8 +30,10 @@ import com.io7m.jcoronado.lwjgl.VulkanLWJGLLogicalDevice;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLPhysicalDevice;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLPipeline;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLPipelineLayout;
+import com.io7m.jcoronado.lwjgl.VulkanLWJGLQueryPool;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLQueue;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLRenderPass;
+import com.io7m.jcoronado.lwjgl.VulkanLWJGLSampler;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLSemaphore;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLShaderModule;
 import nl.jqno.equalsverifier.EqualsVerifier;
@@ -245,6 +248,45 @@ public final class VulkanLWJGLEqualsTest
   public void testVulkanLWJGLShaderModule()
   {
     EqualsVerifier.forClass(VulkanLWJGLShaderModule.class)
+      .withIgnoredFields(
+        "ownership",
+        "device",
+        "closed",
+        "host_allocator_proxy")
+      .withNonnullFields("handle")
+      .verify();
+  }
+
+  @Test
+  public void testVulkanLWJGLDeviceMemory()
+  {
+    EqualsVerifier.forClass(VulkanLWJGLDeviceMemory.class)
+      .withIgnoredFields(
+        "ownership",
+        "device",
+        "closed",
+        "host_allocator_proxy")
+      .withNonnullFields("handle")
+      .verify();
+  }
+
+  @Test
+  public void testVulkanLWJGLSampler()
+  {
+    EqualsVerifier.forClass(VulkanLWJGLSampler.class)
+      .withIgnoredFields(
+        "ownership",
+        "device",
+        "closed",
+        "host_allocator_proxy")
+      .withNonnullFields("handle")
+      .verify();
+  }
+
+  @Test
+  public void testVulkanLWJGLQueryPool()
+  {
+    EqualsVerifier.forClass(VulkanLWJGLQueryPool.class)
       .withIgnoredFields(
         "ownership",
         "device",

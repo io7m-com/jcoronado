@@ -43,6 +43,17 @@ public final class VulkanLWJGLClearAttachmentsTest
 
   private MemoryStack stack = MemoryStack.create();
 
+  private static void checkPacked(
+    final VkClearAttachment vkAttach)
+  {
+    assertEquals(23, vkAttach.colorAttachment());
+    assertEquals(VK10.VK_IMAGE_ASPECT_COLOR_BIT, vkAttach.aspectMask());
+    assertEquals(0.5f, vkAttach.clearValue().color().float32().get(0));
+    assertEquals(0.6f, vkAttach.clearValue().color().float32().get(1));
+    assertEquals(0.7f, vkAttach.clearValue().color().float32().get(2));
+    assertEquals(0.8f, vkAttach.clearValue().color().float32().get(3));
+  }
+
   @BeforeEach
   public void testSetup()
   {
@@ -159,16 +170,5 @@ public final class VulkanLWJGLClearAttachmentsTest
         List.of());
 
     assertNull(packed);
-  }
-
-  private static void checkPacked(
-    final VkClearAttachment vkAttach)
-  {
-    assertEquals(23, vkAttach.colorAttachment());
-    assertEquals(VK10.VK_IMAGE_ASPECT_COLOR_BIT, vkAttach.aspectMask());
-    assertEquals(0.5f, vkAttach.clearValue().color().float32().get(0));
-    assertEquals(0.6f, vkAttach.clearValue().color().float32().get(1));
-    assertEquals(0.7f, vkAttach.clearValue().color().float32().get(2));
-    assertEquals(0.8f, vkAttach.clearValue().color().float32().get(3));
   }
 }

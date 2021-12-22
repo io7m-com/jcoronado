@@ -1,6 +1,5 @@
 package com.io7m.jcoronado.tests;
 
-import com.io7m.jcoronado.api.VulkanPhysicalDeviceFeatures;
 import org.lwjgl.vulkan.VkPhysicalDeviceVulkan11Features;
 
 import java.lang.reflect.Method;

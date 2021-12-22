@@ -40,7 +40,9 @@ public final class VulkanLWJGLBufferTest extends VulkanBufferContract
     final VulkanInstanceProviderType current_provider)
   {
     try {
-      return current_provider.createInstance(VulkanInstanceInfo.info(), Optional.empty());
+      return current_provider.createInstance(
+        VulkanInstanceInfo.info(),
+        Optional.empty());
     } catch (final VulkanException e) {
       throw new IllegalStateException(e);
     }

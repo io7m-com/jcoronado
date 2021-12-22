@@ -1,5 +1,5 @@
 /*
- * Copyright © 2018 Mark Raynsford <code@io7m.com> http://io7m.com
+ * Copyright © 2021 Mark Raynsford <code@io7m.com> https://www.io7m.com
  *
  * Permission to use, copy, modify, and/or distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -14,19 +14,24 @@
  * IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-package com.io7m.jcoronado.tests.contracts;
+package com.io7m.jcoronado.tests.lwjgl;
 
-import org.slf4j.Logger;
+import com.io7m.jcoronado.lwjgl.VulkanLWJGLHostAllocatorJeMalloc;
+import org.junit.jupiter.api.Test;
 
-import java.util.Objects;
+import static com.io7m.jcoronado.api.VulkanSystemAllocationScope.VK_SYSTEM_ALLOCATION_SCOPE_INSTANCE;
 
-public abstract class VulkanOnDeviceContract
+public final class VulkanLWJGLJemallocTest
 {
-  protected abstract Logger logger();
-
-  protected boolean shouldRun()
+  @Test
+  public void testAllocateDeallocate()
   {
-    return !Objects.equals(System.getProperty(
-      "com.io7m.jcoronado.tests.noDeviceTests"), "true");
+    final var allocator =
+      new VulkanLWJGLHostAllocatorJeMalloc();
+
+    final var address =
+      allocator.allocate(100L, 8L, VK_SYSTEM_ALLOCATION_SCOPE_INSTANCE);
+
+    allocator.deallocate(address);
   }
 }

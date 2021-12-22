@@ -23,8 +23,6 @@ import com.io7m.jcoronado.api.VulkanException;
 import com.io7m.jcoronado.api.VulkanInstanceType;
 import com.io7m.jcoronado.api.VulkanLogicalDeviceType;
 import com.io7m.jcoronado.api.VulkanMemoryAllocateInfo;
-import com.io7m.jcoronado.api.VulkanMemoryPropertyFlag;
-import com.io7m.jcoronado.api.VulkanMemoryType;
 import com.io7m.jcoronado.api.VulkanPhysicalDeviceType;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -105,7 +103,9 @@ public abstract class VulkanBufferContract extends VulkanOnDeviceContract
       logger.debug("buffer requirements: {}", requirements);
 
       final var memory_type =
-        this.physical_device.memory().findSuitableMemoryType(requirements, Set.of());
+        this.physical_device.memory().findSuitableMemoryType(
+          requirements,
+          Set.of());
 
       final var memory_info =
         VulkanMemoryAllocateInfo.builder()

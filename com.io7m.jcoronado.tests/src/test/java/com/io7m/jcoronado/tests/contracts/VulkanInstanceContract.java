@@ -120,6 +120,9 @@ public abstract class VulkanInstanceContract extends VulkanOnDeviceContract
       Assertions.assertTrue(devices.size() > 0, "At least one device required");
       for (final var device : devices) {
         logger.debug("device: {}", device.properties().name());
+        logger.debug("features: {}", device.features());
+        logger.debug("properties: {}", device.properties());
+        logger.debug("limits: {}", device.limits());
       }
     }
   }
@@ -155,6 +158,9 @@ public abstract class VulkanInstanceContract extends VulkanOnDeviceContract
       Assertions.assertTrue(devices.size() > 0, "At least one device required");
       for (final var device : devices) {
         logger.debug("device: {}", device.properties().name());
+        logger.debug("features: {}", device.features());
+        logger.debug("properties: {}", device.properties());
+        logger.debug("limits: {}", device.limits());
       }
     }
   }

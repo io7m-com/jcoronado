@@ -28,7 +28,8 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Optional;
 
-public final class VulkanLWJGLPhysicalDeviceTest extends VulkanPhysicalDeviceContract
+public final class VulkanLWJGLPhysicalDeviceTest extends
+  VulkanPhysicalDeviceContract
 {
   private VulkanInstanceProviderType provider;
   private VulkanInstanceType instance;
@@ -37,7 +38,9 @@ public final class VulkanLWJGLPhysicalDeviceTest extends VulkanPhysicalDeviceCon
     final VulkanInstanceProviderType current_provider)
   {
     try {
-      return current_provider.createInstance(VulkanInstanceInfo.info(), Optional.empty());
+      return current_provider.createInstance(
+        VulkanInstanceInfo.info(),
+        Optional.empty());
     } catch (final VulkanException e) {
       throw new IllegalStateException(e);
     }
