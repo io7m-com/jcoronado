@@ -24,6 +24,7 @@ import com.io7m.jcoronado.api.VulkanBufferViewCreateInfo;
 import com.io7m.jcoronado.api.VulkanCommandPoolCreateInfo;
 import com.io7m.jcoronado.api.VulkanComponentMapping;
 import com.io7m.jcoronado.api.VulkanException;
+import com.io7m.jcoronado.api.VulkanExtent2D;
 import com.io7m.jcoronado.api.VulkanExtent3D;
 import com.io7m.jcoronado.api.VulkanFramebufferCreateInfo;
 import com.io7m.jcoronado.api.VulkanImageCreateInfo;
@@ -33,9 +34,12 @@ import com.io7m.jcoronado.api.VulkanImageViewKind;
 import com.io7m.jcoronado.api.VulkanInstanceType;
 import com.io7m.jcoronado.api.VulkanLogicalDeviceType;
 import com.io7m.jcoronado.api.VulkanMemoryAllocateInfo;
-import com.io7m.jcoronado.api.VulkanPhysicalDeviceFeatures;
+import com.io7m.jcoronado.api.VulkanOffset2D;
 import com.io7m.jcoronado.api.VulkanPhysicalDeviceType;
+import com.io7m.jcoronado.api.VulkanRectangle2D;
+import com.io7m.jcoronado.api.VulkanRenderPassBeginInfo;
 import com.io7m.jcoronado.api.VulkanRenderPassCreateInfo;
+import com.io7m.jcoronado.api.VulkanSubpassContents;
 import com.io7m.jcoronado.api.VulkanSubpassDescription;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assumptions;
@@ -325,7 +329,6 @@ public abstract class VulkanLogicalDeviceContract extends VulkanOnDeviceContract
     }
   }
 
-
   /**
    * Try creating a framebuffer.
    *
@@ -432,6 +435,150 @@ public abstract class VulkanLogicalDeviceContract extends VulkanOnDeviceContract
                        .setRenderPass(renderPass)
                        .build())) {
               assertFalse(framebuffer.isClosed());
+            }
+          }
+        }
+      }
+    }
+  }
+
+  /**
+   * Try recording a command buffer involving a render pass.
+   *
+   * @throws VulkanException On errors
+   */
+
+  @Test
+  public final void testCreateCommandBufferRenderPass()
+    throws VulkanException
+  {
+    Assumptions.assumeTrue(this.shouldRun(), "Test should run");
+
+    try (var image = this.device.createImage(
+      VulkanImageCreateInfo.builder()
+        .setArrayLayers(1)
+        .setSamples(Set.of(VK_SAMPLE_COUNT_1_BIT))
+        .setExtent(VulkanExtent3D.of(256, 256, 1))
+        .setFormat(VK_FORMAT_R5G6B5_UNORM_PACK16)
+        .setImageType(VK_IMAGE_TYPE_2D)
+        .setInitialLayout(VK_IMAGE_LAYOUT_UNDEFINED)
+        .setMipLevels(1)
+        .setSharingMode(VK_SHARING_MODE_EXCLUSIVE)
+        .setTiling(VK_IMAGE_TILING_OPTIMAL)
+        .setUsage(Set.of(VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT))
+        .build()
+    )) {
+      final var subresourceRange =
+        VulkanImageSubresourceRange.builder()
+          .setLayerCount(1)
+          .setLevelCount(1)
+          .setBaseArrayLayer(0)
+          .setBaseMipLevel(0)
+          .setAspectMask(Set.of(VK_IMAGE_ASPECT_COLOR_BIT))
+          .build();
+
+      final var imageMemoryRequirements =
+        this.device.getImageMemoryRequirements(image);
+
+      final var imageMemoryType =
+        this.physicalDevice.memory()
+          .findSuitableMemoryType(
+            imageMemoryRequirements,
+            Set.of(
+              VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
+              VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT));
+
+      try (var memory =
+             this.device.allocateMemory(
+               VulkanMemoryAllocateInfo.builder()
+                 .setSize(131072L)
+                 .setMemoryTypeIndex(imageMemoryType.heapIndex())
+                 .build())) {
+
+        this.device.bindImageMemory(image, memory, 0L);
+
+        try (var imageView =
+               this.device.createImageView(
+                 VulkanImageViewCreateInfo.builder()
+                   .setFormat(VK_FORMAT_R5G6B5_UNORM_PACK16)
+                   .setImage(image)
+                   .setComponents(VulkanComponentMapping.of(
+                     VK_COMPONENT_SWIZZLE_IDENTITY,
+                     VK_COMPONENT_SWIZZLE_IDENTITY,
+                     VK_COMPONENT_SWIZZLE_IDENTITY,
+                     VK_COMPONENT_SWIZZLE_IDENTITY
+                   ))
+                   .setViewType(VulkanImageViewKind.VK_IMAGE_VIEW_TYPE_2D)
+                   .setSubresourceRange(subresourceRange)
+                   .build()
+               )) {
+
+          try (var renderPass =
+                 this.device.createRenderPass(
+                   VulkanRenderPassCreateInfo.builder()
+                     .addAttachments(
+                       VulkanAttachmentDescription.builder()
+                         .setInitialLayout(VK_IMAGE_LAYOUT_UNDEFINED)
+                         .setFormat(VK_FORMAT_R5G6B5_UNORM_PACK16)
+                         .setSamples(VK_SAMPLE_COUNT_1_BIT)
+                         .setFinalLayout(
+                           VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL)
+                         .setLoadOp(VK_ATTACHMENT_LOAD_OP_DONT_CARE)
+                         .setStoreOp(VK_ATTACHMENT_STORE_OP_DONT_CARE)
+                         .setStencilLoadOp(VK_ATTACHMENT_LOAD_OP_DONT_CARE)
+                         .setStencilStoreOp(VK_ATTACHMENT_STORE_OP_DONT_CARE)
+                         .build())
+                     .addSubpasses(
+                       VulkanSubpassDescription.builder()
+                         .addColorAttachments(VulkanAttachmentReference.of(
+                           0,
+                           VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL))
+                         .setPipelineBindPoint(VK_PIPELINE_BIND_POINT_GRAPHICS)
+                         .build())
+                     .build()
+                 )) {
+
+            final var queue =
+              this.device.queues()
+                .get(0);
+
+            try (var pool =
+                   this.device.createCommandPool(
+                     VulkanCommandPoolCreateInfo.builder()
+                       .setQueueFamilyIndex(queue.queueIndex())
+                       .build())) {
+
+              try (var buffer =
+                     this.device.createCommandBuffer(
+                       pool,
+                       VK_COMMAND_BUFFER_LEVEL_PRIMARY)) {
+
+                try (var framebuffer =
+                       this.device.createFramebuffer(
+                         VulkanFramebufferCreateInfo.builder()
+                           .setLayers(1)
+                           .setWidth(256)
+                           .setHeight(256)
+                           .addAttachments(imageView)
+                           .setRenderPass(renderPass)
+                           .build())) {
+                  buffer.beginCommandBuffer();
+                  buffer.beginRenderPass(
+                    VulkanRenderPassBeginInfo.builder()
+                      .setRenderPass(renderPass)
+                      .setFramebuffer(framebuffer)
+                      .setRenderArea(
+                        VulkanRectangle2D.builder()
+                          .setExtent(VulkanExtent2D.of(256, 256))
+                          .setOffset(VulkanOffset2D.of(0, 0))
+                          .build())
+                      .build(),
+                    VulkanSubpassContents.VK_SUBPASS_CONTENTS_INLINE
+                  );
+                  buffer.endRenderPass();
+                  buffer.endCommandBuffer();
+                }
+              }
             }
           }
         }
