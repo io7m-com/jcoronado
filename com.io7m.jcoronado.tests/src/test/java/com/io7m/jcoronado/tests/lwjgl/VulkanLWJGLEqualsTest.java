@@ -22,6 +22,7 @@ import com.io7m.jcoronado.lwjgl.VulkanLWJGLCommandBuffer;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLCommandPool;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLDescriptorSetLayout;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLDeviceMemory;
+import com.io7m.jcoronado.lwjgl.VulkanLWJGLFence;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLFramebuffer;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLImage;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLImageView;
@@ -287,6 +288,19 @@ public final class VulkanLWJGLEqualsTest
   public void testVulkanLWJGLQueryPool()
   {
     EqualsVerifier.forClass(VulkanLWJGLQueryPool.class)
+      .withIgnoredFields(
+        "ownership",
+        "device",
+        "closed",
+        "host_allocator_proxy")
+      .withNonnullFields("handle")
+      .verify();
+  }
+
+  @Test
+  public void testVulkanLWJGLFence()
+  {
+    EqualsVerifier.forClass(VulkanLWJGLFence.class)
       .withIgnoredFields(
         "ownership",
         "device",
