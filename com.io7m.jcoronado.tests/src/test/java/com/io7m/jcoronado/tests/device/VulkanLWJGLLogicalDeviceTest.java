@@ -14,7 +14,7 @@
  * IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-package com.io7m.jcoronado.tests.device.lwjgl;
+package com.io7m.jcoronado.tests.device;
 
 import com.io7m.jcoronado.api.VulkanException;
 import com.io7m.jcoronado.api.VulkanInstanceProviderType;
@@ -24,14 +24,14 @@ import com.io7m.jcoronado.api.VulkanLogicalDeviceQueueCreateInfo;
 import com.io7m.jcoronado.api.VulkanLogicalDeviceType;
 import com.io7m.jcoronado.api.VulkanPhysicalDeviceType;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLInstanceProvider;
-import com.io7m.jcoronado.tests.contracts.VulkanBufferContract;
 import com.io7m.jcoronado.tests.contracts.VulkanInstanceInfo;
+import com.io7m.jcoronado.tests.contracts.VulkanLogicalDeviceContract;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Optional;
 
-public final class VulkanLWJGLBufferTest extends VulkanBufferContract
+public final class VulkanLWJGLLogicalDeviceTest extends VulkanLogicalDeviceContract
 {
   private VulkanInstanceProviderType provider;
   private VulkanInstanceType instance;
@@ -49,7 +49,7 @@ public final class VulkanLWJGLBufferTest extends VulkanBufferContract
   @Override
   protected Logger logger()
   {
-    return LoggerFactory.getLogger(VulkanLWJGLBufferTest.class);
+    return LoggerFactory.getLogger(VulkanLWJGLLogicalDeviceTest.class);
   }
 
   @Override

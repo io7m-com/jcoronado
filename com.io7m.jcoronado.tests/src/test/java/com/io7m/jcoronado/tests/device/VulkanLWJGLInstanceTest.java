@@ -14,8 +14,25 @@
  * IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/**
- * Type-safe Vulkan frontend (On-device LWJGL tests)
- */
+package com.io7m.jcoronado.tests.device;
 
-package com.io7m.jcoronado.tests.device.lwjgl;
+import com.io7m.jcoronado.api.VulkanInstanceProviderType;
+import com.io7m.jcoronado.lwjgl.VulkanLWJGLInstanceProvider;
+import com.io7m.jcoronado.tests.contracts.VulkanInstanceContract;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public final class VulkanLWJGLInstanceTest extends VulkanInstanceContract
+{
+  @Override
+  protected Logger logger()
+  {
+    return LoggerFactory.getLogger(VulkanLWJGLInstanceTest.class);
+  }
+
+  @Override
+  protected VulkanInstanceProviderType instanceProvider()
+  {
+    return VulkanLWJGLInstanceProvider.create();
+  }
+}

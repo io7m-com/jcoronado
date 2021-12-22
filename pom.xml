@@ -26,12 +26,11 @@
     <module>com.io7m.jcoronado.api</module>
     <module>com.io7m.jcoronado.documentation</module>
     <module>com.io7m.jcoronado.examples</module>
+    <module>com.io7m.jcoronado.extensions.ext_debug_utils.api</module>
     <module>com.io7m.jcoronado.extensions.khr_surface.api</module>
     <module>com.io7m.jcoronado.lwjgl</module>
-    <module>com.io7m.jcoronado.tests.device</module>
     <module>com.io7m.jcoronado.tests</module>
     <module>com.io7m.jcoronado.vma</module>
-    <module>com.io7m.jcoronado.extensions.ext_debug_utils.api</module>
   </modules>
 
   <properties>
