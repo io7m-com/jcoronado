@@ -696,22 +696,6 @@ public final class HelloVulkan implements ExampleType
     final var finished = new AtomicBoolean(false);
 
     /*
-     * Start a background thread that waits for the user to type a single character into the
-     * terminal, and sets the "finished" flag when that happens.
-     */
-
-    final var exec = Executors.newFixedThreadPool(1);
-    exec.execute(() -> {
-      try {
-        System.in.read();
-        LOG.debug("finished");
-        finished.set(true);
-      } catch (final IOException e) {
-        LOG.error("i/o error: ", e);
-      }
-    });
-
-    /*
      * Create an allocator for temporary objects.
      */
 
@@ -1377,6 +1361,12 @@ public final class HelloVulkan implements ExampleType
 
       var frame = 0;
       while (!finished.get()) {
+        GLFW.glfwPollEvents();
+
+        if (GLFW.glfwWindowShouldClose(window)) {
+          finished.set(true);
+        }
+
         drawFrame(
           khrSwapchainExt,
           swapChain,
@@ -1418,12 +1408,6 @@ public final class HelloVulkan implements ExampleType
       throw e;
     } finally {
       GLFW_ERROR_CALLBACK.close();
-      exec.shutdown();
-      try {
-        exec.awaitTermination(5L, SECONDS);
-      } catch (final InterruptedException e) {
-        Thread.currentThread().interrupt();
-      }
     }
   }
 }
