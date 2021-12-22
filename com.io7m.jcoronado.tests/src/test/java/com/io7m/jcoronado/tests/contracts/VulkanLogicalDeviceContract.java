@@ -33,6 +33,7 @@ import com.io7m.jcoronado.api.VulkanImageViewKind;
 import com.io7m.jcoronado.api.VulkanInstanceType;
 import com.io7m.jcoronado.api.VulkanLogicalDeviceType;
 import com.io7m.jcoronado.api.VulkanMemoryAllocateInfo;
+import com.io7m.jcoronado.api.VulkanPhysicalDeviceFeatures;
 import com.io7m.jcoronado.api.VulkanPhysicalDeviceType;
 import com.io7m.jcoronado.api.VulkanRenderPassCreateInfo;
 import com.io7m.jcoronado.api.VulkanSubpassDescription;

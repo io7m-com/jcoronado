@@ -28,14 +28,18 @@ import com.io7m.jcoronado.api.VulkanPhysicalDeviceType;
 import com.io7m.jcoronado.api.VulkanVersions;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLInstanceProvider;
 import com.io7m.jcoronado.tests.contracts.VulkanLogicalDeviceContract;
+import org.junit.jupiter.api.Assumptions;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Optional;
 
-public final class VulkanLWJGLLogicalDeviceTest extends
-  VulkanLogicalDeviceContract
+import static org.junit.jupiter.api.Assertions.assertFalse;
+
+public final class VulkanLWJGLLogicalDeviceTest
+  extends VulkanLogicalDeviceContract
 {
   private VulkanInstanceProviderType provider;
   private VulkanInstanceType instance;
@@ -107,5 +111,143 @@ public final class VulkanLWJGLLogicalDeviceTest extends
       VulkanLogicalDeviceCreateInfo.builder()
         .addQueueCreateInfos(queue)
         .build());
+  }
+
+  /**
+   * Create a logical device with all supported features enabled.
+   * @throws VulkanException On errors
+   */
+
+  @Test
+  public void testCreateLogicalDeviceWithFeatures()
+    throws VulkanException
+  {
+    Assumptions.assumeTrue(this.shouldRun());
+
+    final var instances =
+      VulkanLWJGLInstanceProvider.create();
+
+    final var requestedVersion =
+      VulkanVersions.encode(1, 0, 0);
+
+    final var instanceInfo =
+      VulkanInstanceCreateInfo.builder()
+        .setApplicationInfo(
+          VulkanApplicationInfo.of(
+            "com.io7m.jcoronado.tests.Test",
+            VulkanVersions.encode(0, 0, 1),
+            "com.io7m.jcoronado.tests",
+            VulkanVersions.encode(0, 0, 1),
+            requestedVersion))
+        .setEnabledLayers(List.of("VK_LAYER_KHRONOS_validation"))
+        .build();
+
+    try (var newInstance =
+           instances.createInstance(instanceInfo, Optional.empty())) {
+
+      this.logger().debug(
+        "Vulkan Maximum:   {}",
+        newInstance.apiVersionMaximumSupported().toHumanString());
+      this.logger().debug(
+        "Vulkan Requested: {}",
+        newInstance.apiVersionUsed().toHumanString());
+
+      try (var physicalDevice =
+             newInstance.physicalDevices()
+              .get(0)) {
+
+        final var queue =
+          VulkanLogicalDeviceQueueCreateInfo.builder()
+            .setQueueCount(1)
+            .setQueueFamilyIndex(
+              physicalDevice.queueFamilies()
+                .get(0)
+                .queueFamilyIndex())
+            .setQueuePriorities(1.0f)
+            .build();
+
+        final var logicalInfo =
+          VulkanLogicalDeviceCreateInfo.builder()
+            .setFeatures(physicalDevice.features())
+            .addQueueCreateInfos(queue)
+            .build();
+
+        try (var logicalDevice =
+               physicalDevice.createLogicalDevice(logicalInfo)) {
+          this.logger().debug("waiting for device to idle...");
+          logicalDevice.waitIdle();
+          assertFalse(logicalDevice.isClosed());
+        }
+      }
+    }
+  }
+
+  /**
+   * Create a logical device with all supported features enabled, on the highest
+   * supported Vulkan version.
+   * @throws VulkanException On errors
+   */
+
+  @Test
+  public void testCreateLogicalDeviceWithFeaturesHighest()
+    throws VulkanException
+  {
+    Assumptions.assumeTrue(this.shouldRun());
+
+    final var instances =
+      VulkanLWJGLInstanceProvider.create();
+    final var requestedVersion =
+      VulkanVersions.encode(instances.findSupportedInstanceVersion());
+
+    final var instanceInfo =
+      VulkanInstanceCreateInfo.builder()
+        .setApplicationInfo(
+          VulkanApplicationInfo.of(
+            "com.io7m.jcoronado.tests.Test",
+            VulkanVersions.encode(0, 0, 1),
+            "com.io7m.jcoronado.tests",
+            VulkanVersions.encode(0, 0, 1),
+            requestedVersion))
+        .setEnabledLayers(List.of("VK_LAYER_KHRONOS_validation"))
+        .build();
+
+    try (var newInstance =
+           instances.createInstance(instanceInfo, Optional.empty())) {
+
+      this.logger().debug(
+        "Vulkan Maximum:   {}",
+        newInstance.apiVersionMaximumSupported().toHumanString());
+      this.logger().debug(
+        "Vulkan Requested: {}",
+        newInstance.apiVersionUsed().toHumanString());
+
+      try (var physicalDevice =
+             newInstance.physicalDevices()
+               .get(0)) {
+
+        final var queue =
+          VulkanLogicalDeviceQueueCreateInfo.builder()
+            .setQueueCount(1)
+            .setQueueFamilyIndex(
+              physicalDevice.queueFamilies()
+                .get(0)
+                .queueFamilyIndex())
+            .setQueuePriorities(1.0f)
+            .build();
+
+        final var logicalInfo =
+          VulkanLogicalDeviceCreateInfo.builder()
+            .setFeatures(physicalDevice.features())
+            .addQueueCreateInfos(queue)
+            .build();
+
+        try (var logicalDevice =
+               physicalDevice.createLogicalDevice(logicalInfo)) {
+          this.logger().debug("waiting for device to idle...");
+          logicalDevice.waitIdle();
+          assertFalse(logicalDevice.isClosed());
+        }
+      }
+    }
   }
 }

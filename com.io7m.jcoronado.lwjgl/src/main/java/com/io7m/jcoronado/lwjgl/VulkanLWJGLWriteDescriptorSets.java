@@ -102,7 +102,10 @@ public final class VulkanLWJGLWriteDescriptorSets
     final var targetImageInfos =
       packListOrNull(stack, imageInfos);
     final var targetTexelBufferViews =
-      packLongsOrNull(stack, texelViews, VulkanLWJGLWriteDescriptorSets::viewHandle);
+      packLongsOrNull(
+        stack,
+        texelViews,
+        VulkanLWJGLWriteDescriptorSets::viewHandle);
 
     target
       .sType(VK10.VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET)

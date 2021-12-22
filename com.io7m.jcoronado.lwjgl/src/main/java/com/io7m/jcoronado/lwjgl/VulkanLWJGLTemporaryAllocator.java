@@ -26,7 +26,8 @@ import org.slf4j.LoggerFactory;
 import java.util.Objects;
 
 /**
- * An LWJGL based implementation of the {@link VulkanTemporaryAllocatorType} interface.
+ * An LWJGL based implementation of the {@link VulkanTemporaryAllocatorType}
+ * interface.
  */
 
 public final class VulkanLWJGLTemporaryAllocator implements

@@ -49,7 +49,8 @@ public final class VulkanLWJGLComputePipelineCreateInfos
    *
    * @return A packed list of structures
    *
-   * @throws VulkanIncompatibleClassException If one or more incompatible classes were specified
+   * @throws VulkanIncompatibleClassException If one or more incompatible
+   *                                          classes were specified
    * @throws VulkanException                  On errors
    */
 

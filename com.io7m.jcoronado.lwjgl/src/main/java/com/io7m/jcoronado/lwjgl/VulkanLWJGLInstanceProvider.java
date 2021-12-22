@@ -278,10 +278,11 @@ public final class VulkanLWJGLInstanceProvider
 
       return new VulkanLWJGLInstance(
         instance,
-        info,
         this.extensions,
         enabled,
-        allocatorProxy
+        allocatorProxy,
+        this.findSupportedInstanceVersion(),
+        VulkanVersions.decode(info.applicationInfo().vulkanAPIVersion())
       );
     }
   }

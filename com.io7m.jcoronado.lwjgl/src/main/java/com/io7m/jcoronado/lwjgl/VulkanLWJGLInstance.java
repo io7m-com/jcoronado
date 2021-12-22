@@ -22,7 +22,6 @@ import com.io7m.jcoronado.api.VulkanComputeWorkGroupSize;
 import com.io7m.jcoronado.api.VulkanException;
 import com.io7m.jcoronado.api.VulkanExtensionType;
 import com.io7m.jcoronado.api.VulkanExtent3D;
-import com.io7m.jcoronado.api.VulkanInstanceCreateInfo;
 import com.io7m.jcoronado.api.VulkanInstanceType;
 import com.io7m.jcoronado.api.VulkanLineWidthRange;
 import com.io7m.jcoronado.api.VulkanMemoryHeap;
@@ -90,24 +89,30 @@ public final class VulkanLWJGLInstance
   private final VkInstance instance;
   private final MemoryStack initialStack;
   private final Map<String, VulkanExtensionType> extensionsEnabledReadOnly;
-  private final VulkanInstanceCreateInfo info;
   private final VulkanLWJGLExtensionsRegistry extensionsRegistry;
+  private final VulkanVersion apiVersionMaximumSupported;
+  private final VulkanVersion apiVersionUsed;
 
   VulkanLWJGLInstance(
     final VkInstance inInstance,
-    final VulkanInstanceCreateInfo inInfo,
     final VulkanLWJGLExtensionsRegistry inExtensionRegistry,
     final Map<String, VulkanExtensionType> inExtensionsEnabled,
-    final VulkanLWJGLHostAllocatorProxy inHostAllocatorProxy)
+    final VulkanLWJGLHostAllocatorProxy inHostAllocatorProxy,
+    final VulkanVersion inApiVersionMaximumSupported,
+    final VulkanVersion inApiVersionUsed)
   {
     super(Ownership.USER_OWNED, inHostAllocatorProxy);
 
     this.instance =
       Objects.requireNonNull(inInstance, "instance");
-    this.info =
-      Objects.requireNonNull(inInfo, "info");
     this.extensionsRegistry =
       Objects.requireNonNull(inExtensionRegistry, "extension_registry");
+    this.apiVersionMaximumSupported =
+      Objects.requireNonNull(
+        inApiVersionMaximumSupported,
+        "apiVersionMaximumSupported");
+    this.apiVersionUsed =
+      Objects.requireNonNull(inApiVersionUsed, "apiVersionUsed");
     this.initialStack =
       MemoryStack.create();
     this.extensionsEnabledReadOnly =
@@ -1001,9 +1006,6 @@ public final class VulkanLWJGLInstance
         final var vkDevice =
           new VkPhysicalDevice(devicePtr, this.instance);
 
-        final var version =
-          VulkanVersions.decode(this.info.applicationInfo().vulkanAPIVersion());
-
         final var device =
           this.parsePhysicalDevice(
             stack,
@@ -1011,13 +1013,25 @@ public final class VulkanLWJGLInstance
             index,
             vkProperties,
             vkMemory,
-            version);
+            this.apiVersionUsed);
 
         devices.add(device);
       }
     }
 
     return devices.stream();
+  }
+
+  @Override
+  public VulkanVersion apiVersionMaximumSupported()
+  {
+    return this.apiVersionMaximumSupported;
+  }
+
+  @Override
+  public VulkanVersion apiVersionUsed()
+  {
+    return this.apiVersionUsed;
   }
 
   @Override

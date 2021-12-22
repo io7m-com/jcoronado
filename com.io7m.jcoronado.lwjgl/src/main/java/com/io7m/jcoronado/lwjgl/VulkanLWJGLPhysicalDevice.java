@@ -36,6 +36,8 @@ import com.io7m.jcoronado.api.VulkanLogicalDeviceQueueCreateInfo;
 import com.io7m.jcoronado.api.VulkanLogicalDeviceType;
 import com.io7m.jcoronado.api.VulkanPhysicalDeviceFeatures;
 import com.io7m.jcoronado.api.VulkanPhysicalDeviceFeatures10;
+import com.io7m.jcoronado.api.VulkanPhysicalDeviceFeatures11;
+import com.io7m.jcoronado.api.VulkanPhysicalDeviceFeatures12;
 import com.io7m.jcoronado.api.VulkanPhysicalDeviceLimits;
 import com.io7m.jcoronado.api.VulkanPhysicalDeviceMemoryProperties;
 import com.io7m.jcoronado.api.VulkanPhysicalDeviceProperties;
@@ -52,6 +54,9 @@ import org.lwjgl.vulkan.VkImageFormatProperties;
 import org.lwjgl.vulkan.VkLayerProperties;
 import org.lwjgl.vulkan.VkPhysicalDevice;
 import org.lwjgl.vulkan.VkPhysicalDeviceFeatures;
+import org.lwjgl.vulkan.VkPhysicalDeviceFeatures2;
+import org.lwjgl.vulkan.VkPhysicalDeviceVulkan11Features;
+import org.lwjgl.vulkan.VkPhysicalDeviceVulkan12Features;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -65,6 +70,9 @@ import java.util.Optional;
 import java.util.Set;
 
 import static com.io7m.jcoronado.api.VulkanChecks.checkReturnCode;
+import static org.lwjgl.vulkan.VK11.VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FEATURES_2;
+import static org.lwjgl.vulkan.VK12.VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_1_FEATURES;
+import static org.lwjgl.vulkan.VK12.VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_2_FEATURES;
 
 /**
  * LWJGL {@link VkPhysicalDevice}
@@ -85,140 +93,320 @@ public final class VulkanLWJGLPhysicalDevice
   private final VulkanPhysicalDeviceLimits limits;
   private final VulkanPhysicalDeviceFeatures features;
   private final VulkanPhysicalDeviceMemoryProperties memory;
-  private final List<VulkanQueueFamilyProperties> queue_families;
-  private final MemoryStack stack_initial;
+  private final List<VulkanQueueFamilyProperties> queueFamilies;
+  private final MemoryStack stackInitial;
 
   VulkanLWJGLPhysicalDevice(
-    final VulkanLWJGLInstance in_instance,
-    final VkPhysicalDevice in_device,
-    final VulkanPhysicalDeviceProperties in_properties,
-    final VulkanPhysicalDeviceLimits in_limits,
-    final VulkanPhysicalDeviceFeatures in_features,
-    final VulkanPhysicalDeviceMemoryProperties in_memory,
-    final List<VulkanQueueFamilyProperties> in_queue_families,
-    final VulkanLWJGLHostAllocatorProxy in_host_allocator_proxy)
+    final VulkanLWJGLInstance inInstance,
+    final VkPhysicalDevice inDevice,
+    final VulkanPhysicalDeviceProperties inProperties,
+    final VulkanPhysicalDeviceLimits inLimits,
+    final VulkanPhysicalDeviceFeatures inFeatures,
+    final VulkanPhysicalDeviceMemoryProperties inMemory,
+    final List<VulkanQueueFamilyProperties> inQueueFamilies,
+    final VulkanLWJGLHostAllocatorProxy inHostAllocatorProxy)
   {
-    super(Ownership.USER_OWNED, in_host_allocator_proxy);
+    super(Ownership.USER_OWNED, inHostAllocatorProxy);
 
     this.instance =
-      Objects.requireNonNull(in_instance, "instance");
+      Objects.requireNonNull(inInstance, "instance");
     this.device =
-      Objects.requireNonNull(in_device, "device");
+      Objects.requireNonNull(inDevice, "device");
     this.properties =
-      Objects.requireNonNull(in_properties, "properties");
+      Objects.requireNonNull(inProperties, "properties");
     this.limits =
-      Objects.requireNonNull(in_limits, "limits");
+      Objects.requireNonNull(inLimits, "limits");
     this.features =
-      Objects.requireNonNull(in_features, "features");
+      Objects.requireNonNull(inFeatures, "features");
     this.memory =
-      Objects.requireNonNull(in_memory, "memory");
-    this.queue_families =
+      Objects.requireNonNull(inMemory, "memory");
+    this.queueFamilies =
       Collections.unmodifiableList(
-        Objects.requireNonNull(in_queue_families, "queue_families"));
-
-    this.stack_initial = MemoryStack.create();
-  }
-
-  private static VkPhysicalDeviceFeatures createPhysicalDeviceFeatures(
-    final MemoryStack stack,
-    final VulkanLogicalDeviceCreateInfo info)
-  {
-    final VkPhysicalDeviceFeatures vk_features;
-    final var features_opt = info.features();
-    if (features_opt.isPresent()) {
-      vk_features = VkPhysicalDeviceFeatures.malloc(stack);
-      packPhysicalDeviceFeatures10(vk_features, features_opt.get().features10());
-    } else {
-      vk_features = null;
-    }
-    return vk_features;
+        Objects.requireNonNull(inQueueFamilies, "queue_families"));
+    this.stackInitial =
+      MemoryStack.create();
   }
 
   /**
-   * This method was not hand-written. See: features-set2.sh
+   * This method was not hand-written. See: GenerateFeatures10ToVkFeatures
    */
 
   private static void packPhysicalDeviceFeatures10(
-    final VkPhysicalDeviceFeatures vk_features,
-    final VulkanPhysicalDeviceFeatures10 features)
+    final VkPhysicalDeviceFeatures vkFeatures,
+    final VulkanPhysicalDeviceFeatures10 outFeatures)
   {
-    vk_features
-      .alphaToOne(features.alphaToOne())
-      .depthBiasClamp(features.depthBiasClamp())
-      .depthBounds(features.depthBounds())
-      .depthClamp(features.depthClamp())
-      .drawIndirectFirstInstance(features.drawIndirectFirstInstance())
-      .dualSrcBlend(features.dualSrcBlend())
-      .fillModeNonSolid(features.fillModeNonSolid())
-      .fragmentStoresAndAtomics(features.fragmentStoresAndAtomics())
-      .fullDrawIndexUint32(features.fullDrawIndexUint32())
-      .geometryShader(features.geometryShader())
-      .imageCubeArray(features.imageCubeArray())
-      .independentBlend(features.independentBlend())
-      .inheritedQueries(features.inheritedQueries())
-      .largePoints(features.largePoints())
-      .logicOp(features.logicOp())
-      .multiDrawIndirect(features.multiDrawIndirect())
-      .multiViewport(features.multiViewport())
-      .occlusionQueryPrecise(features.occlusionQueryPrecise())
-      .pipelineStatisticsQuery(features.pipelineStatisticsQuery())
-      .robustBufferAccess(features.robustBufferAccess())
-      .samplerAnisotropy(features.samplerAnisotropy())
-      .sampleRateShading(features.sampleRateShading())
-      .shaderClipDistance(features.shaderClipDistance())
-      .shaderCullDistance(features.shaderCullDistance())
-      .shaderFloat64(features.shaderFloat64())
-      .shaderImageGatherExtended(features.shaderImageGatherExtended())
-      .shaderInt16(features.shaderInt16())
-      .shaderInt64(features.shaderInt64())
-      .shaderResourceMinLod(features.shaderResourceMinLod())
-      .shaderResourceResidency(features.shaderResourceResidency())
-      .shaderSampledImageArrayDynamicIndexing(features.shaderSampledImageArrayDynamicIndexing())
-      .shaderStorageBufferArrayDynamicIndexing(features.shaderStorageBufferArrayDynamicIndexing())
-      .shaderStorageImageArrayDynamicIndexing(features.shaderStorageImageArrayDynamicIndexing())
-      .shaderStorageImageExtendedFormats(features.shaderStorageImageExtendedFormats())
-      .shaderStorageImageMultisample(features.shaderStorageImageMultisample())
-      .shaderStorageImageReadWithoutFormat(features.shaderStorageImageReadWithoutFormat())
-      .shaderStorageImageWriteWithoutFormat(features.shaderStorageImageWriteWithoutFormat())
-      .shaderTessellationAndGeometryPointSize(features.shaderTessellationAndGeometryPointSize())
-      .shaderUniformBufferArrayDynamicIndexing(features.shaderUniformBufferArrayDynamicIndexing())
-      .sparseBinding(features.sparseBinding())
-      .sparseResidency16Samples(features.sparseResidency16Samples())
-      .sparseResidency2Samples(features.sparseResidency2Samples())
-      .sparseResidency4Samples(features.sparseResidency4Samples())
-      .sparseResidency8Samples(features.sparseResidency8Samples())
-      .sparseResidencyAliased(features.sparseResidencyAliased())
-      .sparseResidencyBuffer(features.sparseResidencyBuffer())
-      .sparseResidencyImage2D(features.sparseResidencyImage2D())
-      .sparseResidencyImage3D(features.sparseResidencyImage3D())
-      .tessellationShader(features.tessellationShader())
-      .textureCompressionASTC_LDR(features.textureCompressionASTC_LDR())
-      .textureCompressionBC(features.textureCompressionBC())
-      .textureCompressionETC2(features.textureCompressionETC2())
-      .variableMultisampleRate(features.variableMultisampleRate())
-      .vertexPipelineStoresAndAtomics(features.vertexPipelineStoresAndAtomics())
-      .wideLines(features.wideLines());
+    vkFeatures
+      .alphaToOne(
+        outFeatures.alphaToOne())
+      .depthBiasClamp(
+        outFeatures.depthBiasClamp())
+      .depthBounds(
+        outFeatures.depthBounds())
+      .depthClamp(
+        outFeatures.depthClamp())
+      .drawIndirectFirstInstance(
+        outFeatures.drawIndirectFirstInstance())
+      .dualSrcBlend(
+        outFeatures.dualSrcBlend())
+      .fillModeNonSolid(
+        outFeatures.fillModeNonSolid())
+      .fragmentStoresAndAtomics(
+        outFeatures.fragmentStoresAndAtomics())
+      .fullDrawIndexUint32(
+        outFeatures.fullDrawIndexUint32())
+      .geometryShader(
+        outFeatures.geometryShader())
+      .imageCubeArray(
+        outFeatures.imageCubeArray())
+      .independentBlend(
+        outFeatures.independentBlend())
+      .inheritedQueries(
+        outFeatures.inheritedQueries())
+      .largePoints(
+        outFeatures.largePoints())
+      .logicOp(
+        outFeatures.logicOp())
+      .multiDrawIndirect(
+        outFeatures.multiDrawIndirect())
+      .multiViewport(
+        outFeatures.multiViewport())
+      .occlusionQueryPrecise(
+        outFeatures.occlusionQueryPrecise())
+      .pipelineStatisticsQuery(
+        outFeatures.pipelineStatisticsQuery())
+      .robustBufferAccess(
+        outFeatures.robustBufferAccess())
+      .samplerAnisotropy(
+        outFeatures.samplerAnisotropy())
+      .sampleRateShading(
+        outFeatures.sampleRateShading())
+      .shaderClipDistance(
+        outFeatures.shaderClipDistance())
+      .shaderCullDistance(
+        outFeatures.shaderCullDistance())
+      .shaderFloat64(
+        outFeatures.shaderFloat64())
+      .shaderImageGatherExtended(
+        outFeatures.shaderImageGatherExtended())
+      .shaderInt16(
+        outFeatures.shaderInt16())
+      .shaderInt64(
+        outFeatures.shaderInt64())
+      .shaderResourceMinLod(
+        outFeatures.shaderResourceMinLod())
+      .shaderResourceResidency(
+        outFeatures.shaderResourceResidency())
+      .shaderSampledImageArrayDynamicIndexing(
+        outFeatures.shaderSampledImageArrayDynamicIndexing())
+      .shaderStorageBufferArrayDynamicIndexing(
+        outFeatures.shaderStorageBufferArrayDynamicIndexing())
+      .shaderStorageImageArrayDynamicIndexing(
+        outFeatures.shaderStorageImageArrayDynamicIndexing())
+      .shaderStorageImageExtendedFormats(
+        outFeatures.shaderStorageImageExtendedFormats())
+      .shaderStorageImageMultisample(
+        outFeatures.shaderStorageImageMultisample())
+      .shaderStorageImageReadWithoutFormat(
+        outFeatures.shaderStorageImageReadWithoutFormat())
+      .shaderStorageImageWriteWithoutFormat(
+        outFeatures.shaderStorageImageWriteWithoutFormat())
+      .shaderTessellationAndGeometryPointSize(
+        outFeatures.shaderTessellationAndGeometryPointSize())
+      .shaderUniformBufferArrayDynamicIndexing(
+        outFeatures.shaderUniformBufferArrayDynamicIndexing())
+      .sparseBinding(
+        outFeatures.sparseBinding())
+      .sparseResidency16Samples(
+        outFeatures.sparseResidency16Samples())
+      .sparseResidency2Samples(
+        outFeatures.sparseResidency2Samples())
+      .sparseResidency4Samples(
+        outFeatures.sparseResidency4Samples())
+      .sparseResidency8Samples(
+        outFeatures.sparseResidency8Samples())
+      .sparseResidencyAliased(
+        outFeatures.sparseResidencyAliased())
+      .sparseResidencyBuffer(
+        outFeatures.sparseResidencyBuffer())
+      .sparseResidencyImage2D(
+        outFeatures.sparseResidencyImage2D())
+      .sparseResidencyImage3D(
+        outFeatures.sparseResidencyImage3D())
+      .tessellationShader(
+        outFeatures.tessellationShader())
+      .textureCompressionASTC_LDR(
+        outFeatures.textureCompressionASTC_LDR())
+      .textureCompressionBC(
+        outFeatures.textureCompressionBC())
+      .textureCompressionETC2(
+        outFeatures.textureCompressionETC2())
+      .variableMultisampleRate(
+        outFeatures.variableMultisampleRate())
+      .vertexPipelineStoresAndAtomics(
+        outFeatures.vertexPipelineStoresAndAtomics())
+      .wideLines(
+        outFeatures.wideLines());
+  }
+
+  /**
+   * This method was not hand-written. See: GenerateFeatures11ToVkFeatures
+   */
+
+  private static void packPhysicalDeviceFeatures11(
+    final VkPhysicalDeviceVulkan11Features vkFeatures,
+    final VulkanPhysicalDeviceFeatures11 outFeatures)
+  {
+    vkFeatures
+      .multiview(
+        outFeatures.multiview())
+      .multiviewGeometryShader(
+        outFeatures.multiviewGeometryShader())
+      .multiviewTessellationShader(
+        outFeatures.multiviewTessellationShader())
+      .protectedMemory(
+        outFeatures.protectedMemory())
+      .samplerYcbcrConversion(
+        outFeatures.samplerYcbcrConversion())
+      .shaderDrawParameters(
+        outFeatures.shaderDrawParameters())
+      .storageBuffer16BitAccess(
+        outFeatures.storageBuffer16BitAccess())
+      .storageInputOutput16(
+        outFeatures.storageInputOutput16())
+      .storagePushConstant16(
+        outFeatures.storagePushConstant16())
+      .uniformAndStorageBuffer16BitAccess(
+        outFeatures.uniformAndStorageBuffer16BitAccess())
+      .variablePointers(
+        outFeatures.variablePointers())
+      .variablePointersStorageBuffer(
+        outFeatures.variablePointersStorageBuffer());
+  }
+
+  /**
+   * This method was not hand-written. See: GenerateFeatures12ToVkFeatures
+   */
+
+  private static void packPhysicalDeviceFeatures12(
+    final VkPhysicalDeviceVulkan12Features vkFeatures,
+    final VulkanPhysicalDeviceFeatures12 outFeatures)
+  {
+    vkFeatures
+      .bufferDeviceAddress(
+        outFeatures.bufferDeviceAddress())
+      .bufferDeviceAddressCaptureReplay(
+        outFeatures.bufferDeviceAddressCaptureReplay())
+      .bufferDeviceAddressMultiDevice(
+        outFeatures.bufferDeviceAddressMultiDevice())
+      .descriptorBindingPartiallyBound(
+        outFeatures.descriptorBindingPartiallyBound())
+      .descriptorBindingSampledImageUpdateAfterBind(
+        outFeatures.descriptorBindingSampledImageUpdateAfterBind())
+      .descriptorBindingStorageBufferUpdateAfterBind(
+        outFeatures.descriptorBindingStorageBufferUpdateAfterBind())
+      .descriptorBindingStorageImageUpdateAfterBind(
+        outFeatures.descriptorBindingStorageImageUpdateAfterBind())
+      .descriptorBindingStorageTexelBufferUpdateAfterBind(
+        outFeatures.descriptorBindingStorageTexelBufferUpdateAfterBind())
+      .descriptorBindingUniformBufferUpdateAfterBind(
+        outFeatures.descriptorBindingUniformBufferUpdateAfterBind())
+      .descriptorBindingUniformTexelBufferUpdateAfterBind(
+        outFeatures.descriptorBindingUniformTexelBufferUpdateAfterBind())
+      .descriptorBindingUpdateUnusedWhilePending(
+        outFeatures.descriptorBindingUpdateUnusedWhilePending())
+      .descriptorBindingVariableDescriptorCount(
+        outFeatures.descriptorBindingVariableDescriptorCount())
+      .descriptorIndexing(
+        outFeatures.descriptorIndexing())
+      .drawIndirectCount(
+        outFeatures.drawIndirectCount())
+      .hostQueryReset(
+        outFeatures.hostQueryReset())
+      .imagelessFramebuffer(
+        outFeatures.imagelessFramebuffer())
+      .runtimeDescriptorArray(
+        outFeatures.runtimeDescriptorArray())
+      .samplerFilterMinmax(
+        outFeatures.samplerFilterMinmax())
+      .samplerMirrorClampToEdge(
+        outFeatures.samplerMirrorClampToEdge())
+      .scalarBlockLayout(
+        outFeatures.scalarBlockLayout())
+      .separateDepthStencilLayouts(
+        outFeatures.separateDepthStencilLayouts())
+      .shaderBufferInt64Atomics(
+        outFeatures.shaderBufferInt64Atomics())
+      .shaderFloat16(
+        outFeatures.shaderFloat16())
+      .shaderInputAttachmentArrayDynamicIndexing(
+        outFeatures.shaderInputAttachmentArrayDynamicIndexing())
+      .shaderInputAttachmentArrayNonUniformIndexing(
+        outFeatures.shaderInputAttachmentArrayNonUniformIndexing())
+      .shaderInt8(
+        outFeatures.shaderInt8())
+      .shaderOutputLayer(
+        outFeatures.shaderOutputLayer())
+      .shaderOutputViewportIndex(
+        outFeatures.shaderOutputViewportIndex())
+      .shaderSampledImageArrayNonUniformIndexing(
+        outFeatures.shaderSampledImageArrayNonUniformIndexing())
+      .shaderSharedInt64Atomics(
+        outFeatures.shaderSharedInt64Atomics())
+      .shaderStorageBufferArrayNonUniformIndexing(
+        outFeatures.shaderStorageBufferArrayNonUniformIndexing())
+      .shaderStorageImageArrayNonUniformIndexing(
+        outFeatures.shaderStorageImageArrayNonUniformIndexing())
+      .shaderStorageTexelBufferArrayDynamicIndexing(
+        outFeatures.shaderStorageTexelBufferArrayDynamicIndexing())
+      .shaderStorageTexelBufferArrayNonUniformIndexing(
+        outFeatures.shaderStorageTexelBufferArrayNonUniformIndexing())
+      .shaderSubgroupExtendedTypes(
+        outFeatures.shaderSubgroupExtendedTypes())
+      .shaderUniformBufferArrayNonUniformIndexing(
+        outFeatures.shaderUniformBufferArrayNonUniformIndexing())
+      .shaderUniformTexelBufferArrayDynamicIndexing(
+        outFeatures.shaderUniformTexelBufferArrayDynamicIndexing())
+      .shaderUniformTexelBufferArrayNonUniformIndexing(
+        outFeatures.shaderUniformTexelBufferArrayNonUniformIndexing())
+      .storageBuffer8BitAccess(
+        outFeatures.storageBuffer8BitAccess())
+      .storagePushConstant8(
+        outFeatures.storagePushConstant8())
+      .subgroupBroadcastDynamicId(
+        outFeatures.subgroupBroadcastDynamicId())
+      .timelineSemaphore(
+        outFeatures.timelineSemaphore())
+      .uniformAndStorageBuffer8BitAccess(
+        outFeatures.uniformAndStorageBuffer8BitAccess())
+      .uniformBufferStandardLayout(
+        outFeatures.uniformBufferStandardLayout())
+      .vulkanMemoryModel(
+        outFeatures.vulkanMemoryModel())
+      .vulkanMemoryModelAvailabilityVisibilityChains(
+        outFeatures.vulkanMemoryModelAvailabilityVisibilityChains())
+      .vulkanMemoryModelDeviceScope(
+        outFeatures.vulkanMemoryModelDeviceScope());
   }
 
   private static VkDeviceQueueCreateInfo.Buffer createQueueBuffer(
     final MemoryStack stack,
     final List<VulkanLogicalDeviceQueueCreateInfo> infos)
   {
-    final var queue_count = infos.size();
-    final var vk_queue_buffer =
-      VkDeviceQueueCreateInfo.malloc(queue_count, stack);
+    final var queueCount = infos.size();
+    final var vkQueueBuffer =
+      VkDeviceQueueCreateInfo.malloc(queueCount, stack);
 
-    for (var index = 0; index < queue_count; ++index) {
+    for (var index = 0; index < queueCount; ++index) {
       final var queue_info = infos.get(index);
-      vk_queue_buffer.position(index);
-      vk_queue_buffer.sType(VK10.VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO)
+      vkQueueBuffer.position(index);
+      vkQueueBuffer.sType(VK10.VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO)
         .pNext(0L)
         .flags(0)
         .queueFamilyIndex(queue_info.queueFamilyIndex())
         .pQueuePriorities(stack.floats(queue_info.queuePriorities()));
     }
-    vk_queue_buffer.position(0);
-    return vk_queue_buffer;
+    vkQueueBuffer.position(0);
+    return vkQueueBuffer;
   }
 
   private static Set<VulkanFormatFeatureFlag> mapOptimalFeatures(
@@ -250,6 +438,67 @@ public final class VulkanLWJGLPhysicalDevice
     final VkFormatProperties vk_properties)
   {
     return unpackFlagsFromMask(vk_properties.bufferFeatures());
+  }
+
+  private void createPhysicalDeviceFeatures(
+    final MemoryStack stack,
+    final VkDeviceCreateInfo vkDeviceCreateInfo,
+    final VulkanLogicalDeviceCreateInfo info)
+  {
+    final var featuresOpt = info.features();
+    if (featuresOpt.isEmpty()) {
+      return;
+    }
+
+    final var requestFeatures = featuresOpt.get();
+
+    /*
+     * On Vulkan 1.0, the required features are set directly in the
+     * creation info structure.
+     */
+
+    final var version = this.instance.apiVersionUsed();
+    if (version.major() == 1 && version.minor() == 0) {
+      LOG.debug("enabling features using direct VkPhysicalDeviceFeatures");
+
+      final var vkFeatures =
+        VkPhysicalDeviceFeatures.malloc(stack);
+
+      packPhysicalDeviceFeatures10(vkFeatures, requestFeatures.features10());
+      vkDeviceCreateInfo.pEnabledFeatures(vkFeatures);
+      return;
+    }
+
+    /*
+     * On Vulkan 1.1+, the required features are specified in a set of
+     * structures chained in the "next" pointer.
+     */
+
+    LOG.debug("enabling features using chained VkPhysicalDeviceFeatures2");
+
+    final var vkFeatures11 =
+      VkPhysicalDeviceVulkan11Features.malloc(stack);
+    final var vkFeatures12 =
+      VkPhysicalDeviceVulkan12Features.malloc(stack);
+    final var vkFeatures =
+      VkPhysicalDeviceFeatures2.malloc(stack);
+
+    vkFeatures.sType(VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FEATURES_2);
+    vkFeatures11.sType(VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_1_FEATURES);
+    vkFeatures12.sType(VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_2_FEATURES);
+
+    packPhysicalDeviceFeatures12(vkFeatures12, requestFeatures.features12());
+    packPhysicalDeviceFeatures11(vkFeatures11, requestFeatures.features11());
+    packPhysicalDeviceFeatures10(
+      vkFeatures.features(),
+      requestFeatures.features10()
+    );
+
+    vkFeatures12.pNext(0L);
+    vkFeatures11.pNext(vkFeatures12.address());
+    vkFeatures.pNext(vkFeatures11.address());
+    vkDeviceCreateInfo.pNext(vkFeatures.address());
+    vkDeviceCreateInfo.pEnabledFeatures(null);
   }
 
   @Override
@@ -309,7 +558,7 @@ public final class VulkanLWJGLPhysicalDevice
 
     this.checkNotClosed();
 
-    try (var stack = this.stack_initial.push()) {
+    try (var stack = this.stackInitial.push()) {
       final var count = new int[1];
 
       final var layer_ptr =
@@ -359,7 +608,7 @@ public final class VulkanLWJGLPhysicalDevice
   public Map<String, VulkanLayerProperties> layers()
     throws VulkanException
   {
-    try (var stack = this.stack_initial.push()) {
+    try (var stack = this.stackInitial.push()) {
       final var count = new int[1];
 
       checkReturnCode(
@@ -434,7 +683,7 @@ public final class VulkanLWJGLPhysicalDevice
 
     this.checkNotClosed();
 
-    try (var stack = this.stack_initial.push()) {
+    try (var stack = this.stackInitial.push()) {
       final var vk_properties = VkFormatProperties.malloc(stack);
       VK10.vkGetPhysicalDeviceFormatProperties(
         this.device,
@@ -464,7 +713,7 @@ public final class VulkanLWJGLPhysicalDevice
     Objects.requireNonNull(usage, "usage");
     Objects.requireNonNull(flags, "flags");
 
-    try (var stack = this.stack_initial.push()) {
+    try (var stack = this.stackInitial.push()) {
       final var vk_properties = VkImageFormatProperties.malloc(stack);
 
       checkReturnCode(
@@ -506,7 +755,7 @@ public final class VulkanLWJGLPhysicalDevice
     throws VulkanException
   {
     this.checkNotClosed();
-    return this.queue_families;
+    return this.queueFamilies;
   }
 
   @Override
@@ -518,63 +767,66 @@ public final class VulkanLWJGLPhysicalDevice
 
     this.checkNotClosed();
 
-    final var enabled_extensions = info.enabledExtensions();
-    final var enabled_layers = info.enabledLayers();
+    final var enabledExtensions =
+      info.enabledExtensions();
+    final var enabledLayers =
+      info.enabledLayers();
 
     if (LOG.isDebugEnabled()) {
       LOG.debug("creating logical device");
-      enabled_extensions.forEach(name -> LOG.debug(
+      enabledExtensions.forEach(name -> LOG.debug(
         "enabling extension: {}",
         name));
-      enabled_layers.forEach(name -> LOG.debug("enabling layer: {}", name));
+      enabledLayers.forEach(name -> LOG.debug("enabling layer: {}", name));
     }
 
-    try (var stack = this.stack_initial.push()) {
+    try (var stack = this.stackInitial.push()) {
       final var infos =
         info.queueCreateInfos();
-      final var vk_queue_buffer =
+      final var vkQueueBuffer =
         createQueueBuffer(stack, infos);
-      final var vk_enabled_layers =
-        VulkanStrings.stringsToPointerBuffer(stack, enabled_layers);
-      final var vk_enabled_extensions =
-        VulkanStrings.stringsToPointerBuffer(stack, enabled_extensions);
-      final var vk_features =
-        createPhysicalDeviceFeatures(stack, info);
+      final var vkEnabledLayers =
+        VulkanStrings.stringsToPointerBuffer(stack, enabledLayers);
+      final var vkEnabledExtensions =
+        VulkanStrings.stringsToPointerBuffer(stack, enabledExtensions);
 
-      final var vk_device_create_info =
+      final var vkDeviceCreateInfo =
         VkDeviceCreateInfo.malloc(stack)
           .sType(VK10.VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO)
           .pNext(0L)
           .flags(VulkanEnumMaps.packValues(info.flags()))
-          .pQueueCreateInfos(vk_queue_buffer)
-          .ppEnabledLayerNames(vk_enabled_layers)
-          .ppEnabledExtensionNames(vk_enabled_extensions)
-          .pEnabledFeatures(vk_features);
+          .pQueueCreateInfos(vkQueueBuffer)
+          .ppEnabledLayerNames(vkEnabledLayers)
+          .ppEnabledExtensionNames(vkEnabledExtensions);
 
-      final var vk_logical_device_ptr = stack.mallocPointer(1);
+      this.createPhysicalDeviceFeatures(stack, vkDeviceCreateInfo, info);
+
+      final var vkLogicalDevicePtr =
+        stack.mallocPointer(1);
+
       checkReturnCode(
         VK10.vkCreateDevice(
           this.device,
-          vk_device_create_info,
+          vkDeviceCreateInfo,
           this.hostAllocatorProxy().callbackBuffer(),
-          vk_logical_device_ptr),
+          vkLogicalDevicePtr),
         "vkCreateDevice");
 
-      final var vk_logical_device =
+      final var vkLogicalDevice =
         new VkDevice(
-          vk_logical_device_ptr.get(0),
+          vkLogicalDevicePtr.get(0),
           this.device,
-          vk_device_create_info);
+          vkDeviceCreateInfo);
 
       final var registry =
         this.instance.extensionRegistry();
       final var enabled =
-        registry.ofNames(enabled_extensions);
+        registry.ofNames(enabledExtensions);
 
       return new VulkanLWJGLLogicalDevice(
         enabled,
         this,
-        vk_logical_device,
+        vkLogicalDevice,
         info,
         this.hostAllocatorProxy());
     }

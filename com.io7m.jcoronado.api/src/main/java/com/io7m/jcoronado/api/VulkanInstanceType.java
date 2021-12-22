@@ -61,6 +61,29 @@ public interface VulkanInstanceType extends VulkanHandleDispatchableType
   }
 
   /**
+   * Find the maximum API version supported. This is essentially the same as
+   * {@link VulkanInstanceProviderType#findSupportedInstanceVersion()}, and does
+   * not indicate that this particular instance will allow function calls that
+   * require that version.
+   *
+   * @return The maximum API version supported
+   *
+   * @see #apiVersionUsed()
+   */
+
+  VulkanVersion apiVersionMaximumSupported();
+
+  /**
+   * Return the API version that this instance will support. This is the version
+   * that the user actually requested, and therefore defines the upper bound for
+   * the Vulkan API version that can be used with this instance.
+   *
+   * @return The API version that this instance is configured to use
+   */
+
+  VulkanVersion apiVersionUsed();
+
+  /**
    * @return The enabled extensions for the instance
    *
    * @throws VulkanException On errors
@@ -76,8 +99,8 @@ public interface VulkanInstanceType extends VulkanHandleDispatchableType
    * @param clazz The intended extension type
    * @param <T>   The precise type
    *
-   * @return The extension with the correct type, or nothing if the extension either did not exist
-   * or did not have the right type
+   * @return The extension with the correct type, or nothing if the extension
+   * either did not exist or did not have the right type
    *
    * @throws VulkanException On errors
    */

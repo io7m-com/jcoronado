@@ -491,8 +491,8 @@ public final class VMALWJGLAllocator extends VulkanLWJGLHandle implements
     private final long address;
     private final VMALWJGLAllocator allocator;
     private final VMALWJGLAllocation<?> allocation;
-    private boolean mapped;
     private final ByteBuffer buffer;
+    private boolean mapped;
 
     VMALWJGLMappedMemory(
       final VMALWJGLAllocator in_allocator,

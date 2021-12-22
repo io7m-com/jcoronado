@@ -108,8 +108,8 @@ public final class VulkanLWJGLArrays
   }
 
   /**
-   * The type of functions that can pack values of type {@code A} into structures of type {@code
-   * T}.
+   * The type of functions that can pack values of type {@code A} into
+   * structures of type {@code T}.
    *
    * @param <A> The type of input values
    * @param <T> The type of output structures
@@ -135,7 +135,8 @@ public final class VulkanLWJGLArrays
   }
 
   /**
-   * The type of functions that can allocate buffers for structures of type {@code T}.
+   * The type of functions that can allocate buffers for structures of type
+   * {@code T}.
    *
    * @param <T> The type structures
    * @param <B> The type of output buffers

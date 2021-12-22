@@ -69,7 +69,8 @@ public final class VulkanLWJGLIntegerArrays
   }
 
   /**
-   * Pack a list of long values. Returns {@code null} if the input list is empty.
+   * Pack a list of long values. Returns {@code null} if the input list is
+   * empty.
    *
    * @param stack  The stack
    * @param values The input list
@@ -130,7 +131,8 @@ public final class VulkanLWJGLIntegerArrays
   }
 
   /**
-   * Pack a list of int values. Returns {@code null} if the input list is empty.
+   * Pack a list of int values. Returns {@code null} if the input list is
+   * empty.
    *
    * @param stack  The stack
    * @param values The input list
@@ -191,7 +193,8 @@ public final class VulkanLWJGLIntegerArrays
   }
 
   /**
-   * Pack a list of pointer values. Returns {@code null} if the input list is empty.
+   * Pack a list of pointer values. Returns {@code null} if the input list is
+   * empty.
    *
    * @param stack  The stack
    * @param values The input list

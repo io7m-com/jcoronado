@@ -100,7 +100,8 @@ abstract class VulkanLWJGLHandle implements VulkanHandleType
     USER_OWNED,
 
     /**
-     * Vulkan owns the object and the user is not responsible for destroying it.
+     * Vulkan owns the object and the user is not responsible for destroying
+     * it.
      */
 
     VULKAN_OWNED

@@ -45,7 +45,8 @@ public final class VulkanLWJGLPipelineShaderStageCreateInfos
    *
    * @return A packed structure
    *
-   * @throws VulkanIncompatibleClassException If an incompatible class is specified
+   * @throws VulkanIncompatibleClassException If an incompatible class is
+   *                                          specified
    */
 
   public static VkPipelineShaderStageCreateInfo pack(
@@ -92,7 +93,8 @@ public final class VulkanLWJGLPipelineShaderStageCreateInfos
    *
    * @return A packed list of structures
    *
-   * @throws VulkanIncompatibleClassException If an incompatible class is specified
+   * @throws VulkanIncompatibleClassException If an incompatible class is
+   *                                          specified
    */
 
   public static VkPipelineShaderStageCreateInfo.Buffer packAll(
