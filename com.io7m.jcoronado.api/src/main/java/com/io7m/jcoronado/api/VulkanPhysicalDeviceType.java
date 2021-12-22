@@ -84,6 +84,7 @@ public interface VulkanPhysicalDeviceType extends VulkanHandleDispatchableType
    * @throws VulkanException On errors
    */
 
+  @VulkanAPIFunctionType(vulkanFunction = "vkGetPhysicalDeviceFeatures2")
   @VulkanAPIFunctionType(vulkanFunction = "vkGetPhysicalDeviceFeatures")
   VulkanPhysicalDeviceFeatures features()
     throws VulkanException;

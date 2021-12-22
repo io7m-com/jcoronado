@@ -386,6 +386,7 @@ If this step fails, it's a bug. Please report it!
 | VulkanPhysicalDeviceType.createLogicalDevice() | [vkCreateDevice](https://www.khronos.org/registry/vulkan/specs/1.1-extensions/man/html/vkCreateDevice.html) |
 | VulkanPhysicalDeviceType.createLogicalDevice() | [vkGetDeviceQueue](https://www.khronos.org/registry/vulkan/specs/1.1-extensions/man/html/vkGetDeviceQueue.html) |
 | VulkanPhysicalDeviceType.extensions() | [vkEnumerateDeviceExtensionProperties](https://www.khronos.org/registry/vulkan/specs/1.1-extensions/man/html/vkEnumerateDeviceExtensionProperties.html) |
+| VulkanPhysicalDeviceType.features() | [vkGetPhysicalDeviceFeatures2](https://www.khronos.org/registry/vulkan/specs/1.1-extensions/man/html/vkGetPhysicalDeviceFeatures2.html) |
 | VulkanPhysicalDeviceType.features() | [vkGetPhysicalDeviceFeatures](https://www.khronos.org/registry/vulkan/specs/1.1-extensions/man/html/vkGetPhysicalDeviceFeatures.html) |
 | VulkanPhysicalDeviceType.formatProperties() | [vkGetPhysicalDeviceFormatProperties](https://www.khronos.org/registry/vulkan/specs/1.1-extensions/man/html/vkGetPhysicalDeviceFormatProperties.html) |
 | VulkanPhysicalDeviceType.imageFormatProperties() | [vkGetPhysicalDeviceImageFormatProperties](https://www.khronos.org/registry/vulkan/specs/1.1-extensions/man/html/vkGetPhysicalDeviceImageFormatProperties.html) |
@@ -456,7 +457,6 @@ If this step fails, it's a bug. Please report it!
 * `vkGetPhysicalDeviceExternalBufferProperties`
 * `vkGetPhysicalDeviceExternalFenceProperties`
 * `vkGetPhysicalDeviceExternalSemaphoreProperties`
-* `vkGetPhysicalDeviceFeatures2`
 * `vkGetPhysicalDeviceFormatProperties2`
 * `vkGetPhysicalDeviceImageFormatProperties2`
 * `vkGetPhysicalDeviceMemoryProperties2`
@@ -480,7 +480,7 @@ If this step fails, it's a bug. Please report it!
 * `vkUpdateDescriptorSetWithTemplate`
 * `vkWaitSemaphores`
 
-126 of 193 functions implemented
+127 of 193 functions implemented
 
-Coverage: 65.28%
+Coverage: 65.80%
 
