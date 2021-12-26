@@ -491,7 +491,7 @@ public abstract class VulkanLogicalDeviceContract extends VulkanOnDeviceContract
       try (var memory =
              this.device.allocateMemory(
                VulkanMemoryAllocateInfo.builder()
-                 .setSize(131072L)
+                 .setSize(imageMemoryRequirements.size())
                  .setMemoryTypeIndex(imageMemoryType.heapIndex())
                  .build())) {
 
