@@ -18,14 +18,15 @@ package com.io7m.jcoronado.tests.contracts;
 
 import com.io7m.jcoronado.api.VulkanAttachmentDescription;
 import com.io7m.jcoronado.api.VulkanAttachmentReference;
+import com.io7m.jcoronado.api.VulkanBufferCopy;
 import com.io7m.jcoronado.api.VulkanBufferCreateInfo;
-import com.io7m.jcoronado.api.VulkanBufferUsageFlag;
 import com.io7m.jcoronado.api.VulkanBufferViewCreateInfo;
 import com.io7m.jcoronado.api.VulkanCommandPoolCreateInfo;
 import com.io7m.jcoronado.api.VulkanComponentMapping;
 import com.io7m.jcoronado.api.VulkanException;
 import com.io7m.jcoronado.api.VulkanExtent2D;
 import com.io7m.jcoronado.api.VulkanExtent3D;
+import com.io7m.jcoronado.api.VulkanFenceCreateInfo;
 import com.io7m.jcoronado.api.VulkanFramebufferCreateInfo;
 import com.io7m.jcoronado.api.VulkanImageCreateInfo;
 import com.io7m.jcoronado.api.VulkanImageSubresourceRange;
@@ -36,21 +37,33 @@ import com.io7m.jcoronado.api.VulkanLogicalDeviceType;
 import com.io7m.jcoronado.api.VulkanMemoryAllocateInfo;
 import com.io7m.jcoronado.api.VulkanOffset2D;
 import com.io7m.jcoronado.api.VulkanPhysicalDeviceType;
+import com.io7m.jcoronado.api.VulkanQueueType;
 import com.io7m.jcoronado.api.VulkanRectangle2D;
 import com.io7m.jcoronado.api.VulkanRenderPassBeginInfo;
 import com.io7m.jcoronado.api.VulkanRenderPassCreateInfo;
+import com.io7m.jcoronado.api.VulkanSubmitInfo;
 import com.io7m.jcoronado.api.VulkanSubpassContents;
 import com.io7m.jcoronado.api.VulkanSubpassDescription;
+import com.io7m.jmulticlose.core.CloseableCollection;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import static com.io7m.jcoronado.api.VulkanAttachmentLoadOp.VK_ATTACHMENT_LOAD_OP_DONT_CARE;
 import static com.io7m.jcoronado.api.VulkanAttachmentStoreOp.VK_ATTACHMENT_STORE_OP_DONT_CARE;
+import static com.io7m.jcoronado.api.VulkanBufferUsageFlag.VK_BUFFER_USAGE_STORAGE_TEXEL_BUFFER_BIT;
+import static com.io7m.jcoronado.api.VulkanBufferUsageFlag.VK_BUFFER_USAGE_TRANSFER_DST_BIT;
+import static com.io7m.jcoronado.api.VulkanBufferUsageFlag.VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
+import static com.io7m.jcoronado.api.VulkanBufferUsageFlag.VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
 import static com.io7m.jcoronado.api.VulkanCommandBufferLevel.VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+import static com.io7m.jcoronado.api.VulkanCommandBufferUsageFlag.VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
 import static com.io7m.jcoronado.api.VulkanComponentSwizzle.VK_COMPONENT_SWIZZLE_IDENTITY;
 import static com.io7m.jcoronado.api.VulkanFormat.VK_FORMAT_R5G6B5_UNORM_PACK16;
 import static com.io7m.jcoronado.api.VulkanFormat.VK_FORMAT_R8_UNORM;
@@ -64,6 +77,7 @@ import static com.io7m.jcoronado.api.VulkanImageUsageFlag.VK_IMAGE_USAGE_SAMPLED
 import static com.io7m.jcoronado.api.VulkanMemoryPropertyFlag.VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
 import static com.io7m.jcoronado.api.VulkanMemoryPropertyFlag.VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT;
 import static com.io7m.jcoronado.api.VulkanPipelineBindPoint.VK_PIPELINE_BIND_POINT_GRAPHICS;
+import static com.io7m.jcoronado.api.VulkanQueueFamilyPropertyFlag.VK_QUEUE_TRANSFER_BIT;
 import static com.io7m.jcoronado.api.VulkanSampleCountFlag.VK_SAMPLE_COUNT_1_BIT;
 import static com.io7m.jcoronado.api.VulkanSampleCountFlag.VK_SAMPLE_COUNT_8_BIT;
 import static com.io7m.jcoronado.api.VulkanSharingMode.VK_SHARING_MODE_EXCLUSIVE;
@@ -162,11 +176,149 @@ public abstract class VulkanLogicalDeviceContract extends VulkanOnDeviceContract
       VulkanBufferCreateInfo.builder()
         .setSharingMode(VK_SHARING_MODE_EXCLUSIVE)
         .setSize(128L)
-        .setUsageFlags(Set.of(VulkanBufferUsageFlag.VK_BUFFER_USAGE_VERTEX_BUFFER_BIT))
+        .setUsageFlags(Set.of(VK_BUFFER_USAGE_VERTEX_BUFFER_BIT))
         .build()
     )) {
       assertFalse(buffer.isClosed());
     }
+  }
+
+  /**
+   * Try creating buffers and scheduling copies between them.
+   *
+   * @throws Exception On errors
+   */
+
+  @Test
+  public final void testCreateBufferCopy()
+    throws Exception
+  {
+    Assumptions.assumeTrue(this.shouldRun(), "Test should run");
+
+    final var createInfo =
+      VulkanBufferCreateInfo.builder()
+        .setSharingMode(VK_SHARING_MODE_EXCLUSIVE)
+        .setSize(128L)
+        .setUsageFlags(Set.of(
+          VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
+          VK_BUFFER_USAGE_TRANSFER_DST_BIT))
+        .build();
+
+    try (var resources =
+           CloseableCollection.create()) {
+
+      final var buffer0 =
+        resources.add(this.device.createBuffer(createInfo));
+      final var buffer1 =
+        resources.add(this.device.createBuffer(createInfo));
+
+      final var buffer0Requirements =
+        this.device.getBufferMemoryRequirements(buffer0);
+      final var buffer1Requirements =
+        this.device.getBufferMemoryRequirements(buffer1);
+
+      final var bufferMemoryType =
+        this.physicalDevice.memory()
+          .findSuitableMemoryType(
+            buffer0Requirements,
+            Set.of(
+              VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
+              VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT));
+
+      final var memory0 =
+        resources.add(
+          this.device.allocateMemory(
+          VulkanMemoryAllocateInfo.of(
+            buffer0Requirements.size(), bufferMemoryType.heapIndex()))
+        );
+      final var memory1 =
+        resources.add(
+          this.device.allocateMemory(
+          VulkanMemoryAllocateInfo.of(
+            buffer1Requirements.size(), bufferMemoryType.heapIndex()))
+        );
+
+      final var map0 =
+        resources.add(
+          this.device.mapMemory(memory0, 0L, 128L, Set.of()));
+      final var map1 =
+        resources.add(
+          this.device.mapMemory(memory1, 0L, 128L, Set.of()));
+
+      this.device.bindBufferMemory(buffer0, memory0, 0L);
+      this.device.bindBufferMemory(buffer1, memory1, 0L);
+
+      final var queue =
+        this.device.queues()
+          .stream()
+          .filter(VulkanLogicalDeviceContract::isSuitableCopyQueue)
+          .findFirst()
+          .orElseThrow();
+
+      final var commandPool =
+        resources.add(
+          this.device.createCommandPool(
+          VulkanCommandPoolCreateInfo.builder()
+            .setQueueFamilyIndex(queue.queueIndex())
+            .build())
+        );
+
+      final var commandBuffer =
+        resources.add(
+          this.device.createCommandBuffer(commandPool, VK_COMMAND_BUFFER_LEVEL_PRIMARY)
+        );
+
+      final var fence =
+        resources.add(
+          this.device.createFence(VulkanFenceCreateInfo.of(Set.of())));
+
+      commandBuffer.beginCommandBuffer(
+        VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT);
+      commandBuffer.fillBuffer(buffer0, 0L, 128L, 0x41414141);
+      commandBuffer.fillBuffer(buffer1, 0L, 128L, 0x42424242);
+      commandBuffer.copyBuffer(
+        buffer0,
+        buffer1,
+        List.of(VulkanBufferCopy.of(0L, 0L, 128L)));
+      commandBuffer.endCommandBuffer();
+
+      queue.submit(List.of(
+        VulkanSubmitInfo.builder()
+          .addCommandBuffers(commandBuffer)
+          .build()
+      ), Optional.of(fence));
+
+      this.logger().debug("waiting for fence");
+      this.device.waitForFence(fence, 1_000_000_000L);
+      this.device.waitIdle();
+
+      final var mBuffer0 =
+        map0.asByteBuffer();
+      final var mBuffer1 =
+        map1.asByteBuffer();
+
+      final var expBytes = new byte[128];
+      Arrays.fill(expBytes, (byte) 0x41);
+
+      final var mBytes0 = new byte[128];
+      mBuffer0.get(mBytes0);
+      final var mBytes1 = new byte[128];
+      mBuffer1.get(mBytes1);
+
+      Assertions.assertArrayEquals(expBytes, mBytes0);
+      Assertions.assertArrayEquals(expBytes, mBytes1);
+    }
+  }
+
+  private static boolean isSuitableCopyQueue(
+    final VulkanQueueType q)
+  {
+    final var familyProperties =
+      q.queueFamilyProperties();
+    final var queueFlags =
+      familyProperties.queueFlags();
+
+    return queueFlags.contains(VK_QUEUE_TRANSFER_BIT);
   }
 
   /**
@@ -185,7 +337,7 @@ public abstract class VulkanLogicalDeviceContract extends VulkanOnDeviceContract
       VulkanBufferCreateInfo.builder()
         .setSharingMode(VK_SHARING_MODE_EXCLUSIVE)
         .setSize(128L)
-        .setUsageFlags(Set.of(VulkanBufferUsageFlag.VK_BUFFER_USAGE_STORAGE_TEXEL_BUFFER_BIT))
+        .setUsageFlags(Set.of(VK_BUFFER_USAGE_STORAGE_TEXEL_BUFFER_BIT))
         .build()
     )) {
       final var bufferMemoryRequirements =
