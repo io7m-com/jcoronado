@@ -20,6 +20,7 @@ import com.io7m.jcoronado.api.VulkanAttachmentDescription;
 import com.io7m.jcoronado.api.VulkanAttachmentReference;
 import com.io7m.jcoronado.api.VulkanBufferCopy;
 import com.io7m.jcoronado.api.VulkanBufferCreateInfo;
+import com.io7m.jcoronado.api.VulkanBufferMemoryBarrier;
 import com.io7m.jcoronado.api.VulkanBufferViewCreateInfo;
 import com.io7m.jcoronado.api.VulkanCommandPoolCreateInfo;
 import com.io7m.jcoronado.api.VulkanComponentMapping;
@@ -56,6 +57,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import static com.io7m.jcoronado.api.VulkanAccessFlag.VK_ACCESS_HOST_READ_BIT;
+import static com.io7m.jcoronado.api.VulkanAccessFlag.VK_ACCESS_TRANSFER_READ_BIT;
+import static com.io7m.jcoronado.api.VulkanAccessFlag.VK_ACCESS_TRANSFER_WRITE_BIT;
 import static com.io7m.jcoronado.api.VulkanAttachmentLoadOp.VK_ATTACHMENT_LOAD_OP_DONT_CARE;
 import static com.io7m.jcoronado.api.VulkanAttachmentStoreOp.VK_ATTACHMENT_STORE_OP_DONT_CARE;
 import static com.io7m.jcoronado.api.VulkanBufferUsageFlag.VK_BUFFER_USAGE_STORAGE_TEXEL_BUFFER_BIT;
@@ -77,6 +81,8 @@ import static com.io7m.jcoronado.api.VulkanImageUsageFlag.VK_IMAGE_USAGE_SAMPLED
 import static com.io7m.jcoronado.api.VulkanMemoryPropertyFlag.VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
 import static com.io7m.jcoronado.api.VulkanMemoryPropertyFlag.VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT;
 import static com.io7m.jcoronado.api.VulkanPipelineBindPoint.VK_PIPELINE_BIND_POINT_GRAPHICS;
+import static com.io7m.jcoronado.api.VulkanPipelineStageFlag.VK_PIPELINE_STAGE_HOST_BIT;
+import static com.io7m.jcoronado.api.VulkanPipelineStageFlag.VK_PIPELINE_STAGE_TRANSFER_BIT;
 import static com.io7m.jcoronado.api.VulkanQueueFamilyPropertyFlag.VK_QUEUE_TRANSFER_BIT;
 import static com.io7m.jcoronado.api.VulkanSampleCountFlag.VK_SAMPLE_COUNT_1_BIT;
 import static com.io7m.jcoronado.api.VulkanSampleCountFlag.VK_SAMPLE_COUNT_8_BIT;
@@ -258,9 +264,9 @@ public abstract class VulkanLogicalDeviceContract extends VulkanOnDeviceContract
       final var commandPool =
         resources.add(
           this.device.createCommandPool(
-          VulkanCommandPoolCreateInfo.builder()
-            .setQueueFamilyIndex(queue.queueIndex())
-            .build())
+            VulkanCommandPoolCreateInfo.builder()
+              .setQueueFamilyIndex(queue.queueIndex())
+              .build())
         );
 
       final var commandBuffer =
@@ -270,16 +276,87 @@ public abstract class VulkanLogicalDeviceContract extends VulkanOnDeviceContract
 
       final var fence =
         resources.add(
-          this.device.createFence(VulkanFenceCreateInfo.of(Set.of())));
+          this.device.createFence(VulkanFenceCreateInfo.of(Set.of()))
+        );
+
+      final var fillBarrier0 =
+        VulkanBufferMemoryBarrier.of(
+          Set.of(VK_ACCESS_TRANSFER_WRITE_BIT),
+          Set.of(VK_ACCESS_TRANSFER_READ_BIT),
+          queue.queueIndex(),
+          queue.queueIndex(),
+          buffer0,
+          0L,
+          128L
+        );
+
+      final var fillBarrier1 =
+        VulkanBufferMemoryBarrier.of(
+          Set.of(VK_ACCESS_TRANSFER_WRITE_BIT),
+          Set.of(VK_ACCESS_TRANSFER_READ_BIT),
+          queue.queueIndex(),
+          queue.queueIndex(),
+          buffer1,
+          0L,
+          128L
+        );
+
+      final var copyBarrier0 =
+        VulkanBufferMemoryBarrier.of(
+          Set.of(VK_ACCESS_TRANSFER_WRITE_BIT),
+          Set.of(VK_ACCESS_HOST_READ_BIT),
+          queue.queueIndex(),
+          queue.queueIndex(),
+          buffer0,
+          0L,
+          128L
+        );
+
+      final var copyBarrier1 =
+        VulkanBufferMemoryBarrier.of(
+          Set.of(VK_ACCESS_TRANSFER_WRITE_BIT),
+          Set.of(VK_ACCESS_HOST_READ_BIT),
+          queue.queueIndex(),
+          queue.queueIndex(),
+          buffer1,
+          0L,
+          128L
+        );
 
       commandBuffer.beginCommandBuffer(
         VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT);
       commandBuffer.fillBuffer(buffer0, 0L, 128L, 0x41414141);
+      commandBuffer.pipelineBarrier(
+        Set.of(VK_PIPELINE_STAGE_TRANSFER_BIT),
+        Set.of(VK_PIPELINE_STAGE_TRANSFER_BIT),
+        Set.of(),
+        List.of(),
+        List.of(fillBarrier0),
+        List.of()
+      );
+
       commandBuffer.fillBuffer(buffer1, 0L, 128L, 0x42424242);
+      commandBuffer.pipelineBarrier(
+        Set.of(VK_PIPELINE_STAGE_TRANSFER_BIT),
+        Set.of(VK_PIPELINE_STAGE_TRANSFER_BIT),
+        Set.of(),
+        List.of(),
+        List.of(fillBarrier1),
+        List.of()
+      );
+
       commandBuffer.copyBuffer(
         buffer0,
         buffer1,
         List.of(VulkanBufferCopy.of(0L, 0L, 128L)));
+      commandBuffer.pipelineBarrier(
+        Set.of(VK_PIPELINE_STAGE_TRANSFER_BIT),
+        Set.of(VK_PIPELINE_STAGE_HOST_BIT),
+        Set.of(),
+        List.of(),
+        List.of(copyBarrier0, copyBarrier1),
+        List.of()
+      );
       commandBuffer.endCommandBuffer();
 
       queue.submit(List.of(
@@ -288,9 +365,7 @@ public abstract class VulkanLogicalDeviceContract extends VulkanOnDeviceContract
           .build()
       ), Optional.of(fence));
 
-      this.logger().debug("waiting for fence");
       this.device.waitForFence(fence, 1_000_000_000L);
-      this.device.waitIdle();
 
       final var mBuffer0 =
         map0.asByteBuffer();

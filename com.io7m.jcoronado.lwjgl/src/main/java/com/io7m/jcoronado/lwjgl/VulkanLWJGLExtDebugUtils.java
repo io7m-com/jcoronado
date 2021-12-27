@@ -17,18 +17,22 @@
 package com.io7m.jcoronado.lwjgl;
 
 import com.io7m.jcoronado.api.VulkanChecks;
+import com.io7m.jcoronado.api.VulkanCommandBufferType;
 import com.io7m.jcoronado.api.VulkanEnumMaps;
 import com.io7m.jcoronado.api.VulkanException;
 import com.io7m.jcoronado.api.VulkanInstanceType;
+import com.io7m.jcoronado.extensions.ext_debug_utils.api.VulkanDebugUtilsLabelEXT;
 import com.io7m.jcoronado.extensions.ext_debug_utils.api.VulkanDebugUtilsMessageSeverityFlag;
 import com.io7m.jcoronado.extensions.ext_debug_utils.api.VulkanDebugUtilsMessageTypeFlag;
 import com.io7m.jcoronado.extensions.ext_debug_utils.api.VulkanDebugUtilsMessengerCallbackDataEXT;
 import com.io7m.jcoronado.extensions.ext_debug_utils.api.VulkanDebugUtilsMessengerCallbackEXTType;
 import com.io7m.jcoronado.extensions.ext_debug_utils.api.VulkanDebugUtilsMessengerCreateInfoEXT;
 import com.io7m.jcoronado.extensions.ext_debug_utils.api.VulkanDebugUtilsMessengerEXTType;
+import com.io7m.jcoronado.extensions.ext_debug_utils.api.VulkanDebugUtilsRegionType;
 import com.io7m.jcoronado.extensions.ext_debug_utils.api.VulkanDebugUtilsType;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.vulkan.EXTDebugUtils;
+import org.lwjgl.vulkan.VkDebugUtilsLabelEXT;
 import org.lwjgl.vulkan.VkDebugUtilsMessengerCallbackDataEXT;
 import org.lwjgl.vulkan.VkDebugUtilsMessengerCallbackEXTI;
 import org.lwjgl.vulkan.VkDebugUtilsMessengerCreateInfoEXT;
@@ -40,7 +44,11 @@ import java.util.Objects;
 
 import static com.io7m.jcoronado.lwjgl.VulkanLWJGLClassChecks.checkInstanceOf;
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.lwjgl.vulkan.EXTDebugUtils.VK_STRUCTURE_TYPE_DEBUG_UTILS_LABEL_EXT;
 import static org.lwjgl.vulkan.EXTDebugUtils.VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
+import static org.lwjgl.vulkan.EXTDebugUtils.vkCmdBeginDebugUtilsLabelEXT;
+import static org.lwjgl.vulkan.EXTDebugUtils.vkCmdEndDebugUtilsLabelEXT;
+import static org.lwjgl.vulkan.EXTDebugUtils.vkCmdInsertDebugUtilsLabelEXT;
 
 /**
  * The EXT_debug_utils extension.
@@ -177,6 +185,89 @@ public final class VulkanLWJGLExtDebugUtils implements VulkanDebugUtilsType
         buffer.get(0),
         lwjglInstance.hostAllocatorProxy()
       );
+    }
+  }
+
+  @Override
+  public VulkanDebugUtilsRegionType begin(
+    final VulkanCommandBufferType commandBuffer,
+    final VulkanDebugUtilsLabelEXT label)
+    throws VulkanException
+  {
+    final var lwjglCommandBuffer =
+      checkInstanceOf(commandBuffer, VulkanLWJGLCommandBuffer.class);
+
+    try (var stack = this.stackInitial.push()) {
+      final var lwjglInfo = VkDebugUtilsLabelEXT.malloc(stack);
+      packLabel(stack, label, lwjglInfo);
+      vkCmdBeginDebugUtilsLabelEXT(lwjglCommandBuffer.handle(), lwjglInfo);
+    }
+
+    return new Region(lwjglCommandBuffer);
+  }
+
+  private static void packLabel(
+    final MemoryStack stack,
+    final VulkanDebugUtilsLabelEXT label,
+    final VkDebugUtilsLabelEXT lwjglInfo)
+  {
+    final var color = label.color();
+    final var red = color.red();
+    final var blue = color.blue();
+    final var green = color.green();
+    final var alpha = color.alpha();
+
+    lwjglInfo.set(
+      VK_STRUCTURE_TYPE_DEBUG_UTILS_LABEL_EXT,
+      0L,
+      stack.UTF8(label.name()),
+      stack.floats(red, blue, green, alpha)
+    );
+  }
+
+  @Override
+  public void insertInto(
+    final VulkanCommandBufferType commandBuffer,
+    final VulkanDebugUtilsLabelEXT label)
+    throws VulkanException
+  {
+    final var lwjglCommandBuffer =
+      checkInstanceOf(commandBuffer, VulkanLWJGLCommandBuffer.class);
+
+    try (var stack = this.stackInitial.push()) {
+      final var lwjglInfo = VkDebugUtilsLabelEXT.malloc(stack);
+      packLabel(stack, label, lwjglInfo);
+      vkCmdInsertDebugUtilsLabelEXT(lwjglCommandBuffer.handle(), lwjglInfo);
+    }
+  }
+
+  private static final class Region
+    implements VulkanDebugUtilsRegionType
+  {
+    private final VulkanLWJGLCommandBuffer commandBuffer;
+    private boolean closed;
+
+    Region(
+      final VulkanLWJGLCommandBuffer inCommandBuffer)
+    {
+      this.commandBuffer = inCommandBuffer;
+      this.closed = false;
+    }
+
+    @Override
+    public void close()
+      throws VulkanException
+    {
+      if (!this.isClosed()) {
+        this.closed = true;
+        vkCmdEndDebugUtilsLabelEXT(this.commandBuffer.handle());
+      }
+    }
+
+    @Override
+    public boolean isClosed()
+    {
+      return this.closed;
     }
   }
 }

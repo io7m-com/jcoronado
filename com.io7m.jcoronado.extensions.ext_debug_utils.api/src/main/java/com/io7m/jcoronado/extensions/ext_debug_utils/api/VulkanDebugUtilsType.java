@@ -16,6 +16,7 @@
 
 package com.io7m.jcoronado.extensions.ext_debug_utils.api;
 
+import com.io7m.jcoronado.api.VulkanCommandBufferType;
 import com.io7m.jcoronado.api.VulkanException;
 import com.io7m.jcoronado.api.VulkanExtensionType;
 import com.io7m.jcoronado.api.VulkanInstanceType;
@@ -26,6 +27,18 @@ import com.io7m.jcoronado.api.VulkanInstanceType;
 
 public interface VulkanDebugUtilsType extends VulkanExtensionType
 {
+  /**
+   * The default label color.
+   */
+
+  VulkanDebugUtilsLabelColor DEFAULT_LABEL_COLOR =
+    VulkanDebugUtilsLabelColor.builder()
+      .setAlpha(1.0f)
+      .setRed(0.0f)
+      .setBlue(0.0f)
+      .setGreen(0.0f)
+      .build();
+
   @Override
   default String name()
   {
@@ -47,4 +60,82 @@ public interface VulkanDebugUtilsType extends VulkanExtensionType
     VulkanInstanceType instance,
     VulkanDebugUtilsMessengerCreateInfoEXT info)
     throws VulkanException;
+
+  /**
+   * Open a command buffer debug label region.
+   *
+   * @param commandBuffer The command buffer
+   * @param label         The region label
+   *
+   * @return The section
+   *
+   * @throws VulkanException On errors
+   */
+
+  VulkanDebugUtilsRegionType begin(
+    VulkanCommandBufferType commandBuffer,
+    VulkanDebugUtilsLabelEXT label)
+    throws VulkanException;
+
+  /**
+   * Open a command buffer debug label region.
+   *
+   * @param commandBuffer The command buffer
+   * @param label         The region label
+   *
+   * @return The section
+   *
+   * @throws VulkanException On errors
+   */
+
+  default VulkanDebugUtilsRegionType begin(
+    final VulkanCommandBufferType commandBuffer,
+    final String label)
+    throws VulkanException
+  {
+    return this.begin(
+      commandBuffer,
+      VulkanDebugUtilsLabelEXT.builder()
+        .setColor(DEFAULT_LABEL_COLOR)
+        .setName(label)
+        .build()
+    );
+  }
+
+  /**
+   * Insert a debug label into a command buffer.
+   *
+   * @param commandBuffer The command buffer
+   * @param label         The label
+   *
+   * @throws VulkanException On errors
+   */
+
+  void insertInto(
+    VulkanCommandBufferType commandBuffer,
+    VulkanDebugUtilsLabelEXT label)
+    throws VulkanException;
+
+  /**
+   * Insert a debug label into a command buffer.
+   *
+   * @param commandBuffer The command buffer
+   * @param label         The label
+   *
+   * @throws VulkanException On errors
+   */
+
+  default void insertInto(
+    final VulkanCommandBufferType commandBuffer,
+    final String label)
+    throws VulkanException
+  {
+    this.insertInto(
+      commandBuffer,
+      VulkanDebugUtilsLabelEXT.builder()
+        .setColor(DEFAULT_LABEL_COLOR)
+        .setName(label)
+        .build()
+    );
+  }
 }

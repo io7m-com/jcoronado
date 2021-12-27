@@ -25,7 +25,8 @@ public final class Main
       Map.entry("hello", new HelloVulkan()),
       Map.entry("hello-vma", new HelloVulkanWithVMA()),
       Map.entry("framebuffer", new Framebuffer()),
-      Map.entry("versioning", new Versioning())
+      Map.entry("versioning", new Versioning()),
+      Map.entry("buffer-copy", new BufferCopy())
     );
 
   private Main()

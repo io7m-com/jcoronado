@@ -924,7 +924,7 @@ public interface VulkanCommandBufferType extends VulkanHandleDispatchableType
     throws VulkanException;
 
   /**
-   * Wait for one or more events and insert a set of memory.
+   * Wait for one or more events and insert a set of memory barriers.
    *
    * @param events                 The events upon which to wait
    * @param source_stage_mask      The source stage mask
