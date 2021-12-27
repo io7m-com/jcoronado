@@ -61,7 +61,7 @@ public final class VulkanLWJGLMappedMemory implements VulkanMappedMemoryType
   @Override
   public boolean isMapped()
   {
-    return false;
+    return this.mapped;
   }
 
   @Override

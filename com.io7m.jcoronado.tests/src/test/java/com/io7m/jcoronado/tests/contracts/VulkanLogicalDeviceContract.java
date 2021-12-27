@@ -36,6 +36,7 @@ import com.io7m.jcoronado.api.VulkanImageViewCreateInfo;
 import com.io7m.jcoronado.api.VulkanImageViewKind;
 import com.io7m.jcoronado.api.VulkanInstanceType;
 import com.io7m.jcoronado.api.VulkanLogicalDeviceType;
+import com.io7m.jcoronado.api.VulkanMappedMemoryType;
 import com.io7m.jcoronado.api.VulkanMemoryAllocateInfo;
 import com.io7m.jcoronado.api.VulkanOffset2D;
 import com.io7m.jcoronado.api.VulkanPhysicalDeviceType;
@@ -68,6 +69,7 @@ import static com.io7m.jcoronado.api.VulkanAccessFlag.VK_ACCESS_TRANSFER_WRITE_B
 import static com.io7m.jcoronado.api.VulkanAttachmentLoadOp.VK_ATTACHMENT_LOAD_OP_DONT_CARE;
 import static com.io7m.jcoronado.api.VulkanAttachmentStoreOp.VK_ATTACHMENT_STORE_OP_DONT_CARE;
 import static com.io7m.jcoronado.api.VulkanBorderColor.VK_BORDER_COLOR_INT_OPAQUE_BLACK;
+import static com.io7m.jcoronado.api.VulkanBufferUsageFlag.VK_BUFFER_USAGE_STORAGE_BUFFER_BIT;
 import static com.io7m.jcoronado.api.VulkanBufferUsageFlag.VK_BUFFER_USAGE_STORAGE_TEXEL_BUFFER_BIT;
 import static com.io7m.jcoronado.api.VulkanBufferUsageFlag.VK_BUFFER_USAGE_TRANSFER_DST_BIT;
 import static com.io7m.jcoronado.api.VulkanBufferUsageFlag.VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
@@ -99,6 +101,7 @@ import static com.io7m.jcoronado.api.VulkanSamplerMipmapMode.VK_SAMPLER_MIPMAP_M
 import static com.io7m.jcoronado.api.VulkanSharingMode.VK_SHARING_MODE_EXCLUSIVE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public abstract class VulkanLogicalDeviceContract extends VulkanOnDeviceContract
 {
@@ -923,6 +926,65 @@ public abstract class VulkanLogicalDeviceContract extends VulkanOnDeviceContract
              VulkanSemaphoreCreateInfo.builder()
                .build())) {
       assertFalse(semaphore.isClosed());
+    }
+  }
+
+  /**
+   * Try mapping, writing, and flushing memory.
+   *
+   * @throws Exception On errors
+   */
+
+  @Test
+  public final void testCreateMapFlush()
+    throws Exception
+  {
+    Assumptions.assumeTrue(this.shouldRun(), "Test should run");
+
+    try (var buffer = this.device.createBuffer(
+      VulkanBufferCreateInfo.builder()
+        .setSharingMode(VK_SHARING_MODE_EXCLUSIVE)
+        .setUsageFlags(Set.of(VK_BUFFER_USAGE_STORAGE_BUFFER_BIT))
+        .setSize(128L)
+        .build()
+    )) {
+      final var bufferMemoryRequirements =
+        this.device.getBufferMemoryRequirements(buffer);
+
+      final var memoryType =
+        this.physicalDevice.memory()
+          .findSuitableMemoryType(
+            bufferMemoryRequirements,
+            Set.of(VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT));
+
+      try (var memory =
+             this.device.allocateMemory(
+               VulkanMemoryAllocateInfo.of(
+                 bufferMemoryRequirements.size(),
+                 memoryType.heapIndex())
+             )) {
+
+        final VulkanMappedMemoryType unmapped;
+        try (var map =
+               this.device.mapMemory(memory, 0L, 128L, Set.of())) {
+          unmapped = map;
+          assertTrue(map.isMapped());
+
+          final var byteBuffer = map.asByteBuffer();
+          for (int index = 0; index < 128; ++index) {
+            byteBuffer.put(index, (byte) index);
+          }
+          map.flushRange(0L, 128L);
+
+          for (int index = 0; index < 128; ++index) {
+            byteBuffer.put(index, (byte) (index + 2));
+          }
+          map.flush();
+        }
+
+        this.logger().debug("checking unmapped...");
+        assertFalse(unmapped.isMapped());
+      }
     }
   }
 }
