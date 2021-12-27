@@ -17,13 +17,12 @@
 package com.io7m.jcoronado.tests.lwjgl;
 
 import com.io7m.jcoronado.api.VulkanAccessFlag;
+import com.io7m.jcoronado.api.VulkanException;
 import com.io7m.jcoronado.api.VulkanImageAspectFlag;
 import com.io7m.jcoronado.api.VulkanImageLayout;
 import com.io7m.jcoronado.api.VulkanImageMemoryBarrier;
-import com.io7m.jcoronado.api.VulkanException;
 import com.io7m.jcoronado.api.VulkanImageSubresourceRange;
 import com.io7m.jcoronado.api.VulkanIncompatibleClassException;
-import com.io7m.jcoronado.lwjgl.VulkanLWJGLBuffer;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLImage;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLImageMemoryBarriers;
 import org.junit.jupiter.api.AfterEach;
@@ -89,12 +88,12 @@ public final class VulkanLWJGLImageMemoryBarriersTest
 
     final var subresource =
       VulkanImageSubresourceRange.of(
-      EnumSet.allOf(VulkanImageAspectFlag.class),
-      1,
-      2,
-      3,
-      4
-    );
+        EnumSet.allOf(VulkanImageAspectFlag.class),
+        1,
+        2,
+        3,
+        4
+      );
 
     final var source =
       VulkanImageMemoryBarrier.of(

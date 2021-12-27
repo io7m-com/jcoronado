@@ -115,6 +115,7 @@ public final class VulkanLWJGLLogicalDeviceTest
 
   /**
    * Create a logical device with all supported features enabled.
+   *
    * @throws VulkanException On errors
    */
 
@@ -154,7 +155,7 @@ public final class VulkanLWJGLLogicalDeviceTest
 
       try (var physicalDevice =
              newInstance.physicalDevices()
-              .get(0)) {
+               .get(0)) {
 
         final var queue =
           VulkanLogicalDeviceQueueCreateInfo.builder()
@@ -185,6 +186,7 @@ public final class VulkanLWJGLLogicalDeviceTest
   /**
    * Create a logical device with all supported features enabled, on the highest
    * supported Vulkan version.
+   *
    * @throws VulkanException On errors
    */
 

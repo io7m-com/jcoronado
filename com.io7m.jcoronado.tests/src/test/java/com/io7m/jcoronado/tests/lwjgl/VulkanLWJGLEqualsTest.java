@@ -20,8 +20,10 @@ import com.io7m.jcoronado.lwjgl.VulkanLWJGLBuffer;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLBufferView;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLCommandBuffer;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLCommandPool;
+import com.io7m.jcoronado.lwjgl.VulkanLWJGLDescriptorSet;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLDescriptorSetLayout;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLDeviceMemory;
+import com.io7m.jcoronado.lwjgl.VulkanLWJGLEvent;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLFence;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLFramebuffer;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLImage;
@@ -46,6 +48,32 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 public final class VulkanLWJGLEqualsTest
 {
+  @Test
+  public void testVulkanLWJGLEvent()
+  {
+    EqualsVerifier.forClass(VulkanLWJGLEvent.class)
+      .withIgnoredFields(
+        "ownership",
+        "device",
+        "closed",
+        "host_allocator_proxy")
+      .withNonnullFields("handle")
+      .verify();
+  }
+
+  @Test
+  public void testVulkanLWJGLDescriptorSet()
+  {
+    EqualsVerifier.forClass(VulkanLWJGLDescriptorSet.class)
+      .withIgnoredFields(
+        "ownership",
+        "device",
+        "closed",
+        "host_allocator_proxy")
+      .withNonnullFields("handle")
+      .verify();
+  }
+
   @Test
   public void testVulkanLWJGLCommandBuffer()
   {

@@ -16,18 +16,16 @@
 
 package com.io7m.jcoronado.tests.lwjgl;
 
-import com.io7m.jcoronado.api.VulkanAccessFlag;
-import com.io7m.jcoronado.api.VulkanBufferMemoryBarrier;
 import com.io7m.jcoronado.api.VulkanException;
-import com.io7m.jcoronado.api.VulkanIncompatibleClassException;
-import com.io7m.jcoronado.lwjgl.VulkanLWJGLBuffer;
-import com.io7m.jcoronado.lwjgl.VulkanLWJGLBufferMemoryBarriers;
+import com.io7m.jcoronado.api.VulkanImageAspectFlag;
+import com.io7m.jcoronado.api.VulkanImageSubresource;
+import com.io7m.jcoronado.lwjgl.VulkanLWJGLBufferImageCopy;
+import com.io7m.jcoronado.lwjgl.VulkanLWJGLImageSubresources;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.lwjgl.system.MemoryStack;
-import org.lwjgl.vulkan.VkBufferMemoryBarrier;
-import org.mockito.Mockito;
+import org.lwjgl.vulkan.VkImageSubresource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,22 +35,19 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-public final class VulkanLWJGLBufferMemoryBarriersTest
+public final class VulkanLWJGLImageSubresourcesTest
 {
   private static final Logger LOG = LoggerFactory.getLogger(
-    VulkanLWJGLBufferMemoryBarriersTest.class);
+    VulkanLWJGLImageSubresourcesTest.class);
 
   private MemoryStack stack = MemoryStack.create();
 
   private static void checkPacked(
-    final VkBufferMemoryBarrier out)
+    final VkImageSubresource out)
   {
-    assertEquals(0b1111_1111_1111_1111_1111, out.srcAccessMask());
-    assertEquals(0b1111_1111_1111_1111_1111, out.dstAccessMask());
-    assertEquals(23, out.srcQueueFamilyIndex());
-    assertEquals(25, out.dstQueueFamilyIndex());
-    assertEquals(100L, out.offset());
-    assertEquals(200L, out.size());
+    assertEquals(0b1111111, out.aspectMask());
+    assertEquals(1, out.mipLevel());
+    assertEquals(2, out.arrayLayer());
   }
 
   @BeforeEach
@@ -71,24 +66,17 @@ public final class VulkanLWJGLBufferMemoryBarriersTest
 
   @Test
   public void testOffsetPack()
-    throws VulkanIncompatibleClassException
+    throws VulkanException
   {
-    final var buffer =
-      Mockito.mock(VulkanLWJGLBuffer.class);
-
     final var source =
-      VulkanBufferMemoryBarrier.of(
-        EnumSet.allOf(VulkanAccessFlag.class),
-        EnumSet.allOf(VulkanAccessFlag.class),
-        23,
-        25,
-        buffer,
-        100L,
-        200L
+      VulkanImageSubresource.of(
+        EnumSet.allOf(VulkanImageAspectFlag.class),
+        1,
+        2
       );
 
     final var out =
-      VulkanLWJGLBufferMemoryBarriers.pack(this.stack, source);
+      VulkanLWJGLImageSubresources.pack(this.stack, source);
 
     checkPacked(out);
   }
@@ -97,22 +85,15 @@ public final class VulkanLWJGLBufferMemoryBarriersTest
   public void testOffsetPackList()
     throws VulkanException
   {
-    final var buffer =
-      Mockito.mock(VulkanLWJGLBuffer.class);
-
     final var source =
-      VulkanBufferMemoryBarrier.of(
-        EnumSet.allOf(VulkanAccessFlag.class),
-        EnumSet.allOf(VulkanAccessFlag.class),
-        23,
-        25,
-        buffer,
-        100L,
-        200L
+      VulkanImageSubresource.of(
+        EnumSet.allOf(VulkanImageAspectFlag.class),
+        1,
+        2
       );
 
     final var out =
-      VulkanLWJGLBufferMemoryBarriers.packList(
+      VulkanLWJGLImageSubresources.packList(
         this.stack,
         List.of(source, source, source));
 
@@ -125,22 +106,15 @@ public final class VulkanLWJGLBufferMemoryBarriersTest
   public void testOffsetPackListOrNull()
     throws VulkanException
   {
-    final var buffer =
-      Mockito.mock(VulkanLWJGLBuffer.class);
-
     final var source =
-      VulkanBufferMemoryBarrier.of(
-        EnumSet.allOf(VulkanAccessFlag.class),
-        EnumSet.allOf(VulkanAccessFlag.class),
-        23,
-        25,
-        buffer,
-        100L,
-        200L
+      VulkanImageSubresource.of(
+        EnumSet.allOf(VulkanImageAspectFlag.class),
+        1,
+        2
       );
 
     final var packed =
-      VulkanLWJGLBufferMemoryBarriers.packListOrNull(
+      VulkanLWJGLImageSubresources.packListOrNull(
         this.stack,
         List.of(source, source, source));
 
@@ -154,7 +128,7 @@ public final class VulkanLWJGLBufferMemoryBarriersTest
     throws VulkanException
   {
     final var packed =
-      VulkanLWJGLBufferMemoryBarriers.packListOrNull(
+      VulkanLWJGLBufferImageCopy.packListOrNull(
         this.stack,
         List.of());
 

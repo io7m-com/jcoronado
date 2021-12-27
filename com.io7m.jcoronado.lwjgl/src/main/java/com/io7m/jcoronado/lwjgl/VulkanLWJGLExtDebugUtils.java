@@ -121,6 +121,25 @@ public final class VulkanLWJGLExtDebugUtils implements VulkanDebugUtilsType
     return new String(messageBytes, UTF_8);
   }
 
+  private static void packLabel(
+    final MemoryStack stack,
+    final VulkanDebugUtilsLabelEXT label,
+    final VkDebugUtilsLabelEXT lwjglInfo)
+  {
+    final var color = label.color();
+    final var red = color.red();
+    final var blue = color.blue();
+    final var green = color.green();
+    final var alpha = color.alpha();
+
+    lwjglInfo.set(
+      VK_STRUCTURE_TYPE_DEBUG_UTILS_LABEL_EXT,
+      0L,
+      stack.UTF8(label.name()),
+      stack.floats(red, blue, green, alpha)
+    );
+  }
+
   @Override
   public VulkanDebugUtilsMessengerEXTType createDebugUtilsMessenger(
     final VulkanInstanceType instance,
@@ -204,25 +223,6 @@ public final class VulkanLWJGLExtDebugUtils implements VulkanDebugUtilsType
     }
 
     return new Region(lwjglCommandBuffer);
-  }
-
-  private static void packLabel(
-    final MemoryStack stack,
-    final VulkanDebugUtilsLabelEXT label,
-    final VkDebugUtilsLabelEXT lwjglInfo)
-  {
-    final var color = label.color();
-    final var red = color.red();
-    final var blue = color.blue();
-    final var green = color.green();
-    final var alpha = color.alpha();
-
-    lwjglInfo.set(
-      VK_STRUCTURE_TYPE_DEBUG_UTILS_LABEL_EXT,
-      0L,
-      stack.UTF8(label.name()),
-      stack.floats(red, blue, green, alpha)
-    );
   }
 
   @Override

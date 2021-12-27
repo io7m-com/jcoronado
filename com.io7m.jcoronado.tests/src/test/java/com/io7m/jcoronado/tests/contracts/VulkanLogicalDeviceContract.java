@@ -24,6 +24,7 @@ import com.io7m.jcoronado.api.VulkanBufferMemoryBarrier;
 import com.io7m.jcoronado.api.VulkanBufferViewCreateInfo;
 import com.io7m.jcoronado.api.VulkanCommandPoolCreateInfo;
 import com.io7m.jcoronado.api.VulkanComponentMapping;
+import com.io7m.jcoronado.api.VulkanEventCreateInfo;
 import com.io7m.jcoronado.api.VulkanException;
 import com.io7m.jcoronado.api.VulkanExtent2D;
 import com.io7m.jcoronado.api.VulkanExtent3D;
@@ -42,6 +43,9 @@ import com.io7m.jcoronado.api.VulkanQueueType;
 import com.io7m.jcoronado.api.VulkanRectangle2D;
 import com.io7m.jcoronado.api.VulkanRenderPassBeginInfo;
 import com.io7m.jcoronado.api.VulkanRenderPassCreateInfo;
+import com.io7m.jcoronado.api.VulkanSamplerCreateInfo;
+import com.io7m.jcoronado.api.VulkanSemaphoreCreateInfo;
+import com.io7m.jcoronado.api.VulkanShaderModuleCreateInfo;
 import com.io7m.jcoronado.api.VulkanSubmitInfo;
 import com.io7m.jcoronado.api.VulkanSubpassContents;
 import com.io7m.jcoronado.api.VulkanSubpassDescription;
@@ -52,6 +56,7 @@ import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -62,13 +67,16 @@ import static com.io7m.jcoronado.api.VulkanAccessFlag.VK_ACCESS_TRANSFER_READ_BI
 import static com.io7m.jcoronado.api.VulkanAccessFlag.VK_ACCESS_TRANSFER_WRITE_BIT;
 import static com.io7m.jcoronado.api.VulkanAttachmentLoadOp.VK_ATTACHMENT_LOAD_OP_DONT_CARE;
 import static com.io7m.jcoronado.api.VulkanAttachmentStoreOp.VK_ATTACHMENT_STORE_OP_DONT_CARE;
+import static com.io7m.jcoronado.api.VulkanBorderColor.VK_BORDER_COLOR_INT_OPAQUE_BLACK;
 import static com.io7m.jcoronado.api.VulkanBufferUsageFlag.VK_BUFFER_USAGE_STORAGE_TEXEL_BUFFER_BIT;
 import static com.io7m.jcoronado.api.VulkanBufferUsageFlag.VK_BUFFER_USAGE_TRANSFER_DST_BIT;
 import static com.io7m.jcoronado.api.VulkanBufferUsageFlag.VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
 import static com.io7m.jcoronado.api.VulkanBufferUsageFlag.VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
 import static com.io7m.jcoronado.api.VulkanCommandBufferLevel.VK_COMMAND_BUFFER_LEVEL_PRIMARY;
 import static com.io7m.jcoronado.api.VulkanCommandBufferUsageFlag.VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
+import static com.io7m.jcoronado.api.VulkanCompareOp.VK_COMPARE_OP_ALWAYS;
 import static com.io7m.jcoronado.api.VulkanComponentSwizzle.VK_COMPONENT_SWIZZLE_IDENTITY;
+import static com.io7m.jcoronado.api.VulkanFilter.VK_FILTER_NEAREST;
 import static com.io7m.jcoronado.api.VulkanFormat.VK_FORMAT_R5G6B5_UNORM_PACK16;
 import static com.io7m.jcoronado.api.VulkanFormat.VK_FORMAT_R8_UNORM;
 import static com.io7m.jcoronado.api.VulkanImageAspectFlag.VK_IMAGE_ASPECT_COLOR_BIT;
@@ -86,6 +94,8 @@ import static com.io7m.jcoronado.api.VulkanPipelineStageFlag.VK_PIPELINE_STAGE_T
 import static com.io7m.jcoronado.api.VulkanQueueFamilyPropertyFlag.VK_QUEUE_TRANSFER_BIT;
 import static com.io7m.jcoronado.api.VulkanSampleCountFlag.VK_SAMPLE_COUNT_1_BIT;
 import static com.io7m.jcoronado.api.VulkanSampleCountFlag.VK_SAMPLE_COUNT_8_BIT;
+import static com.io7m.jcoronado.api.VulkanSamplerAddressMode.VK_SAMPLER_ADDRESS_MODE_REPEAT;
+import static com.io7m.jcoronado.api.VulkanSamplerMipmapMode.VK_SAMPLER_MIPMAP_MODE_NEAREST;
 import static com.io7m.jcoronado.api.VulkanSharingMode.VK_SHARING_MODE_EXCLUSIVE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -94,6 +104,17 @@ public abstract class VulkanLogicalDeviceContract extends VulkanOnDeviceContract
 {
   private VulkanPhysicalDeviceType physicalDevice;
   private VulkanLogicalDeviceType device;
+
+  private static boolean isSuitableCopyQueue(
+    final VulkanQueueType q)
+  {
+    final var familyProperties =
+      q.queueFamilyProperties();
+    final var queueFlags =
+      familyProperties.queueFlags();
+
+    return queueFlags.contains(VK_QUEUE_TRANSFER_BIT);
+  }
 
   protected abstract VulkanInstanceType instance();
 
@@ -234,14 +255,14 @@ public abstract class VulkanLogicalDeviceContract extends VulkanOnDeviceContract
       final var memory0 =
         resources.add(
           this.device.allocateMemory(
-          VulkanMemoryAllocateInfo.of(
-            buffer0Requirements.size(), bufferMemoryType.heapIndex()))
+            VulkanMemoryAllocateInfo.of(
+              buffer0Requirements.size(), bufferMemoryType.heapIndex()))
         );
       final var memory1 =
         resources.add(
           this.device.allocateMemory(
-          VulkanMemoryAllocateInfo.of(
-            buffer1Requirements.size(), bufferMemoryType.heapIndex()))
+            VulkanMemoryAllocateInfo.of(
+              buffer1Requirements.size(), bufferMemoryType.heapIndex()))
         );
 
       final var map0 =
@@ -271,7 +292,9 @@ public abstract class VulkanLogicalDeviceContract extends VulkanOnDeviceContract
 
       final var commandBuffer =
         resources.add(
-          this.device.createCommandBuffer(commandPool, VK_COMMAND_BUFFER_LEVEL_PRIMARY)
+          this.device.createCommandBuffer(
+            commandPool,
+            VK_COMMAND_BUFFER_LEVEL_PRIMARY)
         );
 
       final var fence =
@@ -375,17 +398,6 @@ public abstract class VulkanLogicalDeviceContract extends VulkanOnDeviceContract
       Assertions.assertArrayEquals(expBytes, mBytes0);
       Assertions.assertArrayEquals(expBytes, mBytes1);
     }
-  }
-
-  private static boolean isSuitableCopyQueue(
-    final VulkanQueueType q)
-  {
-    final var familyProperties =
-      q.queueFamilyProperties();
-    final var queueFlags =
-      familyProperties.queueFlags();
-
-    return queueFlags.contains(VK_QUEUE_TRANSFER_BIT);
   }
 
   /**
@@ -802,6 +814,115 @@ public abstract class VulkanLogicalDeviceContract extends VulkanOnDeviceContract
           }
         }
       }
+    }
+  }
+
+  /**
+   * Try creating a sampler.
+   *
+   * @throws VulkanException On errors
+   */
+
+  @Test
+  public final void testCreateSampler()
+    throws VulkanException
+  {
+    Assumptions.assumeTrue(this.shouldRun(), "Test should run");
+
+    try (var sampler =
+           this.device.createSampler(
+             VulkanSamplerCreateInfo.builder()
+               .setAddressModeU(VK_SAMPLER_ADDRESS_MODE_REPEAT)
+               .setAddressModeV(VK_SAMPLER_ADDRESS_MODE_REPEAT)
+               .setAddressModeW(VK_SAMPLER_ADDRESS_MODE_REPEAT)
+               .setBorderColor(VK_BORDER_COLOR_INT_OPAQUE_BLACK)
+               .setCompareOp(VK_COMPARE_OP_ALWAYS)
+               .setMagFilter(VK_FILTER_NEAREST)
+               .setMinFilter(VK_FILTER_NEAREST)
+               .setMipmapMode(VK_SAMPLER_MIPMAP_MODE_NEAREST)
+               .setMipLodBias(0.0f)
+               .setMinLod(1.0f)
+               .setMaxLod(1.0f)
+               .setUnnormalizedCoordinates(false)
+               .build()
+           )) {
+      assertFalse(sampler.isClosed());
+    }
+  }
+
+  /**
+   * Try creating a shader module.
+   *
+   * @throws Exception On errors
+   */
+
+  @Test
+  public final void testCreateShaderModule()
+    throws Exception
+  {
+    Assumptions.assumeTrue(this.shouldRun(), "Test should run");
+
+    try (var stream =
+           VulkanLogicalDeviceContract.class.getResourceAsStream(
+             "/com/io7m/jcoronado/tests/input.vert.spv")) {
+
+      final var bytecode =
+        stream.readAllBytes();
+      final var bytecodeBuffer =
+        ByteBuffer.allocateDirect(bytecode.length);
+
+      bytecodeBuffer.put(bytecode);
+      bytecodeBuffer.rewind();
+
+      try (var shaderModule =
+             this.device.createShaderModule(
+               VulkanShaderModuleCreateInfo.builder()
+                 .setData(bytecodeBuffer)
+                 .setSize(bytecode.length)
+                 .build()
+             )) {
+        assertFalse(shaderModule.isClosed());
+      }
+    }
+  }
+
+  /**
+   * Try creating an event.
+   *
+   * @throws Exception On errors
+   */
+
+  @Test
+  public final void testCreateEvent()
+    throws Exception
+  {
+    Assumptions.assumeTrue(this.shouldRun(), "Test should run");
+
+    try (var event =
+           this.device.createEvent(
+             VulkanEventCreateInfo.builder()
+               .build())) {
+      assertFalse(event.isClosed());
+    }
+  }
+
+  /**
+   * Try creating a semaphore.
+   *
+   * @throws Exception On errors
+   */
+
+  @Test
+  public final void testCreateSemaphore()
+    throws Exception
+  {
+    Assumptions.assumeTrue(this.shouldRun(), "Test should run");
+
+    try (var semaphore =
+           this.device.createSemaphore(
+             VulkanSemaphoreCreateInfo.builder()
+               .build())) {
+      assertFalse(semaphore.isClosed());
     }
   }
 }
