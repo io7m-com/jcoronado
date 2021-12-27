@@ -549,26 +549,20 @@ public final class BufferCopy implements ExampleType
 
       commandBuffer.beginCommandBuffer(
         VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT);
-      commandBuffer.fillBuffer(buffer0, 0L, 128L, 0x41414141);
-      commandBuffer.pipelineBarrier(
-        Set.of(VK_PIPELINE_STAGE_TRANSFER_BIT),
-        Set.of(VK_PIPELINE_STAGE_TRANSFER_BIT),
-        Set.of(),
-        List.of(),
-        List.of(fillBarrier0),
-        List.of()
-      );
 
+      debug.insertInto(commandBuffer, "fill");
+      commandBuffer.fillBuffer(buffer0, 0L, 128L, 0x41414141);
       commandBuffer.fillBuffer(buffer1, 0L, 128L, 0x42424242);
       commandBuffer.pipelineBarrier(
         Set.of(VK_PIPELINE_STAGE_TRANSFER_BIT),
         Set.of(VK_PIPELINE_STAGE_TRANSFER_BIT),
         Set.of(),
         List.of(),
-        List.of(fillBarrier1),
+        List.of(fillBarrier0, fillBarrier1),
         List.of()
       );
 
+      debug.insertInto(commandBuffer, "copy");
       commandBuffer.copyBuffer(
         buffer0,
         buffer1,
