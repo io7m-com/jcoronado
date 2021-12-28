@@ -289,6 +289,8 @@ public final class VulkanLWJGLLogicalDeviceTest
       writer.append("|");
       writer.append(VulkanVendorIDs.vendorName(properties.vendorId()));
       writer.append("|");
+      writer.append(properties.name());
+      writer.append("|");
       writer.append(driverProperties.driverName());
       writer.append("|");
       writer.append(properties.driverVersion().toHumanString());
@@ -296,6 +298,7 @@ public final class VulkanLWJGLLogicalDeviceTest
       writer.append(driverProperties.driverInfo());
       writer.append("|");
       writer.append(properties.apiVersion().toHumanString());
+      writer.append("|");
       writer.newLine();
     }
   }
