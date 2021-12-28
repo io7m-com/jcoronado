@@ -57,7 +57,7 @@ The package regularly passes tests on all of the following platforms:
 
 | Node | OS   | Arch       | GPU Vendor | GPU Model | Driver ID      | Driver Version | Driver Info | Vulkan API |
 |------|------|------------|------------|-----------|----------------|----------------|-------------|------------|
-|banana|Windows 10|amd64|NVIDIA|GeForce GTX 1660 Ti|456.284.0|456.71|1.2.142
+|banana||Windows 10|amd64|NVIDIA|GeForce GTX 1660 Ti|NVIDIA|456.284.0|456.71|1.2.142|
 |github|Linux|amd64|Unknown Vendor|llvmpipe (LLVM 12.0.0, 256 bits)|llvmpipe|0.0.1|Mesa 21.0.3 (LLVM 12.0.0)|1.0.2|
 |prune|Linux|amd64|INTEL|Intel(R) HD Graphics 620 (KBL GT2)|Intel open-source Mesa driver|21.3.2|Mesa 21.3.2|1.2.195|
 |starfruit|Linux|amd64|Unknown Vendor|llvmpipe (LLVM 11.0.1, 256 bits)|llvmpipe|0.0.1|Mesa 20.3.5 (LLVM 11.0.1)|1.0.2|
