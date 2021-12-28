@@ -19,3 +19,5 @@ jobs:
         run: sudo apt install libvulkan1 mesa-vulkan-drivers vulkan-tools vulkan-validationlayers
       - name: Build
         run: mvn --errors clean verify site
+      - name: Show Driver
+        run: cat /tmp/driver.txt

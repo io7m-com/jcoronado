@@ -55,9 +55,9 @@ If this step fails, it's a bug. Please report it!
 
 The package regularly passes tests on all of the following platforms:
 
-| OS | Arch | GPU Vendor | GPU ID | Driver ID | Vulkan API | Driver Version |
-|----|------|------------|--------|-----------|------------|----------------|
-|Linux|amd64|AMD|AMD RADV NAVI10|radv|1.2.195|21.3.1|
+| OS | Arch | GPU Vendor | Driver ID | Driver Version | Driver Info | Vulkan API |
+|----|------|------------|-----------|----------------|-------------|------------|
+|Linux|amd64|AMD|radv|21.3.1|Mesa 21.3.1|1.2.195
 
 ## Structs
 

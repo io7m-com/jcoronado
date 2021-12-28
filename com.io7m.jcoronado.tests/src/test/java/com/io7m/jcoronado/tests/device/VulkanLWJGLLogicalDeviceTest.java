@@ -34,9 +34,16 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.List;
 import java.util.Optional;
 
+import static java.nio.charset.StandardCharsets.*;
+import static java.nio.file.StandardOpenOption.*;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
 public final class VulkanLWJGLLogicalDeviceTest
@@ -189,11 +196,12 @@ public final class VulkanLWJGLLogicalDeviceTest
    * supported Vulkan version.
    *
    * @throws VulkanException On errors
+   * @throws IOException On errors
    */
 
   @Test
   public void testCreateLogicalDeviceWithFeaturesHighest()
-    throws VulkanException
+    throws VulkanException, IOException
   {
     Assumptions.assumeTrue(this.shouldRun());
 
@@ -228,23 +236,7 @@ public final class VulkanLWJGLLogicalDeviceTest
              newInstance.physicalDevices()
                .get(0)) {
 
-        {
-          final var properties =
-            physicalDevice.properties();
-          final var driverProperties =
-            physicalDevice.driverProperties().orElseThrow();
-
-          System.out.printf(
-            "|%s|%s|%s|%s|%s|%s|%s|%n",
-            System.getProperty("os.name"),
-            System.getProperty("os.arch"),
-            VulkanVendorIDs.vendorName(properties.vendorId()),
-            properties.name(),
-            driverProperties.driverName(),
-            properties.apiVersion().toHumanString(),
-            properties.driverVersion().toHumanString()
-          );
-        }
+        saveDriverProperties(physicalDevice);
 
         final var queue =
           VulkanLogicalDeviceQueueCreateInfo.builder()
@@ -269,6 +261,42 @@ public final class VulkanLWJGLLogicalDeviceTest
           assertFalse(logicalDevice.isClosed());
         }
       }
+    }
+  }
+
+  private static void saveDriverProperties(
+    final VulkanPhysicalDeviceType physicalDevice)
+    throws VulkanException, IOException
+  {
+      final var properties =
+        physicalDevice.properties();
+      final var driverProperties =
+        physicalDevice.driverProperties().orElseThrow();
+
+      final var tmpDir =
+        System.getProperty("java.io.tmpdir");
+      final var path =
+        Paths.get(tmpDir);
+      final var file =
+        path.resolve("driver.txt");
+
+    try (var writer =
+           Files.newBufferedWriter(file, UTF_8, TRUNCATE_EXISTING, CREATE, WRITE)) {
+      writer.append("|");
+      writer.append(System.getProperty("os.name"));
+      writer.append("|");
+      writer.append(System.getProperty("os.arch"));
+      writer.append("|");
+      writer.append(VulkanVendorIDs.vendorName(properties.vendorId()));
+      writer.append("|");
+      writer.append(driverProperties.driverName());
+      writer.append("|");
+      writer.append(properties.driverVersion().toHumanString());
+      writer.append("|");
+      writer.append(driverProperties.driverInfo());
+      writer.append("|");
+      writer.append(properties.apiVersion().toHumanString());
+      writer.newLine();
     }
   }
 }
