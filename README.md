@@ -57,7 +57,10 @@ The package regularly passes tests on all of the following platforms:
 
 | OS | Arch | GPU Vendor | Driver ID | Driver Version | Driver Info | Vulkan API |
 |----|------|------------|-----------|----------------|-------------|------------|
-|Linux|amd64|AMD|radv|21.3.1|Mesa 21.3.1|1.2.195
+|Linux|amd64|AMD|radv|21.3.1|Mesa 21.3.1|1.2.195|
+|Linux|amd64|Unknown Vendor|llvmpipe|0.0.1|Mesa 21.0.3 (LLVM 12.0.0)|1.0.2|
+|Windows 10|amd64|AMD|AMD proprietary driver|2.0.198|21.10.2|1.2.188|
+|Windows 10|amd64|NVIDIA|NVIDIA|456.284.0|456.71|1.2.142|
 
 ## Structs
 
