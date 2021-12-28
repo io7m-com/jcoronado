@@ -26,8 +26,10 @@ import com.io7m.jcoronado.api.VulkanInstanceType;
 import com.io7m.jcoronado.api.VulkanLineWidthRange;
 import com.io7m.jcoronado.api.VulkanMemoryHeap;
 import com.io7m.jcoronado.api.VulkanMemoryHeapFlag;
+import com.io7m.jcoronado.api.VulkanMemoryHeapIndex;
 import com.io7m.jcoronado.api.VulkanMemoryPropertyFlag;
 import com.io7m.jcoronado.api.VulkanMemoryType;
+import com.io7m.jcoronado.api.VulkanMemoryTypeIndex;
 import com.io7m.jcoronado.api.VulkanPhysicalDeviceFeatures;
 import com.io7m.jcoronado.api.VulkanPhysicalDeviceFeatures10;
 import com.io7m.jcoronado.api.VulkanPhysicalDeviceFeatures11;
@@ -67,10 +69,12 @@ import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumSet;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.stream.Stream;
 
 import static org.lwjgl.vulkan.VK11.VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FEATURES_2;
@@ -253,24 +257,34 @@ public final class VulkanLWJGLInstance
     final var builder =
       VulkanPhysicalDeviceMemoryProperties.builder();
 
+    final var heaps = new HashMap<VulkanMemoryHeapIndex, VulkanMemoryHeap>();
     for (var index = 0; index < vk_memory.memoryHeapCount(); ++index) {
       final var heap = vk_memory.memoryHeaps(index);
-      builder.addHeaps(parseHeap(heap));
+      final var parsed = parseHeap(index, heap);
+      heaps.put(parsed.index(), parsed);
     }
 
+    final var types = new HashMap<VulkanMemoryTypeIndex, VulkanMemoryType>();
     for (var index = 0; index < vk_memory.memoryTypeCount(); ++index) {
       final var type = vk_memory.memoryTypes(index);
-      builder.addTypes(parseType(type));
+      final var parsed = parseType(index, type);
+      types.put(parsed.index(), parsed);
     }
 
+    builder.setHeaps(new TreeMap<>(heaps));
+    builder.setTypes(new TreeMap<>(types));
     return builder.build();
   }
 
   private static VulkanMemoryType parseType(
+    final int typeIndex,
     final VkMemoryType type)
   {
     return VulkanMemoryType.of(
-      type.heapIndex(), parseTypeFlags(type.propertyFlags()));
+      new VulkanMemoryTypeIndex(typeIndex),
+      new VulkanMemoryHeapIndex(type.heapIndex()),
+      parseTypeFlags(type.propertyFlags())
+    );
   }
 
   private static Set<VulkanMemoryPropertyFlag> parseTypeFlags(
@@ -290,9 +304,14 @@ public final class VulkanLWJGLInstance
   }
 
   private static VulkanMemoryHeap parseHeap(
+    final int heapIndex,
     final VkMemoryHeap heap)
   {
-    return VulkanMemoryHeap.of(heap.size(), parseHeapFlags(heap.flags()));
+    return VulkanMemoryHeap.of(
+      new VulkanMemoryHeapIndex(heapIndex),
+      heap.size(),
+      parseHeapFlags(heap.flags())
+    );
   }
 
   private static Set<VulkanMemoryHeapFlag> parseHeapFlags(

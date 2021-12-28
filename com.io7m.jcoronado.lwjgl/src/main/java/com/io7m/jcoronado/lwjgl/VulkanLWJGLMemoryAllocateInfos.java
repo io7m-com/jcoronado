@@ -75,7 +75,7 @@ public final class VulkanLWJGLMemoryAllocateInfos
       VK10.VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO,
       0L,
       source.size(),
-      source.memoryTypeIndex());
+      source.memoryTypeIndex().value());
   }
 
   /**

@@ -41,5 +41,5 @@ public interface VulkanMemoryAllocateInfoType
    */
 
   @Value.Parameter
-  int memoryTypeIndex();
+  VulkanMemoryTypeIndex memoryTypeIndex();
 }

@@ -22,7 +22,7 @@ import org.immutables.value.Value;
 import java.util.Set;
 
 /**
- * The type of a heap.
+ * A memory type.
  */
 
 @ImmutablesStyleType
@@ -30,11 +30,18 @@ import java.util.Set;
 public interface VulkanMemoryTypeType
 {
   /**
+   * @return The type index
+   */
+
+  @Value.Parameter
+  VulkanMemoryTypeIndex index();
+
+  /**
    * @return The memory heap to which this memory type corresponds
    */
 
   @Value.Parameter
-  int heapIndex();
+  VulkanMemoryHeapIndex heapIndex();
 
   /**
    * @return The properties of the heap

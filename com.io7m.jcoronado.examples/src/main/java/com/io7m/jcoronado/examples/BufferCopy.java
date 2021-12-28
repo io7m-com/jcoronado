@@ -459,13 +459,15 @@ public final class BufferCopy implements ExampleType
         resources.add(
           device.allocateMemory(
             VulkanMemoryAllocateInfo.of(
-              buffer0Requirements.size(), bufferMemoryType.heapIndex()))
+              buffer0Requirements.size(),
+              bufferMemoryType.index()))
         );
       final var memory1 =
         resources.add(
           device.allocateMemory(
             VulkanMemoryAllocateInfo.of(
-              buffer1Requirements.size(), bufferMemoryType.heapIndex()))
+              buffer1Requirements.size(),
+              bufferMemoryType.index()))
         );
 
       final var map0 =

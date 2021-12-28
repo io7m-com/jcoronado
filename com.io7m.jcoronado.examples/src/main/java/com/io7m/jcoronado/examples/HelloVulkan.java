@@ -1235,7 +1235,7 @@ public final class HelloVulkan implements ExampleType
 
       final var vertexBufferAllocation =
         VulkanMemoryAllocateInfo.builder()
-          .setMemoryTypeIndex(vertexBufferMemoryType.heapIndex())
+          .setMemoryTypeIndex(vertexBufferMemoryType.index())
           .setSize(vertexBufferRequirements.size())
           .build();
 

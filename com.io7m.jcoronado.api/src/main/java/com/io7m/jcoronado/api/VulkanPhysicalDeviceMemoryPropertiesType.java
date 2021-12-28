@@ -19,9 +19,9 @@ package com.io7m.jcoronado.api;
 import com.io7m.immutables.styles.ImmutablesStyleType;
 import org.immutables.value.Value;
 
-import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.SortedMap;
 
 /**
  * The memory properties for a physical device.
@@ -39,15 +39,49 @@ public interface VulkanPhysicalDeviceMemoryPropertiesType
    */
 
   @Value.Parameter
-  List<VulkanMemoryHeap> heaps();
+  SortedMap<VulkanMemoryHeapIndex, VulkanMemoryHeap> heaps();
 
   /**
-   * @return The memory types that can be used to access memory allocated from the heaps specified
-   * by {@link #heaps()}
+   * @return The memory types that can be used to access memory allocated from
+   * the heaps specified by {@link #heaps()}
    */
 
   @Value.Parameter
-  List<VulkanMemoryType> types();
+  SortedMap<VulkanMemoryTypeIndex, VulkanMemoryType> types();
+
+  /**
+   * Check preconditions for the type.
+   */
+
+  @Value.Check
+  default void checkPreconditions()
+  {
+    for (final var entry : this.heaps().entrySet()) {
+      final var index = entry.getKey();
+      final var heap = entry.getValue();
+      if (!Objects.equals(index, heap.index())) {
+        throw new IllegalArgumentException(
+          String.format(
+            "Heap index %s must match key %s",
+            Integer.toUnsignedString(index.value()),
+            Integer.toUnsignedString(heap.index().value()))
+        );
+      }
+    }
+
+    for (final var entry : this.types().entrySet()) {
+      final var index = entry.getKey();
+      final var types = entry.getValue();
+      if (!Objects.equals(index, types.index())) {
+        throw new IllegalArgumentException(
+          String.format(
+            "Type index %s must match key %s",
+            Integer.toUnsignedString(index.value()),
+            Integer.toUnsignedString(types.index().value()))
+        );
+      }
+    }
+  }
 
   /**
    * Find a suitable memory type for the given requirements and properties.
@@ -57,7 +91,8 @@ public interface VulkanPhysicalDeviceMemoryPropertiesType
    *
    * @return A memory type
    *
-   * @throws VulkanMissingRequiredMemoryTypeException If no suitable memory type exists
+   * @throws VulkanMissingRequiredMemoryTypeException If no suitable memory type
+   *                                                  exists
    */
 
   default VulkanMemoryType findSuitableMemoryType(
@@ -70,10 +105,10 @@ public interface VulkanPhysicalDeviceMemoryPropertiesType
 
     final var typeFilter = requirements.memoryTypeBits();
     final var types = this.types();
-    final var typeCount = types.size();
-    for (var index = 0; index < typeCount; ++index) {
-      final var type = types.get(index);
-      final var bit = 1 << index;
+    for (final var typeEntry : types.entrySet()) {
+      final var typeIndex = typeEntry.getKey();
+      final var type = typeEntry.getValue();
+      final var bit = 1 << typeIndex.value();
       final var flagsOk = type.flags().containsAll(flags);
       final var typeBitOk = (typeFilter & bit) == bit;
       if (typeBitOk && flagsOk) {
@@ -85,7 +120,7 @@ public interface VulkanPhysicalDeviceMemoryPropertiesType
       "No suitable memory type is available.",
       requirements,
       flags,
-      this.heaps(),
-      types);
+      this.heaps().values(),
+      types.values());
   }
 }

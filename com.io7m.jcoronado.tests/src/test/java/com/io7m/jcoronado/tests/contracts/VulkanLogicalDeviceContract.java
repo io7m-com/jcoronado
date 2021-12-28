@@ -259,13 +259,15 @@ public abstract class VulkanLogicalDeviceContract extends VulkanOnDeviceContract
         resources.add(
           this.device.allocateMemory(
             VulkanMemoryAllocateInfo.of(
-              buffer0Requirements.size(), bufferMemoryType.heapIndex()))
+              buffer0Requirements.size(),
+              bufferMemoryType.index()))
         );
       final var memory1 =
         resources.add(
           this.device.allocateMemory(
             VulkanMemoryAllocateInfo.of(
-              buffer1Requirements.size(), bufferMemoryType.heapIndex()))
+              buffer1Requirements.size(),
+              bufferMemoryType.index()))
         );
 
       final var map0 =
@@ -437,7 +439,7 @@ public abstract class VulkanLogicalDeviceContract extends VulkanOnDeviceContract
              this.device.allocateMemory(
                VulkanMemoryAllocateInfo.builder()
                  .setSize(bufferMemoryRequirements.size())
-                 .setMemoryTypeIndex(bufferMemoryType.heapIndex())
+                 .setMemoryTypeIndex(bufferMemoryType.index())
                  .build())) {
 
         this.device.bindBufferMemory(buffer, memory, 0L);
@@ -538,7 +540,7 @@ public abstract class VulkanLogicalDeviceContract extends VulkanOnDeviceContract
              this.device.allocateMemory(
                VulkanMemoryAllocateInfo.builder()
                  .setSize(imageMemoryRequirements.size())
-                 .setMemoryTypeIndex(imageMemoryType.heapIndex())
+                 .setMemoryTypeIndex(imageMemoryType.index())
                  .build())) {
 
         this.device.bindImageMemory(image, memory, 0L);
@@ -613,7 +615,7 @@ public abstract class VulkanLogicalDeviceContract extends VulkanOnDeviceContract
              this.device.allocateMemory(
                VulkanMemoryAllocateInfo.builder()
                  .setSize(imageMemoryRequirements.size())
-                 .setMemoryTypeIndex(imageMemoryType.heapIndex())
+                 .setMemoryTypeIndex(imageMemoryType.index())
                  .build())) {
 
         this.device.bindImageMemory(image, memory, 0L);
@@ -726,7 +728,7 @@ public abstract class VulkanLogicalDeviceContract extends VulkanOnDeviceContract
              this.device.allocateMemory(
                VulkanMemoryAllocateInfo.builder()
                  .setSize(imageMemoryRequirements.size())
-                 .setMemoryTypeIndex(imageMemoryType.heapIndex())
+                 .setMemoryTypeIndex(imageMemoryType.index())
                  .build())) {
 
         this.device.bindImageMemory(image, memory, 0L);
@@ -961,7 +963,7 @@ public abstract class VulkanLogicalDeviceContract extends VulkanOnDeviceContract
              this.device.allocateMemory(
                VulkanMemoryAllocateInfo.of(
                  bufferMemoryRequirements.size(),
-                 memoryType.heapIndex())
+                 memoryType.index())
              )) {
 
         final VulkanMappedMemoryType unmapped;

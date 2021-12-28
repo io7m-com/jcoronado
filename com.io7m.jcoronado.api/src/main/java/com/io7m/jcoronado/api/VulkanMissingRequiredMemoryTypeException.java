@@ -16,6 +16,7 @@
 
 package com.io7m.jcoronado.api;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -29,8 +30,8 @@ public final class VulkanMissingRequiredMemoryTypeException extends
 {
   private final VulkanMemoryRequirements requirements;
   private final Set<VulkanMemoryPropertyFlag> flags;
-  private final List<VulkanMemoryHeap> heaps;
-  private final List<VulkanMemoryType> types;
+  private final Collection<VulkanMemoryHeap> heaps;
+  private final Collection<VulkanMemoryType> types;
 
   /**
    * Construct an exception.
@@ -46,8 +47,8 @@ public final class VulkanMissingRequiredMemoryTypeException extends
     final String message,
     final VulkanMemoryRequirements in_requirements,
     final Set<VulkanMemoryPropertyFlag> in_flags,
-    final List<VulkanMemoryHeap> in_heaps,
-    final List<VulkanMemoryType> in_types)
+    final Collection<VulkanMemoryHeap> in_heaps,
+    final Collection<VulkanMemoryType> in_types)
   {
     super(Objects.requireNonNull(message, "message"));
 
@@ -83,7 +84,7 @@ public final class VulkanMissingRequiredMemoryTypeException extends
    * @return The available heaps
    */
 
-  public List<VulkanMemoryHeap> heaps()
+  public Collection<VulkanMemoryHeap> heaps()
   {
     return this.heaps;
   }
@@ -92,7 +93,7 @@ public final class VulkanMissingRequiredMemoryTypeException extends
    * @return The available types
    */
 
-  public List<VulkanMemoryType> types()
+  public Collection<VulkanMemoryType> types()
   {
     return this.types;
   }

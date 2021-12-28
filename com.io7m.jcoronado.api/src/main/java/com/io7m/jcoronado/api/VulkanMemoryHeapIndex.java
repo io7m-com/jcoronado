@@ -1,5 +1,5 @@
 /*
- * Copyright © 2018 Mark Raynsford <code@io7m.com> http://io7m.com
+ * Copyright © 2021 Mark Raynsford <code@io7m.com> https://www.io7m.com
  *
  * Permission to use, copy, modify, and/or distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -16,40 +16,20 @@
 
 package com.io7m.jcoronado.api;
 
-import com.io7m.immutables.styles.ImmutablesStyleType;
-import org.immutables.value.Value;
-
-import java.util.Set;
-
 /**
- * Structure specifying a memory heap.
+ * The unique index of a memory heap.
  *
- * @see "VkMemoryHeap"
+ * @param value The index value
+ * @see VulkanPhysicalDeviceMemoryProperties#heaps()
  */
 
-@VulkanAPIStructType(vulkanStruct = "VkMemoryHeap")
-@ImmutablesStyleType
-@Value.Immutable
-public interface VulkanMemoryHeapType
+public record VulkanMemoryHeapIndex(int value)
+  implements Comparable<VulkanMemoryHeapIndex>
 {
-  /**
-   * @return The heap index
-   */
-
-  @Value.Parameter
-  VulkanMemoryHeapIndex index();
-
-  /**
-   * @return The total memory size in bytes in the heap.
-   */
-
-  @Value.Parameter
-  long size();
-
-  /**
-   * @return The flags for the heap
-   */
-
-  @Value.Parameter
-  Set<VulkanMemoryHeapFlag> flags();
+  @Override
+  public int compareTo(
+    final VulkanMemoryHeapIndex o)
+  {
+    return Integer.compareUnsigned(this.value, o.value);
+  }
 }

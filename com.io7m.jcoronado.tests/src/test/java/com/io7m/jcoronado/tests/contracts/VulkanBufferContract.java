@@ -109,7 +109,7 @@ public abstract class VulkanBufferContract extends VulkanOnDeviceContract
 
       final var memory_info =
         VulkanMemoryAllocateInfo.builder()
-          .setMemoryTypeIndex(memory_type.heapIndex())
+          .setMemoryTypeIndex(memory_type.index())
           .setSize(requirements.size())
           .build();
 
