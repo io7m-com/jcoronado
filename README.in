@@ -196,6 +196,7 @@ can track test results over time.
 | VulkanDescriptorSetLayoutCreateFlag | [VkDescriptorSetLayoutCreateFlagBits](https://www.khronos.org/registry/vulkan/specs/1.1-extensions/man/html/VkDescriptorSetLayoutCreateFlagBits.html) |
 | VulkanDescriptorType | [VkDescriptorType](https://www.khronos.org/registry/vulkan/specs/1.1-extensions/man/html/VkDescriptorType.html) |
 | VulkanDeviceQueueCreationFlag | [VkDeviceQueueCreateFlagBits](https://www.khronos.org/registry/vulkan/specs/1.1-extensions/man/html/VkDeviceQueueCreateFlagBits.html) |
+| VulkanDriverKnownId | [VkDriverId](https://www.khronos.org/registry/vulkan/specs/1.1-extensions/man/html/VkDriverId.html) |
 | VulkanDynamicState | [VkDynamicState](https://www.khronos.org/registry/vulkan/specs/1.1-extensions/man/html/VkDynamicState.html) |
 | VulkanEventCreateFlag | [VkEventCreateFlagBits](https://www.khronos.org/registry/vulkan/specs/1.1-extensions/man/html/VkEventCreateFlagBits.html) |
 | VulkanFenceCreateFlag | [VkFenceCreateFlagBits](https://www.khronos.org/registry/vulkan/specs/1.1-extensions/man/html/VkFenceCreateFlagBits.html) |
@@ -393,6 +394,7 @@ can track test results over time.
 | VulkanPhysicalDeviceType.imageFormatProperties() | [vkGetPhysicalDeviceImageFormatProperties](https://www.khronos.org/registry/vulkan/specs/1.1-extensions/man/html/vkGetPhysicalDeviceImageFormatProperties.html) |
 | VulkanPhysicalDeviceType.layers() | [vkEnumerateDeviceLayerProperties](https://www.khronos.org/registry/vulkan/specs/1.1-extensions/man/html/vkEnumerateDeviceLayerProperties.html) |
 | VulkanPhysicalDeviceType.limits() | [vkGetPhysicalDeviceProperties](https://www.khronos.org/registry/vulkan/specs/1.1-extensions/man/html/vkGetPhysicalDeviceProperties.html) |
+| VulkanPhysicalDeviceType.limits() | [vkGetPhysicalDeviceProperties2](https://www.khronos.org/registry/vulkan/specs/1.1-extensions/man/html/vkGetPhysicalDeviceProperties2.html) |
 | VulkanPhysicalDeviceType.memory() | [vkGetPhysicalDeviceMemoryProperties](https://www.khronos.org/registry/vulkan/specs/1.1-extensions/man/html/vkGetPhysicalDeviceMemoryProperties.html) |
 | VulkanPhysicalDeviceType.properties() | [vkGetPhysicalDeviceProperties](https://www.khronos.org/registry/vulkan/specs/1.1-extensions/man/html/vkGetPhysicalDeviceProperties.html) |
 | VulkanPhysicalDeviceType.queueFamilies() | [vkGetPhysicalDeviceQueueFamilyProperties](https://www.khronos.org/registry/vulkan/specs/1.1-extensions/man/html/vkGetPhysicalDeviceQueueFamilyProperties.html) |
@@ -461,7 +463,6 @@ can track test results over time.
 * `vkGetPhysicalDeviceFormatProperties2`
 * `vkGetPhysicalDeviceImageFormatProperties2`
 * `vkGetPhysicalDeviceMemoryProperties2`
-* `vkGetPhysicalDeviceProperties2`
 * `vkGetPhysicalDeviceQueueFamilyProperties2`
 * `vkGetPhysicalDeviceScreenPresentationSupportQNX`
 * `vkGetPhysicalDeviceSparseImageFormatProperties`
@@ -481,6 +482,6 @@ can track test results over time.
 * `vkUpdateDescriptorSetWithTemplate`
 * `vkWaitSemaphores`
 
-127 of 193 functions implemented
+128 of 193 functions implemented
 
-Coverage: 65.80%
+Coverage: 66.32%

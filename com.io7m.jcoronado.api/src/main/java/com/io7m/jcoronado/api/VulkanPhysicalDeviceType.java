@@ -75,6 +75,7 @@ public interface VulkanPhysicalDeviceType extends VulkanHandleDispatchableType
    */
 
   @VulkanAPIFunctionType(vulkanFunction = "vkGetPhysicalDeviceProperties")
+  @VulkanAPIFunctionType(vulkanFunction = "vkGetPhysicalDeviceProperties2")
   VulkanPhysicalDeviceLimits limits()
     throws VulkanException;
 
