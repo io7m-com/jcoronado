@@ -55,12 +55,16 @@ If this step fails, it's a bug. Please report it!
 
 The package regularly passes tests on all of the following platforms:
 
-| OS | Arch | GPU Vendor | Driver ID | Driver Version | Driver Info | Vulkan API |
-|----|------|------------|-----------|----------------|-------------|------------|
-|Linux|amd64|AMD|radv|21.3.1|Mesa 21.3.1|1.2.195|
-|Linux|amd64|Unknown Vendor|llvmpipe|0.0.1|Mesa 21.0.3 (LLVM 12.0.0)|1.0.2|
-|Windows 10|amd64|AMD|AMD proprietary driver|2.0.198|21.10.2|1.2.188|
-|Windows 10|amd64|NVIDIA|NVIDIA|456.284.0|456.71|1.2.142|
+| Node | OS   | Arch       | GPU Vendor | Driver ID      | Driver Version | Driver Info | Vulkan API |
+|------|------|------------|------------|----------------|----------------|-------------|------------|
+|sunflower|Linux|amd64|AMD|radv|21.3.1|Mesa 21.3.1|1.2.195|
+|starfruit|Linux|amd64|Unknown Vendor|llvmpipe|0.0.1|Mesa 20.3.5 (LLVM 11.0.1)|1.0.2|
+|github|Linux|amd64|Unknown Vendor|llvmpipe|0.0.1|Mesa 21.0.3 (LLVM 12.0.0)|1.0.2|
+|walnut|Windows 10|amd64|AMD|AMD proprietary driver|2.0.198|21.10.2|1.2.188|
+|banana|Windows 10|amd64|NVIDIA|NVIDIA|456.284.0|456.71|1.2.142|
+
+The `node` field is an informal name given to each testing node so that we
+can track test results over time.
 
 ## Structs
 
