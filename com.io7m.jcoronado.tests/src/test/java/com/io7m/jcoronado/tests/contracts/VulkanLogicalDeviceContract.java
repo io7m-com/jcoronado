@@ -80,14 +80,18 @@ import static com.io7m.jcoronado.api.VulkanCompareOp.VK_COMPARE_OP_ALWAYS;
 import static com.io7m.jcoronado.api.VulkanComponentSwizzle.VK_COMPONENT_SWIZZLE_IDENTITY;
 import static com.io7m.jcoronado.api.VulkanFilter.VK_FILTER_NEAREST;
 import static com.io7m.jcoronado.api.VulkanFormat.VK_FORMAT_R5G6B5_UNORM_PACK16;
+import static com.io7m.jcoronado.api.VulkanFormat.VK_FORMAT_R8G8B8A8_UNORM;
 import static com.io7m.jcoronado.api.VulkanFormat.VK_FORMAT_R8_UNORM;
 import static com.io7m.jcoronado.api.VulkanImageAspectFlag.VK_IMAGE_ASPECT_COLOR_BIT;
 import static com.io7m.jcoronado.api.VulkanImageKind.VK_IMAGE_TYPE_2D;
 import static com.io7m.jcoronado.api.VulkanImageLayout.VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
 import static com.io7m.jcoronado.api.VulkanImageLayout.VK_IMAGE_LAYOUT_UNDEFINED;
+import static com.io7m.jcoronado.api.VulkanImageTiling.VK_IMAGE_TILING_LINEAR;
 import static com.io7m.jcoronado.api.VulkanImageTiling.VK_IMAGE_TILING_OPTIMAL;
 import static com.io7m.jcoronado.api.VulkanImageUsageFlag.VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
 import static com.io7m.jcoronado.api.VulkanImageUsageFlag.VK_IMAGE_USAGE_SAMPLED_BIT;
+import static com.io7m.jcoronado.api.VulkanImageUsageFlag.VK_IMAGE_USAGE_TRANSFER_SRC_BIT;
+import static com.io7m.jcoronado.api.VulkanMemoryPropertyFlag.VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
 import static com.io7m.jcoronado.api.VulkanMemoryPropertyFlag.VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
 import static com.io7m.jcoronado.api.VulkanMemoryPropertyFlag.VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT;
 import static com.io7m.jcoronado.api.VulkanPipelineBindPoint.VK_PIPELINE_BIND_POINT_GRAPHICS;
@@ -507,13 +511,13 @@ public abstract class VulkanLogicalDeviceContract extends VulkanOnDeviceContract
         .setArrayLayers(1)
         .setSamples(Set.of(VK_SAMPLE_COUNT_1_BIT))
         .setExtent(VulkanExtent3D.of(256, 256, 1))
-        .setFormat(VK_FORMAT_R5G6B5_UNORM_PACK16)
+        .setFormat(VK_FORMAT_R8G8B8A8_UNORM)
         .setImageType(VK_IMAGE_TYPE_2D)
         .setInitialLayout(VK_IMAGE_LAYOUT_UNDEFINED)
         .setMipLevels(1)
         .setSharingMode(VK_SHARING_MODE_EXCLUSIVE)
-        .setTiling(VK_IMAGE_TILING_OPTIMAL)
-        .setUsage(Set.of(VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT))
+        .setTiling(VK_IMAGE_TILING_LINEAR)
+        .setUsage(Set.of(VK_IMAGE_USAGE_TRANSFER_SRC_BIT, VK_IMAGE_USAGE_SAMPLED_BIT))
         .build()
     )) {
       final var subresourceRange =
@@ -533,7 +537,6 @@ public abstract class VulkanLogicalDeviceContract extends VulkanOnDeviceContract
           .findSuitableMemoryType(
             imageMemoryRequirements,
             Set.of(
-              VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
               VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT));
 
       try (var memory =
@@ -547,7 +550,7 @@ public abstract class VulkanLogicalDeviceContract extends VulkanOnDeviceContract
 
         try (var imageView = this.device.createImageView(
           VulkanImageViewCreateInfo.builder()
-            .setFormat(VK_FORMAT_R5G6B5_UNORM_PACK16)
+            .setFormat(VK_FORMAT_R8G8B8A8_UNORM)
             .setImage(image)
             .setComponents(VulkanComponentMapping.of(
               VK_COMPONENT_SWIZZLE_IDENTITY,
@@ -607,9 +610,7 @@ public abstract class VulkanLogicalDeviceContract extends VulkanOnDeviceContract
         this.physicalDevice.memory()
           .findSuitableMemoryType(
             imageMemoryRequirements,
-            Set.of(
-              VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
-              VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT));
+            Set.of(VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT));
 
       try (var memory =
              this.device.allocateMemory(
@@ -720,9 +721,7 @@ public abstract class VulkanLogicalDeviceContract extends VulkanOnDeviceContract
         this.physicalDevice.memory()
           .findSuitableMemoryType(
             imageMemoryRequirements,
-            Set.of(
-              VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
-              VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT));
+            Set.of(VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT));
 
       try (var memory =
              this.device.allocateMemory(
