@@ -46,7 +46,7 @@ public final class VulkanVendorIDs
       case 0x13B5 -> "ARM";
       case 0x5143 -> "Qualcomm";
       case 0x8086 -> "INTEL";
-      default -> "Unknown Vendor";
+      default -> "Unknown";
     };
   }
 }
