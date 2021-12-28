@@ -40,6 +40,7 @@ import com.io7m.jcoronado.lwjgl.VulkanLWJGLSampler;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLSemaphore;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLShaderModule;
 import nl.jqno.equalsverifier.EqualsVerifier;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -191,6 +192,7 @@ public final class VulkanLWJGLEqualsTest
   }
 
   @Test
+  @Disabled("https://github.com/jqno/equalsverifier/issues/564")
   public void testVulkanLWJGLLogicalDevice(
     final @Mock VulkanLWJGLQueue queue_red,
     final @Mock VulkanLWJGLQueue queue_black)
@@ -202,6 +204,7 @@ public final class VulkanLWJGLEqualsTest
   }
 
   @Test
+  @Disabled("https://github.com/jqno/equalsverifier/issues/564")
   public void testVulkanLWJGLPhysicalDevice()
   {
     EqualsVerifier.forClass(VulkanLWJGLPhysicalDevice.class)

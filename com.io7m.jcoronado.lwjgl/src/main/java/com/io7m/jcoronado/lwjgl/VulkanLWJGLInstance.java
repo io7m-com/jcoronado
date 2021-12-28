@@ -19,6 +19,10 @@ package com.io7m.jcoronado.lwjgl;
 import com.io7m.jcoronado.api.VulkanChecks;
 import com.io7m.jcoronado.api.VulkanComputeWorkGroupCount;
 import com.io7m.jcoronado.api.VulkanComputeWorkGroupSize;
+import com.io7m.jcoronado.api.VulkanConformanceVersion;
+import com.io7m.jcoronado.api.VulkanDriverIdType;
+import com.io7m.jcoronado.api.VulkanDriverKnownId;
+import com.io7m.jcoronado.api.VulkanDriverUnknownId;
 import com.io7m.jcoronado.api.VulkanException;
 import com.io7m.jcoronado.api.VulkanExtensionType;
 import com.io7m.jcoronado.api.VulkanExtent3D;
@@ -30,6 +34,7 @@ import com.io7m.jcoronado.api.VulkanMemoryHeapIndex;
 import com.io7m.jcoronado.api.VulkanMemoryPropertyFlag;
 import com.io7m.jcoronado.api.VulkanMemoryType;
 import com.io7m.jcoronado.api.VulkanMemoryTypeIndex;
+import com.io7m.jcoronado.api.VulkanPhysicalDeviceDriverProperties;
 import com.io7m.jcoronado.api.VulkanPhysicalDeviceFeatures;
 import com.io7m.jcoronado.api.VulkanPhysicalDeviceFeatures10;
 import com.io7m.jcoronado.api.VulkanPhysicalDeviceFeatures11;
@@ -48,16 +53,19 @@ import com.io7m.jcoronado.api.VulkanViewportDimensions;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.vulkan.VK10;
 import org.lwjgl.vulkan.VK11;
+import org.lwjgl.vulkan.VkConformanceVersion;
 import org.lwjgl.vulkan.VkExtent3D;
 import org.lwjgl.vulkan.VkInstance;
 import org.lwjgl.vulkan.VkMemoryHeap;
 import org.lwjgl.vulkan.VkMemoryType;
 import org.lwjgl.vulkan.VkPhysicalDevice;
+import org.lwjgl.vulkan.VkPhysicalDeviceDriverProperties;
 import org.lwjgl.vulkan.VkPhysicalDeviceFeatures;
 import org.lwjgl.vulkan.VkPhysicalDeviceFeatures2;
 import org.lwjgl.vulkan.VkPhysicalDeviceLimits;
 import org.lwjgl.vulkan.VkPhysicalDeviceMemoryProperties;
 import org.lwjgl.vulkan.VkPhysicalDeviceProperties;
+import org.lwjgl.vulkan.VkPhysicalDeviceProperties2;
 import org.lwjgl.vulkan.VkPhysicalDeviceVulkan11Features;
 import org.lwjgl.vulkan.VkPhysicalDeviceVulkan12Features;
 import org.lwjgl.vulkan.VkQueueFamilyProperties;
@@ -73,11 +81,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.stream.Stream;
 
 import static org.lwjgl.vulkan.VK11.VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FEATURES_2;
+import static org.lwjgl.vulkan.VK11.VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PROPERTIES_2;
+import static org.lwjgl.vulkan.VK12.VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DRIVER_PROPERTIES;
 import static org.lwjgl.vulkan.VK12.VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_1_FEATURES;
 import static org.lwjgl.vulkan.VK12.VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_2_FEATURES;
 
@@ -1067,10 +1078,9 @@ public final class VulkanLWJGLInstance
     final VkPhysicalDeviceMemoryProperties vkMemory,
     final VulkanVersion apiVersion)
   {
-    VK10.vkGetPhysicalDeviceProperties(vkDevice, vkProperties);
-
     final var properties =
-      parsePhysicalDeviceProperties(vkProperties, index);
+      parseAllProperties(stack, vkDevice, index, apiVersion);
+
     final var features =
       parseAllFeatures(
         stack,
@@ -1090,13 +1100,120 @@ public final class VulkanLWJGLInstance
     return new VulkanLWJGLPhysicalDevice(
       this,
       vkDevice,
-      properties,
+      properties.properties(),
       limits,
       features,
       memory,
       queue_families,
-      this.hostAllocatorProxy()
+      this.hostAllocatorProxy(),
+      properties.driverProperties()
     );
+  }
+
+  private static PropertiesAndExtras parseAllProperties(
+    final MemoryStack stack,
+    final VkPhysicalDevice vkDevice,
+    final int index,
+    final VulkanVersion apiVersion)
+  {
+    /*
+     * For Vulkan 1.0, we need to call the plain vkGetPhysicalDeviceProperties
+     * function.
+     */
+
+    if (apiVersion.major() == 1 && apiVersion.minor() == 0) {
+      LOG.debug(
+        "requested API version is {}; physical device properties retrieved using vkGetPhysicalDeviceProperties",
+        apiVersion.toHumanString()
+      );
+
+      final var vkProperties =
+        VkPhysicalDeviceProperties.malloc(stack);
+
+      VK10.vkGetPhysicalDeviceProperties(vkDevice, vkProperties);
+      return new PropertiesAndExtras(
+        parsePhysicalDeviceProperties(vkProperties, index),
+        Optional.empty()
+      );
+    }
+
+    /*
+     * For newer versions of Vulkan, we call vkGetPhysicalDeviceProperties2
+     * and fetch all the new embedded structures.
+     */
+
+    LOG.debug(
+      "requested API version is {}; physical device properties retrieved using vkGetPhysicalDeviceProperties2",
+      apiVersion.toHumanString()
+    );
+
+    final var vkProperties2 =
+      VkPhysicalDeviceProperties2.malloc(stack);
+    vkProperties2.sType(VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PROPERTIES_2);
+    vkProperties2.pNext(0L);
+
+    VkPhysicalDeviceDriverProperties vkDriverProperties = null;
+    if (apiVersion.major() >= 1 && apiVersion.minor() >= 2) {
+      vkDriverProperties = VkPhysicalDeviceDriverProperties.malloc(stack);
+      vkDriverProperties.sType(
+        VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DRIVER_PROPERTIES);
+      vkDriverProperties.pNext(0L);
+      vkProperties2.pNext(vkDriverProperties.address());
+    }
+
+    VK11.vkGetPhysicalDeviceProperties2(vkDevice, vkProperties2);
+
+    return new PropertiesAndExtras(
+      parsePhysicalDeviceProperties(
+        vkProperties2.properties(), index),
+      parsePhysicalDeviceDriverPropertiesOpt(
+        Optional.ofNullable(vkDriverProperties))
+    );
+  }
+
+  private static Optional<VulkanPhysicalDeviceDriverProperties> parsePhysicalDeviceDriverPropertiesOpt(
+    final Optional<VkPhysicalDeviceDriverProperties> vkDriverProperties)
+  {
+    return vkDriverProperties.map(VulkanLWJGLInstance::parsePhysicalDeviceDriverProperties);
+  }
+
+  private static VulkanPhysicalDeviceDriverProperties parsePhysicalDeviceDriverProperties(
+    final VkPhysicalDeviceDriverProperties vkDeviceDriverProperties)
+  {
+    return new VulkanPhysicalDeviceDriverProperties(
+      parseDriverId(vkDeviceDriverProperties.driverID()),
+      vkDeviceDriverProperties.driverNameString(),
+      vkDeviceDriverProperties.driverInfoString(),
+      parseConformance(vkDeviceDriverProperties.conformanceVersion())
+    );
+  }
+
+  private static VulkanConformanceVersion parseConformance(
+    final VkConformanceVersion conformanceVersion)
+  {
+    return new VulkanConformanceVersion(
+      (int) conformanceVersion.major(),
+      (int) conformanceVersion.minor(),
+      (int) conformanceVersion.subminor(),
+      (int) conformanceVersion.patch()
+    );
+  }
+
+  private static VulkanDriverIdType parseDriverId(
+    final int driverID)
+  {
+    try {
+      return VulkanDriverKnownId.of(driverID);
+    } catch (final IllegalArgumentException e) {
+      return new VulkanDriverUnknownId(driverID);
+    }
+  }
+
+  private record PropertiesAndExtras(
+    VulkanPhysicalDeviceProperties properties,
+    Optional<VulkanPhysicalDeviceDriverProperties> driverProperties)
+  {
+
   }
 
   VkInstance instance()

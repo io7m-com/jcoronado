@@ -25,6 +25,7 @@ import com.io7m.jcoronado.api.VulkanLogicalDeviceCreateInfo;
 import com.io7m.jcoronado.api.VulkanLogicalDeviceQueueCreateInfo;
 import com.io7m.jcoronado.api.VulkanLogicalDeviceType;
 import com.io7m.jcoronado.api.VulkanPhysicalDeviceType;
+import com.io7m.jcoronado.api.VulkanVendorIDs;
 import com.io7m.jcoronado.api.VulkanVersions;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLInstanceProvider;
 import com.io7m.jcoronado.tests.contracts.VulkanLogicalDeviceContract;
@@ -226,6 +227,24 @@ public final class VulkanLWJGLLogicalDeviceTest
       try (var physicalDevice =
              newInstance.physicalDevices()
                .get(0)) {
+
+        {
+          final var properties =
+            physicalDevice.properties();
+          final var driverProperties =
+            physicalDevice.driverProperties().orElseThrow();
+
+          System.out.printf(
+            "|%s|%s|%s|%s|%s|%s|%s|%n",
+            System.getProperty("os.name"),
+            System.getProperty("os.arch"),
+            VulkanVendorIDs.vendorName(properties.vendorId()),
+            properties.name(),
+            driverProperties.driverName(),
+            properties.apiVersion().toHumanString(),
+            properties.driverVersion().toHumanString()
+          );
+        }
 
         final var queue =
           VulkanLogicalDeviceQueueCreateInfo.builder()

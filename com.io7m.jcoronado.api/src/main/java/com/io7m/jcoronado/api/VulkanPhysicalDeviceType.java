@@ -157,4 +157,13 @@ public interface VulkanPhysicalDeviceType extends VulkanHandleDispatchableType
   VulkanLogicalDeviceType createLogicalDevice(
     VulkanLogicalDeviceCreateInfo info)
     throws VulkanException;
+
+  /**
+   * Retrieve the device driver properties.
+   *
+   * @return The device driver properties, if available
+   */
+
+  @VulkanAPIMinimumVersionType(major = 1, minor = 2)
+  Optional<VulkanPhysicalDeviceDriverProperties> driverProperties();
 }

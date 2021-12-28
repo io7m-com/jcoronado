@@ -34,6 +34,7 @@ import com.io7m.jcoronado.api.VulkanLayerProperties;
 import com.io7m.jcoronado.api.VulkanLogicalDeviceCreateInfo;
 import com.io7m.jcoronado.api.VulkanLogicalDeviceQueueCreateInfo;
 import com.io7m.jcoronado.api.VulkanLogicalDeviceType;
+import com.io7m.jcoronado.api.VulkanPhysicalDeviceDriverProperties;
 import com.io7m.jcoronado.api.VulkanPhysicalDeviceFeatures;
 import com.io7m.jcoronado.api.VulkanPhysicalDeviceFeatures10;
 import com.io7m.jcoronado.api.VulkanPhysicalDeviceFeatures11;
@@ -95,6 +96,7 @@ public final class VulkanLWJGLPhysicalDevice
   private final VulkanPhysicalDeviceMemoryProperties memory;
   private final List<VulkanQueueFamilyProperties> queueFamilies;
   private final MemoryStack stackInitial;
+  private final Optional<VulkanPhysicalDeviceDriverProperties> driverProperties;
 
   VulkanLWJGLPhysicalDevice(
     final VulkanLWJGLInstance inInstance,
@@ -104,7 +106,8 @@ public final class VulkanLWJGLPhysicalDevice
     final VulkanPhysicalDeviceFeatures inFeatures,
     final VulkanPhysicalDeviceMemoryProperties inMemory,
     final List<VulkanQueueFamilyProperties> inQueueFamilies,
-    final VulkanLWJGLHostAllocatorProxy inHostAllocatorProxy)
+    final VulkanLWJGLHostAllocatorProxy inHostAllocatorProxy,
+    final Optional<VulkanPhysicalDeviceDriverProperties> inDriverProperties)
   {
     super(Ownership.USER_OWNED, inHostAllocatorProxy);
 
@@ -123,6 +126,8 @@ public final class VulkanLWJGLPhysicalDevice
     this.queueFamilies =
       Collections.unmodifiableList(
         Objects.requireNonNull(inQueueFamilies, "queue_families"));
+    this.driverProperties =
+      Objects.requireNonNull(inDriverProperties, "driverProperties");
     this.stackInitial =
       MemoryStack.create();
   }
@@ -830,6 +835,12 @@ public final class VulkanLWJGLPhysicalDevice
         info,
         this.hostAllocatorProxy());
     }
+  }
+
+  @Override
+  public Optional<VulkanPhysicalDeviceDriverProperties> driverProperties()
+  {
+    return this.driverProperties;
   }
 
   @Override

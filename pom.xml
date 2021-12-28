@@ -39,6 +39,9 @@
     <io7m.org.lwjgl.version>3.3.0</io7m.org.lwjgl.version>
     <junit.version>5.8.2</junit.version>
     <mockito.version>4.1.0</mockito.version>
+
+    <!-- Disable dependency enforcement until https://github.com/io7m/primogenitor/issues/53 -->
+    <mdep.analyze.skip>true</mdep.analyze.skip>
   </properties>
 
   <licenses>
