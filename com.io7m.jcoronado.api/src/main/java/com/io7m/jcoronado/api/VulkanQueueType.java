@@ -37,7 +37,17 @@ public interface VulkanQueueType extends VulkanHandleDispatchableType
    * @return The index of the queue within the queue family to which it belongs
    */
 
-  int queueIndex();
+  VulkanQueueIndex queueIndex();
+
+  /**
+   * @return The queue family index
+   * @see VulkanQueueFamilyProperties#queueFamilyIndex()
+   */
+
+  default VulkanQueueFamilyIndex queueFamilyIndex()
+  {
+    return this.queueFamilyProperties().queueFamilyIndex();
+  }
 
   /**
    * Submit the given list of queue submissions. If a fence is provided, the fence is signalled when

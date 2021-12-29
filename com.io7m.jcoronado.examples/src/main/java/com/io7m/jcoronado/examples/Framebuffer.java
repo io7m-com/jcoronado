@@ -37,6 +37,7 @@ import com.io7m.jcoronado.api.VulkanLogicalDeviceCreateInfo;
 import com.io7m.jcoronado.api.VulkanLogicalDeviceQueueCreateInfo;
 import com.io7m.jcoronado.api.VulkanMissingRequiredExtensionsException;
 import com.io7m.jcoronado.api.VulkanPhysicalDeviceType;
+import com.io7m.jcoronado.api.VulkanQueueIndex;
 import com.io7m.jcoronado.api.VulkanRenderPassCreateInfo;
 import com.io7m.jcoronado.api.VulkanResourceException;
 import com.io7m.jcoronado.api.VulkanSubpassDescription;
@@ -449,7 +450,7 @@ public final class Framebuffer implements ExampleType
        */
 
       final var graphicsQueue =
-        device.queue(graphicsQueueProps.queueFamilyIndex(), 0)
+        device.queue(graphicsQueueProps.queueFamilyIndex(), new VulkanQueueIndex(0))
           .orElseThrow(() -> new IllegalStateException(
             "Could not find graphics queue"));
 

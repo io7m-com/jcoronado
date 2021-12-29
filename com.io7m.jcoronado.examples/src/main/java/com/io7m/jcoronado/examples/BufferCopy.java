@@ -486,7 +486,7 @@ public final class BufferCopy implements ExampleType
         resources.add(
           device.createCommandPool(
             VulkanCommandPoolCreateInfo.builder()
-              .setQueueFamilyIndex(queue.queueIndex())
+              .setQueueFamilyIndex(queue.queueFamilyIndex())
               .build())
         );
 
@@ -504,8 +504,8 @@ public final class BufferCopy implements ExampleType
         VulkanBufferMemoryBarrier.of(
           Set.of(VK_ACCESS_TRANSFER_WRITE_BIT),
           Set.of(VK_ACCESS_TRANSFER_READ_BIT),
-          queue.queueIndex(),
-          queue.queueIndex(),
+          queue.queueFamilyIndex(),
+          queue.queueFamilyIndex(),
           buffer0,
           0L,
            128L
@@ -515,8 +515,8 @@ public final class BufferCopy implements ExampleType
         VulkanBufferMemoryBarrier.of(
           Set.of(VK_ACCESS_TRANSFER_WRITE_BIT),
           Set.of(VK_ACCESS_TRANSFER_READ_BIT),
-          queue.queueIndex(),
-          queue.queueIndex(),
+          queue.queueFamilyIndex(),
+          queue.queueFamilyIndex(),
           buffer1,
           0L,
           128L
@@ -526,8 +526,8 @@ public final class BufferCopy implements ExampleType
         VulkanBufferMemoryBarrier.of(
           Set.of(VK_ACCESS_TRANSFER_WRITE_BIT),
           Set.of(VK_ACCESS_HOST_READ_BIT),
-          queue.queueIndex(),
-          queue.queueIndex(),
+          queue.queueFamilyIndex(),
+          queue.queueFamilyIndex(),
           buffer0,
           0L,
           128L
@@ -537,8 +537,8 @@ public final class BufferCopy implements ExampleType
         VulkanBufferMemoryBarrier.of(
           Set.of(VK_ACCESS_TRANSFER_WRITE_BIT),
           Set.of(VK_ACCESS_HOST_READ_BIT),
-          queue.queueIndex(),
-          queue.queueIndex(),
+          queue.queueFamilyIndex(),
+          queue.queueFamilyIndex(),
           buffer1,
           0L,
           128L

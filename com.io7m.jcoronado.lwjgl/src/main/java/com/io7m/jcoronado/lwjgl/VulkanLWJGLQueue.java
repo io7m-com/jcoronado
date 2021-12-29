@@ -20,6 +20,7 @@ import com.io7m.jcoronado.api.VulkanChecks;
 import com.io7m.jcoronado.api.VulkanException;
 import com.io7m.jcoronado.api.VulkanFenceType;
 import com.io7m.jcoronado.api.VulkanQueueFamilyProperties;
+import com.io7m.jcoronado.api.VulkanQueueIndex;
 import com.io7m.jcoronado.api.VulkanQueueType;
 import com.io7m.jcoronado.api.VulkanSubmitInfo;
 import org.lwjgl.system.MemoryStack;
@@ -47,27 +48,27 @@ public final class VulkanLWJGLQueue
   private final VulkanLWJGLLogicalDevice device;
   private final VkQueue queue;
   private final VulkanQueueFamilyProperties properties;
-  private final int queue_index;
-  private final MemoryStack stack_initial;
+  private final VulkanQueueIndex queueIndex;
+  private final MemoryStack stackInitial;
 
   VulkanLWJGLQueue(
-    final VulkanLWJGLLogicalDevice in_device,
-    final VkQueue in_queue,
-    final VulkanQueueFamilyProperties in_properties,
-    final int in_queue_index,
-    final VulkanLWJGLHostAllocatorProxy in_host_allocator_proxy)
+    final VulkanLWJGLLogicalDevice inDevice,
+    final VkQueue inQueue,
+    final VulkanQueueFamilyProperties inProperties,
+    final VulkanQueueIndex inQueueIndex,
+    final VulkanLWJGLHostAllocatorProxy inHostAllocatorProxy)
   {
-    super(VULKAN_OWNED, in_host_allocator_proxy);
+    super(VULKAN_OWNED, inHostAllocatorProxy);
 
     this.device =
-      Objects.requireNonNull(in_device, "device");
+      Objects.requireNonNull(inDevice, "device");
     this.queue =
-      Objects.requireNonNull(in_queue, "queue");
+      Objects.requireNonNull(inQueue, "queue");
     this.properties =
-      Objects.requireNonNull(in_properties, "properties");
-    this.queue_index =
-      in_queue_index;
-    this.stack_initial =
+      Objects.requireNonNull(inProperties, "properties");
+    this.queueIndex =
+      inQueueIndex;
+    this.stackInitial =
       MemoryStack.create();
   }
 
@@ -90,7 +91,7 @@ public final class VulkanLWJGLQueue
       return false;
     }
     final var that = (VulkanLWJGLQueue) o;
-    return this.queue_index == that.queue_index
+    return Objects.equals(this.queueIndex, that.queueIndex)
       && Objects.equals(this.queue, that.queue)
       && Objects.equals(this.properties, that.properties);
   }
@@ -98,11 +99,11 @@ public final class VulkanLWJGLQueue
   @Override
   public int hashCode()
   {
-
     return Objects.hash(
       this.queue,
       this.properties,
-      Integer.valueOf(this.queue_index));
+      this.queueIndex
+    );
   }
 
   @Override
@@ -112,7 +113,7 @@ public final class VulkanLWJGLQueue
       .append("[VulkanLWJGLQueue family ")
       .append(this.properties.queueFamilyIndex())
       .append(" index ")
-      .append(this.queue_index)
+      .append(this.queueIndex.value())
       .append(']')
       .toString();
   }
@@ -138,9 +139,9 @@ public final class VulkanLWJGLQueue
   }
 
   @Override
-  public int queueIndex()
+  public VulkanQueueIndex queueIndex()
   {
-    return this.queue_index;
+    return this.queueIndex;
   }
 
   @Override
@@ -161,7 +162,7 @@ public final class VulkanLWJGLQueue
       cfence = VK10.VK_NULL_HANDLE;
     }
 
-    try (var stack = this.stack_initial.push()) {
+    try (var stack = this.stackInitial.push()) {
       final var size = submissions.size();
       final var infos = VkSubmitInfo.malloc(size, stack);
       VulkanLWJGLSubmitInfos.packInfos(stack, submissions, infos);

@@ -20,6 +20,7 @@ import com.io7m.jcoronado.api.VulkanAccessFlag;
 import com.io7m.jcoronado.api.VulkanBufferMemoryBarrier;
 import com.io7m.jcoronado.api.VulkanException;
 import com.io7m.jcoronado.api.VulkanIncompatibleClassException;
+import com.io7m.jcoronado.api.VulkanQueueFamilyIndex;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLBuffer;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLBufferMemoryBarriers;
 import org.junit.jupiter.api.AfterEach;
@@ -80,8 +81,8 @@ public final class VulkanLWJGLBufferMemoryBarriersTest
       VulkanBufferMemoryBarrier.of(
         EnumSet.allOf(VulkanAccessFlag.class),
         EnumSet.allOf(VulkanAccessFlag.class),
-        23,
-        25,
+        new VulkanQueueFamilyIndex(23),
+        new VulkanQueueFamilyIndex(25),
         buffer,
         100L,
         200L
@@ -104,8 +105,8 @@ public final class VulkanLWJGLBufferMemoryBarriersTest
       VulkanBufferMemoryBarrier.of(
         EnumSet.allOf(VulkanAccessFlag.class),
         EnumSet.allOf(VulkanAccessFlag.class),
-        23,
-        25,
+        new VulkanQueueFamilyIndex(23),
+        new VulkanQueueFamilyIndex(25),
         buffer,
         100L,
         200L
@@ -132,8 +133,8 @@ public final class VulkanLWJGLBufferMemoryBarriersTest
       VulkanBufferMemoryBarrier.of(
         EnumSet.allOf(VulkanAccessFlag.class),
         EnumSet.allOf(VulkanAccessFlag.class),
-        23,
-        25,
+        new VulkanQueueFamilyIndex(23),
+        new VulkanQueueFamilyIndex(25),
         buffer,
         100L,
         200L

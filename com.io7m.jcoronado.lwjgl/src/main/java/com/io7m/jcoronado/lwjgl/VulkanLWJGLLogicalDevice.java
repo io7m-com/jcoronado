@@ -69,6 +69,7 @@ import com.io7m.jcoronado.api.VulkanPipelineLayoutType;
 import com.io7m.jcoronado.api.VulkanPipelineType;
 import com.io7m.jcoronado.api.VulkanQueryPoolCreateInfo;
 import com.io7m.jcoronado.api.VulkanQueryPoolType;
+import com.io7m.jcoronado.api.VulkanQueueIndex;
 import com.io7m.jcoronado.api.VulkanQueueType;
 import com.io7m.jcoronado.api.VulkanRenderPassCreateInfo;
 import com.io7m.jcoronado.api.VulkanRenderPassType;
@@ -235,8 +236,14 @@ public final class VulkanLWJGLLogicalDevice
             queueBuffer);
 
           final var queue = new VkQueue(queueBuffer.get(0), this.device);
-          this.queues.add(new VulkanLWJGLQueue(
-            this, queue, family, queueIndex, this.hostAllocatorProxy()));
+          this.queues.add(
+            new VulkanLWJGLQueue(
+              this,
+              queue,
+              family,
+              new VulkanQueueIndex(queueIndex),
+              this.hostAllocatorProxy())
+          );
         }
       }
     }

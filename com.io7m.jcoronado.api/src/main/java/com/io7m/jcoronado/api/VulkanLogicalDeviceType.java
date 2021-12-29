@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Predicate;
 
 /**
  * A reference to a logical Vulkan device.
@@ -66,17 +67,25 @@ public interface VulkanLogicalDeviceType extends VulkanHandleDispatchableType
   @VulkanAPIFunctionType(vulkanFunction = "vkGetDeviceQueue")
   default Optional<VulkanQueueType> queue(
     final VulkanQueueFamilyIndex queueFamily,
-    final int queueIndex)
+    final VulkanQueueIndex queueIndex)
     throws VulkanException
   {
     Objects.requireNonNull(queueFamily, "queueFamily");
 
+    final Predicate<VulkanQueueType> queueMatches =
+      (VulkanQueueType queue) -> {
+        final var familyProperties =
+          queue.queueFamilyProperties();
+        final var familyMatches =
+          Objects.equals(familyProperties.queueFamilyIndex(), queueFamily);
+        final var indexMatches =
+          Objects.equals(queue.queueIndex(), queueIndex);
+        return familyMatches && indexMatches;
+      };
+
     return this.queues()
       .stream()
-      .filter(queue -> Objects.equals(
-        queue.queueFamilyProperties().queueFamilyIndex(),
-        queueFamily)
-        && queue.queueIndex() == queueIndex)
+      .filter(queueMatches)
       .findFirst();
   }
 
@@ -156,8 +165,8 @@ public interface VulkanLogicalDeviceType extends VulkanHandleDispatchableType
    * @param clazz The intended extension type
    * @param <T>   The precise type
    *
-   * @return The extension with the correct type, or nothing if the extension either did not exist
-   * or did not have the right type
+   * @return The extension with the correct type, or nothing if the extension
+   * either did not exist or did not have the right type
    *
    * @throws VulkanException On errors
    */
@@ -276,10 +285,10 @@ public interface VulkanLogicalDeviceType extends VulkanHandleDispatchableType
   /**
    * Update the contents of a descriptor set object.
    *
-   * @param descriptor_writes An array of VulkanWriteDescriptorSet structures describing the
-   *                          descriptor sets to write to
-   * @param descriptor_copies An array of VulkanCopyDescriptorSet structures describing the
-   *                          descriptor sets to copy between.
+   * @param descriptor_writes An array of VulkanWriteDescriptorSet structures
+   *                          describing the descriptor sets to write to
+   * @param descriptor_copies An array of VulkanCopyDescriptorSet structures
+   *                          describing the descriptor sets to copy between.
    *
    * @throws VulkanException On errors
    */
@@ -706,8 +715,9 @@ public interface VulkanLogicalDeviceType extends VulkanHandleDispatchableType
    * Wait for one or more fences to become signaled.
    *
    * @param fences        The fences upon which to wait
-   * @param wait_all      {@code true} if all fences must become signalled to stop waiting, {@code
-   *                      false} if any fence can become signalled
+   * @param wait_all      {@code true} if all fences must become signalled to
+   *                      stop waiting, {@code false} if any fence can become
+   *                      signalled
    * @param timeout_nanos The timeout period in units of nanoseconds.
    *
    * @return A value indicating whether waiting succeeded or timed out
@@ -807,9 +817,10 @@ public interface VulkanLogicalDeviceType extends VulkanHandleDispatchableType
    *
    * @param buffer        The logical device that owns the buffer and memory
    * @param device_memory The device memory to attach
-   * @param offset        The start offset of the region of memory which is to be bound to the
-   *                      buffer. The number of bytes returned in the VkMemoryRequirements::size
-   *                      member in memory, starting from memoryOffset bytes, will be bound to the
+   * @param offset        The start offset of the region of memory which is to
+   *                      be bound to the buffer. The number of bytes returned
+   *                      in the VkMemoryRequirements::size member in memory,
+   *                      starting from memoryOffset bytes, will be bound to the
    *                      specified buffer.
    *
    * @throws VulkanException On errors
@@ -827,9 +838,10 @@ public interface VulkanLogicalDeviceType extends VulkanHandleDispatchableType
    *
    * @param image         The logical device that owns the image and memory
    * @param device_memory The device memory to attach
-   * @param offset        The start offset of the region of memory which is to be bound to the
-   *                      image. The number of bytes returned in the VkMemoryRequirements::size
-   *                      member in memory, starting from memoryOffset bytes, will be bound to the
+   * @param offset        The start offset of the region of memory which is to
+   *                      be bound to the image. The number of bytes returned in
+   *                      the VkMemoryRequirements::size member in memory,
+   *                      starting from memoryOffset bytes, will be bound to the
    *                      specified image.
    *
    * @throws VulkanException On errors
@@ -846,9 +858,10 @@ public interface VulkanLogicalDeviceType extends VulkanHandleDispatchableType
    * Map a memory object into the application address space.
    *
    * @param memory The device memory object to be mapped
-   * @param offset A zero-based byte offset from the beginning of the memory object
-   * @param size   The size of the memory range to map, or VK_WHOLE_SIZE to map from offset to the
-   *               end of the allocation
+   * @param offset A zero-based byte offset from the beginning of the memory
+   *               object
+   * @param size   The size of the memory range to map, or VK_WHOLE_SIZE to map
+   *               from offset to the end of the allocation
    * @param flags  The flags
    *
    * @return Mapped memory
@@ -943,7 +956,8 @@ public interface VulkanLogicalDeviceType extends VulkanHandleDispatchableType
    * Retrieve information about an image subresource.
    *
    * @param image             The image
-   * @param image_subresource A structure selecting a specific image for the image subresource
+   * @param image_subresource A structure selecting a specific image for the
+   *                          image subresource
    *
    * @return The subresource layout
    *
@@ -1088,7 +1102,8 @@ public interface VulkanLogicalDeviceType extends VulkanHandleDispatchableType
     VK_PIPELINE_CACHE_SUCCESS,
 
     /**
-     * Specifies that fetching data for a pipeline cache failed due to the buffer being too small.
+     * Specifies that fetching data for a pipeline cache failed due to the
+     * buffer being too small.
      */
 
     VK_PIPELINE_CACHE_INCOMPLETE
@@ -1101,14 +1116,15 @@ public interface VulkanLogicalDeviceType extends VulkanHandleDispatchableType
   enum VulkanWaitStatus
   {
     /**
-     * Specifies that waiting for a condition succeeded (the condition became  {@code true}).
+     * Specifies that waiting for a condition succeeded (the condition became
+     * {@code true}).
      */
 
     VK_WAIT_SUCCEEDED,
 
     /**
-     * Specifies that waiting for a condition timed out (the condition did not become  {@code
-     * true}).
+     * Specifies that waiting for a condition timed out (the condition did not
+     * become  {@code true}).
      */
 
     VK_WAIT_TIMED_OUT

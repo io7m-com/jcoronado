@@ -19,6 +19,7 @@ package com.io7m.jcoronado.tests.lwjgl;
 import com.io7m.jcoronado.api.VulkanCommandPoolCreateFlag;
 import com.io7m.jcoronado.api.VulkanCommandPoolCreateInfo;
 import com.io7m.jcoronado.api.VulkanEnumMaps;
+import com.io7m.jcoronado.api.VulkanQueueFamilyIndex;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLCommandPoolCreateInfos;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -50,7 +51,7 @@ public final class VulkanLWJGLCommandPoolCreateInfosTest
     final var info =
       VulkanCommandPoolCreateInfo.builder()
         .addFlags(VulkanCommandPoolCreateFlag.values())
-        .setQueueFamilyIndex(34)
+        .setQueueFamilyIndex(new VulkanQueueFamilyIndex(34))
         .build();
 
     final var packed =

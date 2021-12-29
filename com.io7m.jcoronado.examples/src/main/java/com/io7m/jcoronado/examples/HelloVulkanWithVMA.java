@@ -81,6 +81,7 @@ import com.io7m.jcoronado.api.VulkanPipelineType;
 import com.io7m.jcoronado.api.VulkanPipelineVertexInputStateCreateInfo;
 import com.io7m.jcoronado.api.VulkanPipelineViewportStateCreateInfo;
 import com.io7m.jcoronado.api.VulkanQueueFamilyIndex;
+import com.io7m.jcoronado.api.VulkanQueueIndex;
 import com.io7m.jcoronado.api.VulkanQueueType;
 import com.io7m.jcoronado.api.VulkanRectangle2D;
 import com.io7m.jcoronado.api.VulkanRenderPassBeginInfo;
@@ -1892,11 +1893,11 @@ public final class HelloVulkanWithVMA implements ExampleType
        */
 
       final var graphicsQueue =
-        device.queue(graphicsQueueProps.queueFamilyIndex(), 0)
+        device.queue(graphicsQueueProps.queueFamilyIndex(), new VulkanQueueIndex(0))
           .orElseThrow(() -> new IllegalStateException(
             "Could not find graphics queue"));
       final var presentationQueue =
-        device.queue(presentationQueueProps.queueFamilyIndex(), 0)
+        device.queue(presentationQueueProps.queueFamilyIndex(), new VulkanQueueIndex(0))
           .orElseThrow(() -> new IllegalStateException(
             "Could not find presentation queue"));
 
@@ -1938,7 +1939,7 @@ public final class HelloVulkanWithVMA implements ExampleType
 
       final var graphicsPoolInfo =
         VulkanCommandPoolCreateInfo.builder()
-          .setQueueFamilyIndex(graphicsQueue.queueIndex())
+          .setQueueFamilyIndex(graphicsQueue.queueFamilyIndex())
           .build();
 
       final var graphicsCommandPool =
@@ -1960,7 +1961,7 @@ public final class HelloVulkanWithVMA implements ExampleType
 
       final var transferPoolInfo =
         VulkanCommandPoolCreateInfo.builder()
-          .setQueueFamilyIndex(graphicsQueue.queueIndex())
+          .setQueueFamilyIndex(graphicsQueue.queueFamilyIndex())
           .build();
 
       final var transferCommandPool =

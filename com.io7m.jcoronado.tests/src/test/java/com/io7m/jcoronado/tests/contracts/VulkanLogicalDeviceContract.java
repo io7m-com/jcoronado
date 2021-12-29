@@ -295,7 +295,7 @@ public abstract class VulkanLogicalDeviceContract extends VulkanOnDeviceContract
         resources.add(
           this.device.createCommandPool(
             VulkanCommandPoolCreateInfo.builder()
-              .setQueueFamilyIndex(queue.queueIndex())
+              .setQueueFamilyIndex(queue.queueFamilyProperties().queueFamilyIndex())
               .build())
         );
 
@@ -315,8 +315,8 @@ public abstract class VulkanLogicalDeviceContract extends VulkanOnDeviceContract
         VulkanBufferMemoryBarrier.of(
           Set.of(VK_ACCESS_TRANSFER_WRITE_BIT),
           Set.of(VK_ACCESS_TRANSFER_READ_BIT),
-          queue.queueIndex(),
-          queue.queueIndex(),
+          queue.queueFamilyProperties().queueFamilyIndex(),
+          queue.queueFamilyProperties().queueFamilyIndex(),
           buffer0,
           0L,
           128L
@@ -326,8 +326,8 @@ public abstract class VulkanLogicalDeviceContract extends VulkanOnDeviceContract
         VulkanBufferMemoryBarrier.of(
           Set.of(VK_ACCESS_TRANSFER_WRITE_BIT),
           Set.of(VK_ACCESS_TRANSFER_READ_BIT),
-          queue.queueIndex(),
-          queue.queueIndex(),
+          queue.queueFamilyProperties().queueFamilyIndex(),
+          queue.queueFamilyProperties().queueFamilyIndex(),
           buffer1,
           0L,
           128L
@@ -337,8 +337,8 @@ public abstract class VulkanLogicalDeviceContract extends VulkanOnDeviceContract
         VulkanBufferMemoryBarrier.of(
           Set.of(VK_ACCESS_TRANSFER_WRITE_BIT),
           Set.of(VK_ACCESS_HOST_READ_BIT),
-          queue.queueIndex(),
-          queue.queueIndex(),
+          queue.queueFamilyProperties().queueFamilyIndex(),
+          queue.queueFamilyProperties().queueFamilyIndex(),
           buffer0,
           0L,
           128L
@@ -348,8 +348,8 @@ public abstract class VulkanLogicalDeviceContract extends VulkanOnDeviceContract
         VulkanBufferMemoryBarrier.of(
           Set.of(VK_ACCESS_TRANSFER_WRITE_BIT),
           Set.of(VK_ACCESS_HOST_READ_BIT),
-          queue.queueIndex(),
-          queue.queueIndex(),
+          queue.queueFamilyProperties().queueFamilyIndex(),
+          queue.queueFamilyProperties().queueFamilyIndex(),
           buffer1,
           0L,
           128L
@@ -481,7 +481,7 @@ public abstract class VulkanLogicalDeviceContract extends VulkanOnDeviceContract
 
     try (var pool = this.device.createCommandPool(
       VulkanCommandPoolCreateInfo.builder()
-        .setQueueFamilyIndex(queue.queueIndex())
+        .setQueueFamilyIndex(queue.queueFamilyIndex())
         .build())) {
 
       try (var buffer =
@@ -780,7 +780,7 @@ public abstract class VulkanLogicalDeviceContract extends VulkanOnDeviceContract
             try (var pool =
                    this.device.createCommandPool(
                      VulkanCommandPoolCreateInfo.builder()
-                       .setQueueFamilyIndex(queue.queueIndex())
+                       .setQueueFamilyIndex(queue.queueFamilyIndex())
                        .build())) {
 
               try (var buffer =

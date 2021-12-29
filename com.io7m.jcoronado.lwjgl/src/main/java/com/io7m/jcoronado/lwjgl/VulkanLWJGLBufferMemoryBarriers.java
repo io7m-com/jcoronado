@@ -88,11 +88,11 @@ public final class VulkanLWJGLBufferMemoryBarriers
         source.buffer(),
         VulkanLWJGLBuffer.class).handle())
       .dstAccessMask(VulkanEnumMaps.packValues(source.targetAccessMask()))
-      .dstQueueFamilyIndex(source.targetQueueFamilyIndex())
+      .dstQueueFamilyIndex(source.targetQueueFamilyIndex().value())
       .offset(source.offset())
       .size(source.size())
       .srcAccessMask(VulkanEnumMaps.packValues(source.sourceAccessMask()))
-      .srcQueueFamilyIndex(source.sourceQueueFamilyIndex());
+      .srcQueueFamilyIndex(source.sourceQueueFamilyIndex().value());
   }
 
   /**

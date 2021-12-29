@@ -51,14 +51,14 @@ public interface VulkanBufferMemoryBarrierType
    */
 
   @Value.Parameter
-  int sourceQueueFamilyIndex();
+  VulkanQueueFamilyIndex sourceQueueFamilyIndex();
 
   /**
    * @return The target queue family for a queue family ownership transfer.
    */
 
   @Value.Parameter
-  int targetQueueFamilyIndex();
+  VulkanQueueFamilyIndex targetQueueFamilyIndex();
 
   /**
    * @return The buffer affected by this barrier.

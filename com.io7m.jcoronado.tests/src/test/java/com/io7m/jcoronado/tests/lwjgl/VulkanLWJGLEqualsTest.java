@@ -242,7 +242,7 @@ public final class VulkanLWJGLEqualsTest
     final @Mock VulkanLWJGLLogicalDevice device_black)
   {
     EqualsVerifier.forClass(VulkanLWJGLQueue.class)
-      .withOnlyTheseFields("queue_index", "queue", "properties")
+      .withOnlyTheseFields("queueIndex", "queue", "properties")
       .withPrefabValues(
         VulkanLWJGLLogicalDevice.class,
         device_red,

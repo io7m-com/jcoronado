@@ -45,5 +45,5 @@ public interface VulkanCommandPoolCreateInfoType
    */
 
   @Value.Parameter
-  int queueFamilyIndex();
+  VulkanQueueFamilyIndex queueFamilyIndex();
 }

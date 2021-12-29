@@ -55,6 +55,6 @@ public final class VulkanLWJGLCommandPoolCreateInfos
       .sType(VK10.VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO)
       .pNext(0L)
       .flags(VulkanEnumMaps.packValues(info.flags()))
-      .queueFamilyIndex(info.queueFamilyIndex());
+      .queueFamilyIndex(info.queueFamilyIndex().value());
   }
 }
