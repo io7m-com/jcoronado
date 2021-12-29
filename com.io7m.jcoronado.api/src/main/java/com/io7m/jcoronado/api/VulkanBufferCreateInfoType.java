@@ -68,5 +68,5 @@ public interface VulkanBufferCreateInfoType
    */
 
   @Value.Parameter
-  List<Integer> queueFamilyIndices();
+  List<VulkanQueueFamilyIndex> queueFamilyIndices();
 }

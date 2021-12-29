@@ -44,6 +44,7 @@ import com.io7m.jcoronado.api.VulkanPhysicalDeviceMemoryProperties;
 import com.io7m.jcoronado.api.VulkanPhysicalDeviceProperties;
 import com.io7m.jcoronado.api.VulkanPhysicalDeviceType;
 import com.io7m.jcoronado.api.VulkanPointSizeRange;
+import com.io7m.jcoronado.api.VulkanQueueFamilyIndex;
 import com.io7m.jcoronado.api.VulkanQueueFamilyProperties;
 import com.io7m.jcoronado.api.VulkanQueueFamilyPropertyFlag;
 import com.io7m.jcoronado.api.VulkanVersion;
@@ -78,11 +79,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.stream.Stream;
 
@@ -135,40 +136,44 @@ public final class VulkanLWJGLInstance
         Objects.requireNonNull(inExtensionsEnabled, "in_extensions"));
   }
 
-  private static List<VulkanQueueFamilyProperties> parsePhysicalDeviceQueueFamilies(
-    final MemoryStack stack_initial,
-    final VkPhysicalDevice vk_device)
+  private static SortedMap<VulkanQueueFamilyIndex, VulkanQueueFamilyProperties>
+  parsePhysicalDeviceQueueFamilies(
+    final MemoryStack stackInitial,
+    final VkPhysicalDevice vkDevice)
   {
-    final ArrayList<VulkanQueueFamilyProperties> families;
-    try (var stack = stack_initial.push()) {
+    final SortedMap<VulkanQueueFamilyIndex, VulkanQueueFamilyProperties> families;
+    try (var stack = stackInitial.push()) {
       final var count = new int[1];
 
-      VK10.vkGetPhysicalDeviceQueueFamilyProperties(vk_device, count, null);
+      VK10.vkGetPhysicalDeviceQueueFamilyProperties(vkDevice, count, null);
 
-      final var queue_family_count = count[0];
-      if (queue_family_count == 0) {
-        return List.of();
+      final var queueFamilyCount = count[0];
+      if (queueFamilyCount == 0) {
+        return Collections.emptySortedMap();
       }
 
-      final var vk_queue_families =
-        VkQueueFamilyProperties.malloc(queue_family_count, stack);
+      final var vkQueueFamilies =
+        VkQueueFamilyProperties.malloc(queueFamilyCount, stack);
 
       VK10.vkGetPhysicalDeviceQueueFamilyProperties(
-        vk_device, count, vk_queue_families);
+        vkDevice, count, vkQueueFamilies);
 
-      families = new ArrayList<>(queue_family_count);
-      for (var index = 0; index < queue_family_count; ++index) {
-        vk_queue_families.position(index);
+      families = new TreeMap<>();
+      for (var index = 0; index < queueFamilyCount; ++index) {
+        vkQueueFamilies.position(index);
 
         final var properties =
           VulkanQueueFamilyProperties.of(
-            index,
-            vk_queue_families.queueCount(),
-            parseQueueFlags(vk_queue_families.queueFlags()),
-            vk_queue_families.timestampValidBits(),
-            parseExtent3D(vk_queue_families.minImageTransferGranularity()));
+            new VulkanQueueFamilyIndex(index),
+            vkQueueFamilies.queueCount(),
+            parseQueueFlags(vkQueueFamilies.queueFlags()),
+            vkQueueFamilies.timestampValidBits(),
+            parseExtent3D(vkQueueFamilies.minImageTransferGranularity()));
 
-        families.add(properties);
+        families.put(
+          new VulkanQueueFamilyIndex(index),
+          properties
+        );
       }
     }
 
@@ -1094,7 +1099,7 @@ public final class VulkanLWJGLInstance
       parsePhysicalDeviceLimits(vkProperties.limits());
     final var memory =
       parsePhysicalDeviceMemoryProperties(vkMemory);
-    final var queue_families =
+    final var queueFamilies =
       parsePhysicalDeviceQueueFamilies(stack, vkDevice);
 
     return new VulkanLWJGLPhysicalDevice(
@@ -1104,7 +1109,7 @@ public final class VulkanLWJGLInstance
       limits,
       features,
       memory,
-      queue_families,
+      queueFamilies,
       this.hostAllocatorProxy(),
       properties.driverProperties()
     );

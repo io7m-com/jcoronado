@@ -176,16 +176,21 @@ public final class VulkanLWJGLExtKHRSurface implements VulkanExtKHRSurfaceType
 
     device.checkNotClosed();
 
-    final var queues = device.queueFamilies();
-    final List<VulkanQueueFamilyProperties> results = new ArrayList<>(queues.size());
+    final var queues =
+      device.queueFamilies();
+    final List<VulkanQueueFamilyProperties> results =
+      new ArrayList<>(queues.size());
 
     final var supported = new int[1];
-    for (final var queue : queues) {
+    for (final var queueEntry : queues.entrySet()) {
+      final var queue =
+        queueEntry.getValue();
+
       supported[0] = 0;
       VulkanChecks.checkReturnCode(
         KHRSurface.vkGetPhysicalDeviceSurfaceSupportKHR(
           device.device(),
-          queue.queueFamilyIndex(),
+          queue.queueFamilyIndex().value(),
           surface.handle,
           supported),
         "vkGetPhysicalDeviceSurfaceSupportKHR");

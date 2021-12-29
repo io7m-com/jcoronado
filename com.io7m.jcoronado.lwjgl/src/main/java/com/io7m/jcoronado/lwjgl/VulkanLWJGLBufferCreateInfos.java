@@ -19,6 +19,7 @@ package com.io7m.jcoronado.lwjgl;
 import com.io7m.jcoronado.api.VulkanBufferCreateInfo;
 import com.io7m.jcoronado.api.VulkanEnumMaps;
 import com.io7m.jcoronado.api.VulkanException;
+import com.io7m.jcoronado.api.VulkanQueueFamilyIndex;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.vulkan.VK10;
 import org.lwjgl.vulkan.VkBufferCreateInfo;
@@ -69,12 +70,12 @@ public final class VulkanLWJGLBufferCreateInfos
 
   private static IntBuffer packQueueFamilies(
     final MemoryStack stack,
-    final List<Integer> integers)
+    final List<VulkanQueueFamilyIndex> integers)
     throws VulkanException
   {
     return VulkanLWJGLIntegerArrays.packIntsOrNull(
       stack,
       integers,
-      Integer::intValue);
+      VulkanQueueFamilyIndex::value);
   }
 }

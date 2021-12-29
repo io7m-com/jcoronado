@@ -80,6 +80,7 @@ import com.io7m.jcoronado.api.VulkanPipelineStageFlag;
 import com.io7m.jcoronado.api.VulkanPipelineType;
 import com.io7m.jcoronado.api.VulkanPipelineVertexInputStateCreateInfo;
 import com.io7m.jcoronado.api.VulkanPipelineViewportStateCreateInfo;
+import com.io7m.jcoronado.api.VulkanQueueFamilyIndex;
 import com.io7m.jcoronado.api.VulkanQueueType;
 import com.io7m.jcoronado.api.VulkanRectangle2D;
 import com.io7m.jcoronado.api.VulkanRenderPassBeginInfo;
@@ -1240,9 +1241,10 @@ public final class HelloVulkanWithVMA implements ExampleType
   {
     final var minimum_image_count =
       pickMinimumImageCount(surface_caps);
-    final List<Integer> queue_indices = new ArrayList<>();
+    final List<VulkanQueueFamilyIndex> queueFamilyIndices =
+      new ArrayList<>();
     final var image_sharing_mode =
-      pickImageSharingMode(graphics_queue, presentation_queue, queue_indices);
+      pickImageSharingMode(graphics_queue, presentation_queue, queueFamilyIndices);
     final var image_usage_flags =
       Set.of(VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT);
     final var surface_alpha_flags =
@@ -1263,7 +1265,7 @@ public final class HelloVulkanWithVMA implements ExampleType
         1,
         image_usage_flags,
         image_sharing_mode,
-        queue_indices,
+        queueFamilyIndices,
         surface_caps.currentTransform(),
         surface_alpha_flags,
         surface_present,
@@ -1295,9 +1297,9 @@ public final class HelloVulkanWithVMA implements ExampleType
   }
 
   private static VulkanSharingMode pickImageSharingMode(
-    final VulkanQueueType graphics_queue,
-    final VulkanQueueType presentation_queue,
-    final List<Integer> queue_indices)
+    final VulkanQueueType graphicsQueue,
+    final VulkanQueueType presentationQueue,
+    final List<VulkanQueueFamilyIndex> queueIndices)
   {
     /*
      * If the graphics and presentation queues are separate families, then add the indices of
@@ -1305,11 +1307,14 @@ public final class HelloVulkanWithVMA implements ExampleType
      * add any indices, and use exclusive sharing mode.
      */
 
-    final var graphics_family = graphics_queue.queueFamilyProperties().queueFamilyIndex();
-    final var presentation_family = presentation_queue.queueFamilyProperties().queueFamilyIndex();
-    if (graphics_family != presentation_family) {
-      queue_indices.add(Integer.valueOf(graphics_family));
-      queue_indices.add(Integer.valueOf(presentation_family));
+    final var graphicsFamily =
+      graphicsQueue.queueFamilyProperties().queueFamilyIndex();
+    final var presentationFamily =
+      presentationQueue.queueFamilyProperties().queueFamilyIndex();
+
+    if (!Objects.equals(graphicsFamily, presentationFamily)) {
+      queueIndices.add(graphicsFamily);
+      queueIndices.add(presentationFamily);
       return VK_SHARING_MODE_CONCURRENT;
     }
     return VK_SHARING_MODE_EXCLUSIVE;
@@ -1504,9 +1509,7 @@ public final class HelloVulkanWithVMA implements ExampleType
         "checking device \"{}\" for graphics queue support",
         device.properties().name());
 
-      final var queues = device.queueFamilies();
-      return queues.stream().anyMatch(queue -> queue.queueFlags().contains(
-        VK_QUEUE_GRAPHICS_BIT));
+      return device.queueFamilyFindWithFlags(VK_QUEUE_GRAPHICS_BIT).isPresent();
     } catch (final VulkanException e) {
       throw new VulkanUncheckedException(e);
     }
@@ -1813,10 +1816,7 @@ public final class HelloVulkanWithVMA implements ExampleType
        */
 
       final var graphicsQueueProps =
-        physicalDevice.queueFamilies()
-          .stream()
-          .filter(queue -> queue.queueFlags().contains(VK_QUEUE_GRAPHICS_BIT))
-          .findFirst()
+        physicalDevice.queueFamilyFindWithFlags(VK_QUEUE_GRAPHICS_BIT)
           .orElseThrow(() -> new IllegalStateException(
             "Could not find graphics queue"));
 
@@ -1842,7 +1842,9 @@ public final class HelloVulkanWithVMA implements ExampleType
           .setQueuePriorities(1.0f)
           .build());
 
-      if (graphicsQueueProps.queueFamilyIndex() != presentationQueueProps.queueFamilyIndex()) {
+      if (!Objects.equals(
+        graphicsQueueProps.queueFamilyIndex(),
+        presentationQueueProps.queueFamilyIndex())) {
         logicalDeviceInfoBuilder.addQueueCreateInfos(
           VulkanLogicalDeviceQueueCreateInfo.builder()
             .setQueueCount(1)

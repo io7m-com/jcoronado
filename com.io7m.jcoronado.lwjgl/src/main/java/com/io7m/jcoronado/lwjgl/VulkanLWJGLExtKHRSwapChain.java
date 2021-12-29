@@ -25,6 +25,7 @@ import com.io7m.jcoronado.api.VulkanFenceType;
 import com.io7m.jcoronado.api.VulkanImageType;
 import com.io7m.jcoronado.api.VulkanIncompatibleClassException;
 import com.io7m.jcoronado.api.VulkanLogicalDeviceType;
+import com.io7m.jcoronado.api.VulkanQueueFamilyIndex;
 import com.io7m.jcoronado.api.VulkanQueueType;
 import com.io7m.jcoronado.api.VulkanSemaphoreType;
 import com.io7m.jcoronado.api.VulkanUncheckedException;
@@ -72,13 +73,13 @@ public final class VulkanLWJGLExtKHRSwapChain implements
 
   private static IntBuffer packQueueIndices(
     final MemoryStack stack,
-    final List<Integer> integers)
+    final List<VulkanQueueFamilyIndex> integers)
     throws VulkanException
   {
     return VulkanLWJGLIntegerArrays.packIntsOrNull(
       stack,
       integers,
-      Integer::intValue);
+      VulkanQueueFamilyIndex::value);
   }
 
   private static long mapOldSwapChain(

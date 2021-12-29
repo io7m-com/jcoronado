@@ -55,8 +55,8 @@ public interface VulkanLogicalDeviceType extends VulkanHandleDispatchableType
   /**
    * Find the queue with the given queue family and index.
    *
-   * @param queue_family The queue family
-   * @param queue_index  The queue index
+   * @param queueFamily The queue family
+   * @param queueIndex  The queue index
    *
    * @return The matching queue, if any
    *
@@ -65,14 +65,18 @@ public interface VulkanLogicalDeviceType extends VulkanHandleDispatchableType
 
   @VulkanAPIFunctionType(vulkanFunction = "vkGetDeviceQueue")
   default Optional<VulkanQueueType> queue(
-    final int queue_family,
-    final int queue_index)
+    final VulkanQueueFamilyIndex queueFamily,
+    final int queueIndex)
     throws VulkanException
   {
+    Objects.requireNonNull(queueFamily, "queueFamily");
+
     return this.queues()
       .stream()
-      .filter(queue -> queue.queueFamilyProperties().queueFamilyIndex() == queue_family
-        && queue.queueIndex() == queue_index)
+      .filter(queue -> Objects.equals(
+        queue.queueFamilyProperties().queueFamilyIndex(),
+        queueFamily)
+        && queue.queueIndex() == queueIndex)
       .findFirst();
   }
 

@@ -43,6 +43,7 @@ import com.io7m.jcoronado.api.VulkanPhysicalDeviceLimits;
 import com.io7m.jcoronado.api.VulkanPhysicalDeviceMemoryProperties;
 import com.io7m.jcoronado.api.VulkanPhysicalDeviceProperties;
 import com.io7m.jcoronado.api.VulkanPhysicalDeviceType;
+import com.io7m.jcoronado.api.VulkanQueueFamilyIndex;
 import com.io7m.jcoronado.api.VulkanQueueFamilyProperties;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.vulkan.VK10;
@@ -69,6 +70,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.SortedMap;
 
 import static com.io7m.jcoronado.api.VulkanChecks.checkReturnCode;
 import static org.lwjgl.vulkan.VK11.VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FEATURES_2;
@@ -94,7 +96,7 @@ public final class VulkanLWJGLPhysicalDevice
   private final VulkanPhysicalDeviceLimits limits;
   private final VulkanPhysicalDeviceFeatures features;
   private final VulkanPhysicalDeviceMemoryProperties memory;
-  private final List<VulkanQueueFamilyProperties> queueFamilies;
+  private final SortedMap<VulkanQueueFamilyIndex, VulkanQueueFamilyProperties> queueFamilies;
   private final MemoryStack stackInitial;
   private final Optional<VulkanPhysicalDeviceDriverProperties> driverProperties;
 
@@ -105,7 +107,7 @@ public final class VulkanLWJGLPhysicalDevice
     final VulkanPhysicalDeviceLimits inLimits,
     final VulkanPhysicalDeviceFeatures inFeatures,
     final VulkanPhysicalDeviceMemoryProperties inMemory,
-    final List<VulkanQueueFamilyProperties> inQueueFamilies,
+    final SortedMap<VulkanQueueFamilyIndex, VulkanQueueFamilyProperties> inQueueFamilies,
     final VulkanLWJGLHostAllocatorProxy inHostAllocatorProxy,
     final Optional<VulkanPhysicalDeviceDriverProperties> inDriverProperties)
   {
@@ -124,7 +126,7 @@ public final class VulkanLWJGLPhysicalDevice
     this.memory =
       Objects.requireNonNull(inMemory, "memory");
     this.queueFamilies =
-      Collections.unmodifiableList(
+      Collections.unmodifiableSortedMap(
         Objects.requireNonNull(inQueueFamilies, "queue_families"));
     this.driverProperties =
       Objects.requireNonNull(inDriverProperties, "driverProperties");
@@ -402,13 +404,13 @@ public final class VulkanLWJGLPhysicalDevice
       VkDeviceQueueCreateInfo.malloc(queueCount, stack);
 
     for (var index = 0; index < queueCount; ++index) {
-      final var queue_info = infos.get(index);
+      final var queueInfo = infos.get(index);
       vkQueueBuffer.position(index);
       vkQueueBuffer.sType(VK10.VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO)
         .pNext(0L)
         .flags(0)
-        .queueFamilyIndex(queue_info.queueFamilyIndex())
-        .pQueuePriorities(stack.floats(queue_info.queuePriorities()));
+        .queueFamilyIndex(queueInfo.queueFamilyIndex().value())
+        .pQueuePriorities(stack.floats(queueInfo.queuePriorities()));
     }
     vkQueueBuffer.position(0);
     return vkQueueBuffer;
@@ -756,7 +758,7 @@ public final class VulkanLWJGLPhysicalDevice
   }
 
   @Override
-  public List<VulkanQueueFamilyProperties> queueFamilies()
+  public SortedMap<VulkanQueueFamilyIndex, VulkanQueueFamilyProperties> queueFamilies()
     throws VulkanException
   {
     this.checkNotClosed();

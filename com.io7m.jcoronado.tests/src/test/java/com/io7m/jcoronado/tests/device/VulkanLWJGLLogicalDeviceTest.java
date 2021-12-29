@@ -35,15 +35,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
 import java.util.List;
 import java.util.Optional;
 
-import static java.nio.charset.StandardCharsets.*;
-import static java.nio.file.StandardOpenOption.*;
+import static com.io7m.jcoronado.api.VulkanQueueFamilyPropertyFlag.VK_QUEUE_TRANSFER_BIT;
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.nio.file.StandardOpenOption.CREATE;
+import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
+import static java.nio.file.StandardOpenOption.WRITE;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
 public final class VulkanLWJGLLogicalDeviceTest
@@ -108,10 +109,15 @@ public final class VulkanLWJGLLogicalDeviceTest
     final VulkanPhysicalDeviceType device)
     throws VulkanException
   {
+    final var queueFamilyIndex =
+      device.queueFamilyFindWithFlags(VK_QUEUE_TRANSFER_BIT)
+        .orElseThrow()
+        .queueFamilyIndex();
+
     final var queue =
       VulkanLogicalDeviceQueueCreateInfo.builder()
         .setQueueCount(1)
-        .setQueueFamilyIndex(device.queueFamilies().get(0).queueFamilyIndex())
+        .setQueueFamilyIndex(queueFamilyIndex)
         .setQueuePriorities(1.0f)
         .build();
 
@@ -165,13 +171,15 @@ public final class VulkanLWJGLLogicalDeviceTest
              newInstance.physicalDevices()
                .get(0)) {
 
+        final var queueFamilyIndex =
+          physicalDevice.queueFamilyFindWithFlags(VK_QUEUE_TRANSFER_BIT)
+            .orElseThrow()
+            .queueFamilyIndex();
+
         final var queue =
           VulkanLogicalDeviceQueueCreateInfo.builder()
             .setQueueCount(1)
-            .setQueueFamilyIndex(
-              physicalDevice.queueFamilies()
-                .get(0)
-                .queueFamilyIndex())
+            .setQueueFamilyIndex(queueFamilyIndex)
             .setQueuePriorities(1.0f)
             .build();
 
@@ -196,7 +204,7 @@ public final class VulkanLWJGLLogicalDeviceTest
    * supported Vulkan version.
    *
    * @throws VulkanException On errors
-   * @throws IOException On errors
+   * @throws IOException     On errors
    */
 
   @Test
@@ -238,13 +246,15 @@ public final class VulkanLWJGLLogicalDeviceTest
 
         saveDriverProperties(physicalDevice);
 
+        final var queueFamilyIndex =
+          physicalDevice.queueFamilyFindWithFlags(VK_QUEUE_TRANSFER_BIT)
+            .orElseThrow()
+            .queueFamilyIndex();
+
         final var queue =
           VulkanLogicalDeviceQueueCreateInfo.builder()
             .setQueueCount(1)
-            .setQueueFamilyIndex(
-              physicalDevice.queueFamilies()
-                .get(0)
-                .queueFamilyIndex())
+            .setQueueFamilyIndex(queueFamilyIndex)
             .setQueuePriorities(1.0f)
             .build();
 
@@ -268,20 +278,25 @@ public final class VulkanLWJGLLogicalDeviceTest
     final VulkanPhysicalDeviceType physicalDevice)
     throws VulkanException, IOException
   {
-      final var properties =
-        physicalDevice.properties();
-      final var driverProperties =
-        physicalDevice.driverProperties().orElseThrow();
+    final var properties =
+      physicalDevice.properties();
+    final var driverProperties =
+      physicalDevice.driverProperties().orElseThrow();
 
-      final var tmpDir =
-        System.getProperty("java.io.tmpdir");
-      final var path =
-        Paths.get(tmpDir);
-      final var file =
-        path.resolve("driver.txt");
+    final var tmpDir =
+      System.getProperty("java.io.tmpdir");
+    final var path =
+      Paths.get(tmpDir);
+    final var file =
+      path.resolve("driver.txt");
 
     try (var writer =
-           Files.newBufferedWriter(file, UTF_8, TRUNCATE_EXISTING, CREATE, WRITE)) {
+           Files.newBufferedWriter(
+             file,
+             UTF_8,
+             TRUNCATE_EXISTING,
+             CREATE,
+             WRITE)) {
       writer.append("|");
       writer.append(System.getProperty("os.name"));
       writer.append("|");

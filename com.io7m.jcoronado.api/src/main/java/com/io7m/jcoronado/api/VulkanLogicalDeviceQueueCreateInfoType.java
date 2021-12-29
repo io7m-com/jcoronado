@@ -44,7 +44,7 @@ public interface VulkanLogicalDeviceQueueCreateInfoType
    */
 
   @Value.Parameter
-  int queueFamilyIndex();
+  VulkanQueueFamilyIndex queueFamilyIndex();
 
   /**
    * @return The number of queues to create

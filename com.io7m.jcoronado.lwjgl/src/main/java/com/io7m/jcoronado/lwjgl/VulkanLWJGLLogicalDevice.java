@@ -215,28 +215,28 @@ public final class VulkanLWJGLLogicalDevice
     throws VulkanException
   {
     try (var stack = this.stack_initial.push()) {
-      final var queue_requests =
+      final var queueRequests =
         this.creation.queueCreateInfos();
       final var families =
         this.physical_device.queueFamilies();
 
-      final var queue_buffer = stack.mallocPointer(1);
-      for (final var queue_info : queue_requests) {
-        for (var queue_index = 0; queue_index < queue_info.queueCount(); ++queue_index) {
-          final var queue_family_index =
+      final var queueBuffer = stack.mallocPointer(1);
+      for (final var queue_info : queueRequests) {
+        for (var queueIndex = 0; queueIndex < queue_info.queueCount(); ++queueIndex) {
+          final var queueFamilyIndex =
             queue_info.queueFamilyIndex();
           final var family =
-            families.get(queue_family_index);
+            families.get(queueFamilyIndex);
 
           VK10.vkGetDeviceQueue(
             this.device,
-            queue_family_index,
-            queue_index,
-            queue_buffer);
+            queueFamilyIndex.value(),
+            queueIndex,
+            queueBuffer);
 
-          final var queue = new VkQueue(queue_buffer.get(0), this.device);
+          final var queue = new VkQueue(queueBuffer.get(0), this.device);
           this.queues.add(new VulkanLWJGLQueue(
-            this, queue, family, queue_index, this.hostAllocatorProxy()));
+            this, queue, family, queueIndex, this.hostAllocatorProxy()));
         }
       }
     }

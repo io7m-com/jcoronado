@@ -187,9 +187,7 @@ public final class BufferCopy implements ExampleType
         "checking device \"{}\" for graphics queue support",
         device.properties().name());
 
-      final var queues = device.queueFamilies();
-      return queues.stream().anyMatch(queue -> queue.queueFlags().contains(
-        VK_QUEUE_GRAPHICS_BIT));
+      return device.queueFamilyFindWithFlags(VK_QUEUE_GRAPHICS_BIT).isPresent();
     } catch (final VulkanException e) {
       throw new VulkanUncheckedException(e);
     }
@@ -390,10 +388,7 @@ public final class BufferCopy implements ExampleType
        */
 
       final var graphicsQueueProps =
-        physicalDevice.queueFamilies()
-          .stream()
-          .filter(queue -> queue.queueFlags().contains(VK_QUEUE_GRAPHICS_BIT))
-          .findFirst()
+        physicalDevice.queueFamilyFindWithFlags(VK_QUEUE_GRAPHICS_BIT)
           .orElseThrow(() -> new IllegalStateException(
             "Could not find graphics queue"));
 

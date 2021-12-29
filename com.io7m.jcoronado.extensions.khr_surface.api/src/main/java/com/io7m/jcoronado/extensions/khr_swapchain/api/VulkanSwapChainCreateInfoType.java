@@ -21,6 +21,7 @@ import com.io7m.jcoronado.api.VulkanAPIStructType;
 import com.io7m.jcoronado.api.VulkanExtent2D;
 import com.io7m.jcoronado.api.VulkanFormat;
 import com.io7m.jcoronado.api.VulkanImageUsageFlag;
+import com.io7m.jcoronado.api.VulkanQueueFamilyIndex;
 import com.io7m.jcoronado.api.VulkanSharingMode;
 import com.io7m.jcoronado.extensions.khr_surface.api.VulkanExtKHRSurfaceType;
 import com.io7m.jcoronado.extensions.khr_surface.api.VulkanSurfaceTransformFlagKHR;
@@ -102,7 +103,7 @@ public interface VulkanSwapChainCreateInfoType
    */
 
   @Value.Parameter
-  List<Integer> queueFamilyIndices();
+  List<VulkanQueueFamilyIndex> queueFamilyIndices();
 
   /**
    * @return The transform, relative to the device's natural orientation, applied to the image

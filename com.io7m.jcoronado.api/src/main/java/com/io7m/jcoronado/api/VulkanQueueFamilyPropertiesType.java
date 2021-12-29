@@ -37,7 +37,7 @@ public interface VulkanQueueFamilyPropertiesType
    */
 
   @Value.Parameter
-  int queueFamilyIndex();
+  VulkanQueueFamilyIndex queueFamilyIndex();
 
   /**
    * @return The number of queues available in the family

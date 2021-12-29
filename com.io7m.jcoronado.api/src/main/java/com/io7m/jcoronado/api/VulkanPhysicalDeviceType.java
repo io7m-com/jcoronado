@@ -16,10 +16,10 @@
 
 package com.io7m.jcoronado.api;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.SortedMap;
 
 /**
  * A reference to a physical Vulkan device.
@@ -140,7 +140,7 @@ public interface VulkanPhysicalDeviceType extends VulkanHandleDispatchableType
    */
 
   @VulkanAPIFunctionType(vulkanFunction = "vkGetPhysicalDeviceQueueFamilyProperties")
-  List<VulkanQueueFamilyProperties> queueFamilies()
+  SortedMap<VulkanQueueFamilyIndex, VulkanQueueFamilyProperties> queueFamilies()
     throws VulkanException;
 
   /**
@@ -183,6 +183,7 @@ public interface VulkanPhysicalDeviceType extends VulkanHandleDispatchableType
     throws VulkanException
   {
     return this.queueFamilies()
+      .values()
       .stream()
       .filter(q -> q.queueFlags().containsAll(flags))
       .findFirst();
