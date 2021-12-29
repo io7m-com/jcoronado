@@ -30,7 +30,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Optional;
-import java.util.Set;
+
+import static com.io7m.jcoronado.api.VulkanQueueFamilyPropertyFlag.VK_QUEUE_TRANSFER_BIT;
 
 public final class VulkanLWJGLBufferTest extends VulkanBufferContract
 {
@@ -87,7 +88,7 @@ public final class VulkanLWJGLBufferTest extends VulkanBufferContract
       VulkanLogicalDeviceQueueCreateInfo.builder()
         .setQueueCount(1)
         .setQueueFamilyIndex(
-          device.queueFamilyFindWithFlags(Set.of())
+          device.queueFamilyFindWithFlags(VK_QUEUE_TRANSFER_BIT)
             .orElseThrow()
             .queueFamilyIndex())
         .setQueuePriorities(1.0f)
