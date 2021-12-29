@@ -30,6 +30,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Optional;
+import java.util.Set;
 
 public final class VulkanLWJGLBufferTest extends VulkanBufferContract
 {
@@ -85,7 +86,10 @@ public final class VulkanLWJGLBufferTest extends VulkanBufferContract
     final var queue =
       VulkanLogicalDeviceQueueCreateInfo.builder()
         .setQueueCount(1)
-        .setQueueFamilyIndex(device.queueFamilies().get(0).queueFamilyIndex())
+        .setQueueFamilyIndex(
+          device.queueFamilyFindWithFlags(Set.of())
+            .orElseThrow()
+            .queueFamilyIndex())
         .setQueuePriorities(1.0f)
         .build();
 

@@ -167,4 +167,24 @@ public interface VulkanPhysicalDeviceType extends VulkanHandleDispatchableType
 
   @VulkanAPIMinimumVersionType(major = 1, minor = 2)
   Optional<VulkanPhysicalDeviceDriverProperties> driverProperties();
+
+  /**
+   * Find the first queue family that has all of the given flags.
+   *
+   * @param flags The flags
+   *
+   * @return The first matching queue family, if any
+   *
+   * @throws VulkanException On errors
+   */
+
+  default Optional<VulkanQueueFamilyProperties> queueFamilyFindWithFlags(
+    final Set<VulkanQueueFamilyPropertyFlag> flags)
+    throws VulkanException
+  {
+    return this.queueFamilies()
+      .stream()
+      .filter(q -> q.queueFlags().containsAll(flags))
+      .findFirst();
+  }
 }
