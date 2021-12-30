@@ -39,6 +39,7 @@ import com.io7m.jcoronado.api.VulkanPhysicalDeviceFeatures;
 import com.io7m.jcoronado.api.VulkanPhysicalDeviceFeatures10;
 import com.io7m.jcoronado.api.VulkanPhysicalDeviceFeatures11;
 import com.io7m.jcoronado.api.VulkanPhysicalDeviceFeatures12;
+import com.io7m.jcoronado.api.VulkanPhysicalDeviceIDProperties;
 import com.io7m.jcoronado.api.VulkanPhysicalDeviceLimits;
 import com.io7m.jcoronado.api.VulkanPhysicalDeviceMemoryProperties;
 import com.io7m.jcoronado.api.VulkanPhysicalDeviceProperties;
@@ -63,6 +64,7 @@ import org.lwjgl.vulkan.VkPhysicalDevice;
 import org.lwjgl.vulkan.VkPhysicalDeviceDriverProperties;
 import org.lwjgl.vulkan.VkPhysicalDeviceFeatures;
 import org.lwjgl.vulkan.VkPhysicalDeviceFeatures2;
+import org.lwjgl.vulkan.VkPhysicalDeviceIDProperties;
 import org.lwjgl.vulkan.VkPhysicalDeviceLimits;
 import org.lwjgl.vulkan.VkPhysicalDeviceMemoryProperties;
 import org.lwjgl.vulkan.VkPhysicalDeviceProperties;
@@ -73,6 +75,7 @@ import org.lwjgl.vulkan.VkQueueFamilyProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
@@ -85,9 +88,11 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
+import java.util.UUID;
 import java.util.stream.Stream;
 
 import static org.lwjgl.vulkan.VK11.VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FEATURES_2;
+import static org.lwjgl.vulkan.VK11.VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_ID_PROPERTIES;
 import static org.lwjgl.vulkan.VK11.VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PROPERTIES_2;
 import static org.lwjgl.vulkan.VK12.VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DRIVER_PROPERTIES;
 import static org.lwjgl.vulkan.VK12.VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_1_FEATURES;
@@ -1111,7 +1116,8 @@ public final class VulkanLWJGLInstance
       memory,
       queueFamilies,
       this.hostAllocatorProxy(),
-      properties.driverProperties()
+      properties.driverProperties(),
+      properties.idProperties()
     );
   }
 
@@ -1138,6 +1144,7 @@ public final class VulkanLWJGLInstance
       VK10.vkGetPhysicalDeviceProperties(vkDevice, vkProperties);
       return new PropertiesAndExtras(
         parsePhysicalDeviceProperties(vkProperties, index),
+        Optional.empty(),
         Optional.empty()
       );
     }
@@ -1152,10 +1159,15 @@ public final class VulkanLWJGLInstance
       apiVersion.toHumanString()
     );
 
+    final var vkIdProperties =
+      VkPhysicalDeviceIDProperties.malloc(stack);
+    vkIdProperties.sType(VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_ID_PROPERTIES);
+    vkIdProperties.pNext(0L);
+
     final var vkProperties2 =
       VkPhysicalDeviceProperties2.malloc(stack);
     vkProperties2.sType(VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PROPERTIES_2);
-    vkProperties2.pNext(0L);
+    vkProperties2.pNext(vkIdProperties.address());
 
     VkPhysicalDeviceDriverProperties vkDriverProperties = null;
     if (apiVersion.major() >= 1 && apiVersion.minor() >= 2) {
@@ -1163,20 +1175,90 @@ public final class VulkanLWJGLInstance
       vkDriverProperties.sType(
         VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DRIVER_PROPERTIES);
       vkDriverProperties.pNext(0L);
-      vkProperties2.pNext(vkDriverProperties.address());
+      vkIdProperties.pNext(vkDriverProperties.address());
     }
 
     VK11.vkGetPhysicalDeviceProperties2(vkDevice, vkProperties2);
 
+    final var properties =
+      parsePhysicalDeviceProperties(vkProperties2.properties(), index);
+    final var driverProperties =
+      parsePhysicalDeviceDriverPropertiesOpt(Optional.ofNullable(
+        vkDriverProperties));
+    final var idProperties =
+      parsePhysicalDeviceIdPropertiesOpt(vkIdProperties);
+
     return new PropertiesAndExtras(
-      parsePhysicalDeviceProperties(
-        vkProperties2.properties(), index),
-      parsePhysicalDeviceDriverPropertiesOpt(
-        Optional.ofNullable(vkDriverProperties))
+      properties,
+      driverProperties,
+      idProperties
     );
   }
 
-  private static Optional<VulkanPhysicalDeviceDriverProperties> parsePhysicalDeviceDriverPropertiesOpt(
+  private static Optional<VulkanPhysicalDeviceIDProperties>
+  parsePhysicalDeviceIdPropertiesOpt(
+    final VkPhysicalDeviceIDProperties vkIdProperties)
+  {
+    try {
+      return Optional.of(parsePhysicalDeviceIdProperties(vkIdProperties));
+    } catch (final IllegalArgumentException e) {
+      return Optional.empty();
+    }
+  }
+
+  private static VulkanPhysicalDeviceIDProperties parsePhysicalDeviceIdProperties(
+    final VkPhysicalDeviceIDProperties vkIdProperties)
+  {
+    return new VulkanPhysicalDeviceIDProperties(
+      parseUUID(vkIdProperties.deviceUUID()),
+      parseUUID(vkIdProperties.driverUUID()),
+      parseUUID(vkIdProperties.deviceLUID()),
+      vkIdProperties.deviceNodeMask(),
+      vkIdProperties.deviceLUIDValid()
+    );
+  }
+
+  private static UUID parseUUID(
+    final ByteBuffer buffer)
+  {
+    if (buffer.capacity() < 16) {
+      return UUID.fromString("00000000-0000-0000-0000-000000000000");
+    }
+
+    final var data = new byte[16];
+    buffer.get(data);
+
+    final var builder = new StringBuilder(36);
+    builder.append(formatByte(data[0]));
+    builder.append(formatByte(data[1]));
+    builder.append(formatByte(data[2]));
+    builder.append(formatByte(data[3]));
+    builder.append("-");
+    builder.append(formatByte(data[4]));
+    builder.append(formatByte(data[5]));
+    builder.append("-");
+    builder.append(formatByte(data[6]));
+    builder.append(formatByte(data[7]));
+    builder.append("-");
+    builder.append(formatByte(data[8]));
+    builder.append(formatByte(data[9]));
+    builder.append("-");
+    builder.append(formatByte(data[10]));
+    builder.append(formatByte(data[11]));
+    builder.append(formatByte(data[12]));
+    builder.append(formatByte(data[13]));
+    builder.append(formatByte(data[14]));
+    builder.append(formatByte(data[15]));
+    return UUID.fromString(builder.toString());
+  }
+
+  private static String formatByte(final byte b)
+  {
+    return String.format("%02x", Byte.valueOf(b));
+  }
+
+  private static Optional<VulkanPhysicalDeviceDriverProperties>
+  parsePhysicalDeviceDriverPropertiesOpt(
     final Optional<VkPhysicalDeviceDriverProperties> vkDriverProperties)
   {
     return vkDriverProperties.map(VulkanLWJGLInstance::parsePhysicalDeviceDriverProperties);
@@ -1216,7 +1298,8 @@ public final class VulkanLWJGLInstance
 
   private record PropertiesAndExtras(
     VulkanPhysicalDeviceProperties properties,
-    Optional<VulkanPhysicalDeviceDriverProperties> driverProperties)
+    Optional<VulkanPhysicalDeviceDriverProperties> driverProperties,
+    Optional<VulkanPhysicalDeviceIDProperties> idProperties)
   {
 
   }

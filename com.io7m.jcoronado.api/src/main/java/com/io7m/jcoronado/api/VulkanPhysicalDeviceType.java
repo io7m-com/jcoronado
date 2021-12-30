@@ -169,6 +169,15 @@ public interface VulkanPhysicalDeviceType extends VulkanHandleDispatchableType
   Optional<VulkanPhysicalDeviceDriverProperties> driverProperties();
 
   /**
+   * Retrieve the device ID properties.
+   *
+   * @return The device ID properties, if available
+   */
+
+  @VulkanAPIMinimumVersionType(major = 1, minor = 1)
+  Optional<VulkanPhysicalDeviceIDProperties> idProperties();
+
+  /**
    * Find the first queue family that has all the given flags.
    *
    * @param flags The flags
