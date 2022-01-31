@@ -35,6 +35,11 @@
       <artifactId>com.io7m.jcoronado.vma</artifactId>
       <version>${project.version}</version>
     </dependency>
+    <dependency>
+      <groupId>com.io7m.jcoronado</groupId>
+      <artifactId>com.io7m.jcoronado.extensions.ext_debug_utils.api</artifactId>
+      <version>${project.version}</version>
+    </dependency>
 
     <dependency>
       <groupId>com.io7m.junreachable</groupId>
@@ -76,12 +81,6 @@
       <groupId>org.osgi</groupId>
       <artifactId>org.osgi.annotation.versioning</artifactId>
       <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>com.io7m.jcoronado</groupId>
-      <artifactId>com.io7m.jcoronado.extensions.ext_debug_utils.api</artifactId>
-      <version>0.0.1-SNAPSHOT</version>
-      <scope>compile</scope>
     </dependency>
   </dependencies>
 
