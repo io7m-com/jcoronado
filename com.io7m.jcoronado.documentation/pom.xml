@@ -17,7 +17,7 @@
   <packaging>jar</packaging>
   <name>com.io7m.jcoronado.documentation</name>
   <description>Type-safe Vulkan frontend (Documentation)</description>
-  <url>http://www.io7m.com/software/jcoronado/</url>
+  <url>https://www.io7m.com/software/jcoronado/</url>
 
   <properties>
     <mdep.analyze.skip>true</mdep.analyze.skip>
