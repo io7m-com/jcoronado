@@ -19,7 +19,7 @@
   <packaging>pom</packaging>
   <name>com.io7m.jcoronado</name>
   <description>Type-safe Vulkan frontend</description>
-  <url>https://github.com/io7m/jcoronado</url>
+  <url>https://www.io7m.com/software/jcoronado</url>
 
   <modules>
     <module>com.io7m.jcoronado.allocation_tracker</module>
