@@ -103,7 +103,7 @@
       <dependency>
         <groupId>com.io7m.jmulticlose</groupId>
         <artifactId>com.io7m.jmulticlose.core</artifactId>
-        <version>0.0.2</version>
+        <version>1.0.0</version>
       </dependency>
       <dependency>
         <groupId>com.io7m.junreachable</groupId>
