@@ -136,7 +136,13 @@ public final class GenerateFunctionCoverage
     if (name.endsWith("AMD")) {
       return false;
     }
+    if (name.endsWith("AMDX")) {
+      return false;
+    }
     if (name.endsWith("FUCHSIA")) {
+      return false;
+    }
+    if (name.endsWith("INTEL")) {
       return false;
     }
     if (name.endsWith("NN")) {
@@ -154,7 +160,16 @@ public final class GenerateFunctionCoverage
     if (name.endsWith("NVX")) {
       return false;
     }
-    if (name.endsWith("KHR")) {
+    if (name.endsWith("QNX")) {
+      return false;
+    }
+    if (name.endsWith("QCOM")) {
+      return false;
+    }
+    if (name.endsWith("HUAWEI")) {
+      return false;
+    }
+    if (name.endsWith("VALVE")) {
       return false;
     }
     if (name.endsWith("EXT")) {

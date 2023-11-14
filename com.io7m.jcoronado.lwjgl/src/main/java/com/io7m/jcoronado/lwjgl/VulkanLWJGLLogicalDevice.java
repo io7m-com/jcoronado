@@ -1330,10 +1330,10 @@ public final class VulkanLWJGLLogicalDevice
 
     this.checkNotClosed();
 
-    final var cbuffer = checkInstanceOf(buffer, VulkanLWJGLBuffer.class);
-    final var cmemory = checkInstanceOf(
-      device_memory,
-      VulkanLWJGLDeviceMemory.class);
+    final var cbuffer =
+      checkInstanceOf(buffer, VulkanLWJGLBuffer.class);
+    final var cmemory =
+      checkInstanceOf(device_memory, VulkanLWJGLDeviceMemory.class);
 
     VulkanChecks.checkReturnCode(
       VK10.vkBindBufferMemory(
