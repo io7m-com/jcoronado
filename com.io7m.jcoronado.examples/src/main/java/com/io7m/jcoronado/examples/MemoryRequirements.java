@@ -18,24 +18,24 @@ package com.io7m.jcoronado.examples;
 
 import com.io7m.jcoronado.allocation_tracker.VulkanHostAllocatorTracker;
 import com.io7m.jcoronado.api.VulkanApplicationInfo;
-import com.io7m.jcoronado.api.VulkanBufferCopy;
 import com.io7m.jcoronado.api.VulkanBufferCreateInfo;
-import com.io7m.jcoronado.api.VulkanBufferMemoryBarrier;
-import com.io7m.jcoronado.api.VulkanCommandPoolCreateInfo;
 import com.io7m.jcoronado.api.VulkanException;
 import com.io7m.jcoronado.api.VulkanExtensionProperties;
 import com.io7m.jcoronado.api.VulkanExtensions;
-import com.io7m.jcoronado.api.VulkanFenceCreateInfo;
+import com.io7m.jcoronado.api.VulkanExtent3D;
+import com.io7m.jcoronado.api.VulkanFormat;
+import com.io7m.jcoronado.api.VulkanImageCreateInfo;
+import com.io7m.jcoronado.api.VulkanImageKind;
+import com.io7m.jcoronado.api.VulkanImageLayout;
+import com.io7m.jcoronado.api.VulkanImageTiling;
 import com.io7m.jcoronado.api.VulkanInstanceCreateInfo;
 import com.io7m.jcoronado.api.VulkanLayerProperties;
 import com.io7m.jcoronado.api.VulkanLayers;
 import com.io7m.jcoronado.api.VulkanLogicalDeviceCreateInfo;
 import com.io7m.jcoronado.api.VulkanLogicalDeviceQueueCreateInfo;
-import com.io7m.jcoronado.api.VulkanMemoryAllocateInfo;
+import com.io7m.jcoronado.api.VulkanLogicalDeviceType;
 import com.io7m.jcoronado.api.VulkanPhysicalDeviceType;
-import com.io7m.jcoronado.api.VulkanQueueType;
 import com.io7m.jcoronado.api.VulkanResourceException;
-import com.io7m.jcoronado.api.VulkanSubmitInfo;
 import com.io7m.jcoronado.api.VulkanUncheckedException;
 import com.io7m.jcoronado.api.VulkanVersions;
 import com.io7m.jcoronado.extensions.ext_debug_utils.api.VulkanDebugUtilsMessageSeverityFlag;
@@ -46,13 +46,16 @@ import com.io7m.jcoronado.extensions.ext_debug_utils.api.VulkanDebugUtilsType;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLHostAllocatorJeMalloc;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLInstanceProvider;
 import com.io7m.jmulticlose.core.CloseableCollection;
+import com.io7m.jmulticlose.core.CloseableCollectionType;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWVulkan;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Arrays;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.List;
@@ -60,23 +63,10 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Supplier;
 
-import static com.io7m.jcoronado.api.VulkanAccessFlag.VK_ACCESS_HOST_READ_BIT;
-import static com.io7m.jcoronado.api.VulkanAccessFlag.VK_ACCESS_TRANSFER_READ_BIT;
-import static com.io7m.jcoronado.api.VulkanAccessFlag.VK_ACCESS_TRANSFER_WRITE_BIT;
-import static com.io7m.jcoronado.api.VulkanBufferUsageFlag.VK_BUFFER_USAGE_CONDITIONAL_RENDERING_BIT_EXT;
-import static com.io7m.jcoronado.api.VulkanBufferUsageFlag.VK_BUFFER_USAGE_INDEX_BUFFER_BIT;
-import static com.io7m.jcoronado.api.VulkanBufferUsageFlag.VK_BUFFER_USAGE_STORAGE_BUFFER_BIT;
 import static com.io7m.jcoronado.api.VulkanBufferUsageFlag.VK_BUFFER_USAGE_TRANSFER_DST_BIT;
-import static com.io7m.jcoronado.api.VulkanBufferUsageFlag.VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
-import static com.io7m.jcoronado.api.VulkanBufferUsageFlag.VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT;
-import static com.io7m.jcoronado.api.VulkanCommandBufferLevel.VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-import static com.io7m.jcoronado.api.VulkanCommandBufferUsageFlag.VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
-import static com.io7m.jcoronado.api.VulkanMemoryPropertyFlag.VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
-import static com.io7m.jcoronado.api.VulkanMemoryPropertyFlag.VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT;
-import static com.io7m.jcoronado.api.VulkanPipelineStageFlag.VK_PIPELINE_STAGE_HOST_BIT;
-import static com.io7m.jcoronado.api.VulkanPipelineStageFlag.VK_PIPELINE_STAGE_TRANSFER_BIT;
+import static com.io7m.jcoronado.api.VulkanImageUsageFlag.VK_IMAGE_USAGE_SAMPLED_BIT;
 import static com.io7m.jcoronado.api.VulkanQueueFamilyPropertyFlag.VK_QUEUE_GRAPHICS_BIT;
-import static com.io7m.jcoronado.api.VulkanQueueFamilyPropertyFlag.VK_QUEUE_TRANSFER_BIT;
+import static com.io7m.jcoronado.api.VulkanSampleCountFlag.VK_SAMPLE_COUNT_1_BIT;
 import static com.io7m.jcoronado.api.VulkanSharingMode.VK_SHARING_MODE_EXCLUSIVE;
 
 public final class MemoryRequirements implements ExampleType
@@ -389,25 +379,8 @@ public final class MemoryRequirements implements ExampleType
 
       showMemoryStatistics(hostAllocator);
 
-      final var bufferCreateInfo =
-        VulkanBufferCreateInfo.builder()
-          .setSharingMode(VK_SHARING_MODE_EXCLUSIVE)
-          .setSize(31L)
-          .setUsageFlags(Set.of(VK_BUFFER_USAGE_TRANSFER_DST_BIT))
-          .build();
-
-      final var buffer =
-        resources.add(device.createBuffer(bufferCreateInfo));
-
-      final var bufferRequirements =
-        device.getBufferMemoryRequirements(buffer);
-
-      LOG.info(
-        "size {} requires size {}, alignment {}",
-        Long.valueOf(bufferCreateInfo.size()),
-        Long.valueOf(bufferRequirements.size()),
-        Long.valueOf(bufferRequirements.alignment())
-      );
+      tryBuffers(resources, device);
+      tryImages(resources, device);
 
       /*
        * Wait until the device is idle before exiting.
@@ -422,5 +395,78 @@ public final class MemoryRequirements implements ExampleType
     } finally {
       GLFW_ERROR_CALLBACK.close();
     }
+  }
+
+  private static void tryImages(
+    final CloseableCollectionType<VulkanException> resources,
+    final VulkanLogicalDeviceType device)
+    throws VulkanException, IOException
+  {
+    try (var out = Files.newBufferedWriter(Paths.get("/tmp/sizes.txt"))) {
+      for (int y = 1; y <= 12; ++y) {
+        for (int x = 1; x <= 12; ++x) {
+          final var w = 1 << x;
+          final var h = 1 << y;
+
+          final var imageCreateInfo =
+            VulkanImageCreateInfo.builder()
+              .addSamples(VK_SAMPLE_COUNT_1_BIT)
+              .addUsage(VK_IMAGE_USAGE_SAMPLED_BIT)
+              .setArrayLayers(1)
+              .setExtent(VulkanExtent3D.of(w, h, 1))
+              .setFormat(VulkanFormat.VK_FORMAT_R8G8B8A8_UNORM)
+              .setImageType(VulkanImageKind.VK_IMAGE_TYPE_2D)
+              .setInitialLayout(VulkanImageLayout.VK_IMAGE_LAYOUT_UNDEFINED)
+              .setMipLevels(1)
+              .setSharingMode(VK_SHARING_MODE_EXCLUSIVE)
+              .setTiling(VulkanImageTiling.VK_IMAGE_TILING_OPTIMAL)
+              .build();
+
+          final var image =
+            resources.add(device.createImage(imageCreateInfo));
+
+          final var imageRequirements =
+            device.getImageMemoryRequirements(image);
+
+          out.append(
+            String.format(
+            "%d %d %d %d%n",
+            Integer.valueOf(w),
+            Integer.valueOf(h),
+            Long.valueOf(imageRequirements.size()),
+            Long.valueOf(imageRequirements.alignment())
+            )
+          );
+        }
+      }
+    }
+
+
+  }
+
+  private static void tryBuffers(
+    final CloseableCollectionType<VulkanException> resources,
+    final VulkanLogicalDeviceType device)
+    throws VulkanException
+  {
+    final var bufferCreateInfo =
+      VulkanBufferCreateInfo.builder()
+        .setSharingMode(VK_SHARING_MODE_EXCLUSIVE)
+        .setSize(31L)
+        .setUsageFlags(Set.of(VK_BUFFER_USAGE_TRANSFER_DST_BIT))
+        .build();
+
+    final var buffer =
+      resources.add(device.createBuffer(bufferCreateInfo));
+
+    final var bufferRequirements =
+      device.getBufferMemoryRequirements(buffer);
+
+    LOG.info(
+      "size {} requires size {}, alignment {}",
+      Long.valueOf(bufferCreateInfo.size()),
+      Long.valueOf(bufferRequirements.size()),
+      Long.valueOf(bufferRequirements.alignment())
+    );
   }
 }
