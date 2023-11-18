@@ -291,7 +291,7 @@ public final class MemoryRequirements implements ExampleType
               VulkanVersions.encode(0, 0, 1),
               "com.io7m.jcoronado.tests",
               VulkanVersions.encode(0, 0, 1),
-              VulkanVersions.encode(1, 0, 0)))
+              VulkanVersions.encode(1, 3, 0)))
           .setEnabledExtensions(enableExtensions)
           .setEnabledLayers(enableLayers)
           .build();
@@ -402,7 +402,40 @@ public final class MemoryRequirements implements ExampleType
     final VulkanLogicalDeviceType device)
     throws VulkanException, IOException
   {
-    try (var out = Files.newBufferedWriter(Paths.get("/tmp/sizes.txt"))) {
+    try (var out = Files.newBufferedWriter(Paths.get("image-sizes.txt"))) {
+      out.append("# OS: ");
+      out.append(System.getProperty("os.name"));
+      out.append("; ");
+      out.append(System.getProperty("os.arch"));
+      out.append("; ");
+      out.append(System.getProperty("os.version"));
+      out.newLine();
+
+      final var devProps =
+        device.physicalDevice().properties();
+      out.append("# Device: ");
+      out.append(devProps.name());
+      out.append("; ");
+      out.append(devProps.driverVersion().toHumanString());
+      out.append("; 0x");
+      out.append(Integer.toUnsignedString(devProps.id(), 16));
+      out.newLine();
+
+      device.physicalDevice().driverProperties().ifPresent(p -> {
+        try {
+          out.append("# Driver: ");
+          out.append(p.driverInfo());
+          out.append("; ");
+          out.append(p.driverName());
+          out.newLine();
+        } catch (IOException e) {
+          // Don't care.
+        }
+      });
+
+      out.append("# Width Height Size Alignment");
+      out.newLine();
+
       for (int y = 1; y <= 12; ++y) {
         for (int x = 1; x <= 12; ++x) {
           final var w = 1 << x;
