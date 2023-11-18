@@ -63,6 +63,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Supplier;
 
+import static com.io7m.jcoronado.api.VulkanBufferUsageFlag.VK_BUFFER_USAGE_STORAGE_BUFFER_BIT;
 import static com.io7m.jcoronado.api.VulkanBufferUsageFlag.VK_BUFFER_USAGE_TRANSFER_DST_BIT;
 import static com.io7m.jcoronado.api.VulkanImageUsageFlag.VK_IMAGE_USAGE_SAMPLED_BIT;
 import static com.io7m.jcoronado.api.VulkanQueueFamilyPropertyFlag.VK_QUEUE_GRAPHICS_BIT;
@@ -428,7 +429,7 @@ public final class MemoryRequirements implements ExampleType
           out.append("; ");
           out.append(p.driverName());
           out.newLine();
-        } catch (IOException e) {
+        } catch (final IOException e) {
           // Don't care.
         }
       });
@@ -473,33 +474,86 @@ public final class MemoryRequirements implements ExampleType
         }
       }
     }
-
-
   }
 
   private static void tryBuffers(
     final CloseableCollectionType<VulkanException> resources,
     final VulkanLogicalDeviceType device)
-    throws VulkanException
+    throws VulkanException, IOException
   {
-    final var bufferCreateInfo =
-      VulkanBufferCreateInfo.builder()
-        .setSharingMode(VK_SHARING_MODE_EXCLUSIVE)
-        .setSize(31L)
-        .setUsageFlags(Set.of(VK_BUFFER_USAGE_TRANSFER_DST_BIT))
-        .build();
+    try (var out = Files.newBufferedWriter(Paths.get("buffer-sizes.txt"))) {
+      out.append("# OS: ");
+      out.append(System.getProperty("os.name"));
+      out.append("; ");
+      out.append(System.getProperty("os.arch"));
+      out.append("; ");
+      out.append(System.getProperty("os.version"));
+      out.newLine();
 
-    final var buffer =
-      resources.add(device.createBuffer(bufferCreateInfo));
+      final var devProps =
+        device.physicalDevice().properties();
+      out.append("# Device: ");
+      out.append(devProps.name());
+      out.append("; ");
+      out.append(devProps.driverVersion().toHumanString());
+      out.append("; 0x");
+      out.append(Integer.toUnsignedString(devProps.id(), 16));
+      out.newLine();
 
-    final var bufferRequirements =
-      device.getBufferMemoryRequirements(buffer);
+      device.physicalDevice().driverProperties().ifPresent(p -> {
+        try {
+          out.append("# Driver: ");
+          out.append(p.driverInfo());
+          out.append("; ");
+          out.append(p.driverName());
+          out.newLine();
+        } catch (final IOException e) {
+          // Don't care.
+        }
+      });
 
-    LOG.info(
-      "size {} requires size {}, alignment {}",
-      Long.valueOf(bufferCreateInfo.size()),
-      Long.valueOf(bufferRequirements.size()),
-      Long.valueOf(bufferRequirements.alignment())
-    );
+      out.append("# Length Size Alignment");
+      out.newLine();
+
+      final var baseSizes =
+        new int[]{1, 2, 4, 8};
+      final var baseMult =
+        new int[]{1,10,100,1_000,10_000,100_000,1_000_000,10_000_000,100_000_000};
+
+      for (final var s : baseSizes) {
+        for (final var m : baseMult) {
+          final var t = s * m;
+
+          final var bufferCreateInfo =
+            VulkanBufferCreateInfo.builder()
+              .setSharingMode(VK_SHARING_MODE_EXCLUSIVE)
+              .setSize(t)
+              .setUsageFlags(Set.of(VK_BUFFER_USAGE_STORAGE_BUFFER_BIT))
+              .build();
+
+          final var buffer =
+            resources.add(device.createBuffer(bufferCreateInfo));
+
+          final var bufferRequirements =
+            device.getBufferMemoryRequirements(buffer);
+
+          LOG.info(
+            "size {} requires size {}, alignment {}",
+            Long.valueOf(bufferCreateInfo.size()),
+            Long.valueOf(bufferRequirements.size()),
+            Long.valueOf(bufferRequirements.alignment())
+          );
+
+          out.append(
+            String.format(
+              "%d %d %d%n",
+              Integer.valueOf(t),
+              Long.valueOf(bufferRequirements.size()),
+              Long.valueOf(bufferRequirements.alignment())
+            )
+          );
+        }
+      }
+    }
   }
 }
