@@ -1,8 +1,8 @@
 
-name: main.linux.temurin.current
+name: pr.linux.temurin.lts
 
 on:
-  push:
+  pull_request:
     branches: [ develop, feature/*, release/* ]
 
 jobs:
@@ -16,7 +16,7 @@ jobs:
       - name: JDK
         uses: actions/setup-java@v4
         with:
-          java-version: 22
+          java-version: 21
           distribution: 'temurin'
 
       - name: Collect project version

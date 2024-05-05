@@ -1,13 +1,13 @@
 
-name: main.linux.temurin.current
+name: pr.windows.temurin.current
 
 on:
-  push:
+  pull_request:
     branches: [ develop, feature/*, release/* ]
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
         with:
