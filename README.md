@@ -4,6 +4,7 @@ jcoronado
 [![Maven Central](https://img.shields.io/maven-central/v/com.io7m.jcoronado/com.io7m.jcoronado.svg?style=flat-square)](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22com.io7m.jcoronado%22)
 [![Maven Central (snapshot)](https://img.shields.io/nexus/s/com.io7m.jcoronado/com.io7m.jcoronado?server=https%3A%2F%2Fs01.oss.sonatype.org&style=flat-square)](https://s01.oss.sonatype.org/content/repositories/snapshots/com/io7m/jcoronado/)
 [![Codecov](https://img.shields.io/codecov/c/github/io7m-com/jcoronado.svg?style=flat-square)](https://codecov.io/gh/io7m-com/jcoronado)
+![Java Version](https://img.shields.io/badge/21-java?label=java&color=007fff)
 
 ![com.io7m.jcoronado](./src/site/resources/jcoronado.jpg?raw=true)
 
