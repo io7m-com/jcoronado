@@ -14,3 +14,5 @@ pom.xml.versionsBackup
 .project
 .settings
 target
+.jqwik-database
+dependency-reduced-pom.xml
