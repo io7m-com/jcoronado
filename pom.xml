@@ -38,7 +38,8 @@
     <io7m.java.targetJavaVersion>21</io7m.java.targetJavaVersion>
 
     <io7m.org.immutables.value.version>2.10.1</io7m.org.immutables.value.version>
-    <io7m.org.lwjgl.version>3.3.0</io7m.org.lwjgl.version>
+
+    <org.lwjgl.version>3.3.3</org.lwjgl.version>
     <junit.version>5.10.3</junit.version>
     <mockito.version>5.12.0</mockito.version>
   </properties>
@@ -132,31 +133,82 @@
         <artifactId>org.osgi.annotation.versioning</artifactId>
         <version>1.1.2</version>
       </dependency>
+
+      <!-- LWJGL -->
       <dependency>
-        <groupId>org.lwjgl.osgi</groupId>
-        <artifactId>org.lwjgl.vulkan</artifactId>
-        <version>${io7m.org.lwjgl.version}</version>
+        <groupId>org.lwjgl</groupId>
+        <artifactId>lwjgl</artifactId>
+        <version>${org.lwjgl.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.lwjgl.osgi</groupId>
-        <artifactId>org.lwjgl.jemalloc</artifactId>
-        <version>${io7m.org.lwjgl.version}</version>
+        <groupId>org.lwjgl</groupId>
+        <artifactId>lwjgl</artifactId>
+        <version>${org.lwjgl.version}</version>
+        <classifier>natives-linux</classifier>
       </dependency>
       <dependency>
-        <groupId>org.lwjgl.osgi</groupId>
-        <artifactId>org.lwjgl.vma</artifactId>
-        <version>${io7m.org.lwjgl.version}</version>
+        <groupId>org.lwjgl</groupId>
+        <artifactId>lwjgl</artifactId>
+        <version>${org.lwjgl.version}</version>
+        <classifier>natives-windows</classifier>
       </dependency>
       <dependency>
-        <groupId>org.lwjgl.osgi</groupId>
-        <artifactId>org.lwjgl.glfw</artifactId>
-        <version>${io7m.org.lwjgl.version}</version>
+        <groupId>org.lwjgl</groupId>
+        <artifactId>lwjgl-jemalloc</artifactId>
+        <version>${org.lwjgl.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.lwjgl.osgi</groupId>
-        <artifactId>org.lwjgl.lwjgl</artifactId>
-        <version>${io7m.org.lwjgl.version}</version>
+        <groupId>org.lwjgl</groupId>
+        <artifactId>lwjgl-jemalloc</artifactId>
+        <version>${org.lwjgl.version}</version>
+        <classifier>natives-linux</classifier>
       </dependency>
+      <dependency>
+        <groupId>org.lwjgl</groupId>
+        <artifactId>lwjgl-jemalloc</artifactId>
+        <version>${org.lwjgl.version}</version>
+        <classifier>natives-windows</classifier>
+      </dependency>
+      <dependency>
+        <groupId>org.lwjgl</groupId>
+        <artifactId>lwjgl-vulkan</artifactId>
+        <version>${org.lwjgl.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.lwjgl</groupId>
+        <artifactId>lwjgl-glfw</artifactId>
+        <version>${org.lwjgl.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.lwjgl</groupId>
+        <artifactId>lwjgl-glfw</artifactId>
+        <version>${org.lwjgl.version}</version>
+        <classifier>natives-linux</classifier>
+      </dependency>
+      <dependency>
+        <groupId>org.lwjgl</groupId>
+        <artifactId>lwjgl-glfw</artifactId>
+        <version>${org.lwjgl.version}</version>
+        <classifier>natives-windows</classifier>
+      </dependency>
+      <dependency>
+        <groupId>org.lwjgl</groupId>
+        <artifactId>lwjgl-vma</artifactId>
+        <version>${org.lwjgl.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.lwjgl</groupId>
+        <artifactId>lwjgl-vma</artifactId>
+        <version>${org.lwjgl.version}</version>
+        <classifier>natives-linux</classifier>
+      </dependency>
+      <dependency>
+        <groupId>org.lwjgl</groupId>
+        <artifactId>lwjgl-vma</artifactId>
+        <version>${org.lwjgl.version}</version>
+        <classifier>natives-windows</classifier>
+      </dependency>
+
       <dependency>
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-api</artifactId>
@@ -206,62 +258,6 @@
         <groupId>org.mockito</groupId>
         <artifactId>mockito-junit-jupiter</artifactId>
         <version>${mockito.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.lwjgl</groupId>
-        <artifactId>lwjgl</artifactId>
-        <version>${io7m.org.lwjgl.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.lwjgl</groupId>
-        <artifactId>lwjgl</artifactId>
-        <version>${io7m.org.lwjgl.version}</version>
-        <classifier>natives-linux</classifier>
-      </dependency>
-      <dependency>
-        <groupId>org.lwjgl</groupId>
-        <artifactId>lwjgl-jemalloc</artifactId>
-        <version>${io7m.org.lwjgl.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.lwjgl</groupId>
-        <artifactId>lwjgl-jemalloc</artifactId>
-        <version>${io7m.org.lwjgl.version}</version>
-        <classifier>natives-linux</classifier>
-      </dependency>
-      <dependency>
-        <groupId>org.lwjgl</groupId>
-        <artifactId>lwjgl-vulkan</artifactId>
-        <version>${io7m.org.lwjgl.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.lwjgl</groupId>
-        <artifactId>lwjgl-vulkan</artifactId>
-        <version>${io7m.org.lwjgl.version}</version>
-        <classifier>natives-linux</classifier>
-      </dependency>
-      <dependency>
-        <groupId>org.lwjgl</groupId>
-        <artifactId>lwjgl-glfw</artifactId>
-        <version>${io7m.org.lwjgl.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.lwjgl</groupId>
-        <artifactId>lwjgl-glfw</artifactId>
-        <version>${io7m.org.lwjgl.version}</version>
-        <classifier>natives-linux</classifier>
-      </dependency>
-      <dependency>
-        <groupId>org.lwjgl</groupId>
-        <artifactId>lwjgl-vma</artifactId>
-        <version>${io7m.org.lwjgl.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.lwjgl</groupId>
-        <artifactId>lwjgl-vma</artifactId>
-        <version>${io7m.org.lwjgl.version}</version>
-        <classifier>natives-linux</classifier>
       </dependency>
     </dependencies>
   </dependencyManagement>

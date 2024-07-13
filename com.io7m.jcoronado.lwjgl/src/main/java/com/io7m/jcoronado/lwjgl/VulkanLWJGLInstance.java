@@ -39,6 +39,7 @@ import com.io7m.jcoronado.api.VulkanPhysicalDeviceFeatures;
 import com.io7m.jcoronado.api.VulkanPhysicalDeviceFeatures10;
 import com.io7m.jcoronado.api.VulkanPhysicalDeviceFeatures11;
 import com.io7m.jcoronado.api.VulkanPhysicalDeviceFeatures12;
+import com.io7m.jcoronado.api.VulkanPhysicalDeviceFeatures13;
 import com.io7m.jcoronado.api.VulkanPhysicalDeviceIDProperties;
 import com.io7m.jcoronado.api.VulkanPhysicalDeviceLimits;
 import com.io7m.jcoronado.api.VulkanPhysicalDeviceMemoryProperties;
@@ -71,6 +72,7 @@ import org.lwjgl.vulkan.VkPhysicalDeviceProperties;
 import org.lwjgl.vulkan.VkPhysicalDeviceProperties2;
 import org.lwjgl.vulkan.VkPhysicalDeviceVulkan11Features;
 import org.lwjgl.vulkan.VkPhysicalDeviceVulkan12Features;
+import org.lwjgl.vulkan.VkPhysicalDeviceVulkan13Features;
 import org.lwjgl.vulkan.VkQueueFamilyProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -97,6 +99,7 @@ import static org.lwjgl.vulkan.VK11.VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PROPERTIES
 import static org.lwjgl.vulkan.VK12.VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DRIVER_PROPERTIES;
 import static org.lwjgl.vulkan.VK12.VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_1_FEATURES;
 import static org.lwjgl.vulkan.VK12.VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_2_FEATURES;
+import static org.lwjgl.vulkan.VK13.VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_3_FEATURES;
 
 /**
  * LWJGL {@link VkInstance}
@@ -774,11 +777,15 @@ public final class VulkanLWJGLInstance
       final var features12 =
         VulkanPhysicalDeviceFeatures12.builder()
           .build();
+      final var features13 =
+        VulkanPhysicalDeviceFeatures13.builder()
+          .build();
 
       return VulkanPhysicalDeviceFeatures.builder()
         .setFeatures10(features10)
         .setFeatures11(features11)
         .setFeatures12(features12)
+        .setFeatures13(features13)
         .build();
     }
 
@@ -786,6 +793,10 @@ public final class VulkanLWJGLInstance
      * For newer versions of Vulkan, we call vkGetPhysicalDeviceFeatures2
      * and fetch all the new embedded structures.
      */
+
+    final var vkFeatures13 =
+      VkPhysicalDeviceVulkan13Features.calloc(stack);
+    vkFeatures13.sType(VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_3_FEATURES);
 
     final var vkFeatures12 =
       VkPhysicalDeviceVulkan12Features.calloc(stack);
@@ -799,6 +810,7 @@ public final class VulkanLWJGLInstance
       VkPhysicalDeviceFeatures2.calloc(stack);
     vkFeatures.sType(VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FEATURES_2);
 
+    vkFeatures12.pNext(vkFeatures13.address());
     vkFeatures11.pNext(vkFeatures12.address());
     vkFeatures.pNext(vkFeatures11.address());
 
@@ -815,11 +827,14 @@ public final class VulkanLWJGLInstance
       parsePhysicalDeviceFeatures11(vkFeatures11);
     final var features12 =
       parsePhysicalDeviceFeatures12(vkFeatures12);
+    final var features13 =
+      parsePhysicalDeviceFeatures13(vkFeatures13);
 
     return VulkanPhysicalDeviceFeatures.builder()
       .setFeatures10(features10)
       .setFeatures11(features11)
       .setFeatures12(features12)
+      .setFeatures13(features13)
       .build();
   }
 
@@ -952,6 +967,41 @@ public final class VulkanLWJGLInstance
         features11.variablePointers())
       .setVariablePointersStorageBuffer(
         features11.variablePointersStorageBuffer())
+      .build();
+  }
+
+  private static VulkanPhysicalDeviceFeatures13 parsePhysicalDeviceFeatures13(
+    final VkPhysicalDeviceVulkan13Features features13)
+  {
+    return VulkanPhysicalDeviceFeatures13.builder()
+      .setComputeFullSubgroups(
+        features13.computeFullSubgroups())
+      .setDescriptorBindingInlineUniformBlockUpdateAfterBind(
+        features13.descriptorBindingInlineUniformBlockUpdateAfterBind())
+      .setDynamicRendering(
+        features13.dynamicRendering())
+      .setInlineUniformBlock(
+        features13.inlineUniformBlock())
+      .setMaintenance4(
+        features13.maintenance4())
+      .setPipelineCreationCacheControl(
+        features13.pipelineCreationCacheControl())
+      .setPrivateData(
+        features13.privateData())
+      .setRobustImageAccess(
+        features13.robustImageAccess())
+      .setShaderDemoteToHelperInvocation(
+        features13.shaderDemoteToHelperInvocation())
+      .setShaderIntegerDotProduct(
+        features13.shaderIntegerDotProduct())
+      .setShaderZeroInitializeWorkgroupMemory(
+        features13.shaderZeroInitializeWorkgroupMemory())
+      .setSubgroupSizeControl(
+        features13.subgroupSizeControl())
+      .setSynchronization2(
+        features13.synchronization2())
+      .setTextureCompressionASTC_HDR(
+        features13.textureCompressionASTC_HDR())
       .build();
   }
 

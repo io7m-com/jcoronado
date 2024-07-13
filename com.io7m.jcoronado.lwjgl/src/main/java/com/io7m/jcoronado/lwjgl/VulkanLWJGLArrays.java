@@ -51,7 +51,7 @@ public final class VulkanLWJGLArrays
    * @throws VulkanException On errors
    */
 
-  public static <A, T extends Struct, B extends StructBuffer<T, B>> B pack(
+  public static <A, T extends Struct<T>, B extends StructBuffer<T, B>> B pack(
     final List<A> values,
     final PackingFunctionType<A, T> packer,
     final BufferAllocatorType<T, B> allocator,
@@ -88,7 +88,7 @@ public final class VulkanLWJGLArrays
    * @throws VulkanException On errors
    */
 
-  public static <A, T extends Struct, B extends StructBuffer<T, B>> B packOrNull(
+  public static <A, T extends Struct<T>, B extends StructBuffer<T, B>> B packOrNull(
     final List<A> values,
     final PackingFunctionType<A, T> packer,
     final BufferAllocatorType<T, B> allocator,
@@ -115,7 +115,7 @@ public final class VulkanLWJGLArrays
    * @param <T> The type of output structures
    */
 
-  public interface PackingFunctionType<A, T extends Struct>
+  public interface PackingFunctionType<A, T extends Struct<T>>
   {
     /**
      * Pack a value.
@@ -142,7 +142,7 @@ public final class VulkanLWJGLArrays
    * @param <B> The type of output buffers
    */
 
-  public interface BufferAllocatorType<T extends Struct, B extends StructBuffer<T, B>>
+  public interface BufferAllocatorType<T extends Struct<T>, B extends StructBuffer<T, B>>
   {
     /**
      * Allocate a buffer.

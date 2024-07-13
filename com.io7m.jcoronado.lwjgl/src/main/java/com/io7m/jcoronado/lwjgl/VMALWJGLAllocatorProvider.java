@@ -24,10 +24,14 @@ import com.io7m.jcoronado.vma.VMAAllocatorType;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.util.vma.Vma;
 import org.lwjgl.util.vma.VmaAllocatorCreateInfo;
+import org.lwjgl.util.vma.VmaDeviceMemoryCallbacks;
 import org.lwjgl.util.vma.VmaVulkanFunctions;
+import org.lwjgl.vulkan.VkAllocationCallbacks;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.nio.IntBuffer;
+import java.nio.LongBuffer;
 import java.util.Objects;
 
 /**
@@ -113,22 +117,30 @@ public final class VMALWJGLAllocatorProvider implements VMAAllocatorProviderType
 
       vkVulkanFunctions.set(vkInstance, vkDevice);
 
+      final VkAllocationCallbacks allocationCallbacks =
+        null;
+      final VmaDeviceMemoryCallbacks deviceMemoryCallbacks =
+        null;
+      final LongBuffer heapSizeLimit =
+        null;
+      final int vulkanApiVersion =
+        0;
+      final IntBuffer typeExternalMemoryHandleTypes =
+        null;
+
       cinfo.set(
         0,
         physicalDevice.device(),
         vkDevice,
         info.preferredLargeHeapBlockSize()
           .orElse(0L),
-        null,
-        null,
-        info.frameInUseCount()
-          .orElse(0),
-        null,
+        allocationCallbacks,
+        deviceMemoryCallbacks,
+        heapSizeLimit,
         vkVulkanFunctions,
-        null,
         vkInstance,
-        0,
-        null
+        vulkanApiVersion,
+        typeExternalMemoryHandleTypes
       );
 
       VulkanChecks.checkReturnCode(

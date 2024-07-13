@@ -46,25 +46,26 @@
       <artifactId>com.io7m.junreachable.core</artifactId>
     </dependency>
 
+    <!-- LWJGL -->
     <dependency>
-      <groupId>org.lwjgl.osgi</groupId>
-      <artifactId>org.lwjgl.lwjgl</artifactId>
+      <groupId>org.lwjgl</groupId>
+      <artifactId>lwjgl</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.lwjgl.osgi</groupId>
-      <artifactId>org.lwjgl.jemalloc</artifactId>
+      <groupId>org.lwjgl</groupId>
+      <artifactId>lwjgl-jemalloc</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.lwjgl.osgi</groupId>
-      <artifactId>org.lwjgl.vulkan</artifactId>
+      <groupId>org.lwjgl</groupId>
+      <artifactId>lwjgl-vulkan</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.lwjgl.osgi</groupId>
-      <artifactId>org.lwjgl.vma</artifactId>
+      <groupId>org.lwjgl</groupId>
+      <artifactId>lwjgl-glfw</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.lwjgl.osgi</groupId>
-      <artifactId>org.lwjgl.glfw</artifactId>
+      <groupId>org.lwjgl</groupId>
+      <artifactId>lwjgl-vma</artifactId>
     </dependency>
 
     <dependency>
