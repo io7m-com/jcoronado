@@ -874,8 +874,10 @@ public final class VulkanPhysicalDeviceFeaturesFunctions
     for (final var entry : requiredMap.entrySet()) {
       final var requestedValue = entry.getValue();
       final var supportedValue = supportedMap.get(entry.getKey());
-      if (!Objects.equals(requestedValue, supportedValue)) {
-        failedSet.add(entry.getKey());
+      if (requestedValue.booleanValue()) {
+        if (!supportedValue.booleanValue()) {
+          failedSet.add(entry.getKey());
+        }
       }
     }
     return failedSet;
@@ -906,8 +908,10 @@ public final class VulkanPhysicalDeviceFeaturesFunctions
     for (final var entry : requiredMap.entrySet()) {
       final var requestedValue = entry.getValue();
       final var supportedValue = supportedMap.get(entry.getKey());
-      if (!Objects.equals(requestedValue, supportedValue)) {
-        failedSet.add(entry.getKey());
+      if (requestedValue.booleanValue()) {
+        if (!supportedValue.booleanValue()) {
+          failedSet.add(entry.getKey());
+        }
       }
     }
     return failedSet;
@@ -938,8 +942,10 @@ public final class VulkanPhysicalDeviceFeaturesFunctions
     for (final var entry : requiredMap.entrySet()) {
       final var requestedValue = entry.getValue();
       final var supportedValue = supportedMap.get(entry.getKey());
-      if (!Objects.equals(requestedValue, supportedValue)) {
-        failedSet.add(entry.getKey());
+      if (requestedValue.booleanValue()) {
+        if (!supportedValue.booleanValue()) {
+          failedSet.add(entry.getKey());
+        }
       }
     }
     return failedSet;
@@ -970,8 +976,10 @@ public final class VulkanPhysicalDeviceFeaturesFunctions
     for (final var entry : requiredMap.entrySet()) {
       final var requestedValue = entry.getValue();
       final var supportedValue = supportedMap.get(entry.getKey());
-      if (!Objects.equals(requestedValue, supportedValue)) {
-        failedSet.add(entry.getKey());
+      if (requestedValue.booleanValue()) {
+        if (!supportedValue.booleanValue()) {
+          failedSet.add(entry.getKey());
+        }
       }
     }
     return failedSet;
