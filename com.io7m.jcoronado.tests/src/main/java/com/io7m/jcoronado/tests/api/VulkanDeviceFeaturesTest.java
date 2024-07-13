@@ -19,6 +19,8 @@ package com.io7m.jcoronado.tests.api;
 
 import com.io7m.jcoronado.api.VulkanPhysicalDeviceFeaturesFunctions;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.stream.Stream;
@@ -27,6 +29,37 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public final class VulkanDeviceFeaturesTest
 {
+  private static final Logger LOG =
+    LoggerFactory.getLogger(VulkanDeviceFeaturesTest.class);
+
+  @Test
+  public void testMapOf()
+    throws Exception
+  {
+    final var f =
+      VulkanPhysicalDeviceFeaturesFunctions.random();
+    final var m =
+      VulkanPhysicalDeviceFeaturesFunctions.mapOf(f);
+
+    final var f10 =
+      VulkanPhysicalDeviceFeaturesFunctions.mapOf10(f.features10());
+    final var f11 =
+      VulkanPhysicalDeviceFeaturesFunctions.mapOf11(f.features11());
+    final var f12 =
+      VulkanPhysicalDeviceFeaturesFunctions.mapOf12(f.features12());
+    final var f13 =
+      VulkanPhysicalDeviceFeaturesFunctions.mapOf13(f.features13());
+
+    assertEquals(
+      f10.size() + f11.size() + f12.size() + f13.size(),
+      m.size()
+    );
+
+    for (final var e : m.entrySet()) {
+      LOG.debug("{} : {}", e.getKey(), e.getValue());
+    }
+  }
+
   @Test
   public void testOr10()
     throws Exception

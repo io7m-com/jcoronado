@@ -17,7 +17,9 @@
 
 package com.io7m.jcoronado.api;
 
+import java.util.Map;
 import java.util.Objects;
+import java.util.TreeMap;
 
 /**
  * Functions over device feature structures.
@@ -71,6 +73,73 @@ public final class VulkanPhysicalDeviceFeaturesFunctions
       .setFeatures12(or(a.features12(), b.features12()))
       .setFeatures13(or(a.features13(), b.features13()))
       .build();
+  }
+
+  /**
+   * @param f The features
+   * @return The features as a boolean map
+   */
+
+  public static Map<String, Boolean> mapOf10(
+    final VulkanPhysicalDeviceFeatures10 f)
+  {
+    final var m = new TreeMap<String, Boolean>();
+    m.put("AlphaToOne", f.alphaToOne());
+    m.put("DepthBiasClamp", f.depthBiasClamp());
+    m.put("DepthBounds", f.depthBounds());
+    m.put("DepthClamp", f.depthClamp());
+    m.put("DrawIndirectFirstInstance", f.drawIndirectFirstInstance());
+    m.put("DualSrcBlend", f.dualSrcBlend());
+    m.put("FillModeNonSolid", f.fillModeNonSolid());
+    m.put("FragmentStoresAndAtomics", f.fragmentStoresAndAtomics());
+    m.put("FullDrawIndexUint32", f.fullDrawIndexUint32());
+    m.put("GeometryShader", f.geometryShader());
+    m.put("ImageCubeArray", f.imageCubeArray());
+    m.put("IndependentBlend", f.independentBlend());
+    m.put("InheritedQueries", f.inheritedQueries());
+    m.put("LargePoints", f.largePoints());
+    m.put("LogicOp", f.logicOp());
+    m.put("MultiDrawIndirect", f.multiDrawIndirect());
+    m.put("MultiViewport", f.multiViewport());
+    m.put("OcclusionQueryPrecise", f.occlusionQueryPrecise());
+    m.put("PipelineStatisticsQuery", f.pipelineStatisticsQuery());
+    m.put("RobustBufferAccess", f.robustBufferAccess());
+    m.put("SampleRateShading", f.sampleRateShading());
+    m.put("SamplerAnisotropy", f.samplerAnisotropy());
+    m.put("ShaderClipDistance", f.shaderClipDistance());
+    m.put("ShaderCullDistance", f.shaderCullDistance());
+    m.put("ShaderFloat64", f.shaderFloat64());
+    m.put("ShaderImageGatherExtended", f.shaderImageGatherExtended());
+    m.put("ShaderInt16", f.shaderInt16());
+    m.put("ShaderInt64", f.shaderInt64());
+    m.put("ShaderResourceMinLod", f.shaderResourceMinLod());
+    m.put("ShaderResourceResidency", f.shaderResourceResidency());
+    m.put("ShaderSampledImageArrayDynamicIndexing", f.shaderSampledImageArrayDynamicIndexing());
+    m.put("ShaderStorageBufferArrayDynamicIndexing", f.shaderStorageBufferArrayDynamicIndexing());
+    m.put("ShaderStorageImageArrayDynamicIndexing", f.shaderStorageImageArrayDynamicIndexing());
+    m.put("ShaderStorageImageExtendedFormats", f.shaderStorageImageExtendedFormats());
+    m.put("ShaderStorageImageMultisample", f.shaderStorageImageMultisample());
+    m.put("ShaderStorageImageReadWithoutFormat", f.shaderStorageImageReadWithoutFormat());
+    m.put("ShaderStorageImageWriteWithoutFormat", f.shaderStorageImageWriteWithoutFormat());
+    m.put("ShaderTessellationAndGeometryPointSize", f.shaderTessellationAndGeometryPointSize());
+    m.put("ShaderUniformBufferArrayDynamicIndexing", f.shaderUniformBufferArrayDynamicIndexing());
+    m.put("SparseBinding", f.sparseBinding());
+    m.put("SparseResidency16Samples", f.sparseResidency16Samples());
+    m.put("SparseResidency2Samples", f.sparseResidency2Samples());
+    m.put("SparseResidency4Samples", f.sparseResidency4Samples());
+    m.put("SparseResidency8Samples", f.sparseResidency8Samples());
+    m.put("SparseResidencyAliased", f.sparseResidencyAliased());
+    m.put("SparseResidencyBuffer", f.sparseResidencyBuffer());
+    m.put("SparseResidencyImage2D", f.sparseResidencyImage2D());
+    m.put("SparseResidencyImage3D", f.sparseResidencyImage3D());
+    m.put("TessellationShader", f.tessellationShader());
+    m.put("TextureCompressionASTC_LDR", f.textureCompressionASTC_LDR());
+    m.put("TextureCompressionBC", f.textureCompressionBC());
+    m.put("TextureCompressionETC2", f.textureCompressionETC2());
+    m.put("VariableMultisampleRate", f.variableMultisampleRate());
+    m.put("VertexPipelineStoresAndAtomics", f.vertexPipelineStoresAndAtomics());
+    m.put("WideLines", f.wideLines());
+    return m;
   }
 
   /**
@@ -579,5 +648,131 @@ public final class VulkanPhysicalDeviceFeaturesFunctions
       .setTextureCompressionASTC_HDR(
         a.textureCompressionASTC_HDR() || b.textureCompressionASTC_HDR())
       .build();
+  }
+
+  /**
+   * @param f The features
+   * @return The features as a boolean map
+   */
+
+  public static Map<String, Boolean> mapOf11(
+    final VulkanPhysicalDeviceFeatures11 f)
+  {
+    final var m = new TreeMap<String, Boolean>();
+    m.put("Multiview", f.multiview());
+    m.put("MultiviewGeometryShader", f.multiviewGeometryShader());
+    m.put("MultiviewTessellationShader", f.multiviewTessellationShader());
+    m.put("ProtectedMemory", f.protectedMemory());
+    m.put("SamplerYcbcrConversion", f.samplerYcbcrConversion());
+    m.put("ShaderDrawParameters", f.shaderDrawParameters());
+    m.put("StorageBuffer16BitAccess", f.storageBuffer16BitAccess());
+    m.put("StorageInputOutput16", f.storageInputOutput16());
+    m.put("StoragePushConstant16", f.storagePushConstant16());
+    m.put("UniformAndStorageBuffer16BitAccess", f.uniformAndStorageBuffer16BitAccess());
+    m.put("VariablePointers", f.variablePointers());
+    m.put("VariablePointersStorageBuffer", f.variablePointersStorageBuffer());
+    return m;
+  }
+
+  /**
+   * @param f The features
+   * @return The features as a boolean map
+   */
+
+  public static Map<String, Boolean> mapOf12(
+    final VulkanPhysicalDeviceFeatures12 f)
+  {
+    final var m = new TreeMap<String, Boolean>();
+    m.put("BufferDeviceAddress", f.bufferDeviceAddress());
+    m.put("BufferDeviceAddressCaptureReplay", f.bufferDeviceAddressCaptureReplay());
+    m.put("BufferDeviceAddressMultiDevice", f.bufferDeviceAddressMultiDevice());
+    m.put("DescriptorBindingPartiallyBound", f.descriptorBindingPartiallyBound());
+    m.put("DescriptorBindingSampledImageUpdateAfterBind", f.descriptorBindingSampledImageUpdateAfterBind());
+    m.put("DescriptorBindingStorageBufferUpdateAfterBind", f.descriptorBindingStorageBufferUpdateAfterBind());
+    m.put("DescriptorBindingStorageImageUpdateAfterBind", f.descriptorBindingStorageImageUpdateAfterBind());
+    m.put("DescriptorBindingStorageTexelBufferUpdateAfterBind", f.descriptorBindingStorageTexelBufferUpdateAfterBind());
+    m.put("DescriptorBindingUniformBufferUpdateAfterBind", f.descriptorBindingUniformBufferUpdateAfterBind());
+    m.put("DescriptorBindingUniformTexelBufferUpdateAfterBind", f.descriptorBindingUniformTexelBufferUpdateAfterBind());
+    m.put("DescriptorBindingUpdateUnusedWhilePending", f.descriptorBindingUpdateUnusedWhilePending());
+    m.put("DescriptorBindingVariableDescriptorCount", f.descriptorBindingVariableDescriptorCount());
+    m.put("DescriptorIndexing", f.descriptorIndexing());
+    m.put("DrawIndirectCount", f.drawIndirectCount());
+    m.put("HostQueryReset", f.hostQueryReset());
+    m.put("ImagelessFramebuffer", f.imagelessFramebuffer());
+    m.put("RuntimeDescriptorArray", f.runtimeDescriptorArray());
+    m.put("SamplerFilterMinmax", f.samplerFilterMinmax());
+    m.put("SamplerMirrorClampToEdge", f.samplerMirrorClampToEdge());
+    m.put("ScalarBlockLayout", f.scalarBlockLayout());
+    m.put("SeparateDepthStencilLayouts", f.separateDepthStencilLayouts());
+    m.put("ShaderBufferInt64Atomics", f.shaderBufferInt64Atomics());
+    m.put("ShaderFloat16", f.shaderFloat16());
+    m.put("ShaderInputAttachmentArrayDynamicIndexing", f.shaderInputAttachmentArrayDynamicIndexing());
+    m.put("ShaderInputAttachmentArrayNonUniformIndexing", f.shaderInputAttachmentArrayNonUniformIndexing());
+    m.put("ShaderInt8", f.shaderInt8());
+    m.put("ShaderOutputLayer", f.shaderOutputLayer());
+    m.put("ShaderOutputViewportIndex", f.shaderOutputViewportIndex());
+    m.put("ShaderSampledImageArrayNonUniformIndexing", f.shaderSampledImageArrayNonUniformIndexing());
+    m.put("ShaderSharedInt64Atomics", f.shaderSharedInt64Atomics());
+    m.put("ShaderStorageBufferArrayNonUniformIndexing", f.shaderStorageBufferArrayNonUniformIndexing());
+    m.put("ShaderStorageImageArrayNonUniformIndexing", f.shaderStorageImageArrayNonUniformIndexing());
+    m.put("ShaderStorageTexelBufferArrayDynamicIndexing", f.shaderStorageTexelBufferArrayDynamicIndexing());
+    m.put("ShaderStorageTexelBufferArrayNonUniformIndexing", f.shaderStorageTexelBufferArrayNonUniformIndexing());
+    m.put("ShaderSubgroupExtendedTypes", f.shaderSubgroupExtendedTypes());
+    m.put("ShaderUniformBufferArrayNonUniformIndexing", f.shaderUniformBufferArrayNonUniformIndexing());
+    m.put("ShaderUniformTexelBufferArrayDynamicIndexing", f.shaderUniformTexelBufferArrayDynamicIndexing());
+    m.put("ShaderUniformTexelBufferArrayNonUniformIndexing", f.shaderUniformTexelBufferArrayNonUniformIndexing());
+    m.put("StorageBuffer8BitAccess", f.storageBuffer8BitAccess());
+    m.put("StoragePushConstant8", f.storagePushConstant8());
+    m.put("SubgroupBroadcastDynamicId", f.subgroupBroadcastDynamicId());
+    m.put("TimelineSemaphore", f.timelineSemaphore());
+    m.put("UniformAndStorageBuffer8BitAccess", f.uniformAndStorageBuffer8BitAccess());
+    m.put("UniformBufferStandardLayout", f.uniformBufferStandardLayout());
+    m.put("VulkanMemoryModel", f.vulkanMemoryModel());
+    m.put("VulkanMemoryModelAvailabilityVisibilityChains", f.vulkanMemoryModelAvailabilityVisibilityChains());
+    m.put("VulkanMemoryModelDeviceScope", f.vulkanMemoryModelDeviceScope());
+    return m;
+  }
+
+  /**
+   * @param f The features
+   * @return The features as a boolean map
+   */
+
+  public static Map<String, Boolean> mapOf13(
+    final VulkanPhysicalDeviceFeatures13 f)
+  {
+    final var m = new TreeMap<String, Boolean>();
+    m.put("ComputeFullSubgroups", f.computeFullSubgroups());
+    m.put("DescriptorBindingInlineUniformBlockUpdateAfterBind", f.descriptorBindingInlineUniformBlockUpdateAfterBind());
+    m.put("DynamicRendering", f.dynamicRendering());
+    m.put("InlineUniformBlock", f.inlineUniformBlock());
+    m.put("Maintenance4", f.maintenance4());
+    m.put("PipelineCreationCacheControl", f.pipelineCreationCacheControl());
+    m.put("PrivateData", f.privateData());
+    m.put("RobustImageAccess", f.robustImageAccess());
+    m.put("ShaderDemoteToHelperInvocation", f.shaderDemoteToHelperInvocation());
+    m.put("ShaderIntegerDotProduct", f.shaderIntegerDotProduct());
+    m.put("ShaderTerminateInvocation", f.shaderTerminateInvocation());
+    m.put("ShaderZeroInitializeWorkgroupMemory", f.shaderZeroInitializeWorkgroupMemory());
+    m.put("SubgroupSizeControl", f.subgroupSizeControl());
+    m.put("Synchronization2", f.synchronization2());
+    m.put("TextureCompressionASTC_HDR", f.textureCompressionASTC_HDR());
+    return m;
+  }
+
+  /**
+   * @param f The features
+   * @return The features as a boolean map
+   */
+
+  public static Map<String, Boolean> mapOf(
+    final VulkanPhysicalDeviceFeatures f)
+  {
+    final var m = new TreeMap<String, Boolean>();
+    m.putAll(mapOf10(f.features10()));
+    m.putAll(mapOf11(f.features11()));
+    m.putAll(mapOf12(f.features12()));
+    m.putAll(mapOf13(f.features13()));
+    return m;
   }
 }

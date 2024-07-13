@@ -20,7 +20,9 @@
   <!-- Generated. -->
   <suppress files="VulkanPhysicalDeviceFeaturesFunctions.java"
             checks="CyclomaticComplexity"/>
-  <!-- Generated. -->
   <suppress files="VulkanPhysicalDeviceFeaturesFunctions.java"
             checks="LineLength"/>
+  <suppress files="VulkanPhysicalDeviceFeaturesFunctions.java"
+            checks="ExecutableStatementCount"/>
+
 </suppressions>
