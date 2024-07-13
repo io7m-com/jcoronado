@@ -17,20 +17,123 @@
 
 package com.io7m.jcoronado.tests.api;
 
+import com.io7m.jcoronado.api.VulkanPhysicalDeviceFeatures;
+import com.io7m.jcoronado.api.VulkanPhysicalDeviceFeatures10;
+import com.io7m.jcoronado.api.VulkanPhysicalDeviceFeatures11;
+import com.io7m.jcoronado.api.VulkanPhysicalDeviceFeatures12;
+import com.io7m.jcoronado.api.VulkanPhysicalDeviceFeatures13;
 import com.io7m.jcoronado.api.VulkanPhysicalDeviceFeaturesFunctions;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.Set;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 public final class VulkanDeviceFeaturesTest
 {
   private static final Logger LOG =
     LoggerFactory.getLogger(VulkanDeviceFeaturesTest.class);
+
+  @Test
+  public void testSupportedReflexive()
+    throws Exception
+  {
+    final var f =
+      VulkanPhysicalDeviceFeaturesFunctions.random();
+    final var r =
+      VulkanPhysicalDeviceFeaturesFunctions.isSupported(f, f);
+
+    assertEquals(Set.of(), r);
+  }
+
+  @Test
+  public void testSupportedUnsupported10()
+    throws Exception
+  {
+    final var f =
+      VulkanPhysicalDeviceFeaturesFunctions.random();
+    final var r =
+      VulkanPhysicalDeviceFeatures10.builder()
+          .build();
+
+    assertNotEquals(
+      Set.of(),
+      VulkanPhysicalDeviceFeaturesFunctions.isSupported10(r, f.features10())
+    );
+  }
+
+  @Test
+  public void testSupportedUnsupported11()
+    throws Exception
+  {
+    final var f =
+      VulkanPhysicalDeviceFeaturesFunctions.random();
+    final var r =
+      VulkanPhysicalDeviceFeatures11.builder()
+        .build();
+
+    assertNotEquals(
+      Set.of(),
+      VulkanPhysicalDeviceFeaturesFunctions.isSupported11(r, f.features11())
+    );
+  }
+
+  @Test
+  public void testSupportedUnsupported12()
+    throws Exception
+  {
+    final var f =
+      VulkanPhysicalDeviceFeaturesFunctions.random();
+    final var r =
+      VulkanPhysicalDeviceFeatures12.builder()
+        .build();
+
+    assertNotEquals(
+      Set.of(),
+      VulkanPhysicalDeviceFeaturesFunctions.isSupported12(r, f.features12())
+    );
+  }
+
+  @Test
+  public void testSupportedUnsupported13()
+    throws Exception
+  {
+    final var f =
+      VulkanPhysicalDeviceFeaturesFunctions.random();
+    final var r =
+      VulkanPhysicalDeviceFeatures13.builder()
+        .build();
+
+    assertNotEquals(
+      Set.of(),
+      VulkanPhysicalDeviceFeaturesFunctions.isSupported13(r, f.features13())
+    );
+  }
+
+  @Test
+  public void testSupportedUnsupported()
+    throws Exception
+  {
+    final var f =
+      VulkanPhysicalDeviceFeaturesFunctions.random();
+    final var r =
+      VulkanPhysicalDeviceFeatures.builder()
+        .setFeatures10(VulkanPhysicalDeviceFeatures10.builder().build())
+        .setFeatures11(VulkanPhysicalDeviceFeatures11.builder().build())
+        .setFeatures12(VulkanPhysicalDeviceFeatures12.builder().build())
+        .setFeatures13(VulkanPhysicalDeviceFeatures13.builder().build())
+        .build();
+
+    assertNotEquals(
+      Set.of(),
+      VulkanPhysicalDeviceFeaturesFunctions.isSupported(r, f)
+    );
+  }
 
   @Test
   public void testMapOf()

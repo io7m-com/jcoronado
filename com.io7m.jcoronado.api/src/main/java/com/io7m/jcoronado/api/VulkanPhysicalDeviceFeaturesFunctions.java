@@ -19,7 +19,9 @@ package com.io7m.jcoronado.api;
 
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.TreeMap;
+import java.util.TreeSet;
 
 /**
  * Functions over device feature structures.
@@ -77,6 +79,7 @@ public final class VulkanPhysicalDeviceFeaturesFunctions
 
   /**
    * @param f The features
+   *
    * @return The features as a boolean map
    */
 
@@ -114,15 +117,31 @@ public final class VulkanPhysicalDeviceFeaturesFunctions
     m.put("ShaderInt64", f.shaderInt64());
     m.put("ShaderResourceMinLod", f.shaderResourceMinLod());
     m.put("ShaderResourceResidency", f.shaderResourceResidency());
-    m.put("ShaderSampledImageArrayDynamicIndexing", f.shaderSampledImageArrayDynamicIndexing());
-    m.put("ShaderStorageBufferArrayDynamicIndexing", f.shaderStorageBufferArrayDynamicIndexing());
-    m.put("ShaderStorageImageArrayDynamicIndexing", f.shaderStorageImageArrayDynamicIndexing());
-    m.put("ShaderStorageImageExtendedFormats", f.shaderStorageImageExtendedFormats());
+    m.put(
+      "ShaderSampledImageArrayDynamicIndexing",
+      f.shaderSampledImageArrayDynamicIndexing());
+    m.put(
+      "ShaderStorageBufferArrayDynamicIndexing",
+      f.shaderStorageBufferArrayDynamicIndexing());
+    m.put(
+      "ShaderStorageImageArrayDynamicIndexing",
+      f.shaderStorageImageArrayDynamicIndexing());
+    m.put(
+      "ShaderStorageImageExtendedFormats",
+      f.shaderStorageImageExtendedFormats());
     m.put("ShaderStorageImageMultisample", f.shaderStorageImageMultisample());
-    m.put("ShaderStorageImageReadWithoutFormat", f.shaderStorageImageReadWithoutFormat());
-    m.put("ShaderStorageImageWriteWithoutFormat", f.shaderStorageImageWriteWithoutFormat());
-    m.put("ShaderTessellationAndGeometryPointSize", f.shaderTessellationAndGeometryPointSize());
-    m.put("ShaderUniformBufferArrayDynamicIndexing", f.shaderUniformBufferArrayDynamicIndexing());
+    m.put(
+      "ShaderStorageImageReadWithoutFormat",
+      f.shaderStorageImageReadWithoutFormat());
+    m.put(
+      "ShaderStorageImageWriteWithoutFormat",
+      f.shaderStorageImageWriteWithoutFormat());
+    m.put(
+      "ShaderTessellationAndGeometryPointSize",
+      f.shaderTessellationAndGeometryPointSize());
+    m.put(
+      "ShaderUniformBufferArrayDynamicIndexing",
+      f.shaderUniformBufferArrayDynamicIndexing());
     m.put("SparseBinding", f.sparseBinding());
     m.put("SparseResidency16Samples", f.sparseResidency16Samples());
     m.put("SparseResidency2Samples", f.sparseResidency2Samples());
@@ -652,6 +671,7 @@ public final class VulkanPhysicalDeviceFeaturesFunctions
 
   /**
    * @param f The features
+   *
    * @return The features as a boolean map
    */
 
@@ -668,7 +688,9 @@ public final class VulkanPhysicalDeviceFeaturesFunctions
     m.put("StorageBuffer16BitAccess", f.storageBuffer16BitAccess());
     m.put("StorageInputOutput16", f.storageInputOutput16());
     m.put("StoragePushConstant16", f.storagePushConstant16());
-    m.put("UniformAndStorageBuffer16BitAccess", f.uniformAndStorageBuffer16BitAccess());
+    m.put(
+      "UniformAndStorageBuffer16BitAccess",
+      f.uniformAndStorageBuffer16BitAccess());
     m.put("VariablePointers", f.variablePointers());
     m.put("VariablePointersStorageBuffer", f.variablePointersStorageBuffer());
     return m;
@@ -676,6 +698,7 @@ public final class VulkanPhysicalDeviceFeaturesFunctions
 
   /**
    * @param f The features
+   *
    * @return The features as a boolean map
    */
 
@@ -684,17 +707,37 @@ public final class VulkanPhysicalDeviceFeaturesFunctions
   {
     final var m = new TreeMap<String, Boolean>();
     m.put("BufferDeviceAddress", f.bufferDeviceAddress());
-    m.put("BufferDeviceAddressCaptureReplay", f.bufferDeviceAddressCaptureReplay());
+    m.put(
+      "BufferDeviceAddressCaptureReplay",
+      f.bufferDeviceAddressCaptureReplay());
     m.put("BufferDeviceAddressMultiDevice", f.bufferDeviceAddressMultiDevice());
-    m.put("DescriptorBindingPartiallyBound", f.descriptorBindingPartiallyBound());
-    m.put("DescriptorBindingSampledImageUpdateAfterBind", f.descriptorBindingSampledImageUpdateAfterBind());
-    m.put("DescriptorBindingStorageBufferUpdateAfterBind", f.descriptorBindingStorageBufferUpdateAfterBind());
-    m.put("DescriptorBindingStorageImageUpdateAfterBind", f.descriptorBindingStorageImageUpdateAfterBind());
-    m.put("DescriptorBindingStorageTexelBufferUpdateAfterBind", f.descriptorBindingStorageTexelBufferUpdateAfterBind());
-    m.put("DescriptorBindingUniformBufferUpdateAfterBind", f.descriptorBindingUniformBufferUpdateAfterBind());
-    m.put("DescriptorBindingUniformTexelBufferUpdateAfterBind", f.descriptorBindingUniformTexelBufferUpdateAfterBind());
-    m.put("DescriptorBindingUpdateUnusedWhilePending", f.descriptorBindingUpdateUnusedWhilePending());
-    m.put("DescriptorBindingVariableDescriptorCount", f.descriptorBindingVariableDescriptorCount());
+    m.put(
+      "DescriptorBindingPartiallyBound",
+      f.descriptorBindingPartiallyBound());
+    m.put(
+      "DescriptorBindingSampledImageUpdateAfterBind",
+      f.descriptorBindingSampledImageUpdateAfterBind());
+    m.put(
+      "DescriptorBindingStorageBufferUpdateAfterBind",
+      f.descriptorBindingStorageBufferUpdateAfterBind());
+    m.put(
+      "DescriptorBindingStorageImageUpdateAfterBind",
+      f.descriptorBindingStorageImageUpdateAfterBind());
+    m.put(
+      "DescriptorBindingStorageTexelBufferUpdateAfterBind",
+      f.descriptorBindingStorageTexelBufferUpdateAfterBind());
+    m.put(
+      "DescriptorBindingUniformBufferUpdateAfterBind",
+      f.descriptorBindingUniformBufferUpdateAfterBind());
+    m.put(
+      "DescriptorBindingUniformTexelBufferUpdateAfterBind",
+      f.descriptorBindingUniformTexelBufferUpdateAfterBind());
+    m.put(
+      "DescriptorBindingUpdateUnusedWhilePending",
+      f.descriptorBindingUpdateUnusedWhilePending());
+    m.put(
+      "DescriptorBindingVariableDescriptorCount",
+      f.descriptorBindingVariableDescriptorCount());
     m.put("DescriptorIndexing", f.descriptorIndexing());
     m.put("DrawIndirectCount", f.drawIndirectCount());
     m.put("HostQueryReset", f.hostQueryReset());
@@ -706,35 +749,60 @@ public final class VulkanPhysicalDeviceFeaturesFunctions
     m.put("SeparateDepthStencilLayouts", f.separateDepthStencilLayouts());
     m.put("ShaderBufferInt64Atomics", f.shaderBufferInt64Atomics());
     m.put("ShaderFloat16", f.shaderFloat16());
-    m.put("ShaderInputAttachmentArrayDynamicIndexing", f.shaderInputAttachmentArrayDynamicIndexing());
-    m.put("ShaderInputAttachmentArrayNonUniformIndexing", f.shaderInputAttachmentArrayNonUniformIndexing());
+    m.put(
+      "ShaderInputAttachmentArrayDynamicIndexing",
+      f.shaderInputAttachmentArrayDynamicIndexing());
+    m.put(
+      "ShaderInputAttachmentArrayNonUniformIndexing",
+      f.shaderInputAttachmentArrayNonUniformIndexing());
     m.put("ShaderInt8", f.shaderInt8());
     m.put("ShaderOutputLayer", f.shaderOutputLayer());
     m.put("ShaderOutputViewportIndex", f.shaderOutputViewportIndex());
-    m.put("ShaderSampledImageArrayNonUniformIndexing", f.shaderSampledImageArrayNonUniformIndexing());
+    m.put(
+      "ShaderSampledImageArrayNonUniformIndexing",
+      f.shaderSampledImageArrayNonUniformIndexing());
     m.put("ShaderSharedInt64Atomics", f.shaderSharedInt64Atomics());
-    m.put("ShaderStorageBufferArrayNonUniformIndexing", f.shaderStorageBufferArrayNonUniformIndexing());
-    m.put("ShaderStorageImageArrayNonUniformIndexing", f.shaderStorageImageArrayNonUniformIndexing());
-    m.put("ShaderStorageTexelBufferArrayDynamicIndexing", f.shaderStorageTexelBufferArrayDynamicIndexing());
-    m.put("ShaderStorageTexelBufferArrayNonUniformIndexing", f.shaderStorageTexelBufferArrayNonUniformIndexing());
+    m.put(
+      "ShaderStorageBufferArrayNonUniformIndexing",
+      f.shaderStorageBufferArrayNonUniformIndexing());
+    m.put(
+      "ShaderStorageImageArrayNonUniformIndexing",
+      f.shaderStorageImageArrayNonUniformIndexing());
+    m.put(
+      "ShaderStorageTexelBufferArrayDynamicIndexing",
+      f.shaderStorageTexelBufferArrayDynamicIndexing());
+    m.put(
+      "ShaderStorageTexelBufferArrayNonUniformIndexing",
+      f.shaderStorageTexelBufferArrayNonUniformIndexing());
     m.put("ShaderSubgroupExtendedTypes", f.shaderSubgroupExtendedTypes());
-    m.put("ShaderUniformBufferArrayNonUniformIndexing", f.shaderUniformBufferArrayNonUniformIndexing());
-    m.put("ShaderUniformTexelBufferArrayDynamicIndexing", f.shaderUniformTexelBufferArrayDynamicIndexing());
-    m.put("ShaderUniformTexelBufferArrayNonUniformIndexing", f.shaderUniformTexelBufferArrayNonUniformIndexing());
+    m.put(
+      "ShaderUniformBufferArrayNonUniformIndexing",
+      f.shaderUniformBufferArrayNonUniformIndexing());
+    m.put(
+      "ShaderUniformTexelBufferArrayDynamicIndexing",
+      f.shaderUniformTexelBufferArrayDynamicIndexing());
+    m.put(
+      "ShaderUniformTexelBufferArrayNonUniformIndexing",
+      f.shaderUniformTexelBufferArrayNonUniformIndexing());
     m.put("StorageBuffer8BitAccess", f.storageBuffer8BitAccess());
     m.put("StoragePushConstant8", f.storagePushConstant8());
     m.put("SubgroupBroadcastDynamicId", f.subgroupBroadcastDynamicId());
     m.put("TimelineSemaphore", f.timelineSemaphore());
-    m.put("UniformAndStorageBuffer8BitAccess", f.uniformAndStorageBuffer8BitAccess());
+    m.put(
+      "UniformAndStorageBuffer8BitAccess",
+      f.uniformAndStorageBuffer8BitAccess());
     m.put("UniformBufferStandardLayout", f.uniformBufferStandardLayout());
     m.put("VulkanMemoryModel", f.vulkanMemoryModel());
-    m.put("VulkanMemoryModelAvailabilityVisibilityChains", f.vulkanMemoryModelAvailabilityVisibilityChains());
+    m.put(
+      "VulkanMemoryModelAvailabilityVisibilityChains",
+      f.vulkanMemoryModelAvailabilityVisibilityChains());
     m.put("VulkanMemoryModelDeviceScope", f.vulkanMemoryModelDeviceScope());
     return m;
   }
 
   /**
    * @param f The features
+   *
    * @return The features as a boolean map
    */
 
@@ -743,7 +811,9 @@ public final class VulkanPhysicalDeviceFeaturesFunctions
   {
     final var m = new TreeMap<String, Boolean>();
     m.put("ComputeFullSubgroups", f.computeFullSubgroups());
-    m.put("DescriptorBindingInlineUniformBlockUpdateAfterBind", f.descriptorBindingInlineUniformBlockUpdateAfterBind());
+    m.put(
+      "DescriptorBindingInlineUniformBlockUpdateAfterBind",
+      f.descriptorBindingInlineUniformBlockUpdateAfterBind());
     m.put("DynamicRendering", f.dynamicRendering());
     m.put("InlineUniformBlock", f.inlineUniformBlock());
     m.put("Maintenance4", f.maintenance4());
@@ -753,7 +823,9 @@ public final class VulkanPhysicalDeviceFeaturesFunctions
     m.put("ShaderDemoteToHelperInvocation", f.shaderDemoteToHelperInvocation());
     m.put("ShaderIntegerDotProduct", f.shaderIntegerDotProduct());
     m.put("ShaderTerminateInvocation", f.shaderTerminateInvocation());
-    m.put("ShaderZeroInitializeWorkgroupMemory", f.shaderZeroInitializeWorkgroupMemory());
+    m.put(
+      "ShaderZeroInitializeWorkgroupMemory",
+      f.shaderZeroInitializeWorkgroupMemory());
     m.put("SubgroupSizeControl", f.subgroupSizeControl());
     m.put("Synchronization2", f.synchronization2());
     m.put("TextureCompressionASTC_HDR", f.textureCompressionASTC_HDR());
@@ -762,6 +834,7 @@ public final class VulkanPhysicalDeviceFeaturesFunctions
 
   /**
    * @param f The features
+   *
    * @return The features as a boolean map
    */
 
@@ -774,5 +847,160 @@ public final class VulkanPhysicalDeviceFeaturesFunctions
     m.putAll(mapOf12(f.features12()));
     m.putAll(mapOf13(f.features13()));
     return m;
+  }
+
+  /**
+   * Determine if the given set of features in {@code supported} satisfies
+   * those in {@code requested}. An empty set is returned if everything is
+   * supported.
+   *
+   * @param supported The supported features
+   * @param requested The requested features
+   *
+   * @return The features that were not available
+   */
+
+  public static Set<String> isSupported10(
+    final VulkanPhysicalDeviceFeatures10 supported,
+    final VulkanPhysicalDeviceFeatures10 requested)
+  {
+    final var supportedMap =
+      mapOf10(supported);
+    final var requiredMap =
+      mapOf10(requested);
+    final var failedSet =
+      new TreeSet<String>();
+
+    for (final var entry : requiredMap.entrySet()) {
+      final var requestedValue = entry.getValue();
+      final var supportedValue = supportedMap.get(entry.getKey());
+      if (!Objects.equals(requestedValue, supportedValue)) {
+        failedSet.add(entry.getKey());
+      }
+    }
+    return failedSet;
+  }
+
+  /**
+   * Determine if the given set of features in {@code supported} satisfies
+   * those in {@code requested}. An empty set is returned if everything is
+   * supported.
+   *
+   * @param supported The supported features
+   * @param requested The requested features
+   *
+   * @return The features that were not available
+   */
+
+  public static Set<String> isSupported11(
+    final VulkanPhysicalDeviceFeatures11 supported,
+    final VulkanPhysicalDeviceFeatures11 requested)
+  {
+    final var supportedMap =
+      mapOf11(supported);
+    final var requiredMap =
+      mapOf11(requested);
+    final var failedSet =
+      new TreeSet<String>();
+
+    for (final var entry : requiredMap.entrySet()) {
+      final var requestedValue = entry.getValue();
+      final var supportedValue = supportedMap.get(entry.getKey());
+      if (!Objects.equals(requestedValue, supportedValue)) {
+        failedSet.add(entry.getKey());
+      }
+    }
+    return failedSet;
+  }
+
+  /**
+   * Determine if the given set of features in {@code supported} satisfies
+   * those in {@code requested}. An empty set is returned if everything is
+   * supported.
+   *
+   * @param supported The supported features
+   * @param requested The requested features
+   *
+   * @return The features that were not available
+   */
+
+  public static Set<String> isSupported12(
+    final VulkanPhysicalDeviceFeatures12 supported,
+    final VulkanPhysicalDeviceFeatures12 requested)
+  {
+    final var supportedMap =
+      mapOf12(supported);
+    final var requiredMap =
+      mapOf12(requested);
+    final var failedSet =
+      new TreeSet<String>();
+
+    for (final var entry : requiredMap.entrySet()) {
+      final var requestedValue = entry.getValue();
+      final var supportedValue = supportedMap.get(entry.getKey());
+      if (!Objects.equals(requestedValue, supportedValue)) {
+        failedSet.add(entry.getKey());
+      }
+    }
+    return failedSet;
+  }
+
+  /**
+   * Determine if the given set of features in {@code supported} satisfies
+   * those in {@code requested}. An empty set is returned if everything is
+   * supported.
+   *
+   * @param supported The supported features
+   * @param requested The requested features
+   *
+   * @return The features that were not available
+   */
+
+  public static Set<String> isSupported13(
+    final VulkanPhysicalDeviceFeatures13 supported,
+    final VulkanPhysicalDeviceFeatures13 requested)
+  {
+    final var supportedMap =
+      mapOf13(supported);
+    final var requiredMap =
+      mapOf13(requested);
+    final var failedSet =
+      new TreeSet<String>();
+
+    for (final var entry : requiredMap.entrySet()) {
+      final var requestedValue = entry.getValue();
+      final var supportedValue = supportedMap.get(entry.getKey());
+      if (!Objects.equals(requestedValue, supportedValue)) {
+        failedSet.add(entry.getKey());
+      }
+    }
+    return failedSet;
+  }
+
+  /**
+   * Determine if the given set of features in {@code supported} satisfies
+   * those in {@code requested}. An empty set is returned if everything is
+   * supported.
+   *
+   * @param supported The supported features
+   * @param requested The requested features
+   *
+   * @return The features that were not available
+   */
+
+  public static Set<String> isSupported(
+    final VulkanPhysicalDeviceFeatures supported,
+    final VulkanPhysicalDeviceFeatures requested)
+  {
+    final var failedSet = new TreeSet<String>();
+    failedSet.addAll(
+      isSupported10(supported.features10(), requested.features10()));
+    failedSet.addAll(
+      isSupported11(supported.features11(), requested.features11()));
+    failedSet.addAll(
+      isSupported12(supported.features12(), requested.features12()));
+    failedSet.addAll(
+      isSupported13(supported.features13(), requested.features13()));
+    return failedSet;
   }
 }
