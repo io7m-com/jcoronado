@@ -16,4 +16,11 @@
   <!-- Manually copying String -->
   <suppress files="VulkanLWJGLExtDebugUtils.java"
             checks="IllegalInstantiation"/>
+
+  <!-- Generated. -->
+  <suppress files="VulkanPhysicalDeviceFeaturesFunctions.java"
+            checks="CyclomaticComplexity"/>
+  <!-- Generated. -->
+  <suppress files="VulkanPhysicalDeviceFeaturesFunctions.java"
+            checks="LineLength"/>
 </suppressions>
