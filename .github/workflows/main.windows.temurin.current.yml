@@ -2,7 +2,7 @@
 #  Automatically generated: DO NOT EDIT.
 #
 #  Generation code: https://www.github.com/io7m-com/.github/
-#  Workflow profile: ScreenRecorded
+#  Workflow profile: Vulkan
 #
 
 name: main.windows.temurin.current
@@ -32,6 +32,11 @@ jobs:
       - name: Collect project snapshot
         id: project_is_snapshot
         run: java .github/workflows/Tools.java ShowProjectIsSnapshot pom.xml >> "$GITHUB_OUTPUT"
+
+      - name: Configure Vulkan
+        uses: NcStudios/VulkanCI@v1.1
+        with:
+          sdkVersion: 1.3.283.0
 
       - name: Build
         env:
