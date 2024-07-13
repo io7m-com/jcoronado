@@ -179,7 +179,7 @@ public abstract class VulkanLogicalDeviceContract extends VulkanOnDeviceContract
     try (var image = this.device.createImage(
       VulkanImageCreateInfo.builder()
         .setArrayLayers(1)
-        .setSamples(Set.of(VK_SAMPLE_COUNT_8_BIT))
+        .setSamples(Set.of(VK_SAMPLE_COUNT_1_BIT))
         .setExtent(VulkanExtent3D.of(256, 256, 1))
         .setFormat(VK_FORMAT_R8_UNORM)
         .setImageType(VK_IMAGE_TYPE_2D)
