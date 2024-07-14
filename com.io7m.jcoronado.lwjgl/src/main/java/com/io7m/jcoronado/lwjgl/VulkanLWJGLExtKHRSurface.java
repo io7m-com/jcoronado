@@ -142,7 +142,7 @@ public final class VulkanLWJGLExtKHRSurface implements VulkanExtKHRSurfaceType
     }
 
     LOG.debug(
-      "creating surface for window 0x{}",
+      "Creating surface for window 0x{}",
       Long.toUnsignedString(window, 16));
 
     final var surface_holder = new long[1];
@@ -152,11 +152,22 @@ public final class VulkanLWJGLExtKHRSurface implements VulkanExtKHRSurfaceType
       "glfwCreateWindowSurface");
 
     LOG.debug(
-      "created surface for window 0x{}: surface 0x{}",
+      "Created surface for window 0x{}: surface 0x{}",
       Long.toUnsignedString(window, 16),
       Long.toUnsignedString(surface_holder[0], 16));
 
-    return new VulkanLWJGLExtKHRSurfaceValue(surface_holder[0]);
+    return new VulkanLWJGLExtKHRSurfaceValue(
+      VulkanLWJGLHandle.Ownership.USER_OWNED,
+      surface_holder[0],
+      () -> {
+        KHRSurface.vkDestroySurfaceKHR(
+          instance_lwjgl.instance(),
+          surface_holder[0],
+          null
+        );
+      },
+      instance_lwjgl.hostAllocatorProxy()
+    );
   }
 
   @Override
@@ -191,7 +202,7 @@ public final class VulkanLWJGLExtKHRSurface implements VulkanExtKHRSurfaceType
         KHRSurface.vkGetPhysicalDeviceSurfaceSupportKHR(
           device.device(),
           queue.queueFamilyIndex().value(),
-          surface.handle,
+          surface.handle(),
           supported),
         "vkGetPhysicalDeviceSurfaceSupportKHR");
       if (supported[0] != 0) {
@@ -226,7 +237,7 @@ public final class VulkanLWJGLExtKHRSurface implements VulkanExtKHRSurfaceType
       VulkanChecks.checkReturnCode(
         KHRSurface.vkGetPhysicalDeviceSurfaceFormatsKHR(
           device.device(),
-          surface.handle,
+          surface.handle(),
           count,
           null),
         "vkGetPhysicalDeviceSurfaceFormatsKHR");
@@ -242,7 +253,7 @@ public final class VulkanLWJGLExtKHRSurface implements VulkanExtKHRSurfaceType
       VulkanChecks.checkReturnCode(
         KHRSurface.vkGetPhysicalDeviceSurfaceFormatsKHR(
           device.device(),
-          surface.handle,
+          surface.handle(),
           count,
           formats),
         "vkGetPhysicalDeviceSurfaceFormatsKHR");
@@ -290,7 +301,7 @@ public final class VulkanLWJGLExtKHRSurface implements VulkanExtKHRSurfaceType
       VulkanChecks.checkReturnCode(
         KHRSurface.vkGetPhysicalDeviceSurfaceCapabilitiesKHR(
           device.device(),
-          surface.handle,
+          surface.handle(),
           capabilities),
         "vkGetPhysicalDeviceSurfaceCapabilitiesKHR");
 
@@ -329,7 +340,7 @@ public final class VulkanLWJGLExtKHRSurface implements VulkanExtKHRSurfaceType
     VulkanChecks.checkReturnCode(
       KHRSurface.vkGetPhysicalDeviceSurfacePresentModesKHR(
         device.device(),
-        surface.handle,
+        surface.handle(),
         count,
         null),
       "vkGetPhysicalDeviceSurfacePresentModesKHR");
@@ -343,7 +354,7 @@ public final class VulkanLWJGLExtKHRSurface implements VulkanExtKHRSurfaceType
     VulkanChecks.checkReturnCode(
       KHRSurface.vkGetPhysicalDeviceSurfacePresentModesKHR(
         device.device(),
-        surface.handle,
+        surface.handle(),
         count,
         modes),
       "vkGetPhysicalDeviceSurfacePresentModesKHR");
@@ -354,22 +365,5 @@ public final class VulkanLWJGLExtKHRSurface implements VulkanExtKHRSurfaceType
     }
 
     return results;
-  }
-
-  static final class VulkanLWJGLExtKHRSurfaceValue
-    implements VulkanExtKHRSurfaceType.VulkanKHRSurfaceType
-  {
-    private final long handle;
-
-    VulkanLWJGLExtKHRSurfaceValue(
-      final long in_handle)
-    {
-      this.handle = in_handle;
-    }
-
-    long handle()
-    {
-      return this.handle;
-    }
   }
 }

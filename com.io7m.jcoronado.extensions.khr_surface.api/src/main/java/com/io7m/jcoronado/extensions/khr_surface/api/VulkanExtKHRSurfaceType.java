@@ -16,8 +16,11 @@
 
 package com.io7m.jcoronado.extensions.khr_surface.api;
 
+import com.io7m.jcoronado.api.VulkanAPIFunctionType;
 import com.io7m.jcoronado.api.VulkanException;
 import com.io7m.jcoronado.api.VulkanExtensionType;
+import com.io7m.jcoronado.api.VulkanExternallySynchronizedType;
+import com.io7m.jcoronado.api.VulkanHandleNonDispatchableType;
 import com.io7m.jcoronado.api.VulkanInstanceType;
 import com.io7m.jcoronado.api.VulkanPhysicalDeviceType;
 import com.io7m.jcoronado.api.VulkanQueueFamilyProperties;
@@ -128,8 +131,12 @@ public interface VulkanExtKHRSurfaceType extends VulkanExtensionType
    * An abstraction over a native platform surface or window object.
    */
 
-  interface VulkanKHRSurfaceType
+  interface VulkanKHRSurfaceType extends VulkanHandleNonDispatchableType
   {
-
+    @VulkanAPIFunctionType(vulkanFunction = "vkDestroySurfaceKHR")
+    @Override
+    @VulkanExternallySynchronizedType
+    void close()
+      throws VulkanException;
   }
 }

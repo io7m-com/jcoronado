@@ -830,7 +830,7 @@ public final class HelloVulkan implements ExampleType
             "Missing VK_KHR_surface extension"));
 
       final var surface =
-        khrSurfaceExt.surfaceFromWindow(instance, window);
+        resources.add(khrSurfaceExt.surfaceFromWindow(instance, window));
 
       /*
        * List the available physical devices and pick the "best" one.

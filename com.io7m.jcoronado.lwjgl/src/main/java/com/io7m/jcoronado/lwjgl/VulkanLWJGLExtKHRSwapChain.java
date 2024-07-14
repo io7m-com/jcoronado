@@ -281,7 +281,7 @@ public final class VulkanLWJGLExtKHRSwapChain implements
     final var surface =
       VulkanLWJGLClassChecks.checkInstanceOf(
         info.surface(),
-        VulkanLWJGLExtKHRSurface.VulkanLWJGLExtKHRSurfaceValue.class);
+        VulkanLWJGLExtKHRSurfaceValue.class);
 
     try (var stack = this.stack_initial.push()) {
       final var vk_info =
