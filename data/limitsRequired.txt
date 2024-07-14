@@ -1,0 +1,302 @@
+accelerationStructureCaptureReplayDescriptorDataSize        : -         : 64 
+accelerationStructureDescriptorSize                         : -         : 256 
+advancedBlendAllOperations                                  : -         :false
+advancedBlendCorrelatedOverlap                              : -         :false
+advancedBlendIndependentBlend                               : -         :false
+advancedBlendMaxColorAttachments                            : -         : 1   
+advancedBlendNonPremultipliedDstColor                       : -         :false
+advancedBlendNonPremultipliedSrcColor                       : -         :false
+allowSamplerImageViewPostSubmitCreation                     : -         : false 
+bufferCaptureReplayDescriptorDataSize                       : -         : 64 
+bufferImageGranularity                                      : -         : 131072  
+bufferlessPushDescriptors                                   : -         : false 
+combinedImageSamplerDensityMapDescriptorSize                : -         : 256 
+combinedImageSamplerDescriptorSingleArray                   : -         : false 
+combinedImageSamplerDescriptorSize                          : -         : 256 
+commandBufferSimultaneousUse                                : -         : -      
+commandPoolMultipleCommandBuffersRecording                  : -         : -      
+commandPoolResetCommandBuffer                               : -         : -      
+conservativePointAndLineRasterization                       : -         :false 
+conservativeRasterizationPostDepthCoverage                  : -         :false 
+degenerateLinesRasterized                                   : -         :false 
+degenerateTrianglesRasterized                               : -         :false 
+descriptorBufferAddressSpaceSize                            : -         : 2^27 
+descriptorBufferOffsetAlignment                             : -         : 256 
+deviceDestroyFreesMemory                                    : -         : -      
+deviceNoDynamicHostAllocations                              : -         : -      
+discreteQueuePriorities                                     : -         : 2     
+dynamicPrimitiveTopologyUnrestricted                        : -         : -   
+executionGraphDispatchAddressAlignment                      :   -       : 4       
+extendedSparseAddressSpaceSize                              :   0       : pname:sparseAddressSpaceSize 
+extraPrimitiveOverestimationSizeGranularity                 : -         :0.0   
+filterMinmaxImageComponentMapping                           : -         : -   
+filterMinmaxSingleComponentFormats                          : -         : -   
+fragmentDensityInvocations                                  : -         :  -          
+fragmentShadingRateNonTrivialCombinerOps                    :   -       : false   
+fragmentShadingRateStrictMultiplyCombiner                   :   -       : false   
+fragmentShadingRateWithConservativeRasterization            :   -       : false   
+fragmentShadingRateWithCustomSampleLocations                :   -       : false   
+fragmentShadingRateWithFragmentShaderInterlock              :   -       : false   
+fragmentShadingRateWithSampleMask                           :   -       : false   
+fragmentShadingRateWithShaderDepthStencilWrites             :   -       : false   
+fragmentShadingRateWithShaderSampleMask                     :   -       : false   
+framebufferDepthSampleCounts                                : -         : (ename:VK_SAMPLE_COUNT_1_BIT ename:VK_SAMPLE_COUNT_4_BIT) 
+framebufferNoAttachmentsSampleCounts                        : -         : (ename:VK_SAMPLE_COUNT_1_BIT ename:VK_SAMPLE_COUNT_4_BIT) 
+framebufferStencilSampleCounts                              : -         : (ename:VK_SAMPLE_COUNT_1_BIT ename:VK_SAMPLE_COUNT_4_BIT) 
+fullyCoveredFragmentShaderInputVariable                     : -         :false 
+graphicsPipelineLibraryFastLinking                          : -         : false 
+graphicsPipelineLibraryIndependentInterpolationDecoration   : -         : false 
+imageCaptureReplayDescriptorDataSize                        : -         : 64 
+imageViewCaptureReplayDescriptorDataSize                    : -         : 64 
+indirectBufferOffsetAlignment                               : -         : - 
+inputAttachmentDescriptorSize                               : -         : 256 
+layeredShadingRateAttachments                               : false     : false   
+lineSubPixelPrecisionBits                                   : -         : 4    
+lineWidthGranularity                                        :  0.0      : 1.0 ^7 
+lineWidthRange                                              : (1.0,1.0) : (1.0,8.0 - ULP)^7 
+maxBlockMatchRegion                                         : -         : (64,64) 
+maxBoundDescriptorSets                                      : -         : 4       
+maxBoxFilterBlockSize                                       : -         : (64,64) 
+maxBufferSize                                               : -         : 2^30 
+maxCallbackFaultCount                                       : -         : 1      
+maxClipDistances                                            : 0         : 8     
+maxColorAttachments                                         : -         : 4     
+maxCombinedClipAndCullDistances                             : 0         : 8     
+maxCommandBufferNestingLevel                                : -         : 1 
+maxCommandBufferSize                                        : -         : 2^20  
+maxCommandPoolCommandBuffers                                : -         : 256    
+maxComputeSharedMemorySize                                  : -         : 16384   
+maxComputeWorkGroupCount                                    : -         : (65535,65535,65535) 
+maxComputeWorkGroupInvocations                              : -         : 128     
+maxComputeWorkGroupSize                                     : -         : (128,128,64) 
+maxCullDistances                                            : 0         : 8     
+maxCustomBorderColorSamplers                                : -         : 32    
+maxDecompressionIndirectCount                               : 1         : 2^16-1 
+maxDescriptorBufferBindings                                 : -         : 3 
+maxDescriptorSetAccelerationStructures                      : -         : 16         
+maxDescriptorSetInlineUniformBlocks                         : -         : 4     
+maxDescriptorSetInputAttachments                            : -         : 4       
+maxDescriptorSetLayoutBindings                              : -         : 64     
+maxDescriptorSetSampledImages                               : -         : 96
+maxDescriptorSetSamplers                                    : -         : 96
+maxDescriptorSetStorageBuffers                              : -         : 24
+maxDescriptorSetStorageBuffersDynamic                       : -         : 4       
+maxDescriptorSetStorageImages                               : -         : 24
+maxDescriptorSetSubsampledSamplers                          : 1         : 1     
+maxDescriptorSetTotalBuffersDynamic                         : -         : [eq]#pname:maxDescriptorSetUniformBuffersDynamic {plus} pname:maxDescriptorSetStorageBuffersDynamic#
+maxDescriptorSetTotalStorageBuffersDynamic                  : -         : pname:maxDescriptorSetStorageBuffersDynamic 
+maxDescriptorSetTotalUniformBuffersDynamic                  : -         : pname:maxDescriptorSetUniformBuffersDynamic 
+maxDescriptorSetUniformBuffers                              : -         : 72 ^8  
+maxDescriptorSetUniformBuffersDynamic                       : -         : 8       
+maxDescriptorSetUpdateAfterBindAccelerationStructures       : -         : 500000
+maxDescriptorSetUpdateAfterBindInlineUniformBlocks          : -         : 4     
+maxDescriptorSetUpdateAfterBindInputAttachments             : 0      :4
+maxDescriptorSetUpdateAfterBindSampledImages                : 0      :500000
+maxDescriptorSetUpdateAfterBindSamplers                     : 0      :500000
+maxDescriptorSetUpdateAfterBindStorageBuffers               : 0      :500000
+maxDescriptorSetUpdateAfterBindStorageBuffersDynamic        : 0      :4
+maxDescriptorSetUpdateAfterBindStorageImages                : 0      :500000
+maxDescriptorSetUpdateAfterBindTotalStorageBuffersDynamic   : 0      : pname:maxDescriptorSetUpdateAfterBindStorageBuffersDynamic
+maxDescriptorSetUpdateAfterBindTotalUniformBuffersDynamic   : 0      : pname:maxDescriptorSetUpdateAfterBindUniformBuffersDynamic
+maxDescriptorSetUpdateAfterBindUniformBuffers               : 0      :72 ^8
+maxDescriptorSetUpdateAfterBindUniformBuffersDynamic        : 0      :8
+maxDiscardRectangles                                        : 0         : 4   
+maxDrawIndexedIndexValue                                    : 2^24-1   : 2^32-1 
+maxDrawIndirectCount                                        : 1         : 2^16-1 
+maxEmbeddedImmutableSamplerBindings                         : -         : 1 
+maxEmbeddedImmutableSamplers                                : -         : 2032 
+maxExecutionGraphDepth                                      :   -       : 32      
+maxExecutionGraphShaderOutputNodes                          :   -       : 256     
+maxExecutionGraphShaderPayloadCount                         :   -       : 256     
+maxExecutionGraphShaderPayloadSize                          :   -       : 32768   
+maxExtraPrimitiveOverestimationSize                         : -         :0.0   
+maxFragmentCombinedOutputResources                          : -         : 4       
+maxFragmentDensityTexelSize                                 : -         : (1,1)       
+maxFragmentDualSrcAttachments                               : 0         : 1       
+maxFragmentInputComponents                                  : -         : 64      
+maxFragmentOutputAttachments                                : -         : 4       
+maxFragmentShadingRateAttachmentTexelSize                   : (0,0)     : (8,8)   
+maxFragmentShadingRateAttachmentTexelSizeAspectRatio        :  0        :   1     
+maxFragmentShadingRateCoverageSamples                       :   -       : 16      
+maxFragmentShadingRateInvocationCount                       : -         : ename:VK_SAMPLE_COUNT_4_BIT 
+maxFragmentShadingRateRasterizationSamples                  :   -       : ename:VK_SAMPLE_COUNT_4_BIT      
+maxFragmentSize                                             :   -       : (2,2)   
+maxFragmentSizeAspectRatio                                  :   -       : 2       
+maxFramebufferAttachments                                   : -         : 9
+maxFramebufferHeight                                        : -         : 4096  
+maxFramebufferWidth                                         : -         : 4096  
+maxGeometryCount                                            : -         : 2^24-1 
+maxGeometryInputComponents                                  : 0         : 64      
+maxGeometryOutputComponents                                 : 0         : 64      
+maxGeometryOutputVertices                                   : 0         : 256     
+maxGeometryShaderInvocations                                : 0         : 32      
+maxGeometryTotalOutputComponents                            : 0         : 1024    
+maxGraphicsShaderGroupCount                                 : -         : 2^12   
+maxImageArrayLayers                                         : -         : 256     
+maxImageDimension1D                                         : -         : 4096    
+maxImageDimension2D                                         : -         : 4096    
+maxImageDimension3D                                         : -         : 256     
+maxImageDimensionCube                                       : -         : 4096    
+maxIndirectCommandsStreamCount                              : -         : 16     
+maxIndirectCommandsStreamStride                             : -         : 2048   
+maxIndirectCommandsTokenCount                               : -         : 16     
+maxIndirectCommandsTokenOffset                              : -         : 2047   
+maxIndirectSequenceCount                                    : -         : 2^20   
+maxInlineUniformBlockSize                                   : -         : 256   
+maxInlineUniformTotalSize                                   : -         : 256   
+maxInstanceCount                                            : -         : 2^24-1 
+maxInterpolationOffset                                      :0.0        : 0.5
+maxMemoryAllocationCount                                    : -         : 4096    
+maxMemoryAllocationSize                                     : -         : 2^30 
+maxMultiDrawCount                                           : -         : 1024 
+maxMultiviewInstanceIndex                                   : -         :  2^27-1  
+maxMultiviewViewCount                                       : -         :  6  
+maxOpacity2StateSubdivisionLevel                            : -         : 3      
+maxOpacity4StateSubdivisionLevel                            : -         : 3      
+maxOutputClusterCount                                       : -         : 1024 
+maxPerSetDescriptors                                        : -         :1024 
+maxPerStageDescriptorAccelerationStructures                 : -         : 16         
+maxPerStageDescriptorInlineUniformBlocks                    : -         : 4     
+maxPerStageDescriptorInputAttachments                       : -         : 4       
+maxPerStageDescriptorSampledImages                          : -         : 16      
+maxPerStageDescriptorSamplers                               : -         : 16      
+maxPerStageDescriptorStorageBuffers                         : -         : 4       
+maxPerStageDescriptorStorageImages                          : -         : 4       
+maxPerStageDescriptorUniformBuffers                         : -         : 12      
+maxPerStageDescriptorUpdateAfterBindAccelerationStructures  : -         : 500000
+maxPerStageDescriptorUpdateAfterBindInlineUniformBlocks     : -         : 4     
+maxPerStageDescriptorUpdateAfterBindInputAttachments        : 0      :4
+maxPerStageDescriptorUpdateAfterBindSampledImages           : 0      :500000
+maxPerStageDescriptorUpdateAfterBindSamplers                : 0      :500000
+maxPerStageDescriptorUpdateAfterBindStorageBuffers          : 0      :500000
+maxPerStageDescriptorUpdateAfterBindStorageImages           : 0      :500000
+maxPerStageDescriptorUpdateAfterBindUniformBuffers          : 0      :12
+maxPerStageResources                                        : -         : 128 ^2 
+maxPerStageUpdateAfterBindResources                         : 0      :500000
+maxPrimitiveCount                                           : -         : 2^29-1 
+maxPushConstantsSize                                        : -         : 128     
+maxPushDescriptors                                          : -         : 32  
+maxQueryFaultCount                                          : -         : 16     
+maxRayDispatchInvocationCount                               : -         : 2^30 
+maxRayHitAttributeSize                                      : -         : 32  
+maxRenderPassDependencies                                   : -         : 18     
+maxRenderPassStripes                                        : -         : 32 
+maxRenderPassSubpasses                                      : -         : 1      
+maxResourceDescriptorBufferBindings                         : -         : 1 
+maxResourceDescriptorBufferRange                            : -         : [eq]#(2^20 - 2^15) {times} ptext:maxResourceDescriptorSize# ^12 
+maxSampleLocationGridSize                                   : -         : (1,1) 
+maxSampleMaskWords                                          : -         : 1     
+maxSamplerAllocationCount                                   : -         : 4000    
+maxSamplerAnisotropy                                        : 1         : 16      
+maxSamplerDescriptorBufferBindings                          : -         : 1 
+maxSamplerDescriptorBufferRange                             : -         : [eq]#2^11 {times} pname:samplerDescriptorSize# 
+maxSamplerLodBias                                           : -         : 2       
+maxShaderGroupStride                                        : -         : 4096    
+maxStorageBufferRange                                       : -         : 2^27   
+maxSubpassInputAttachments                                  : -         : 0      
+maxSubpassPreserveAttachments                               : -         : 0      
+maxSubpassShadingWorkgroupSizeAspectRatio                   :  0        :   1     
+maxSubsampledArrayLayers                                    : 2         : 2     
+maxTessellationControlPerPatchOutputComponents              : 0         :120 
+maxTessellationControlPerVertexInputComponents              : 0         :64 
+maxTessellationControlPerVertexOutputComponents             : 0         :64 
+maxTessellationControlTotalOutputComponents                 : 0         :2048 
+maxTessellationEvaluationInputComponents                    : 0         :64 
+maxTessellationEvaluationOutputComponents                   : 0         :64 
+maxTessellationGenerationLevel                              : 0         : 64      
+maxTessellationPatchSize                                    : 0         : 32      
+maxTexelBufferElements                                      : -         : 65536   
+maxTexelGatherOffset                                        : 0         : 7   
+maxTexelOffset                                              : -         : 7   
+maxTriangleCount                                            : -         : 2^29-1 
+maxUniformBufferRange                                       : -         : 16384   
+maxUpdateAfterBindDescriptorsInAllPools                     : 0         :500000
+maxVertexAttribDivisor                                      : -         : 2^16-1   
+maxVertexInputAttributeOffset                               : -         : 2047    
+maxVertexInputAttributes                                    : -         : 16      
+maxVertexInputBindingStride                                 : -         : 2048    
+maxVertexInputBindings                                      : -         : 16      
+maxVertexOutputComponents                                   : -         : 64      
+maxViewportDimensions                                       : -         : (4096,4096) ^3  
+maxViewports                                                : 1         : 16      
+maxWeightFilterDimension                                    : -         : (64,64) 
+maxWeightFilterPhases                                       : -         : 1024    
+maxWorkGroupCount                                           : -         : (65536,1,1) 
+maxWorkGroupSize                                            : -         : (32,1,1) 
+minAccelerationStructureScratchOffsetAlignment              : -         : 256        
+minFragmentDensityTexelSize                                 : -         : (1,1)       
+minFragmentShadingRateAttachmentTexelSize                   : (0,0)     : (32,32) 
+minImportedHostPointerAlignment                             : -         : 65536 
+minIndirectCommandsBufferOffsetAlignment                    : -         : 256    
+minInterpolationOffset                                      :0.0        : -0.5 ^5 
+minMemoryMapAlignment                                       : -         : 64  
+minPlacedMemoryMapAlignment                                 : -         : 65536 
+minSequencesCountBufferOffsetAlignment                      : -         : 256    
+minSequencesIndexBufferOffsetAlignment                      : -         : 256    
+minStorageBufferOffsetAlignment                             : -         : 256 
+minTexelBufferOffsetAlignment                               : -         : 256 
+minTexelGatherOffset                                        : 0         : -8  
+minTexelOffset                                              : -         : -8  
+minUniformBufferOffsetAlignment                             : -         : 256 
+mipmapPrecisionBits                                         : -         : 4       
+nativeUnalignedPerformance                                  : -         :false
+nonCoherentAtomSize                                         : -         : 256 
+optimalBufferCopyOffsetAlignment                            : -         : -   
+optimalBufferCopyRowPitchAlignment                          : -         : -   
+perViewPositionAllComponents                                : -         : -   
+pointSizeGranularity                                        :  0.0      : 1.0 ^6 
+pointSizeRange                                              : (1.0,1.0) : (1.0,64.0 - ULP)^6
+primitiveFragmentShadingRateWithMultipleViewports           : false     : false   
+primitiveOverestimationSize                                 : -         :0.0   
+primitiveUnderestimation                                    : -         :false 
+recycleDescriptorSetMemory                                  : -         : -      
+recyclePipelineMemory                                       : -         : -      
+renderPassStripeGranularity                                 : -         : (64,64) 
+resourceDescriptorBufferAddressSpaceSize                    : -         : 2^27 
+robustStorageBufferAccessSizeAlignment                      : -         : 4    
+robustStorageBufferDescriptorSize                           : -         : 256 
+robustStorageTexelBufferDescriptorSize                      : -         : 256 
+robustUniformBufferAccessSizeAlignment                      : -         : 256  
+robustUniformBufferDescriptorSize                           : -         : 256 
+robustUniformTexelBufferDescriptorSize                      : -         : 256 
+sampleLocationCoordinateRange                               : -         : (0.0, 0.9375) 
+sampleLocationSampleCounts                                  : -         : ename:VK_SAMPLE_COUNT_4_BIT 
+sampleLocationSubPixelBits                                  : -         : 4   
+sampledImageColorSampleCounts                               : -         : (ename:VK_SAMPLE_COUNT_1_BIT ename:VK_SAMPLE_COUNT_4_BIT) 
+sampledImageDepthSampleCounts                               : -         : (ename:VK_SAMPLE_COUNT_1_BIT ename:VK_SAMPLE_COUNT_4_BIT) 
+sampledImageDescriptorSize                                  : -         : 256 
+sampledImageIntegerSampleCounts                             : -         : ename:VK_SAMPLE_COUNT_1_BIT                                  
+sampledImageStencilSampleCounts                             : -         : (ename:VK_SAMPLE_COUNT_1_BIT ename:VK_SAMPLE_COUNT_4_BIT) 
+samplerCaptureReplayDescriptorDataSize                      : -         : 64 
+samplerDescriptorBufferAddressSpaceSize                     : -         : 2^27 
+samplerDescriptorSize                                       : -         : 256 
+secondaryCommandBufferNullOrImagelessFramebuffer            : -         : -      
+separateDepthStencilAttachmentAccess                        : false     : - 
+shaderGroupBaseAlignment                                    : -         : 64      
+shaderGroupHandleAlignment                                  : -         : 32  
+shaderGroupHandleCaptureReplaySize                          : -         : 64  
+shaderInputAttachmentArrayNonUniformIndexingNative          : -         :false
+shaderSampledImageArrayNonUniformIndexingNative             : -         :false
+shaderStorageBufferArrayNonUniformIndexingNative            : -         :false
+shaderStorageImageArrayNonUniformIndexingNative             : -         :false
+shaderUniformBufferArrayNonUniformIndexingNative            : -         :false
+sparseAddressSpaceSize                                      : 0         : 2^31   
+standardSampleLocations                                     : -         : -   
+storageBufferDescriptorSize                                 : -         : 256 
+storageImageDescriptorSize                                  : -         : 256 
+storageTexelBufferDescriptorSize                            : -         : 256 
+strictLines                                                 : -         : -   
+subPixelInterpolationOffsetBits                             : 0         : 4 ^5 
+subPixelPrecisionBits                                       : -         : 4       
+subTexelPrecisionBits                                       : -         : 4       
+subsampledCoarseReconstructionEarlyAccess                   : false     : false 
+subsampledLoads                                             : true      : false 
+supportedImageAlignmentMask                                 : -         : 1 
+timestampComputeAndGraphics                                 : -         : -     
+timestampPeriod                                             : -         : -
+triStripVertexOrderIndependentOfProvokingVertex             :   -       : false   
+uniformBufferDescriptorSize                                 : -         : 256 
+uniformTexelBufferDescriptorSize                            : -         : 256 
+variableSampleLocations                                     : -         :false
+viewportBoundsRange                                         : -         : (-8192,8191) ^4
+viewportSubPixelBits                                        : -         : 0   
