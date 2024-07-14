@@ -409,13 +409,25 @@ public final class VulkanLWJGLPhysicalDevice
       VkDeviceQueueCreateInfo.malloc(queueCount, stack);
 
     for (var index = 0; index < queueCount; ++index) {
-      final var queueInfo = infos.get(index);
+      final var queueInfo =
+        infos.get(index);
+      final var priorities =
+        queueInfo.queuePriorities();
+      final var priorityArray =
+        stack.callocFloat(priorities.size());
+
+      for (final var x : priorities) {
+        priorityArray.put(x.floatValue());
+      }
+
+      priorityArray.flip();
+
       vkQueueBuffer.position(index);
       vkQueueBuffer.sType(VK10.VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO)
         .pNext(0L)
         .flags(0)
         .queueFamilyIndex(queueInfo.queueFamilyIndex().value())
-        .pQueuePriorities(stack.floats(queueInfo.queuePriorities()));
+        .pQueuePriorities(priorityArray);
     }
     vkQueueBuffer.position(0);
     return vkQueueBuffer;

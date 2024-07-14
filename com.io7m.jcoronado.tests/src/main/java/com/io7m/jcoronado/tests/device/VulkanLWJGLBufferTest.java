@@ -86,12 +86,11 @@ public final class VulkanLWJGLBufferTest extends VulkanBufferContract
   {
     final var queue =
       VulkanLogicalDeviceQueueCreateInfo.builder()
-        .setQueueCount(1)
+        .addQueuePriorities(1.0f)
         .setQueueFamilyIndex(
           device.queueFamilyFindWithFlags(VK_QUEUE_TRANSFER_BIT)
             .orElseThrow()
             .queueFamilyIndex())
-        .setQueuePriorities(1.0f)
         .build();
 
     return device.createLogicalDevice(

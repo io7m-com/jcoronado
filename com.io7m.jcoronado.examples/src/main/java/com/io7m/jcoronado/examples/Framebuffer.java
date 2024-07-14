@@ -405,9 +405,8 @@ public final class Framebuffer implements ExampleType
 
       logicalDeviceInfoBuilder.addQueueCreateInfos(
         VulkanLogicalDeviceQueueCreateInfo.builder()
-          .setQueueCount(1)
           .setQueueFamilyIndex(graphicsQueueProps.queueFamilyIndex())
-          .setQueuePriorities(1.0f)
+          .addQueuePriorities(1.0f)
           .build());
 
       /*

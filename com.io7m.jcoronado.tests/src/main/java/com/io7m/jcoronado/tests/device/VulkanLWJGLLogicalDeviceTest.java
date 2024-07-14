@@ -116,9 +116,8 @@ public final class VulkanLWJGLLogicalDeviceTest
 
     final var queue =
       VulkanLogicalDeviceQueueCreateInfo.builder()
-        .setQueueCount(1)
         .setQueueFamilyIndex(queueFamilyIndex)
-        .setQueuePriorities(1.0f)
+        .addQueuePriorities(1.0f)
         .build();
 
     return device.createLogicalDevice(
@@ -178,9 +177,8 @@ public final class VulkanLWJGLLogicalDeviceTest
 
         final var queue =
           VulkanLogicalDeviceQueueCreateInfo.builder()
-            .setQueueCount(1)
             .setQueueFamilyIndex(queueFamilyIndex)
-            .setQueuePriorities(1.0f)
+            .addQueuePriorities(1.0f)
             .build();
 
         final var logicalInfo =
@@ -253,9 +251,8 @@ public final class VulkanLWJGLLogicalDeviceTest
 
         final var queue =
           VulkanLogicalDeviceQueueCreateInfo.builder()
-            .setQueueCount(1)
             .setQueueFamilyIndex(queueFamilyIndex)
-            .setQueuePriorities(1.0f)
+            .addQueuePriorities(1.0f)
             .build();
 
         final var logicalInfo =
@@ -269,6 +266,90 @@ public final class VulkanLWJGLLogicalDeviceTest
           this.logger().debug("waiting for device to idle...");
           logicalDevice.waitIdle();
           assertFalse(logicalDevice.isClosed());
+        }
+      }
+    }
+  }
+
+  /**
+   * Create a logical device with multiple queues (if supported).
+   *
+   * @throws VulkanException On errors
+   */
+
+  @Test
+  public void testCreateLogicalDeviceWithQueues()
+    throws VulkanException
+  {
+    Assumptions.assumeTrue(this.shouldRun());
+
+    final var instances =
+      VulkanLWJGLInstanceProvider.create();
+
+    final var requestedVersion =
+      VulkanVersions.encode(1, 0, 0);
+
+    final var instanceInfo =
+      VulkanInstanceCreateInfo.builder()
+        .setApplicationInfo(
+          VulkanApplicationInfo.of(
+            "com.io7m.jcoronado.tests.Test",
+            VulkanVersions.encode(0, 0, 1),
+            "com.io7m.jcoronado.tests",
+            VulkanVersions.encode(0, 0, 1),
+            requestedVersion))
+        .setEnabledLayers(List.of("VK_LAYER_KHRONOS_validation"))
+        .build();
+
+    try (var newInstance =
+           instances.createInstance(instanceInfo, Optional.empty())) {
+
+      this.logger().debug(
+        "Vulkan Maximum:   {}",
+        newInstance.apiVersionMaximumSupported().toHumanString());
+      this.logger().debug(
+        "Vulkan Requested: {}",
+        newInstance.apiVersionUsed().toHumanString());
+
+      try (var physicalDevice =
+             newInstance.physicalDevices()
+               .get(0)) {
+
+        final var queueCountEnough =
+          physicalDevice.queueFamilies()
+            .values()
+            .stream()
+            .anyMatch(q -> q.queueCount() > 1);
+
+        Assumptions.assumeTrue(
+          queueCountEnough,
+          "Implementation supports multiple queues.");
+
+        for (final var queueFamily :
+          physicalDevice.queueFamilies().values()) {
+
+          if (queueFamily.queueCount() > 1) {
+            final var queue =
+              VulkanLogicalDeviceQueueCreateInfo.builder()
+                .setQueueFamilyIndex(queueFamily.queueFamilyIndex())
+                .addQueuePriorities(1.0f)
+                .addQueuePriorities(1.0f)
+                .build();
+
+            final var logicalInfo =
+              VulkanLogicalDeviceCreateInfo.builder()
+                .setFeatures(physicalDevice.features())
+                .addQueueCreateInfos(queue)
+                .build();
+
+            try (var logicalDevice =
+                   physicalDevice.createLogicalDevice(logicalInfo)) {
+              this.logger().debug("waiting for device to idle...");
+              logicalDevice.waitIdle();
+              assertFalse(logicalDevice.isClosed());
+              return;
+            }
+          }
         }
       }
     }

@@ -223,11 +223,22 @@ public final class VulkanLWJGLLogicalDevice
 
       final var queueBuffer = stack.mallocPointer(1);
       for (final var queue_info : queueRequests) {
-        for (var queueIndex = 0; queueIndex < queue_info.queueCount(); ++queueIndex) {
+        final var priorities =
+          queue_info.queuePriorities();
+
+        for (var queueIndex = 0; queueIndex < priorities.size(); ++queueIndex) {
           final var queueFamilyIndex =
             queue_info.queueFamilyIndex();
           final var family =
             families.get(queueFamilyIndex);
+
+          if (LOG.isTraceEnabled()) {
+            LOG.trace(
+              "Requesting queue {} of family {}",
+              Integer.valueOf(queueIndex),
+              queueFamilyIndex
+            );
+          }
 
           VK10.vkGetDeviceQueue(
             this.device,

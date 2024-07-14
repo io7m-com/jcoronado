@@ -905,9 +905,8 @@ public final class HelloVulkan implements ExampleType
 
       logicalDeviceInfoBuilder.addQueueCreateInfos(
         VulkanLogicalDeviceQueueCreateInfo.builder()
-          .setQueueCount(1)
           .setQueueFamilyIndex(graphicsQueueProps.queueFamilyIndex())
-          .setQueuePriorities(1.0f)
+          .addQueuePriorities(1.0f)
           .build());
 
       if (!Objects.equals(
@@ -915,9 +914,8 @@ public final class HelloVulkan implements ExampleType
         presentationQueueProps.queueFamilyIndex())) {
         logicalDeviceInfoBuilder.addQueueCreateInfos(
           VulkanLogicalDeviceQueueCreateInfo.builder()
-            .setQueueCount(1)
             .setQueueFamilyIndex(presentationQueueProps.queueFamilyIndex())
-            .setQueuePriorities(1.0f)
+            .addQueuePriorities(1.0f)
             .build());
       }
 

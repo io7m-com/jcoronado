@@ -19,6 +19,7 @@ package com.io7m.jcoronado.api;
 import com.io7m.immutables.styles.ImmutablesStyleType;
 import org.immutables.value.Value;
 
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -47,18 +48,14 @@ public interface VulkanLogicalDeviceQueueCreateInfoType
   VulkanQueueFamilyIndex queueFamilyIndex();
 
   /**
-   * @return The number of queues to create
-   */
-
-  @Value.Parameter
-  int queueCount();
-
-  /**
+   * Set the priorities of the created queues. The number of priority values
+   * set will implicitly set the number of queues to create.
+   *
    * @return The priorities of the queues
    */
 
   @Value.Parameter
-  float[] queuePriorities();
+  List<Float> queuePriorities();
 
   /**
    * Check preconditions for the type.
@@ -67,11 +64,12 @@ public interface VulkanLogicalDeviceQueueCreateInfoType
   @Value.Check
   default void checkPreconditions()
   {
-    if (this.queueCount() <= 0) {
+    final var count = this.queuePriorities().size();
+    if (count <= 0) {
       throw new IllegalArgumentException(
         new StringBuilder(32)
           .append("Queue count ")
-          .append(this.queueCount())
+          .append(count)
           .append(" must be positive")
           .toString());
     }
