@@ -17,8 +17,6 @@
 
 package com.io7m.jcoronado.fake;
 
-import com.io7m.jcoronado.api.VulkanCallFailedException;
-import com.io7m.jcoronado.api.VulkanException;
 import com.io7m.jcoronado.api.VulkanExtensionProperties;
 import com.io7m.jcoronado.api.VulkanHostAllocatorType;
 import com.io7m.jcoronado.api.VulkanInstanceCreateInfo;
@@ -47,7 +45,7 @@ public final class VFakeInstances
 
   private Map<String, VulkanExtensionProperties> extensions = Map.of();
   private Map<String, VulkanLayerProperties> layers = Map.of();
-  private VulkanInstanceType nextInstance;
+  private VFakeInstance nextInstance;
 
   /**
    * A fake instance provider.
@@ -55,7 +53,8 @@ public final class VFakeInstances
 
   public VFakeInstances()
   {
-    this.nextInstance = new VFakeInstance(this, Map.of());
+    this.nextInstance =
+      new VFakeInstance(this, Map.of());
   }
 
   /**
@@ -67,7 +66,8 @@ public final class VFakeInstances
   public void setExtensions(
     final Map<String, VulkanExtensionProperties> newExtensions)
   {
-    this.extensions = Objects.requireNonNull(newExtensions, "extensions");
+    this.extensions =
+      Objects.requireNonNull(newExtensions, "extensions");
   }
 
   /**
@@ -99,7 +99,7 @@ public final class VFakeInstances
    */
 
   public void setNextInstance(
-    final VulkanInstanceType setNextInstance)
+    final VFakeInstance setNextInstance)
   {
     this.nextInstance =
       Objects.requireNonNull(setNextInstance, "nextInstance");
@@ -178,15 +178,7 @@ public final class VFakeInstances
   public VulkanInstanceType createInstance(
     final VulkanInstanceCreateInfo info,
     final Optional<VulkanHostAllocatorType> allocator)
-    throws VulkanException
   {
-    if (this.nextInstance == null) {
-      throw new VulkanCallFailedException(
-        0,
-        "vkCreateInstance",
-        "No instance is available"
-      );
-    }
     return this.nextInstance;
   }
 }

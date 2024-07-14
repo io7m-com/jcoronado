@@ -63,6 +63,15 @@ public final class VFakeInstance implements VulkanInstanceType
   }
 
   /**
+   * @return A mutable list of the current physical devices
+   */
+
+  public ArrayList<VFakePhysicalDevice> getPhysicalDevices()
+  {
+    return this.physicalDevices;
+  }
+
+  /**
    * Set the extensions used.
    *
    * @param newExtensions The extensions

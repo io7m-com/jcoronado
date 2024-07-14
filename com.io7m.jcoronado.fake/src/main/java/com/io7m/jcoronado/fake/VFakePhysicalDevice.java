@@ -20,6 +20,7 @@ package com.io7m.jcoronado.fake;
 import com.io7m.jcoronado.api.VulkanComputeWorkGroupCount;
 import com.io7m.jcoronado.api.VulkanComputeWorkGroupSize;
 import com.io7m.jcoronado.api.VulkanExtensionProperties;
+import com.io7m.jcoronado.api.VulkanExtent3D;
 import com.io7m.jcoronado.api.VulkanFormat;
 import com.io7m.jcoronado.api.VulkanFormatProperties;
 import com.io7m.jcoronado.api.VulkanImageCreateFlag;
@@ -34,10 +35,7 @@ import com.io7m.jcoronado.api.VulkanLogicalDeviceCreateInfo;
 import com.io7m.jcoronado.api.VulkanLogicalDeviceType;
 import com.io7m.jcoronado.api.VulkanPhysicalDeviceDriverProperties;
 import com.io7m.jcoronado.api.VulkanPhysicalDeviceFeatures;
-import com.io7m.jcoronado.api.VulkanPhysicalDeviceFeatures10;
-import com.io7m.jcoronado.api.VulkanPhysicalDeviceFeatures11;
-import com.io7m.jcoronado.api.VulkanPhysicalDeviceFeatures12;
-import com.io7m.jcoronado.api.VulkanPhysicalDeviceFeatures13;
+import com.io7m.jcoronado.api.VulkanPhysicalDeviceFeaturesFunctions;
 import com.io7m.jcoronado.api.VulkanPhysicalDeviceIDProperties;
 import com.io7m.jcoronado.api.VulkanPhysicalDeviceLimits;
 import com.io7m.jcoronado.api.VulkanPhysicalDeviceMemoryProperties;
@@ -47,6 +45,7 @@ import com.io7m.jcoronado.api.VulkanPhysicalDeviceType;
 import com.io7m.jcoronado.api.VulkanPointSizeRange;
 import com.io7m.jcoronado.api.VulkanQueueFamilyIndex;
 import com.io7m.jcoronado.api.VulkanQueueFamilyProperties;
+import com.io7m.jcoronado.api.VulkanQueueFamilyPropertyFlag;
 import com.io7m.jcoronado.api.VulkanVersion;
 import com.io7m.jcoronado.api.VulkanViewportBoundsRange;
 import com.io7m.jcoronado.api.VulkanViewportDimensions;
@@ -74,6 +73,8 @@ public final class VFakePhysicalDevice
   private VulkanPhysicalDeviceFeatures features;
   private VulkanPhysicalDeviceMemoryProperties memory;
   private TreeMap<VulkanQueueFamilyIndex, VulkanQueueFamilyProperties> queueFamilies;
+  private Map<String, VulkanExtensionProperties> extensions;
+  private VFakeLogicalDevice nextDevice;
 
   /**
    * Construct a device.
@@ -91,6 +92,17 @@ public final class VFakePhysicalDevice
     this.queueFamilies =
       new TreeMap<>();
 
+    this.queueFamilies.put(
+      new VulkanQueueFamilyIndex(0),
+      VulkanQueueFamilyProperties.of(
+        new VulkanQueueFamilyIndex(0),
+        1,
+        Set.of(VulkanQueueFamilyPropertyFlag.values()),
+        32,
+        VulkanExtent3D.of(1, 1, 1)
+      )
+    );
+
     this.properties =
       VulkanPhysicalDeviceProperties.builder()
         .setType(VulkanPhysicalDevicePropertiesType.Type.VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU)
@@ -105,6 +117,7 @@ public final class VFakePhysicalDevice
       VulkanPhysicalDeviceLimits.builder()
         .setBufferImageGranularity(131072)
         .setDiscreteQueuePriorities(2)
+        .setFramebufferColorSampleCounts(1)
         .setFramebufferDepthSampleCounts(1)
         .setFramebufferNoAttachmentsSampleCounts(1)
         .setFramebufferStencilSampleCounts(1)
@@ -136,6 +149,7 @@ public final class VFakePhysicalDevice
         .setMaxFragmentOutputAttachments(4)
         .setMaxFramebufferHeight(4096)
         .setMaxFramebufferWidth(4096)
+        .setMaxFramebufferLayers(1)
         .setMaxGeometryInputComponents(64)
         .setMaxGeometryOutputComponents(64)
         .setMaxGeometryOutputVertices(256)
@@ -197,7 +211,9 @@ public final class VFakePhysicalDevice
         .setSampledImageDepthSampleCounts(1)
         .setSampledImageIntegerSampleCounts(0)
         .setSampledImageStencilSampleCounts(1)
+        .setSparseAddressSpaceSize(0x7fffffff)
         .setStandardSampleLocations(true)
+        .setStorageImageSampleCounts(1)
         .setStrictLines(true)
         .setSubPixelInterpolationOffsetBits(1024)
         .setSubPixelPrecisionBits(4)
@@ -209,12 +225,31 @@ public final class VFakePhysicalDevice
         .build();
 
     this.features =
-      VulkanPhysicalDeviceFeatures.builder()
-        .setFeatures10(VulkanPhysicalDeviceFeatures10.builder().build())
-        .setFeatures11(VulkanPhysicalDeviceFeatures11.builder().build())
-        .setFeatures12(VulkanPhysicalDeviceFeatures12.builder().build())
-        .setFeatures13(VulkanPhysicalDeviceFeatures13.builder().build())
-        .build();
+      VulkanPhysicalDeviceFeaturesFunctions.none();
+
+    this.nextDevice =
+      new VFakeLogicalDevice(this);
+  }
+
+  /**
+   * @return The extensions
+   */
+
+  public Map<String, VulkanExtensionProperties> getExtensions()
+  {
+    return this.extensions;
+  }
+
+  /**
+   * Set the extensions.
+   *
+   * @param inExtensions The extensions
+   */
+
+  public void setExtensions(
+    final Map<String, VulkanExtensionProperties> inExtensions)
+  {
+    this.extensions = Objects.requireNonNull(inExtensions, "extensions");
   }
 
   /**
@@ -288,7 +323,7 @@ public final class VFakePhysicalDevice
   public Map<String, VulkanExtensionProperties> extensions(
     final Optional<String> layer)
   {
-    return Map.of();
+    return this.extensions;
   }
 
   @Override
@@ -345,11 +380,23 @@ public final class VFakePhysicalDevice
     return this.queueFamilies;
   }
 
+  /**
+   * Set the next device.
+   *
+   * @param inNextDevice The next device
+   */
+
+  public void setNextDevice(
+    final VFakeLogicalDevice inNextDevice)
+  {
+    this.nextDevice = Objects.requireNonNull(inNextDevice, "nextDevice");
+  }
+
   @Override
   public VulkanLogicalDeviceType createLogicalDevice(
     final VulkanLogicalDeviceCreateInfo info)
   {
-    throw new UnimplementedCodeException();
+    return this.nextDevice;
   }
 
   @Override

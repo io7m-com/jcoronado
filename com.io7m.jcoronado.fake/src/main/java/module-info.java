@@ -24,6 +24,8 @@ module com.io7m.jcoronado.fake
   requires static org.osgi.annotation.versioning;
 
   requires com.io7m.jcoronado.api;
+  requires com.io7m.jcoronado.extensions.khr.surface.api;
+
   requires com.io7m.junreachable.core;
 
   exports com.io7m.jcoronado.fake;

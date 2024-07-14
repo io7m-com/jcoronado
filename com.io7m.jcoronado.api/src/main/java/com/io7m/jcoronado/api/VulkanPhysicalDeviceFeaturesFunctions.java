@@ -39,6 +39,23 @@ public final class VulkanPhysicalDeviceFeaturesFunctions
     return Math.random() >= 0.5;
   }
 
+  private static final VulkanPhysicalDeviceFeatures NO_FEATURES_REQUIRED =
+    VulkanPhysicalDeviceFeatures.builder()
+      .setFeatures10(VulkanPhysicalDeviceFeatures10.builder().build())
+      .setFeatures11(VulkanPhysicalDeviceFeatures11.builder().build())
+      .setFeatures12(VulkanPhysicalDeviceFeatures12.builder().build())
+      .setFeatures13(VulkanPhysicalDeviceFeatures13.builder().build())
+      .build();
+
+  /**
+   * @return No features
+   */
+
+  public static VulkanPhysicalDeviceFeatures none()
+  {
+    return NO_FEATURES_REQUIRED;
+  }
+
   /**
    * @return A random feature selection
    */
