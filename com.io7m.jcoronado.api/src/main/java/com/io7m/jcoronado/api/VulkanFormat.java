@@ -19,6 +19,26 @@ package com.io7m.jcoronado.api;
 import java.util.Map;
 import java.util.Optional;
 
+import static com.io7m.jcoronado.api.VulkanFormatCompressed.FORMAT_COMPRESSED;
+import static com.io7m.jcoronado.api.VulkanFormatCompressed.FORMAT_UNCOMPRESSED;
+import static com.io7m.jcoronado.api.VulkanFormatData.FORMAT_DATA_FLOATING_POINT_SIGNED;
+import static com.io7m.jcoronado.api.VulkanFormatData.FORMAT_DATA_FLOATING_POINT_UNSIGNED;
+import static com.io7m.jcoronado.api.VulkanFormatData.FORMAT_DATA_INTEGER_SIGNED;
+import static com.io7m.jcoronado.api.VulkanFormatData.FORMAT_DATA_INTEGER_UNSIGNED;
+import static com.io7m.jcoronado.api.VulkanFormatData.FORMAT_DATA_NORMALIZED_FIXED_POINT_SIGNED;
+import static com.io7m.jcoronado.api.VulkanFormatData.FORMAT_DATA_NORMALIZED_FIXED_POINT_UNSIGNED;
+import static com.io7m.jcoronado.api.VulkanFormatData.FORMAT_DATA_OPAQUE;
+import static com.io7m.jcoronado.api.VulkanFormatData.FORMAT_DATA_SCALED_SIGNED;
+import static com.io7m.jcoronado.api.VulkanFormatData.FORMAT_DATA_SCALED_UNSIGNED;
+import static com.io7m.jcoronado.api.VulkanFormatInterpretation.FORMAT_INTERPRETATION_COLOR;
+import static com.io7m.jcoronado.api.VulkanFormatInterpretation.FORMAT_INTERPRETATION_DEPTH;
+import static com.io7m.jcoronado.api.VulkanFormatInterpretation.FORMAT_INTERPRETATION_DEPTH_STENCIL;
+import static com.io7m.jcoronado.api.VulkanFormatInterpretation.FORMAT_INTERPRETATION_OPAQUE;
+import static com.io7m.jcoronado.api.VulkanFormatInterpretation.FORMAT_INTERPRETATION_STENCIL;
+import static com.io7m.jcoronado.api.VulkanFormatSpace.FORMAT_SPACE_LINEAR;
+import static com.io7m.jcoronado.api.VulkanFormatSpace.FORMAT_SPACE_NONE;
+import static com.io7m.jcoronado.api.VulkanFormatSpace.FORMAT_SPACE_SRGB;
+
 /**
  * Note: This enum is not hand-written: See formats.sh
  *
@@ -32,14 +52,62 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    * The format is not specified.
    */
 
-  VK_FORMAT_UNDEFINED(0),
+  VK_FORMAT_UNDEFINED(0) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_UNCOMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_OPAQUE;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_OPAQUE;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_NONE;
+    }
+  },
 
   /**
    * A two-component, 8-bit packed unsigned normalized format that has a 4-bit R component in bits
    * 4..7, and a 4-bit G component in bits 0..3.
    */
 
-  VK_FORMAT_R4G4_UNORM_PACK8(1),
+  VK_FORMAT_R4G4_UNORM_PACK8(1) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_UNCOMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_NORMALIZED_FIXED_POINT_UNSIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A four-component, 16-bit packed unsigned normalized format that has a 4-bit R component in bits
@@ -47,7 +115,31 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    * component in bits 0..3.
    */
 
-  VK_FORMAT_R4G4B4A4_UNORM_PACK16(2),
+  VK_FORMAT_R4G4B4A4_UNORM_PACK16(2) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_UNCOMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_NORMALIZED_FIXED_POINT_UNSIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A four-component, 16-bit packed unsigned normalized format that has a 4-bit B component in bits
@@ -55,21 +147,93 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    * component in bits 0..3.
    */
 
-  VK_FORMAT_B4G4R4A4_UNORM_PACK16(3),
+  VK_FORMAT_B4G4R4A4_UNORM_PACK16(3) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_UNCOMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_NORMALIZED_FIXED_POINT_UNSIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A three-component, 16-bit packed unsigned normalized format that has a 5-bit R component in
    * bits 11..15, a 6-bit G component in bits 5..10, and a 5-bit B component in bits 0..4.
    */
 
-  VK_FORMAT_R5G6B5_UNORM_PACK16(4),
+  VK_FORMAT_R5G6B5_UNORM_PACK16(4) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_UNCOMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_NORMALIZED_FIXED_POINT_UNSIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A three-component, 16-bit packed unsigned normalized format that has a 5-bit B component in
    * bits 11..15, a 6-bit G component in bits 5..10, and a 5-bit R component in bits 0..4.
    */
 
-  VK_FORMAT_B5G6R5_UNORM_PACK16(5),
+  VK_FORMAT_B5G6R5_UNORM_PACK16(5) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_UNCOMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_NORMALIZED_FIXED_POINT_UNSIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A four-component, 16-bit packed unsigned normalized format that has a 5-bit R component in bits
@@ -77,7 +241,31 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    * component in bit 0.
    */
 
-  VK_FORMAT_R5G5B5A1_UNORM_PACK16(6),
+  VK_FORMAT_R5G5B5A1_UNORM_PACK16(6) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_UNCOMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_NORMALIZED_FIXED_POINT_UNSIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A four-component, 16-bit packed unsigned normalized format that has a 5-bit B component in bits
@@ -85,7 +273,31 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    * component in bit 0.
    */
 
-  VK_FORMAT_B5G5R5A1_UNORM_PACK16(7),
+  VK_FORMAT_B5G5R5A1_UNORM_PACK16(7) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_UNCOMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_NORMALIZED_FIXED_POINT_UNSIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A four-component, 16-bit packed unsigned normalized format that has a 1-bit A component in bit
@@ -93,92 +305,428 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    * component in bits 0..4.
    */
 
-  VK_FORMAT_A1R5G5B5_UNORM_PACK16(8),
+  VK_FORMAT_A1R5G5B5_UNORM_PACK16(8) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_UNCOMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_NORMALIZED_FIXED_POINT_UNSIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A one-component, 8-bit unsigned normalized format that has a single 8-bit R component.
    */
 
-  VK_FORMAT_R8_UNORM(9),
+  VK_FORMAT_R8_UNORM(9) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_UNCOMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_NORMALIZED_FIXED_POINT_UNSIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A one-component, 8-bit signed normalized format that has a single 8-bit R component.
    */
 
-  VK_FORMAT_R8_SNORM(10),
+  VK_FORMAT_R8_SNORM(10) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_UNCOMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_NORMALIZED_FIXED_POINT_SIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A one-component, 8-bit unsigned scaled integer format that has a single 8-bit R component.
    */
 
-  VK_FORMAT_R8_USCALED(11),
+  VK_FORMAT_R8_USCALED(11) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_UNCOMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_SCALED_UNSIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A one-component, 8-bit signed scaled integer format that has a single 8-bit R component.
    */
 
-  VK_FORMAT_R8_SSCALED(12),
+  VK_FORMAT_R8_SSCALED(12) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_UNCOMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_SCALED_SIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A one-component, 8-bit unsigned integer format that has a single 8-bit R component.
    */
 
-  VK_FORMAT_R8_UINT(13),
+  VK_FORMAT_R8_UINT(13) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_UNCOMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_INTEGER_UNSIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A one-component, 8-bit signed integer format that has a single 8-bit R component.
    */
 
-  VK_FORMAT_R8_SINT(14),
+  VK_FORMAT_R8_SINT(14) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_UNCOMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_INTEGER_SIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A one-component, 8-bit unsigned normalized format that has a single 8-bit R component stored
    * with sRGB nonlinear encoding.
    */
 
-  VK_FORMAT_R8_SRGB(15),
+  VK_FORMAT_R8_SRGB(15) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_UNCOMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_NORMALIZED_FIXED_POINT_UNSIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_SRGB;
+    }
+  },
 
   /**
    * A two-component, 16-bit unsigned normalized format that has an 8-bit R component in byte 0, and
    * an 8-bit G component in byte 1.
    */
 
-  VK_FORMAT_R8G8_UNORM(16),
+  VK_FORMAT_R8G8_UNORM(16) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_UNCOMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_NORMALIZED_FIXED_POINT_UNSIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A two-component, 16-bit signed normalized format that has an 8-bit R component in byte 0, and
    * an 8-bit G component in byte 1.
    */
 
-  VK_FORMAT_R8G8_SNORM(17),
+  VK_FORMAT_R8G8_SNORM(17) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_UNCOMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_NORMALIZED_FIXED_POINT_SIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A two-component, 16-bit unsigned scaled integer format that has an 8-bit R component in byte 0,
    * and an 8-bit G component in byte 1.
    */
 
-  VK_FORMAT_R8G8_USCALED(18),
+  VK_FORMAT_R8G8_USCALED(18) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_UNCOMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_SCALED_UNSIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A two-component, 16-bit signed scaled integer format that has an 8-bit R component in byte 0,
    * and an 8-bit G component in byte 1.
    */
 
-  VK_FORMAT_R8G8_SSCALED(19),
+  VK_FORMAT_R8G8_SSCALED(19) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_UNCOMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_SCALED_SIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A two-component, 16-bit unsigned integer format that has an 8-bit R component in byte 0, and an
    * 8-bit G component in byte 1.
    */
 
-  VK_FORMAT_R8G8_UINT(20),
+  VK_FORMAT_R8G8_UINT(20) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_UNCOMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_INTEGER_UNSIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A two-component, 16-bit signed integer format that has an 8-bit R component in byte 0, and an
    * 8-bit G component in byte 1.
    */
 
-  VK_FORMAT_R8G8_SINT(21),
+  VK_FORMAT_R8G8_SINT(21) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_UNCOMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_INTEGER_SIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A two-component, 16-bit unsigned normalized format that has an 8-bit R component stored with
@@ -186,49 +734,217 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    * in byte 1.
    */
 
-  VK_FORMAT_R8G8_SRGB(22),
+  VK_FORMAT_R8G8_SRGB(22) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_UNCOMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_NORMALIZED_FIXED_POINT_UNSIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_SRGB;
+    }
+  },
 
   /**
    * A three-component, 24-bit unsigned normalized format that has an 8-bit R component in byte 0,
    * an 8-bit G component in byte 1, and an 8-bit B component in byte 2.
    */
 
-  VK_FORMAT_R8G8B8_UNORM(23),
+  VK_FORMAT_R8G8B8_UNORM(23) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_UNCOMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_NORMALIZED_FIXED_POINT_UNSIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A three-component, 24-bit signed normalized format that has an 8-bit R component in byte 0, an
    * 8-bit G component in byte 1, and an 8-bit B component in byte 2.
    */
 
-  VK_FORMAT_R8G8B8_SNORM(24),
+  VK_FORMAT_R8G8B8_SNORM(24) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_UNCOMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_NORMALIZED_FIXED_POINT_SIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A three-component, 24-bit unsigned scaled format that has an 8-bit R component in byte 0, an
    * 8-bit G component in byte 1, and an 8-bit B component in byte 2.
    */
 
-  VK_FORMAT_R8G8B8_USCALED(25),
+  VK_FORMAT_R8G8B8_USCALED(25) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_UNCOMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_SCALED_UNSIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A three-component, 24-bit signed scaled format that has an 8-bit R component in byte 0, an
    * 8-bit G component in byte 1, and an 8-bit B component in byte 2.
    */
 
-  VK_FORMAT_R8G8B8_SSCALED(26),
+  VK_FORMAT_R8G8B8_SSCALED(26) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_UNCOMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_SCALED_SIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A three-component, 24-bit unsigned integer format that has an 8-bit R component in byte 0, an
    * 8-bit G component in byte 1, and an 8-bit B component in byte 2.
    */
 
-  VK_FORMAT_R8G8B8_UINT(27),
+  VK_FORMAT_R8G8B8_UINT(27) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_UNCOMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_INTEGER_UNSIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A three-component, 24-bit signed integer format that has an 8-bit R component in byte 0, an
    * 8-bit G component in byte 1, and an 8-bit B component in byte 2.
    */
 
-  VK_FORMAT_R8G8B8_SINT(28),
+  VK_FORMAT_R8G8B8_SINT(28) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_UNCOMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_INTEGER_SIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A three-component, 24-bit unsigned normalized format that has an 8-bit R component stored with
@@ -236,49 +952,217 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    * byte 1, and an 8-bit B component stored with sRGB nonlinear encoding in byte 2.
    */
 
-  VK_FORMAT_R8G8B8_SRGB(29),
+  VK_FORMAT_R8G8B8_SRGB(29) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_UNCOMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_NORMALIZED_FIXED_POINT_UNSIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_SRGB;
+    }
+  },
 
   /**
    * A three-component, 24-bit unsigned normalized format that has an 8-bit B component in byte 0,
    * an 8-bit G component in byte 1, and an 8-bit R component in byte 2.
    */
 
-  VK_FORMAT_B8G8R8_UNORM(30),
+  VK_FORMAT_B8G8R8_UNORM(30) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_UNCOMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_NORMALIZED_FIXED_POINT_UNSIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A three-component, 24-bit signed normalized format that has an 8-bit B component in byte 0, an
    * 8-bit G component in byte 1, and an 8-bit R component in byte 2.
    */
 
-  VK_FORMAT_B8G8R8_SNORM(31),
+  VK_FORMAT_B8G8R8_SNORM(31) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_UNCOMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_NORMALIZED_FIXED_POINT_SIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A three-component, 24-bit unsigned scaled format that has an 8-bit B component in byte 0, an
    * 8-bit G component in byte 1, and an 8-bit R component in byte 2.
    */
 
-  VK_FORMAT_B8G8R8_USCALED(32),
+  VK_FORMAT_B8G8R8_USCALED(32) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_UNCOMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_SCALED_UNSIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A three-component, 24-bit signed scaled format that has an 8-bit B component in byte 0, an
    * 8-bit G component in byte 1, and an 8-bit R component in byte 2.
    */
 
-  VK_FORMAT_B8G8R8_SSCALED(33),
+  VK_FORMAT_B8G8R8_SSCALED(33) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_UNCOMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_SCALED_SIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A three-component, 24-bit unsigned integer format that has an 8-bit B component in byte 0, an
    * 8-bit G component in byte 1, and an 8-bit R component in byte 2.
    */
 
-  VK_FORMAT_B8G8R8_UINT(34),
+  VK_FORMAT_B8G8R8_UINT(34) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_UNCOMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_INTEGER_UNSIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A three-component, 24-bit signed integer format that has an 8-bit B component in byte 0, an
    * 8-bit G component in byte 1, and an 8-bit R component in byte 2.
    */
 
-  VK_FORMAT_B8G8R8_SINT(35),
+  VK_FORMAT_B8G8R8_SINT(35) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_UNCOMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_INTEGER_SIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A three-component, 24-bit unsigned normalized format that has an 8-bit B component stored with
@@ -286,7 +1170,31 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    * byte 1, and an 8-bit R component stored with sRGB nonlinear encoding in byte 2.
    */
 
-  VK_FORMAT_B8G8R8_SRGB(36),
+  VK_FORMAT_B8G8R8_SRGB(36) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_UNCOMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_NORMALIZED_FIXED_POINT_UNSIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_SRGB;
+    }
+  },
 
   /**
    * A four-component, 32-bit unsigned normalized format that has an 8-bit R component in byte 0, an
@@ -294,7 +1202,31 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    * 3.
    */
 
-  VK_FORMAT_R8G8B8A8_UNORM(37),
+  VK_FORMAT_R8G8B8A8_UNORM(37) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_UNCOMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_NORMALIZED_FIXED_POINT_UNSIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A four-component, 32-bit signed normalized format that has an 8-bit R component in byte 0, an
@@ -302,7 +1234,31 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    * 3.
    */
 
-  VK_FORMAT_R8G8B8A8_SNORM(38),
+  VK_FORMAT_R8G8B8A8_SNORM(38) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_UNCOMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_NORMALIZED_FIXED_POINT_SIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A four-component, 32-bit unsigned scaled format that has an 8-bit R component in byte 0, an
@@ -310,14 +1266,62 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    * 3.
    */
 
-  VK_FORMAT_R8G8B8A8_USCALED(39),
+  VK_FORMAT_R8G8B8A8_USCALED(39) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_UNCOMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_SCALED_UNSIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A four-component, 32-bit signed scaled format that has an 8-bit R component in byte 0, an 8-bit
    * G component in byte 1, an 8-bit B component in byte 2, and an 8-bit A component in byte 3.
    */
 
-  VK_FORMAT_R8G8B8A8_SSCALED(40),
+  VK_FORMAT_R8G8B8A8_SSCALED(40) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_UNCOMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_SCALED_SIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A four-component, 32-bit unsigned integer format that has an 8-bit R component in byte 0, an
@@ -325,7 +1329,31 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    * 3.
    */
 
-  VK_FORMAT_R8G8B8A8_UINT(41),
+  VK_FORMAT_R8G8B8A8_UINT(41) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_UNCOMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_INTEGER_UNSIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A four-component, 32-bit signed integer format that has an 8-bit R component in byte 0, an
@@ -333,7 +1361,31 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    * 3.
    */
 
-  VK_FORMAT_R8G8B8A8_SINT(42),
+  VK_FORMAT_R8G8B8A8_SINT(42) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_UNCOMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_INTEGER_SIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A four-component, 32-bit unsigned normalized format that has an 8-bit R component stored with
@@ -342,7 +1394,31 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    * component in byte 3.
    */
 
-  VK_FORMAT_R8G8B8A8_SRGB(43),
+  VK_FORMAT_R8G8B8A8_SRGB(43) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_UNCOMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_NORMALIZED_FIXED_POINT_UNSIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_SRGB;
+    }
+  },
 
   /**
    * A four-component, 32-bit unsigned normalized format that has an 8-bit B component in byte 0, an
@@ -350,7 +1426,31 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    * 3.
    */
 
-  VK_FORMAT_B8G8R8A8_UNORM(44),
+  VK_FORMAT_B8G8R8A8_UNORM(44) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_UNCOMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_NORMALIZED_FIXED_POINT_UNSIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A four-component, 32-bit signed normalized format that has an 8-bit B component in byte 0, an
@@ -358,7 +1458,31 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    * 3.
    */
 
-  VK_FORMAT_B8G8R8A8_SNORM(45),
+  VK_FORMAT_B8G8R8A8_SNORM(45) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_UNCOMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_NORMALIZED_FIXED_POINT_SIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A four-component, 32-bit unsigned scaled format that has an 8-bit B component in byte 0, an
@@ -366,14 +1490,62 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    * 3.
    */
 
-  VK_FORMAT_B8G8R8A8_USCALED(46),
+  VK_FORMAT_B8G8R8A8_USCALED(46) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_UNCOMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_SCALED_UNSIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A four-component, 32-bit signed scaled format that has an 8-bit B component in byte 0, an 8-bit
    * G component in byte 1, an 8-bit R component in byte 2, and an 8-bit A component in byte 3.
    */
 
-  VK_FORMAT_B8G8R8A8_SSCALED(47),
+  VK_FORMAT_B8G8R8A8_SSCALED(47) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_UNCOMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_SCALED_SIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A four-component, 32-bit unsigned integer format that has an 8-bit B component in byte 0, an
@@ -381,7 +1553,31 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    * 3.
    */
 
-  VK_FORMAT_B8G8R8A8_UINT(48),
+  VK_FORMAT_B8G8R8A8_UINT(48) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_UNCOMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_INTEGER_UNSIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A four-component, 32-bit signed integer format that has an 8-bit B component in byte 0, an
@@ -389,7 +1585,31 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    * 3.
    */
 
-  VK_FORMAT_B8G8R8A8_SINT(49),
+  VK_FORMAT_B8G8R8A8_SINT(49) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_UNCOMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_INTEGER_SIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A four-component, 32-bit unsigned normalized format that has an 8-bit B component stored with
@@ -398,7 +1618,31 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    * component in byte 3.
    */
 
-  VK_FORMAT_B8G8R8A8_SRGB(50),
+  VK_FORMAT_B8G8R8A8_SRGB(50) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_UNCOMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_NORMALIZED_FIXED_POINT_UNSIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_SRGB;
+    }
+  },
 
   /**
    * A four-component, 32-bit packed unsigned normalized format that has an 8-bit A component in
@@ -406,7 +1650,31 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    * 8-bit R component in bits 0..7.
    */
 
-  VK_FORMAT_A8B8G8R8_UNORM_PACK32(51),
+  VK_FORMAT_A8B8G8R8_UNORM_PACK32(51) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_UNCOMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_NORMALIZED_FIXED_POINT_UNSIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A four-component, 32-bit packed signed normalized format that has an 8-bit A component in bits
@@ -414,7 +1682,31 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    * component in bits 0..7.
    */
 
-  VK_FORMAT_A8B8G8R8_SNORM_PACK32(52),
+  VK_FORMAT_A8B8G8R8_SNORM_PACK32(52) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_UNCOMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_NORMALIZED_FIXED_POINT_SIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A four-component, 32-bit packed unsigned scaled integer format that has an 8-bit A component in
@@ -422,7 +1714,31 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    * 8-bit R component in bits 0..7.
    */
 
-  VK_FORMAT_A8B8G8R8_USCALED_PACK32(53),
+  VK_FORMAT_A8B8G8R8_USCALED_PACK32(53) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_UNCOMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_SCALED_UNSIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A four-component, 32-bit packed signed scaled integer format that has an 8-bit A component in
@@ -430,7 +1746,31 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    * 8-bit R component in bits 0..7.
    */
 
-  VK_FORMAT_A8B8G8R8_SSCALED_PACK32(54),
+  VK_FORMAT_A8B8G8R8_SSCALED_PACK32(54) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_UNCOMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_SCALED_SIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A four-component, 32-bit packed unsigned integer format that has an 8-bit A component in bits
@@ -438,7 +1778,31 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    * component in bits 0..7.
    */
 
-  VK_FORMAT_A8B8G8R8_UINT_PACK32(55),
+  VK_FORMAT_A8B8G8R8_UINT_PACK32(55) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_UNCOMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_INTEGER_UNSIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A four-component, 32-bit packed signed integer format that has an 8-bit A component in bits
@@ -446,7 +1810,31 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    * component in bits 0..7.
    */
 
-  VK_FORMAT_A8B8G8R8_SINT_PACK32(56),
+  VK_FORMAT_A8B8G8R8_SINT_PACK32(56) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_UNCOMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_INTEGER_SIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A four-component, 32-bit packed unsigned normalized format that has an 8-bit A component in
@@ -455,7 +1843,31 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    * with sRGB nonlinear encoding in bits 0..7.
    */
 
-  VK_FORMAT_A8B8G8R8_SRGB_PACK32(57),
+  VK_FORMAT_A8B8G8R8_SRGB_PACK32(57) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_UNCOMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_NORMALIZED_FIXED_POINT_UNSIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_SRGB;
+    }
+  },
 
   /**
    * A four-component, 32-bit packed unsigned normalized format that has a 2-bit A component in bits
@@ -463,7 +1875,31 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    * B component in bits 0..9.
    */
 
-  VK_FORMAT_A2R10G10B10_UNORM_PACK32(58),
+  VK_FORMAT_A2R10G10B10_UNORM_PACK32(58) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_UNCOMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_NORMALIZED_FIXED_POINT_UNSIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A four-component, 32-bit packed signed normalized format that has a 2-bit A component in bits
@@ -471,7 +1907,31 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    * B component in bits 0..9.
    */
 
-  VK_FORMAT_A2R10G10B10_SNORM_PACK32(59),
+  VK_FORMAT_A2R10G10B10_SNORM_PACK32(59) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_UNCOMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_NORMALIZED_FIXED_POINT_SIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A four-component, 32-bit packed unsigned scaled integer format that has a 2-bit A component in
@@ -479,7 +1939,31 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    * 10-bit B component in bits 0..9.
    */
 
-  VK_FORMAT_A2R10G10B10_USCALED_PACK32(60),
+  VK_FORMAT_A2R10G10B10_USCALED_PACK32(60) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_UNCOMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_SCALED_UNSIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A four-component, 32-bit packed signed scaled integer format that has a 2-bit A component in
@@ -487,7 +1971,31 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    * 10-bit B component in bits 0..9.
    */
 
-  VK_FORMAT_A2R10G10B10_SSCALED_PACK32(61),
+  VK_FORMAT_A2R10G10B10_SSCALED_PACK32(61) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_UNCOMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_SCALED_SIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A four-component, 32-bit packed unsigned integer format that has a 2-bit A component in bits
@@ -495,7 +2003,31 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    * B component in bits 0..9.
    */
 
-  VK_FORMAT_A2R10G10B10_UINT_PACK32(62),
+  VK_FORMAT_A2R10G10B10_UINT_PACK32(62) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_UNCOMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_INTEGER_UNSIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A four-component, 32-bit packed signed integer format that has a 2-bit A component in bits
@@ -503,7 +2035,31 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    * B component in bits 0..9.
    */
 
-  VK_FORMAT_A2R10G10B10_SINT_PACK32(63),
+  VK_FORMAT_A2R10G10B10_SINT_PACK32(63) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_UNCOMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_INTEGER_SIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A four-component, 32-bit packed unsigned normalized format that has a 2-bit A component in bits
@@ -511,7 +2067,31 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    * R component in bits 0..9.
    */
 
-  VK_FORMAT_A2B10G10R10_UNORM_PACK32(64),
+  VK_FORMAT_A2B10G10R10_UNORM_PACK32(64) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_UNCOMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_NORMALIZED_FIXED_POINT_UNSIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A four-component, 32-bit packed signed normalized format that has a 2-bit A component in bits
@@ -519,7 +2099,31 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    * R component in bits 0..9.
    */
 
-  VK_FORMAT_A2B10G10R10_SNORM_PACK32(65),
+  VK_FORMAT_A2B10G10R10_SNORM_PACK32(65) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_UNCOMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_NORMALIZED_FIXED_POINT_SIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A four-component, 32-bit packed unsigned scaled integer format that has a 2-bit A component in
@@ -527,7 +2131,31 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    * 10-bit R component in bits 0..9.
    */
 
-  VK_FORMAT_A2B10G10R10_USCALED_PACK32(66),
+  VK_FORMAT_A2B10G10R10_USCALED_PACK32(66) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_UNCOMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_SCALED_UNSIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A four-component, 32-bit packed signed scaled integer format that has a 2-bit A component in
@@ -535,7 +2163,31 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    * 10-bit R component in bits 0..9.
    */
 
-  VK_FORMAT_A2B10G10R10_SSCALED_PACK32(67),
+  VK_FORMAT_A2B10G10R10_SSCALED_PACK32(67) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_UNCOMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_SCALED_SIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A four-component, 32-bit packed unsigned integer format that has a 2-bit A component in bits
@@ -543,7 +2195,31 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    * R component in bits 0..9.
    */
 
-  VK_FORMAT_A2B10G10R10_UINT_PACK32(68),
+  VK_FORMAT_A2B10G10R10_UINT_PACK32(68) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_UNCOMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_INTEGER_UNSIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A four-component, 32-bit packed signed integer format that has a 2-bit A component in bits
@@ -551,147 +2227,675 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    * R component in bits 0..9.
    */
 
-  VK_FORMAT_A2B10G10R10_SINT_PACK32(69),
+  VK_FORMAT_A2B10G10R10_SINT_PACK32(69) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_UNCOMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_INTEGER_SIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A one-component, 16-bit unsigned normalized format that has a single 16-bit R component.
    */
 
-  VK_FORMAT_R16_UNORM(70),
+  VK_FORMAT_R16_UNORM(70) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_UNCOMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_NORMALIZED_FIXED_POINT_UNSIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A one-component, 16-bit signed normalized format that has a single 16-bit R component.
    */
 
-  VK_FORMAT_R16_SNORM(71),
+  VK_FORMAT_R16_SNORM(71) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_UNCOMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_NORMALIZED_FIXED_POINT_SIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A one-component, 16-bit unsigned scaled integer format that has a single 16-bit R component.
    */
 
-  VK_FORMAT_R16_USCALED(72),
+  VK_FORMAT_R16_USCALED(72) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_UNCOMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_SCALED_UNSIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A one-component, 16-bit signed scaled integer format that has a single 16-bit R component.
    */
 
-  VK_FORMAT_R16_SSCALED(73),
+  VK_FORMAT_R16_SSCALED(73) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_UNCOMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_SCALED_SIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A one-component, 16-bit unsigned integer format that has a single 16-bit R component.
    */
 
-  VK_FORMAT_R16_UINT(74),
+  VK_FORMAT_R16_UINT(74) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_UNCOMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_INTEGER_UNSIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A one-component, 16-bit signed integer format that has a single 16-bit R component.
    */
 
-  VK_FORMAT_R16_SINT(75),
+  VK_FORMAT_R16_SINT(75) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_UNCOMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_INTEGER_SIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A one-component, 16-bit signed floating-point format that has a single 16-bit R component.
    */
 
-  VK_FORMAT_R16_SFLOAT(76),
+  VK_FORMAT_R16_SFLOAT(76) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_UNCOMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_FLOATING_POINT_SIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A two-component, 32-bit unsigned normalized format that has a 16-bit R component in bytes 0..1,
    * and a 16-bit G component in bytes 2..3.
    */
 
-  VK_FORMAT_R16G16_UNORM(77),
+  VK_FORMAT_R16G16_UNORM(77) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_UNCOMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_NORMALIZED_FIXED_POINT_UNSIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A two-component, 32-bit signed normalized format that has a 16-bit R component in bytes 0..1,
    * and a 16-bit G component in bytes 2..3.
    */
 
-  VK_FORMAT_R16G16_SNORM(78),
+  VK_FORMAT_R16G16_SNORM(78) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_UNCOMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_NORMALIZED_FIXED_POINT_SIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A two-component, 32-bit unsigned scaled integer format that has a 16-bit R component in bytes
    * 0..1, and a 16-bit G component in bytes 2..3.
    */
 
-  VK_FORMAT_R16G16_USCALED(79),
+  VK_FORMAT_R16G16_USCALED(79) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_UNCOMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_SCALED_UNSIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A two-component, 32-bit signed scaled integer format that has a 16-bit R component in bytes
    * 0..1, and a 16-bit G component in bytes 2..3.
    */
 
-  VK_FORMAT_R16G16_SSCALED(80),
+  VK_FORMAT_R16G16_SSCALED(80) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_UNCOMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_SCALED_SIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A two-component, 32-bit unsigned integer format that has a 16-bit R component in bytes 0..1,
    * and a 16-bit G component in bytes 2..3.
    */
 
-  VK_FORMAT_R16G16_UINT(81),
+  VK_FORMAT_R16G16_UINT(81) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_UNCOMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_INTEGER_UNSIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A two-component, 32-bit signed integer format that has a 16-bit R component in bytes 0..1, and
    * a 16-bit G component in bytes 2..3.
    */
 
-  VK_FORMAT_R16G16_SINT(82),
+  VK_FORMAT_R16G16_SINT(82) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_UNCOMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_INTEGER_SIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A two-component, 32-bit signed floating-point format that has a 16-bit R component in bytes
    * 0..1, and a 16-bit G component in bytes 2..3.
    */
 
-  VK_FORMAT_R16G16_SFLOAT(83),
+  VK_FORMAT_R16G16_SFLOAT(83) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_UNCOMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_FLOATING_POINT_SIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A three-component, 48-bit unsigned normalized format that has a 16-bit R component in bytes
    * 0..1, a 16-bit G component in bytes 2..3, and a 16-bit B component in bytes 4..5.
    */
 
-  VK_FORMAT_R16G16B16_UNORM(84),
+  VK_FORMAT_R16G16B16_UNORM(84) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_UNCOMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_NORMALIZED_FIXED_POINT_UNSIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A three-component, 48-bit signed normalized format that has a 16-bit R component in bytes 0..1,
    * a 16-bit G component in bytes 2..3, and a 16-bit B component in bytes 4..5.
    */
 
-  VK_FORMAT_R16G16B16_SNORM(85),
+  VK_FORMAT_R16G16B16_SNORM(85) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_UNCOMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_NORMALIZED_FIXED_POINT_SIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A three-component, 48-bit unsigned scaled integer format that has a 16-bit R component in bytes
    * 0..1, a 16-bit G component in bytes 2..3, and a 16-bit B component in bytes 4..5.
    */
 
-  VK_FORMAT_R16G16B16_USCALED(86),
+  VK_FORMAT_R16G16B16_USCALED(86) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_UNCOMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_SCALED_UNSIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A three-component, 48-bit signed scaled integer format that has a 16-bit R component in bytes
    * 0..1, a 16-bit G component in bytes 2..3, and a 16-bit B component in bytes 4..5.
    */
 
-  VK_FORMAT_R16G16B16_SSCALED(87),
+  VK_FORMAT_R16G16B16_SSCALED(87) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_UNCOMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_SCALED_SIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A three-component, 48-bit unsigned integer format that has a 16-bit R component in bytes 0..1,
    * a 16-bit G component in bytes 2..3, and a 16-bit B component in bytes 4..5.
    */
 
-  VK_FORMAT_R16G16B16_UINT(88),
+  VK_FORMAT_R16G16B16_UINT(88) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_UNCOMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_INTEGER_UNSIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A three-component, 48-bit signed integer format that has a 16-bit R component in bytes 0..1, a
    * 16-bit G component in bytes 2..3, and a 16-bit B component in bytes 4..5.
    */
 
-  VK_FORMAT_R16G16B16_SINT(89),
+  VK_FORMAT_R16G16B16_SINT(89) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_UNCOMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_INTEGER_SIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A three-component, 48-bit signed floating-point format that has a 16-bit R component in bytes
    * 0..1, a 16-bit G component in bytes 2..3, and a 16-bit B component in bytes 4..5.
    */
 
-  VK_FORMAT_R16G16B16_SFLOAT(90),
+  VK_FORMAT_R16G16B16_SFLOAT(90) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_UNCOMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_FLOATING_POINT_SIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A four-component, 64-bit unsigned normalized format that has a 16-bit R component in bytes
@@ -699,7 +2903,31 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    * component in bytes 6..7.
    */
 
-  VK_FORMAT_R16G16B16A16_UNORM(91),
+  VK_FORMAT_R16G16B16A16_UNORM(91) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_UNCOMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_NORMALIZED_FIXED_POINT_UNSIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A four-component, 64-bit signed normalized format that has a 16-bit R component in bytes 0..1,
@@ -707,7 +2935,31 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    * component in bytes 6..7.
    */
 
-  VK_FORMAT_R16G16B16A16_SNORM(92),
+  VK_FORMAT_R16G16B16A16_SNORM(92) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_UNCOMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_NORMALIZED_FIXED_POINT_SIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A four-component, 64-bit unsigned scaled integer format that has a 16-bit R component in bytes
@@ -715,7 +2967,31 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    * component in bytes 6..7.
    */
 
-  VK_FORMAT_R16G16B16A16_USCALED(93),
+  VK_FORMAT_R16G16B16A16_USCALED(93) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_UNCOMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_SCALED_UNSIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A four-component, 64-bit signed scaled integer format that has a 16-bit R component in bytes
@@ -723,7 +2999,31 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    * component in bytes 6..7.
    */
 
-  VK_FORMAT_R16G16B16A16_SSCALED(94),
+  VK_FORMAT_R16G16B16A16_SSCALED(94) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_UNCOMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_SCALED_SIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A four-component, 64-bit unsigned integer format that has a 16-bit R component in bytes 0..1, a
@@ -731,7 +3031,31 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    * in bytes 6..7.
    */
 
-  VK_FORMAT_R16G16B16A16_UINT(95),
+  VK_FORMAT_R16G16B16A16_UINT(95) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_UNCOMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_INTEGER_UNSIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A four-component, 64-bit signed integer format that has a 16-bit R component in bytes 0..1, a
@@ -739,7 +3063,31 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    * in bytes 6..7.
    */
 
-  VK_FORMAT_R16G16B16A16_SINT(96),
+  VK_FORMAT_R16G16B16A16_SINT(96) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_UNCOMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_INTEGER_SIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A four-component, 64-bit signed floating-point format that has a 16-bit R component in bytes
@@ -747,67 +3095,307 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    * component in bytes 6..7.
    */
 
-  VK_FORMAT_R16G16B16A16_SFLOAT(97),
+  VK_FORMAT_R16G16B16A16_SFLOAT(97) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_UNCOMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_FLOATING_POINT_SIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A one-component, 32-bit unsigned integer format that has a single 32-bit R component.
    */
 
-  VK_FORMAT_R32_UINT(98),
+  VK_FORMAT_R32_UINT(98) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_UNCOMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_INTEGER_UNSIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A one-component, 32-bit signed integer format that has a single 32-bit R component.
    */
 
-  VK_FORMAT_R32_SINT(99),
+  VK_FORMAT_R32_SINT(99) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_UNCOMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_INTEGER_SIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A one-component, 32-bit signed floating-point format that has a single 32-bit R component.
    */
 
-  VK_FORMAT_R32_SFLOAT(100),
+  VK_FORMAT_R32_SFLOAT(100) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_UNCOMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_FLOATING_POINT_SIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A two-component, 64-bit unsigned integer format that has a 32-bit R component in bytes 0..3,
    * and a 32-bit G component in bytes 4..7.
    */
 
-  VK_FORMAT_R32G32_UINT(101),
+  VK_FORMAT_R32G32_UINT(101) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_UNCOMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_INTEGER_UNSIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A two-component, 64-bit signed integer format that has a 32-bit R component in bytes 0..3, and
    * a 32-bit G component in bytes 4..7.
    */
 
-  VK_FORMAT_R32G32_SINT(102),
+  VK_FORMAT_R32G32_SINT(102) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_UNCOMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_INTEGER_SIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A two-component, 64-bit signed floating-point format that has a 32-bit R component in bytes
    * 0..3, and a 32-bit G component in bytes 4..7.
    */
 
-  VK_FORMAT_R32G32_SFLOAT(103),
+  VK_FORMAT_R32G32_SFLOAT(103) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_UNCOMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_FLOATING_POINT_SIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A three-component, 96-bit unsigned integer format that has a 32-bit R component in bytes 0..3,
    * a 32-bit G component in bytes 4..7, and a 32-bit B component in bytes 8..11.
    */
 
-  VK_FORMAT_R32G32B32_UINT(104),
+  VK_FORMAT_R32G32B32_UINT(104) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_UNCOMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_INTEGER_UNSIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A three-component, 96-bit signed integer format that has a 32-bit R component in bytes 0..3, a
    * 32-bit G component in bytes 4..7, and a 32-bit B component in bytes 8..11.
    */
 
-  VK_FORMAT_R32G32B32_SINT(105),
+  VK_FORMAT_R32G32B32_SINT(105) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_UNCOMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_INTEGER_SIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A three-component, 96-bit signed floating-point format that has a 32-bit R component in bytes
    * 0..3, a 32-bit G component in bytes 4..7, and a 32-bit B component in bytes 8..11.
    */
 
-  VK_FORMAT_R32G32B32_SFLOAT(106),
+  VK_FORMAT_R32G32B32_SFLOAT(106) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_UNCOMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_FLOATING_POINT_SIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A four-component, 128-bit unsigned integer format that has a 32-bit R component in bytes 0..3,
@@ -815,7 +3403,31 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    * component in bytes 12..15.
    */
 
-  VK_FORMAT_R32G32B32A32_UINT(107),
+  VK_FORMAT_R32G32B32A32_UINT(107) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_UNCOMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_INTEGER_UNSIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A four-component, 128-bit signed integer format that has a 32-bit R component in bytes 0..3, a
@@ -823,7 +3435,31 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    * in bytes 12..15.
    */
 
-  VK_FORMAT_R32G32B32A32_SINT(108),
+  VK_FORMAT_R32G32B32A32_SINT(108) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_UNCOMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_INTEGER_SIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A four-component, 128-bit signed floating-point format that has a 32-bit R component in bytes
@@ -831,67 +3467,307 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    * component in bytes 12..15.
    */
 
-  VK_FORMAT_R32G32B32A32_SFLOAT(109),
+  VK_FORMAT_R32G32B32A32_SFLOAT(109) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_UNCOMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_FLOATING_POINT_SIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A one-component, 64-bit unsigned integer format that has a single 64-bit R component.
    */
 
-  VK_FORMAT_R64_UINT(110),
+  VK_FORMAT_R64_UINT(110) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_UNCOMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_INTEGER_UNSIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A one-component, 64-bit signed integer format that has a single 64-bit R component.
    */
 
-  VK_FORMAT_R64_SINT(111),
+  VK_FORMAT_R64_SINT(111) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_UNCOMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_INTEGER_SIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A one-component, 64-bit signed floating-point format that has a single 64-bit R component.
    */
 
-  VK_FORMAT_R64_SFLOAT(112),
+  VK_FORMAT_R64_SFLOAT(112) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_UNCOMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_FLOATING_POINT_SIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A two-component, 128-bit unsigned integer format that has a 64-bit R component in bytes 0..7,
    * and a 64-bit G component in bytes 8..15.
    */
 
-  VK_FORMAT_R64G64_UINT(113),
+  VK_FORMAT_R64G64_UINT(113) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_UNCOMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_INTEGER_UNSIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A two-component, 128-bit signed integer format that has a 64-bit R component in bytes 0..7, and
    * a 64-bit G component in bytes 8..15.
    */
 
-  VK_FORMAT_R64G64_SINT(114),
+  VK_FORMAT_R64G64_SINT(114) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_UNCOMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_INTEGER_SIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A two-component, 128-bit signed floating-point format that has a 64-bit R component in bytes
    * 0..7, and a 64-bit G component in bytes 8..15.
    */
 
-  VK_FORMAT_R64G64_SFLOAT(115),
+  VK_FORMAT_R64G64_SFLOAT(115) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_UNCOMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_FLOATING_POINT_SIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A three-component, 192-bit unsigned integer format that has a 64-bit R component in bytes 0..7,
    * a 64-bit G component in bytes 8..15, and a 64-bit B component in bytes 16..23.
    */
 
-  VK_FORMAT_R64G64B64_UINT(116),
+  VK_FORMAT_R64G64B64_UINT(116) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_UNCOMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_INTEGER_UNSIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A three-component, 192-bit signed integer format that has a 64-bit R component in bytes 0..7, a
    * 64-bit G component in bytes 8..15, and a 64-bit B component in bytes 16..23.
    */
 
-  VK_FORMAT_R64G64B64_SINT(117),
+  VK_FORMAT_R64G64B64_SINT(117) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_UNCOMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_INTEGER_SIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A three-component, 192-bit signed floating-point format that has a 64-bit R component in bytes
    * 0..7, a 64-bit G component in bytes 8..15, and a 64-bit B component in bytes 16..23.
    */
 
-  VK_FORMAT_R64G64B64_SFLOAT(118),
+  VK_FORMAT_R64G64B64_SFLOAT(118) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_UNCOMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_FLOATING_POINT_SIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A four-component, 256-bit unsigned integer format that has a 64-bit R component in bytes 0..7,
@@ -899,7 +3775,31 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    * component in bytes 24..31.
    */
 
-  VK_FORMAT_R64G64B64A64_UINT(119),
+  VK_FORMAT_R64G64B64A64_UINT(119) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_UNCOMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_INTEGER_UNSIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A four-component, 256-bit signed integer format that has a 64-bit R component in bytes 0..7, a
@@ -907,7 +3807,31 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    * component in bytes 24..31.
    */
 
-  VK_FORMAT_R64G64B64A64_SINT(120),
+  VK_FORMAT_R64G64B64A64_SINT(120) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_UNCOMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_INTEGER_SIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A four-component, 256-bit signed floating-point format that has a 64-bit R component in bytes
@@ -915,7 +3839,31 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    * component in bytes 24..31.
    */
 
-  VK_FORMAT_R64G64B64A64_SFLOAT(121),
+  VK_FORMAT_R64G64B64A64_SFLOAT(121) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_UNCOMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_FLOATING_POINT_SIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A three-component, 32-bit packed unsigned floating-point format that has a 10-bit B component
@@ -924,7 +3872,31 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    * Floating-Point Numbers”.
    */
 
-  VK_FORMAT_B10G11R11_UFLOAT_PACK32(122),
+  VK_FORMAT_B10G11R11_UFLOAT_PACK32(122) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_UNCOMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_FLOATING_POINT_UNSIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A three-component, 32-bit packed unsigned floating-point format that has a 5-bit shared
@@ -932,53 +3904,245 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    * mantissa in bits 9..17, and a 9-bit R component mantissa in bits 0..8.
    */
 
-  VK_FORMAT_E5B9G9R9_UFLOAT_PACK32(123),
+  VK_FORMAT_E5B9G9R9_UFLOAT_PACK32(123) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_UNCOMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_FLOATING_POINT_UNSIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A one-component, 16-bit unsigned normalized format that has a single 16-bit depth component.
    */
 
-  VK_FORMAT_D16_UNORM(124),
+  VK_FORMAT_D16_UNORM(124) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_UNCOMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_NORMALIZED_FIXED_POINT_UNSIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_DEPTH;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A two-component, 32-bit format that has 24 unsigned normalized bits in the depth component and,
    * optionally, 8 bits that are unused.
    */
 
-  VK_FORMAT_X8_D24_UNORM_PACK32(125),
+  VK_FORMAT_X8_D24_UNORM_PACK32(125) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_UNCOMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_NORMALIZED_FIXED_POINT_UNSIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_DEPTH;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A one-component, 32-bit signed floating-point format that has 32-bits in the depth component.
    */
 
-  VK_FORMAT_D32_SFLOAT(126),
+  VK_FORMAT_D32_SFLOAT(126) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_UNCOMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_FLOATING_POINT_SIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_DEPTH;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A one-component, 8-bit unsigned integer format that has 8-bits in the stencil component.
    */
 
-  VK_FORMAT_S8_UINT(127),
+  VK_FORMAT_S8_UINT(127) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_UNCOMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_INTEGER_UNSIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_STENCIL;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_NONE;
+    }
+  },
 
   /**
    * A two-component, 24-bit format that has 16 unsigned normalized bits in the depth component and
    * 8 unsigned integer bits in the stencil component.
    */
 
-  VK_FORMAT_D16_UNORM_S8_UINT(128),
+  VK_FORMAT_D16_UNORM_S8_UINT(128) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_UNCOMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_NORMALIZED_FIXED_POINT_UNSIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_DEPTH_STENCIL;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A two-component, 32-bit packed format that has 8 unsigned integer bits in the stencil
    * component, and 24 unsigned normalized bits in the depth component.
    */
 
-  VK_FORMAT_D24_UNORM_S8_UINT(129),
+  VK_FORMAT_D24_UNORM_S8_UINT(129) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_UNCOMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_NORMALIZED_FIXED_POINT_UNSIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_DEPTH_STENCIL;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A two-component format that has 32 signed float bits in the depth component and 8 unsigned
    * integer bits in the stencil component. There are optionally 24-bits that are unused.
    */
 
-  VK_FORMAT_D32_SFLOAT_S8_UINT(130),
+  VK_FORMAT_D32_SFLOAT_S8_UINT(130) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_UNCOMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_FLOATING_POINT_SIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_DEPTH_STENCIL;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A three-component, block-compressed format where each 64-bit compressed texel block encodes a
@@ -986,7 +4150,31 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    * opaque.
    */
 
-  VK_FORMAT_BC1_RGB_UNORM_BLOCK(131),
+  VK_FORMAT_BC1_RGB_UNORM_BLOCK(131) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_COMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_NORMALIZED_FIXED_POINT_UNSIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A three-component, block-compressed format where each 64-bit compressed texel block encodes a
@@ -994,14 +4182,62 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    * has no alpha and is considered opaque.
    */
 
-  VK_FORMAT_BC1_RGB_SRGB_BLOCK(132),
+  VK_FORMAT_BC1_RGB_SRGB_BLOCK(132) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_COMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_NORMALIZED_FIXED_POINT_UNSIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_SRGB;
+    }
+  },
 
   /**
    * A four-component, block-compressed format where each 64-bit compressed texel block encodes a
    * 4x4 rectangle of unsigned normalized RGB texel data, and provides 1 bit of alpha.
    */
 
-  VK_FORMAT_BC1_RGBA_UNORM_BLOCK(133),
+  VK_FORMAT_BC1_RGBA_UNORM_BLOCK(133) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_COMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_NORMALIZED_FIXED_POINT_UNSIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A four-component, block-compressed format where each 64-bit compressed texel block encodes a
@@ -1009,7 +4245,31 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    * 1 bit of alpha.
    */
 
-  VK_FORMAT_BC1_RGBA_SRGB_BLOCK(134),
+  VK_FORMAT_BC1_RGBA_SRGB_BLOCK(134) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_COMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_NORMALIZED_FIXED_POINT_UNSIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_SRGB;
+    }
+  },
 
   /**
    * A four-component, block-compressed format where each 128-bit compressed texel block encodes a
@@ -1017,7 +4277,31 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    * values followed by 64 bits encoding RGB values.
    */
 
-  VK_FORMAT_BC2_UNORM_BLOCK(135),
+  VK_FORMAT_BC2_UNORM_BLOCK(135) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_COMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_NORMALIZED_FIXED_POINT_UNSIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A four-component, block-compressed format where each 128-bit compressed texel block encodes a
@@ -1025,7 +4309,31 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    * values followed by 64 bits encoding RGB values with sRGB nonlinear encoding.
    */
 
-  VK_FORMAT_BC2_SRGB_BLOCK(136),
+  VK_FORMAT_BC2_SRGB_BLOCK(136) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_COMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_NORMALIZED_FIXED_POINT_UNSIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_SRGB;
+    }
+  },
 
   /**
    * A four-component, block-compressed format where each 128-bit compressed texel block encodes a
@@ -1033,7 +4341,31 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    * values followed by 64 bits encoding RGB values.
    */
 
-  VK_FORMAT_BC3_UNORM_BLOCK(137),
+  VK_FORMAT_BC3_UNORM_BLOCK(137) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_COMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_NORMALIZED_FIXED_POINT_UNSIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A four-component, block-compressed format where each 128-bit compressed texel block encodes a
@@ -1041,21 +4373,93 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    * values followed by 64 bits encoding RGB values with sRGB nonlinear encoding.
    */
 
-  VK_FORMAT_BC3_SRGB_BLOCK(138),
+  VK_FORMAT_BC3_SRGB_BLOCK(138) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_COMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_NORMALIZED_FIXED_POINT_UNSIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_SRGB;
+    }
+  },
 
   /**
    * A one-component, block-compressed format where each 64-bit compressed texel block encodes a 4x4
    * rectangle of unsigned normalized red texel data.
    */
 
-  VK_FORMAT_BC4_UNORM_BLOCK(139),
+  VK_FORMAT_BC4_UNORM_BLOCK(139) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_COMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_NORMALIZED_FIXED_POINT_UNSIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A one-component, block-compressed format where each 64-bit compressed texel block encodes a 4x4
    * rectangle of signed normalized red texel data.
    */
 
-  VK_FORMAT_BC4_SNORM_BLOCK(140),
+  VK_FORMAT_BC4_SNORM_BLOCK(140) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_COMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_NORMALIZED_FIXED_POINT_SIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A two-component, block-compressed format where each 128-bit compressed texel block encodes a
@@ -1063,7 +4467,31 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    * followed by 64 bits encoding green values.
    */
 
-  VK_FORMAT_BC5_UNORM_BLOCK(141),
+  VK_FORMAT_BC5_UNORM_BLOCK(141) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_COMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_NORMALIZED_FIXED_POINT_UNSIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A two-component, block-compressed format where each 128-bit compressed texel block encodes a
@@ -1071,28 +4499,124 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    * followed by 64 bits encoding green values.
    */
 
-  VK_FORMAT_BC5_SNORM_BLOCK(142),
+  VK_FORMAT_BC5_SNORM_BLOCK(142) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_COMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_NORMALIZED_FIXED_POINT_SIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A three-component, block-compressed format where each 128-bit compressed texel block encodes a
    * 4x4 rectangle of unsigned floating-point RGB texel data.
    */
 
-  VK_FORMAT_BC6H_UFLOAT_BLOCK(143),
+  VK_FORMAT_BC6H_UFLOAT_BLOCK(143) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_COMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_FLOATING_POINT_UNSIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A three-component, block-compressed format where each 128-bit compressed texel block encodes a
    * 4x4 rectangle of signed floating-point RGB texel data.
    */
 
-  VK_FORMAT_BC6H_SFLOAT_BLOCK(144),
+  VK_FORMAT_BC6H_SFLOAT_BLOCK(144) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_COMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_FLOATING_POINT_SIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A four-component, block-compressed format where each 128-bit compressed texel block encodes a
    * 4x4 rectangle of unsigned normalized RGBA texel data.
    */
 
-  VK_FORMAT_BC7_UNORM_BLOCK(145),
+  VK_FORMAT_BC7_UNORM_BLOCK(145) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_COMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_NORMALIZED_FIXED_POINT_UNSIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A four-component, block-compressed format where each 128-bit compressed texel block encodes a
@@ -1100,7 +4624,31 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    * the RGB components.
    */
 
-  VK_FORMAT_BC7_SRGB_BLOCK(146),
+  VK_FORMAT_BC7_SRGB_BLOCK(146) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_COMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_NORMALIZED_FIXED_POINT_UNSIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_SRGB;
+    }
+  },
 
   /**
    * A three-component, ETC2 compressed format where each 64-bit compressed texel block encodes a
@@ -1108,7 +4656,31 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    * opaque.
    */
 
-  VK_FORMAT_ETC2_R8G8B8_UNORM_BLOCK(147),
+  VK_FORMAT_ETC2_R8G8B8_UNORM_BLOCK(147) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_COMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_NORMALIZED_FIXED_POINT_UNSIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A three-component, ETC2 compressed format where each 64-bit compressed texel block encodes a
@@ -1116,14 +4688,62 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    * has no alpha and is considered opaque.
    */
 
-  VK_FORMAT_ETC2_R8G8B8_SRGB_BLOCK(148),
+  VK_FORMAT_ETC2_R8G8B8_SRGB_BLOCK(148) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_COMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_NORMALIZED_FIXED_POINT_UNSIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_SRGB;
+    }
+  },
 
   /**
    * A four-component, ETC2 compressed format where each 64-bit compressed texel block encodes a 4x4
    * rectangle of unsigned normalized RGB texel data, and provides 1 bit of alpha.
    */
 
-  VK_FORMAT_ETC2_R8G8B8A1_UNORM_BLOCK(149),
+  VK_FORMAT_ETC2_R8G8B8A1_UNORM_BLOCK(149) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_COMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_NORMALIZED_FIXED_POINT_UNSIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A four-component, ETC2 compressed format where each 64-bit compressed texel block encodes a 4x4
@@ -1131,7 +4751,31 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    * bit of alpha.
    */
 
-  VK_FORMAT_ETC2_R8G8B8A1_SRGB_BLOCK(150),
+  VK_FORMAT_ETC2_R8G8B8A1_SRGB_BLOCK(150) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_COMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_NORMALIZED_FIXED_POINT_UNSIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_SRGB;
+    }
+  },
 
   /**
    * A four-component, ETC2 compressed format where each 128-bit compressed texel block encodes a
@@ -1139,7 +4783,31 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    * values followed by 64 bits encoding RGB values.
    */
 
-  VK_FORMAT_ETC2_R8G8B8A8_UNORM_BLOCK(151),
+  VK_FORMAT_ETC2_R8G8B8A8_UNORM_BLOCK(151) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_COMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_NORMALIZED_FIXED_POINT_UNSIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A four-component, ETC2 compressed format where each 64-bit compressed texel block encodes a 4x4
@@ -1147,21 +4815,93 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    * followed by 64 bits encoding RGB values with sRGB nonlinear encoding applied.
    */
 
-  VK_FORMAT_ETC2_R8G8B8A8_SRGB_BLOCK(152),
+  VK_FORMAT_ETC2_R8G8B8A8_SRGB_BLOCK(152) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_COMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_NORMALIZED_FIXED_POINT_UNSIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_SRGB;
+    }
+  },
 
   /**
    * A one-component, ETC2 compressed format where each 64-bit compressed texel block encodes a 4x4
    * rectangle of unsigned normalized red texel data.
    */
 
-  VK_FORMAT_EAC_R11_UNORM_BLOCK(153),
+  VK_FORMAT_EAC_R11_UNORM_BLOCK(153) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_COMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_NORMALIZED_FIXED_POINT_UNSIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A one-component, ETC2 compressed format where each 64-bit compressed texel block encodes a 4x4
    * rectangle of signed normalized red texel data.
    */
 
-  VK_FORMAT_EAC_R11_SNORM_BLOCK(154),
+  VK_FORMAT_EAC_R11_SNORM_BLOCK(154) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_COMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_NORMALIZED_FIXED_POINT_SIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A two-component, ETC2 compressed format where each 128-bit compressed texel block encodes a 4x4
@@ -1169,7 +4909,31 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    * followed by 64 bits encoding green values.
    */
 
-  VK_FORMAT_EAC_R11G11_UNORM_BLOCK(155),
+  VK_FORMAT_EAC_R11G11_UNORM_BLOCK(155) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_COMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_NORMALIZED_FIXED_POINT_UNSIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A two-component, ETC2 compressed format where each 128-bit compressed texel block encodes a 4x4
@@ -1177,14 +4941,62 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    * followed by 64 bits encoding green values.
    */
 
-  VK_FORMAT_EAC_R11G11_SNORM_BLOCK(156),
+  VK_FORMAT_EAC_R11G11_SNORM_BLOCK(156) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_COMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_NORMALIZED_FIXED_POINT_SIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A four-component, ASTC compressed format where each 128-bit compressed texel block encodes a
    * 4x4 rectangle of unsigned normalized RGBA texel data.
    */
 
-  VK_FORMAT_ASTC_4x4_UNORM_BLOCK(157),
+  VK_FORMAT_ASTC_4x4_UNORM_BLOCK(157) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_COMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_NORMALIZED_FIXED_POINT_UNSIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A four-component, ASTC compressed format where each 128-bit compressed texel block encodes a
@@ -1192,14 +5004,62 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    * the RGB components.
    */
 
-  VK_FORMAT_ASTC_4x4_SRGB_BLOCK(158),
+  VK_FORMAT_ASTC_4x4_SRGB_BLOCK(158) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_COMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_NORMALIZED_FIXED_POINT_UNSIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_SRGB;
+    }
+  },
 
   /**
    * A four-component, ASTC compressed format where each 128-bit compressed texel block encodes a
    * 5x4 rectangle of unsigned normalized RGBA texel data.
    */
 
-  VK_FORMAT_ASTC_5x4_UNORM_BLOCK(159),
+  VK_FORMAT_ASTC_5x4_UNORM_BLOCK(159) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_COMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_NORMALIZED_FIXED_POINT_UNSIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A four-component, ASTC compressed format where each 128-bit compressed texel block encodes a
@@ -1207,14 +5067,62 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    * the RGB components.
    */
 
-  VK_FORMAT_ASTC_5x4_SRGB_BLOCK(160),
+  VK_FORMAT_ASTC_5x4_SRGB_BLOCK(160) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_COMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_NORMALIZED_FIXED_POINT_UNSIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_SRGB;
+    }
+  },
 
   /**
    * A four-component, ASTC compressed format where each 128-bit compressed texel block encodes a
    * 5x5 rectangle of unsigned normalized RGBA texel data.
    */
 
-  VK_FORMAT_ASTC_5x5_UNORM_BLOCK(161),
+  VK_FORMAT_ASTC_5x5_UNORM_BLOCK(161) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_COMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_NORMALIZED_FIXED_POINT_UNSIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A four-component, ASTC compressed format where each 128-bit compressed texel block encodes a
@@ -1222,14 +5130,62 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    * the RGB components.
    */
 
-  VK_FORMAT_ASTC_5x5_SRGB_BLOCK(162),
+  VK_FORMAT_ASTC_5x5_SRGB_BLOCK(162) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_COMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_NORMALIZED_FIXED_POINT_UNSIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_SRGB;
+    }
+  },
 
   /**
    * A four-component, ASTC compressed format where each 128-bit compressed texel block encodes a
    * 6x5 rectangle of unsigned normalized RGBA texel data.
    */
 
-  VK_FORMAT_ASTC_6x5_UNORM_BLOCK(163),
+  VK_FORMAT_ASTC_6x5_UNORM_BLOCK(163) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_COMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_NORMALIZED_FIXED_POINT_UNSIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A four-component, ASTC compressed format where each 128-bit compressed texel block encodes a
@@ -1237,14 +5193,62 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    * the RGB components.
    */
 
-  VK_FORMAT_ASTC_6x5_SRGB_BLOCK(164),
+  VK_FORMAT_ASTC_6x5_SRGB_BLOCK(164) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_COMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_NORMALIZED_FIXED_POINT_UNSIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_SRGB;
+    }
+  },
 
   /**
    * A four-component, ASTC compressed format where each 128-bit compressed texel block encodes a
    * 6x6 rectangle of unsigned normalized RGBA texel data.
    */
 
-  VK_FORMAT_ASTC_6x6_UNORM_BLOCK(165),
+  VK_FORMAT_ASTC_6x6_UNORM_BLOCK(165) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_COMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_NORMALIZED_FIXED_POINT_UNSIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A four-component, ASTC compressed format where each 128-bit compressed texel block encodes a
@@ -1252,14 +5256,62 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    * the RGB components.
    */
 
-  VK_FORMAT_ASTC_6x6_SRGB_BLOCK(166),
+  VK_FORMAT_ASTC_6x6_SRGB_BLOCK(166) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_COMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_NORMALIZED_FIXED_POINT_UNSIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_SRGB;
+    }
+  },
 
   /**
    * A four-component, ASTC compressed format where each 128-bit compressed texel block encodes a
    * 8x5 rectangle of unsigned normalized RGBA texel data.
    */
 
-  VK_FORMAT_ASTC_8x5_UNORM_BLOCK(167),
+  VK_FORMAT_ASTC_8x5_UNORM_BLOCK(167) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_COMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_NORMALIZED_FIXED_POINT_UNSIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A four-component, ASTC compressed format where each 128-bit compressed texel block encodes a
@@ -1267,14 +5319,62 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    * the RGB components.
    */
 
-  VK_FORMAT_ASTC_8x5_SRGB_BLOCK(168),
+  VK_FORMAT_ASTC_8x5_SRGB_BLOCK(168) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_COMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_NORMALIZED_FIXED_POINT_UNSIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_SRGB;
+    }
+  },
 
   /**
    * A four-component, ASTC compressed format where each 128-bit compressed texel block encodes a
    * 8x6 rectangle of unsigned normalized RGBA texel data.
    */
 
-  VK_FORMAT_ASTC_8x6_UNORM_BLOCK(169),
+  VK_FORMAT_ASTC_8x6_UNORM_BLOCK(169) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_COMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_NORMALIZED_FIXED_POINT_UNSIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A four-component, ASTC compressed format where each 128-bit compressed texel block encodes a
@@ -1282,14 +5382,62 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    * the RGB components.
    */
 
-  VK_FORMAT_ASTC_8x6_SRGB_BLOCK(170),
+  VK_FORMAT_ASTC_8x6_SRGB_BLOCK(170) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_COMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_NORMALIZED_FIXED_POINT_UNSIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_SRGB;
+    }
+  },
 
   /**
    * A four-component, ASTC compressed format where each 128-bit compressed texel block encodes a
    * 8x8 rectangle of unsigned normalized RGBA texel data.
    */
 
-  VK_FORMAT_ASTC_8x8_UNORM_BLOCK(171),
+  VK_FORMAT_ASTC_8x8_UNORM_BLOCK(171) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_COMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_NORMALIZED_FIXED_POINT_UNSIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A four-component, ASTC compressed format where each 128-bit compressed texel block encodes a
@@ -1297,14 +5445,62 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    * the RGB components.
    */
 
-  VK_FORMAT_ASTC_8x8_SRGB_BLOCK(172),
+  VK_FORMAT_ASTC_8x8_SRGB_BLOCK(172) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_COMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_NORMALIZED_FIXED_POINT_UNSIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_SRGB;
+    }
+  },
 
   /**
    * A four-component, ASTC compressed format where each 128-bit compressed texel block encodes a
    * 10x5 rectangle of unsigned normalized RGBA texel data.
    */
 
-  VK_FORMAT_ASTC_10x5_UNORM_BLOCK(173),
+  VK_FORMAT_ASTC_10x5_UNORM_BLOCK(173) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_COMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_NORMALIZED_FIXED_POINT_UNSIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A four-component, ASTC compressed format where each 128-bit compressed texel block encodes a
@@ -1312,14 +5508,62 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    * the RGB components.
    */
 
-  VK_FORMAT_ASTC_10x5_SRGB_BLOCK(174),
+  VK_FORMAT_ASTC_10x5_SRGB_BLOCK(174) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_COMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_NORMALIZED_FIXED_POINT_UNSIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_SRGB;
+    }
+  },
 
   /**
    * A four-component, ASTC compressed format where each 128-bit compressed texel block encodes a
    * 10x6 rectangle of unsigned normalized RGBA texel data.
    */
 
-  VK_FORMAT_ASTC_10x6_UNORM_BLOCK(175),
+  VK_FORMAT_ASTC_10x6_UNORM_BLOCK(175) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_COMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_NORMALIZED_FIXED_POINT_UNSIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A four-component, ASTC compressed format where each 128-bit compressed texel block encodes a
@@ -1327,14 +5571,62 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    * the RGB components.
    */
 
-  VK_FORMAT_ASTC_10x6_SRGB_BLOCK(176),
+  VK_FORMAT_ASTC_10x6_SRGB_BLOCK(176) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_COMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_NORMALIZED_FIXED_POINT_UNSIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_SRGB;
+    }
+  },
 
   /**
    * A four-component, ASTC compressed format where each 128-bit compressed texel block encodes a
    * 10x8 rectangle of unsigned normalized RGBA texel data.
    */
 
-  VK_FORMAT_ASTC_10x8_UNORM_BLOCK(177),
+  VK_FORMAT_ASTC_10x8_UNORM_BLOCK(177) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_COMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_NORMALIZED_FIXED_POINT_UNSIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A four-component, ASTC compressed format where each 128-bit compressed texel block encodes a
@@ -1342,14 +5634,62 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    * the RGB components.
    */
 
-  VK_FORMAT_ASTC_10x8_SRGB_BLOCK(178),
+  VK_FORMAT_ASTC_10x8_SRGB_BLOCK(178) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_COMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_NORMALIZED_FIXED_POINT_UNSIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_SRGB;
+    }
+  },
 
   /**
    * A four-component, ASTC compressed format where each 128-bit compressed texel block encodes a
    * 10x10 rectangle of unsigned normalized RGBA texel data.
    */
 
-  VK_FORMAT_ASTC_10x10_UNORM_BLOCK(179),
+  VK_FORMAT_ASTC_10x10_UNORM_BLOCK(179) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_COMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_NORMALIZED_FIXED_POINT_UNSIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A four-component, ASTC compressed format where each 128-bit compressed texel block encodes a
@@ -1357,14 +5697,62 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    * the RGB components.
    */
 
-  VK_FORMAT_ASTC_10x10_SRGB_BLOCK(180),
+  VK_FORMAT_ASTC_10x10_SRGB_BLOCK(180) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_COMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_NORMALIZED_FIXED_POINT_UNSIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_SRGB;
+    }
+  },
 
   /**
    * A four-component, ASTC compressed format where each 128-bit compressed texel block encodes a
    * 12x10 rectangle of unsigned normalized RGBA texel data.
    */
 
-  VK_FORMAT_ASTC_12x10_UNORM_BLOCK(181),
+  VK_FORMAT_ASTC_12x10_UNORM_BLOCK(181) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_COMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_NORMALIZED_FIXED_POINT_UNSIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A four-component, ASTC compressed format where each 128-bit compressed texel block encodes a
@@ -1372,14 +5760,62 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    * the RGB components.
    */
 
-  VK_FORMAT_ASTC_12x10_SRGB_BLOCK(182),
+  VK_FORMAT_ASTC_12x10_SRGB_BLOCK(182) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_COMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_NORMALIZED_FIXED_POINT_UNSIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_SRGB;
+    }
+  },
 
   /**
    * A four-component, ASTC compressed format where each 128-bit compressed texel block encodes a
    * 12x12 rectangle of unsigned normalized RGBA texel data.
    */
 
-  VK_FORMAT_ASTC_12x12_UNORM_BLOCK(183),
+  VK_FORMAT_ASTC_12x12_UNORM_BLOCK(183) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_COMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_NORMALIZED_FIXED_POINT_UNSIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_LINEAR;
+    }
+  },
 
   /**
    * A four-component, ASTC compressed format where each 128-bit compressed texel block encodes a
@@ -1387,7 +5823,31 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    * the RGB components.
    */
 
-  VK_FORMAT_ASTC_12x12_SRGB_BLOCK(184);
+  VK_FORMAT_ASTC_12x12_SRGB_BLOCK(184) {
+    @Override
+    public VulkanFormatCompressed compressed()
+    {
+      return FORMAT_COMPRESSED;
+    }
+
+    @Override
+    public VulkanFormatData data()
+    {
+      return FORMAT_DATA_NORMALIZED_FIXED_POINT_UNSIGNED;
+    }
+
+    @Override
+    public VulkanFormatInterpretation interpretation()
+    {
+      return FORMAT_INTERPRETATION_COLOR;
+    }
+
+    @Override
+    public VulkanFormatSpace space()
+    {
+      return FORMAT_SPACE_SRGB;
+    }
+  };
 
   private static final Map<Integer, VulkanFormat> VALUES =
     VulkanEnumMaps.map(values());
@@ -1417,4 +5877,28 @@ public enum VulkanFormat implements VulkanEnumIntegerType
   {
     return this.value;
   }
+
+  /**
+   * @return Whether this format is compressed
+   */
+
+  public abstract VulkanFormatCompressed compressed();
+
+  /**
+   * @return The format data type
+   */
+
+  public abstract VulkanFormatData data();
+
+  /**
+   * @return The format interpretation
+   */
+
+  public abstract VulkanFormatInterpretation interpretation();
+
+  /**
+   * @return The format space
+   */
+
+  public abstract VulkanFormatSpace space();
 }

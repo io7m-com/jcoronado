@@ -9,6 +9,10 @@
   <suppress files="VulkanLWJGLLogicalDevice.java"
             checks="FileLength"/>
 
+  <!-- A large enum with lots of data methods. -->
+  <suppress files="VulkanFormat.java"
+            checks="FileLength"/>
+  
   <!-- Not under our control. -->
   <suppress files="VulkanPhysicalDeviceLimitsType.java"
             checks="MethodCount"/>

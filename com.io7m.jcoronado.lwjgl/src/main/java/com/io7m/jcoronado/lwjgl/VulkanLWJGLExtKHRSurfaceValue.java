@@ -27,7 +27,8 @@ final class VulkanLWJGLExtKHRSurfaceValue
   extends VulkanLWJGLHandle
   implements VulkanExtKHRSurfaceType.VulkanKHRSurfaceType
 {
-  private static final Logger LOG = LoggerFactory.getLogger(VulkanLWJGLBuffer.class);
+  private static final Logger LOG =
+    LoggerFactory.getLogger(VulkanLWJGLExtKHRSurfaceValue.class);
 
   private final long handle;
   private final Runnable deallocate;
@@ -66,7 +67,7 @@ final class VulkanLWJGLExtKHRSurfaceValue
   public String toString()
   {
     return new StringBuilder(32)
-      .append("[VulkanLWJGLBuffer 0x")
+      .append("[VulkanLWJGLExtKHRSurfaceValue 0x")
       .append(Long.toUnsignedString(this.handle, 16))
       .append("]")
       .toString();
@@ -82,7 +83,7 @@ final class VulkanLWJGLExtKHRSurfaceValue
   protected void closeActual()
   {
     if (LOG.isTraceEnabled()) {
-      LOG.trace("destroying surface: {}", this);
+      LOG.trace("Destroying surface: {}", this);
     }
 
     this.deallocate.run();

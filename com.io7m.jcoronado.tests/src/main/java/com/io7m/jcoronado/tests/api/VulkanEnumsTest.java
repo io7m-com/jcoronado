@@ -45,7 +45,12 @@ public final class VulkanEnumsTest
     final Collection<Executable> executables = new ArrayList<>();
 
     for (final var c : enums) {
-      final List<VulkanEnumIntegerType> constants = List.of(c.getEnumConstants());
+      if (c.getEnumConstants() == null) {
+        continue;
+      }
+
+      final List<VulkanEnumIntegerType> constants =
+        List.of(c.getEnumConstants());
 
       final var numbers = new HashSet<Integer>();
       for (final var constant : constants) {
@@ -63,6 +68,7 @@ public final class VulkanEnumsTest
       });
     }
 
+    Assertions.assertTrue(executables.size() > 10);
     Assertions.assertAll(executables);
   }
 

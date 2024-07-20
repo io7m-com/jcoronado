@@ -68,4 +68,25 @@ public interface VulkanQueueFamilyPropertiesType
 
   @Value.Parameter
   VulkanExtent3D minImageTransferGranularity();
+
+  /**
+   * All commands that are allowed on a queue that supports transfer operations
+   * are also allowed on a queue that supports either graphics or compute
+   * operations. Thus, if the capabilities of a queue family
+   * include VK_QUEUE_GRAPHICS_BIT or VK_QUEUE_COMPUTE_BIT, then reporting
+   * the VK_QUEUE_TRANSFER_BIT capability separately for that queue family
+   * is optional.
+   *
+   * @return {@code true} if the queue flags imply transfer support
+   *
+   * @see "https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/VkQueueFlagBits.html"
+   */
+
+  default boolean queueFlagImpliesTransfer()
+  {
+    final var f = this.queueFlags();
+    return f.contains(VulkanQueueFamilyPropertyFlag.VK_QUEUE_TRANSFER_BIT)
+           || f.contains(VulkanQueueFamilyPropertyFlag.VK_QUEUE_COMPUTE_BIT)
+           || f.contains(VulkanQueueFamilyPropertyFlag.VK_QUEUE_GRAPHICS_BIT);
+  }
 }

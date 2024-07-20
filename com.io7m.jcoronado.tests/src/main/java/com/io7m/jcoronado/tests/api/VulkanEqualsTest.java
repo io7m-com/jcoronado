@@ -69,6 +69,7 @@ public final class VulkanEqualsTest
     if (m.isDefault()) {
       final var ignore_names =
         Set.of(
+          "queueFlagImpliesTransfer",
           "compareTo",
           "colorType",
           "checkPreconditions",

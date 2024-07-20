@@ -472,6 +472,38 @@ public final class MemoryRequirements implements ExampleType
           );
         }
       }
+
+      {
+        final var imageCreateInfo =
+          VulkanImageCreateInfo.builder()
+            .addSamples(VK_SAMPLE_COUNT_1_BIT)
+            .addUsage(VK_IMAGE_USAGE_SAMPLED_BIT)
+            .setArrayLayers(1)
+            .setExtent(VulkanExtent3D.of(1920, 1080, 1))
+            .setFormat(VulkanFormat.VK_FORMAT_R8G8B8A8_UNORM)
+            .setImageType(VulkanImageKind.VK_IMAGE_TYPE_2D)
+            .setInitialLayout(VulkanImageLayout.VK_IMAGE_LAYOUT_UNDEFINED)
+            .setMipLevels(1)
+            .setSharingMode(VK_SHARING_MODE_EXCLUSIVE)
+            .setTiling(VulkanImageTiling.VK_IMAGE_TILING_OPTIMAL)
+            .build();
+
+        final var image =
+          resources.add(device.createImage(imageCreateInfo));
+
+        final var imageRequirements =
+          device.getImageMemoryRequirements(image);
+
+        out.append(
+          String.format(
+            "%d %d %d %d%n",
+            Integer.valueOf(1920),
+            Integer.valueOf(1080),
+            Long.valueOf(imageRequirements.size()),
+            Long.valueOf(imageRequirements.alignment())
+          )
+        );
+      }
     }
   }
 

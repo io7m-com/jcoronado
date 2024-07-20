@@ -95,6 +95,7 @@ public final class VFakeLogicalDevice implements VulkanLogicalDeviceType
   private final VFakePhysicalDevice physicalDevice;
   private final AtomicBoolean closed;
   private List<VulkanQueueType> queues;
+  private Map<String, VulkanExtensionType> enabledExtensions;
 
   /**
    * A logical device.
@@ -111,6 +112,8 @@ public final class VFakeLogicalDevice implements VulkanLogicalDeviceType
       new AtomicBoolean(false);
     this.queues =
       List.of();
+    this.enabledExtensions =
+      Map.of();
   }
 
   /**
@@ -123,6 +126,19 @@ public final class VFakeLogicalDevice implements VulkanLogicalDeviceType
     final List<VulkanQueueType> newQueues)
   {
     this.queues = Objects.requireNonNull(newQueues, "queues");
+  }
+
+  /**
+   * Set the enabled extensions.
+   *
+   * @param inExtensions The extensions
+   */
+
+  public void setEnabledExtensions(
+    final Map<String, VulkanExtensionType> inExtensions)
+  {
+    this.enabledExtensions =
+      Objects.requireNonNull(inExtensions, "enabledExtensions");
   }
 
   @Override
@@ -156,7 +172,7 @@ public final class VFakeLogicalDevice implements VulkanLogicalDeviceType
   public Map<String, VulkanExtensionType> enabledExtensions()
     throws VulkanException
   {
-    throw errorNotImplemented("enabledExtensions");
+    return this.enabledExtensions;
   }
 
   @Override
@@ -376,7 +392,7 @@ public final class VFakeLogicalDevice implements VulkanLogicalDeviceType
   public void waitIdle()
     throws VulkanCallFailedException
   {
-    throw errorNotImplemented("waitIdle");
+
   }
 
   @Override
