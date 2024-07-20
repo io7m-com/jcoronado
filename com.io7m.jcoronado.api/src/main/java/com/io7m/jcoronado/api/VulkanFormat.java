@@ -18,6 +18,7 @@ package com.io7m.jcoronado.api;
 
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import static com.io7m.jcoronado.api.VulkanFormatCompressed.FORMAT_COMPRESSED;
 import static com.io7m.jcoronado.api.VulkanFormatCompressed.FORMAT_UNCOMPRESSED;
@@ -30,6 +31,19 @@ import static com.io7m.jcoronado.api.VulkanFormatData.FORMAT_DATA_NORMALIZED_FIX
 import static com.io7m.jcoronado.api.VulkanFormatData.FORMAT_DATA_OPAQUE;
 import static com.io7m.jcoronado.api.VulkanFormatData.FORMAT_DATA_SCALED_SIGNED;
 import static com.io7m.jcoronado.api.VulkanFormatData.FORMAT_DATA_SCALED_UNSIGNED;
+import static com.io7m.jcoronado.api.VulkanFormatFeatureFlag.VK_FORMAT_FEATURE_BLIT_DST_BIT;
+import static com.io7m.jcoronado.api.VulkanFormatFeatureFlag.VK_FORMAT_FEATURE_BLIT_SRC_BIT;
+import static com.io7m.jcoronado.api.VulkanFormatFeatureFlag.VK_FORMAT_FEATURE_COLOR_ATTACHMENT_BIT;
+import static com.io7m.jcoronado.api.VulkanFormatFeatureFlag.VK_FORMAT_FEATURE_COLOR_ATTACHMENT_BLEND_BIT;
+import static com.io7m.jcoronado.api.VulkanFormatFeatureFlag.VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT;
+import static com.io7m.jcoronado.api.VulkanFormatFeatureFlag.VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT;
+import static com.io7m.jcoronado.api.VulkanFormatFeatureFlag.VK_FORMAT_FEATURE_SAMPLED_IMAGE_FILTER_LINEAR_BIT;
+import static com.io7m.jcoronado.api.VulkanFormatFeatureFlag.VK_FORMAT_FEATURE_STORAGE_IMAGE_ATOMIC_BIT;
+import static com.io7m.jcoronado.api.VulkanFormatFeatureFlag.VK_FORMAT_FEATURE_STORAGE_IMAGE_BIT;
+import static com.io7m.jcoronado.api.VulkanFormatFeatureFlag.VK_FORMAT_FEATURE_STORAGE_TEXEL_BUFFER_ATOMIC_BIT;
+import static com.io7m.jcoronado.api.VulkanFormatFeatureFlag.VK_FORMAT_FEATURE_STORAGE_TEXEL_BUFFER_BIT;
+import static com.io7m.jcoronado.api.VulkanFormatFeatureFlag.VK_FORMAT_FEATURE_UNIFORM_TEXEL_BUFFER_BIT;
+import static com.io7m.jcoronado.api.VulkanFormatFeatureFlag.VK_FORMAT_FEATURE_VERTEX_BUFFER_BIT;
 import static com.io7m.jcoronado.api.VulkanFormatInterpretation.FORMAT_INTERPRETATION_COLOR;
 import static com.io7m.jcoronado.api.VulkanFormatInterpretation.FORMAT_INTERPRETATION_DEPTH;
 import static com.io7m.jcoronado.api.VulkanFormatInterpretation.FORMAT_INTERPRETATION_DEPTH_STENCIL;
@@ -38,6 +52,7 @@ import static com.io7m.jcoronado.api.VulkanFormatInterpretation.FORMAT_INTERPRET
 import static com.io7m.jcoronado.api.VulkanFormatSpace.FORMAT_SPACE_LINEAR;
 import static com.io7m.jcoronado.api.VulkanFormatSpace.FORMAT_SPACE_NONE;
 import static com.io7m.jcoronado.api.VulkanFormatSpace.FORMAT_SPACE_SRGB;
+
 
 /**
  * Note: This enum is not hand-written: See formats.sh
@@ -76,6 +91,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return FORMAT_SPACE_NONE;
     }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
+    }
   },
 
   /**
@@ -106,6 +127,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public VulkanFormatSpace space()
     {
       return FORMAT_SPACE_LINEAR;
+    }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
     }
   },
 
@@ -139,6 +166,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return FORMAT_SPACE_LINEAR;
     }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
+    }
   },
 
   /**
@@ -171,6 +204,15 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return FORMAT_SPACE_LINEAR;
     }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of(
+        VK_FORMAT_FEATURE_BLIT_SRC_BIT,
+        VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT,
+        VK_FORMAT_FEATURE_SAMPLED_IMAGE_FILTER_LINEAR_BIT);
+    }
   },
 
   /**
@@ -202,6 +244,19 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return FORMAT_SPACE_LINEAR;
     }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of(
+        VK_FORMAT_FEATURE_BLIT_DST_BIT,
+        VK_FORMAT_FEATURE_BLIT_SRC_BIT,
+        VK_FORMAT_FEATURE_COLOR_ATTACHMENT_BIT,
+        VK_FORMAT_FEATURE_COLOR_ATTACHMENT_BLEND_BIT,
+        VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT,
+        VK_FORMAT_FEATURE_SAMPLED_IMAGE_FILTER_LINEAR_BIT
+      );
+    }
   },
 
   /**
@@ -232,6 +287,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public VulkanFormatSpace space()
     {
       return FORMAT_SPACE_LINEAR;
+    }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
     }
   },
 
@@ -265,6 +326,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return FORMAT_SPACE_LINEAR;
     }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
+    }
   },
 
   /**
@@ -296,6 +363,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public VulkanFormatSpace space()
     {
       return FORMAT_SPACE_LINEAR;
+    }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
     }
   },
 
@@ -329,6 +402,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return FORMAT_SPACE_LINEAR;
     }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
+    }
   },
 
   /**
@@ -358,6 +437,20 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public VulkanFormatSpace space()
     {
       return FORMAT_SPACE_LINEAR;
+    }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of(
+        VK_FORMAT_FEATURE_BLIT_DST_BIT,
+        VK_FORMAT_FEATURE_BLIT_SRC_BIT,
+        VK_FORMAT_FEATURE_COLOR_ATTACHMENT_BIT,
+        VK_FORMAT_FEATURE_COLOR_ATTACHMENT_BLEND_BIT,
+        VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT,
+        VK_FORMAT_FEATURE_SAMPLED_IMAGE_FILTER_LINEAR_BIT,
+        VK_FORMAT_FEATURE_UNIFORM_TEXEL_BUFFER_BIT,
+        VK_FORMAT_FEATURE_VERTEX_BUFFER_BIT);
     }
   },
 
@@ -389,6 +482,17 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return FORMAT_SPACE_LINEAR;
     }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of(
+        VK_FORMAT_FEATURE_BLIT_SRC_BIT,
+        VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT,
+        VK_FORMAT_FEATURE_SAMPLED_IMAGE_FILTER_LINEAR_BIT,
+        VK_FORMAT_FEATURE_UNIFORM_TEXEL_BUFFER_BIT,
+        VK_FORMAT_FEATURE_VERTEX_BUFFER_BIT);
+    }
   },
 
   /**
@@ -418,6 +522,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public VulkanFormatSpace space()
     {
       return FORMAT_SPACE_LINEAR;
+    }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
     }
   },
 
@@ -449,6 +559,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return FORMAT_SPACE_LINEAR;
     }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
+    }
   },
 
   /**
@@ -479,6 +595,18 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return FORMAT_SPACE_LINEAR;
     }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of(
+        VK_FORMAT_FEATURE_BLIT_DST_BIT,
+        VK_FORMAT_FEATURE_BLIT_SRC_BIT,
+        VK_FORMAT_FEATURE_COLOR_ATTACHMENT_BIT,
+        VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT,
+        VK_FORMAT_FEATURE_UNIFORM_TEXEL_BUFFER_BIT,
+        VK_FORMAT_FEATURE_VERTEX_BUFFER_BIT);
+    }
   },
 
   /**
@@ -508,6 +636,18 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public VulkanFormatSpace space()
     {
       return FORMAT_SPACE_LINEAR;
+    }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of(
+        VK_FORMAT_FEATURE_BLIT_DST_BIT,
+        VK_FORMAT_FEATURE_BLIT_SRC_BIT,
+        VK_FORMAT_FEATURE_COLOR_ATTACHMENT_BIT,
+        VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT,
+        VK_FORMAT_FEATURE_UNIFORM_TEXEL_BUFFER_BIT,
+        VK_FORMAT_FEATURE_VERTEX_BUFFER_BIT);
     }
   },
 
@@ -540,6 +680,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return FORMAT_SPACE_SRGB;
     }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
+    }
   },
 
   /**
@@ -570,6 +716,20 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public VulkanFormatSpace space()
     {
       return FORMAT_SPACE_LINEAR;
+    }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of(
+        VK_FORMAT_FEATURE_BLIT_DST_BIT,
+        VK_FORMAT_FEATURE_BLIT_SRC_BIT,
+        VK_FORMAT_FEATURE_COLOR_ATTACHMENT_BIT,
+        VK_FORMAT_FEATURE_COLOR_ATTACHMENT_BLEND_BIT,
+        VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT,
+        VK_FORMAT_FEATURE_SAMPLED_IMAGE_FILTER_LINEAR_BIT,
+        VK_FORMAT_FEATURE_UNIFORM_TEXEL_BUFFER_BIT,
+        VK_FORMAT_FEATURE_VERTEX_BUFFER_BIT);
     }
   },
 
@@ -602,6 +762,17 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return FORMAT_SPACE_LINEAR;
     }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of(
+        VK_FORMAT_FEATURE_BLIT_SRC_BIT,
+        VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT,
+        VK_FORMAT_FEATURE_SAMPLED_IMAGE_FILTER_LINEAR_BIT,
+        VK_FORMAT_FEATURE_UNIFORM_TEXEL_BUFFER_BIT,
+        VK_FORMAT_FEATURE_VERTEX_BUFFER_BIT);
+    }
   },
 
   /**
@@ -632,6 +803,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public VulkanFormatSpace space()
     {
       return FORMAT_SPACE_LINEAR;
+    }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
     }
   },
 
@@ -664,6 +841,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return FORMAT_SPACE_LINEAR;
     }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
+    }
   },
 
   /**
@@ -695,6 +878,18 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return FORMAT_SPACE_LINEAR;
     }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of(
+        VK_FORMAT_FEATURE_BLIT_DST_BIT,
+        VK_FORMAT_FEATURE_BLIT_SRC_BIT,
+        VK_FORMAT_FEATURE_COLOR_ATTACHMENT_BIT,
+        VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT,
+        VK_FORMAT_FEATURE_UNIFORM_TEXEL_BUFFER_BIT,
+        VK_FORMAT_FEATURE_VERTEX_BUFFER_BIT);
+    }
   },
 
   /**
@@ -725,6 +920,18 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public VulkanFormatSpace space()
     {
       return FORMAT_SPACE_LINEAR;
+    }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of(
+        VK_FORMAT_FEATURE_BLIT_DST_BIT,
+        VK_FORMAT_FEATURE_BLIT_SRC_BIT,
+        VK_FORMAT_FEATURE_COLOR_ATTACHMENT_BIT,
+        VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT,
+        VK_FORMAT_FEATURE_UNIFORM_TEXEL_BUFFER_BIT,
+        VK_FORMAT_FEATURE_VERTEX_BUFFER_BIT);
     }
   },
 
@@ -758,6 +965,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return FORMAT_SPACE_SRGB;
     }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
+    }
   },
 
   /**
@@ -788,6 +1001,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public VulkanFormatSpace space()
     {
       return FORMAT_SPACE_LINEAR;
+    }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
     }
   },
 
@@ -820,6 +1039,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return FORMAT_SPACE_LINEAR;
     }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
+    }
   },
 
   /**
@@ -850,6 +1075,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public VulkanFormatSpace space()
     {
       return FORMAT_SPACE_LINEAR;
+    }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
     }
   },
 
@@ -882,6 +1113,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return FORMAT_SPACE_LINEAR;
     }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
+    }
   },
 
   /**
@@ -913,6 +1150,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return FORMAT_SPACE_LINEAR;
     }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
+    }
   },
 
   /**
@@ -943,6 +1186,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public VulkanFormatSpace space()
     {
       return FORMAT_SPACE_LINEAR;
+    }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
     }
   },
 
@@ -976,6 +1225,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return FORMAT_SPACE_SRGB;
     }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
+    }
   },
 
   /**
@@ -1006,6 +1261,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public VulkanFormatSpace space()
     {
       return FORMAT_SPACE_LINEAR;
+    }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
     }
   },
 
@@ -1038,6 +1299,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return FORMAT_SPACE_LINEAR;
     }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
+    }
   },
 
   /**
@@ -1068,6 +1335,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public VulkanFormatSpace space()
     {
       return FORMAT_SPACE_LINEAR;
+    }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
     }
   },
 
@@ -1100,6 +1373,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return FORMAT_SPACE_LINEAR;
     }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
+    }
   },
 
   /**
@@ -1131,6 +1410,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return FORMAT_SPACE_LINEAR;
     }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
+    }
   },
 
   /**
@@ -1161,6 +1446,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public VulkanFormatSpace space()
     {
       return FORMAT_SPACE_LINEAR;
+    }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
     }
   },
 
@@ -1194,6 +1485,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return FORMAT_SPACE_SRGB;
     }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
+    }
   },
 
   /**
@@ -1225,6 +1522,22 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public VulkanFormatSpace space()
     {
       return FORMAT_SPACE_LINEAR;
+    }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of(
+        VK_FORMAT_FEATURE_BLIT_DST_BIT,
+        VK_FORMAT_FEATURE_BLIT_SRC_BIT,
+        VK_FORMAT_FEATURE_COLOR_ATTACHMENT_BIT,
+        VK_FORMAT_FEATURE_COLOR_ATTACHMENT_BLEND_BIT,
+        VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT,
+        VK_FORMAT_FEATURE_SAMPLED_IMAGE_FILTER_LINEAR_BIT,
+        VK_FORMAT_FEATURE_STORAGE_IMAGE_BIT,
+        VK_FORMAT_FEATURE_STORAGE_TEXEL_BUFFER_BIT,
+        VK_FORMAT_FEATURE_UNIFORM_TEXEL_BUFFER_BIT,
+        VK_FORMAT_FEATURE_VERTEX_BUFFER_BIT);
     }
   },
 
@@ -1258,6 +1571,19 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return FORMAT_SPACE_LINEAR;
     }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of(
+        VK_FORMAT_FEATURE_BLIT_SRC_BIT,
+        VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT,
+        VK_FORMAT_FEATURE_SAMPLED_IMAGE_FILTER_LINEAR_BIT,
+        VK_FORMAT_FEATURE_STORAGE_IMAGE_BIT,
+        VK_FORMAT_FEATURE_STORAGE_TEXEL_BUFFER_BIT,
+        VK_FORMAT_FEATURE_UNIFORM_TEXEL_BUFFER_BIT,
+        VK_FORMAT_FEATURE_VERTEX_BUFFER_BIT);
+    }
   },
 
   /**
@@ -1290,6 +1616,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return FORMAT_SPACE_LINEAR;
     }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
+    }
   },
 
   /**
@@ -1320,6 +1652,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public VulkanFormatSpace space()
     {
       return FORMAT_SPACE_LINEAR;
+    }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
     }
   },
 
@@ -1353,6 +1691,20 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return FORMAT_SPACE_LINEAR;
     }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of(
+        VK_FORMAT_FEATURE_BLIT_DST_BIT,
+        VK_FORMAT_FEATURE_BLIT_SRC_BIT,
+        VK_FORMAT_FEATURE_COLOR_ATTACHMENT_BIT,
+        VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT,
+        VK_FORMAT_FEATURE_STORAGE_IMAGE_BIT,
+        VK_FORMAT_FEATURE_STORAGE_TEXEL_BUFFER_BIT,
+        VK_FORMAT_FEATURE_UNIFORM_TEXEL_BUFFER_BIT,
+        VK_FORMAT_FEATURE_VERTEX_BUFFER_BIT);
+    }
   },
 
   /**
@@ -1384,6 +1736,20 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public VulkanFormatSpace space()
     {
       return FORMAT_SPACE_LINEAR;
+    }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of(
+        VK_FORMAT_FEATURE_BLIT_DST_BIT,
+        VK_FORMAT_FEATURE_BLIT_SRC_BIT,
+        VK_FORMAT_FEATURE_COLOR_ATTACHMENT_BIT,
+        VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT,
+        VK_FORMAT_FEATURE_STORAGE_IMAGE_BIT,
+        VK_FORMAT_FEATURE_STORAGE_TEXEL_BUFFER_BIT,
+        VK_FORMAT_FEATURE_UNIFORM_TEXEL_BUFFER_BIT,
+        VK_FORMAT_FEATURE_VERTEX_BUFFER_BIT);
     }
   },
 
@@ -1418,6 +1784,18 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return FORMAT_SPACE_SRGB;
     }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of(
+        VK_FORMAT_FEATURE_BLIT_DST_BIT,
+        VK_FORMAT_FEATURE_BLIT_SRC_BIT,
+        VK_FORMAT_FEATURE_COLOR_ATTACHMENT_BIT,
+        VK_FORMAT_FEATURE_COLOR_ATTACHMENT_BLEND_BIT,
+        VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT,
+        VK_FORMAT_FEATURE_SAMPLED_IMAGE_FILTER_LINEAR_BIT);
+    }
   },
 
   /**
@@ -1449,6 +1827,20 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public VulkanFormatSpace space()
     {
       return FORMAT_SPACE_LINEAR;
+    }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of(
+        VK_FORMAT_FEATURE_BLIT_DST_BIT,
+        VK_FORMAT_FEATURE_BLIT_SRC_BIT,
+        VK_FORMAT_FEATURE_COLOR_ATTACHMENT_BIT,
+        VK_FORMAT_FEATURE_COLOR_ATTACHMENT_BLEND_BIT,
+        VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT,
+        VK_FORMAT_FEATURE_SAMPLED_IMAGE_FILTER_LINEAR_BIT,
+        VK_FORMAT_FEATURE_UNIFORM_TEXEL_BUFFER_BIT,
+        VK_FORMAT_FEATURE_VERTEX_BUFFER_BIT);
     }
   },
 
@@ -1482,6 +1874,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return FORMAT_SPACE_LINEAR;
     }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
+    }
   },
 
   /**
@@ -1514,6 +1912,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return FORMAT_SPACE_LINEAR;
     }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
+    }
   },
 
   /**
@@ -1544,6 +1948,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public VulkanFormatSpace space()
     {
       return FORMAT_SPACE_LINEAR;
+    }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
     }
   },
 
@@ -1577,6 +1987,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return FORMAT_SPACE_LINEAR;
     }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
+    }
   },
 
   /**
@@ -1608,6 +2024,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public VulkanFormatSpace space()
     {
       return FORMAT_SPACE_LINEAR;
+    }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
     }
   },
 
@@ -1642,6 +2064,18 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return FORMAT_SPACE_SRGB;
     }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of(
+        VK_FORMAT_FEATURE_BLIT_DST_BIT,
+        VK_FORMAT_FEATURE_BLIT_SRC_BIT,
+        VK_FORMAT_FEATURE_COLOR_ATTACHMENT_BIT,
+        VK_FORMAT_FEATURE_COLOR_ATTACHMENT_BLEND_BIT,
+        VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT,
+        VK_FORMAT_FEATURE_SAMPLED_IMAGE_FILTER_LINEAR_BIT);
+    }
   },
 
   /**
@@ -1673,6 +2107,21 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public VulkanFormatSpace space()
     {
       return FORMAT_SPACE_LINEAR;
+    }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of(
+        VK_FORMAT_FEATURE_BLIT_DST_BIT,
+        VK_FORMAT_FEATURE_BLIT_SRC_BIT,
+        VK_FORMAT_FEATURE_COLOR_ATTACHMENT_BIT,
+        VK_FORMAT_FEATURE_COLOR_ATTACHMENT_BLEND_BIT,
+        VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT,
+        VK_FORMAT_FEATURE_SAMPLED_IMAGE_FILTER_LINEAR_BIT,
+        VK_FORMAT_FEATURE_STORAGE_TEXEL_BUFFER_BIT,
+        VK_FORMAT_FEATURE_UNIFORM_TEXEL_BUFFER_BIT,
+        VK_FORMAT_FEATURE_VERTEX_BUFFER_BIT);
     }
   },
 
@@ -1706,6 +2155,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return FORMAT_SPACE_LINEAR;
     }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
+    }
   },
 
   /**
@@ -1737,6 +2192,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public VulkanFormatSpace space()
     {
       return FORMAT_SPACE_LINEAR;
+    }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
     }
   },
 
@@ -1770,6 +2231,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return FORMAT_SPACE_LINEAR;
     }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
+    }
   },
 
   /**
@@ -1802,6 +2269,19 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return FORMAT_SPACE_LINEAR;
     }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of(
+        VK_FORMAT_FEATURE_BLIT_DST_BIT,
+        VK_FORMAT_FEATURE_BLIT_SRC_BIT,
+        VK_FORMAT_FEATURE_COLOR_ATTACHMENT_BIT,
+        VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT,
+        VK_FORMAT_FEATURE_STORAGE_TEXEL_BUFFER_BIT,
+        VK_FORMAT_FEATURE_UNIFORM_TEXEL_BUFFER_BIT,
+        VK_FORMAT_FEATURE_VERTEX_BUFFER_BIT);
+    }
   },
 
   /**
@@ -1833,6 +2313,19 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public VulkanFormatSpace space()
     {
       return FORMAT_SPACE_LINEAR;
+    }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of(
+        VK_FORMAT_FEATURE_BLIT_DST_BIT,
+        VK_FORMAT_FEATURE_BLIT_SRC_BIT,
+        VK_FORMAT_FEATURE_COLOR_ATTACHMENT_BIT,
+        VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT,
+        VK_FORMAT_FEATURE_STORAGE_TEXEL_BUFFER_BIT,
+        VK_FORMAT_FEATURE_UNIFORM_TEXEL_BUFFER_BIT,
+        VK_FORMAT_FEATURE_VERTEX_BUFFER_BIT);
     }
   },
 
@@ -1867,6 +2360,18 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return FORMAT_SPACE_SRGB;
     }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of(
+        VK_FORMAT_FEATURE_BLIT_DST_BIT,
+        VK_FORMAT_FEATURE_BLIT_SRC_BIT,
+        VK_FORMAT_FEATURE_COLOR_ATTACHMENT_BIT,
+        VK_FORMAT_FEATURE_COLOR_ATTACHMENT_BLEND_BIT,
+        VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT,
+        VK_FORMAT_FEATURE_SAMPLED_IMAGE_FILTER_LINEAR_BIT);
+    }
   },
 
   /**
@@ -1898,6 +2403,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public VulkanFormatSpace space()
     {
       return FORMAT_SPACE_LINEAR;
+    }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
     }
   },
 
@@ -1931,6 +2442,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return FORMAT_SPACE_LINEAR;
     }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
+    }
   },
 
   /**
@@ -1962,6 +2479,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public VulkanFormatSpace space()
     {
       return FORMAT_SPACE_LINEAR;
+    }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
     }
   },
 
@@ -1995,6 +2518,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return FORMAT_SPACE_LINEAR;
     }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
+    }
   },
 
   /**
@@ -2026,6 +2555,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public VulkanFormatSpace space()
     {
       return FORMAT_SPACE_LINEAR;
+    }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
     }
   },
 
@@ -2059,6 +2594,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return FORMAT_SPACE_LINEAR;
     }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
+    }
   },
 
   /**
@@ -2090,6 +2631,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public VulkanFormatSpace space()
     {
       return FORMAT_SPACE_LINEAR;
+    }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
     }
   },
 
@@ -2123,6 +2670,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return FORMAT_SPACE_LINEAR;
     }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
+    }
   },
 
   /**
@@ -2154,6 +2707,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public VulkanFormatSpace space()
     {
       return FORMAT_SPACE_LINEAR;
+    }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
     }
   },
 
@@ -2187,6 +2746,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return FORMAT_SPACE_LINEAR;
     }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
+    }
   },
 
   /**
@@ -2218,6 +2783,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public VulkanFormatSpace space()
     {
       return FORMAT_SPACE_LINEAR;
+    }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
     }
   },
 
@@ -2251,6 +2822,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return FORMAT_SPACE_LINEAR;
     }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
+    }
   },
 
   /**
@@ -2280,6 +2857,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public VulkanFormatSpace space()
     {
       return FORMAT_SPACE_LINEAR;
+    }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of(VK_FORMAT_FEATURE_VERTEX_BUFFER_BIT);
     }
   },
 
@@ -2311,6 +2894,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return FORMAT_SPACE_LINEAR;
     }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of(VK_FORMAT_FEATURE_VERTEX_BUFFER_BIT);
+    }
   },
 
   /**
@@ -2340,6 +2929,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public VulkanFormatSpace space()
     {
       return FORMAT_SPACE_LINEAR;
+    }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
     }
   },
 
@@ -2371,6 +2966,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return FORMAT_SPACE_LINEAR;
     }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
+    }
   },
 
   /**
@@ -2400,6 +3001,18 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public VulkanFormatSpace space()
     {
       return FORMAT_SPACE_LINEAR;
+    }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of(
+        VK_FORMAT_FEATURE_BLIT_DST_BIT,
+        VK_FORMAT_FEATURE_BLIT_SRC_BIT,
+        VK_FORMAT_FEATURE_COLOR_ATTACHMENT_BIT,
+        VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT,
+        VK_FORMAT_FEATURE_UNIFORM_TEXEL_BUFFER_BIT,
+        VK_FORMAT_FEATURE_VERTEX_BUFFER_BIT);
     }
   },
 
@@ -2431,6 +3044,18 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return FORMAT_SPACE_LINEAR;
     }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of(
+        VK_FORMAT_FEATURE_BLIT_DST_BIT,
+        VK_FORMAT_FEATURE_BLIT_SRC_BIT,
+        VK_FORMAT_FEATURE_COLOR_ATTACHMENT_BIT,
+        VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT,
+        VK_FORMAT_FEATURE_UNIFORM_TEXEL_BUFFER_BIT,
+        VK_FORMAT_FEATURE_VERTEX_BUFFER_BIT);
+    }
   },
 
   /**
@@ -2460,6 +3085,20 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public VulkanFormatSpace space()
     {
       return FORMAT_SPACE_LINEAR;
+    }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of(
+        VK_FORMAT_FEATURE_BLIT_DST_BIT,
+        VK_FORMAT_FEATURE_BLIT_SRC_BIT,
+        VK_FORMAT_FEATURE_COLOR_ATTACHMENT_BIT,
+        VK_FORMAT_FEATURE_COLOR_ATTACHMENT_BLEND_BIT,
+        VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT,
+        VK_FORMAT_FEATURE_SAMPLED_IMAGE_FILTER_LINEAR_BIT,
+        VK_FORMAT_FEATURE_UNIFORM_TEXEL_BUFFER_BIT,
+        VK_FORMAT_FEATURE_VERTEX_BUFFER_BIT);
     }
   },
 
@@ -2492,6 +3131,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return FORMAT_SPACE_LINEAR;
     }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of(VK_FORMAT_FEATURE_VERTEX_BUFFER_BIT);
+    }
   },
 
   /**
@@ -2522,6 +3167,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public VulkanFormatSpace space()
     {
       return FORMAT_SPACE_LINEAR;
+    }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of(VK_FORMAT_FEATURE_VERTEX_BUFFER_BIT);
     }
   },
 
@@ -2554,6 +3205,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return FORMAT_SPACE_LINEAR;
     }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
+    }
   },
 
   /**
@@ -2584,6 +3241,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public VulkanFormatSpace space()
     {
       return FORMAT_SPACE_LINEAR;
+    }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
     }
   },
 
@@ -2616,6 +3279,18 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return FORMAT_SPACE_LINEAR;
     }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of(
+        VK_FORMAT_FEATURE_BLIT_DST_BIT,
+        VK_FORMAT_FEATURE_BLIT_SRC_BIT,
+        VK_FORMAT_FEATURE_COLOR_ATTACHMENT_BIT,
+        VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT,
+        VK_FORMAT_FEATURE_UNIFORM_TEXEL_BUFFER_BIT,
+        VK_FORMAT_FEATURE_VERTEX_BUFFER_BIT);
+    }
   },
 
   /**
@@ -2646,6 +3321,18 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public VulkanFormatSpace space()
     {
       return FORMAT_SPACE_LINEAR;
+    }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of(
+        VK_FORMAT_FEATURE_BLIT_DST_BIT,
+        VK_FORMAT_FEATURE_BLIT_SRC_BIT,
+        VK_FORMAT_FEATURE_COLOR_ATTACHMENT_BIT,
+        VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT,
+        VK_FORMAT_FEATURE_UNIFORM_TEXEL_BUFFER_BIT,
+        VK_FORMAT_FEATURE_VERTEX_BUFFER_BIT);
     }
   },
 
@@ -2678,6 +3365,20 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return FORMAT_SPACE_LINEAR;
     }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of(
+        VK_FORMAT_FEATURE_BLIT_DST_BIT,
+        VK_FORMAT_FEATURE_BLIT_SRC_BIT,
+        VK_FORMAT_FEATURE_COLOR_ATTACHMENT_BIT,
+        VK_FORMAT_FEATURE_COLOR_ATTACHMENT_BLEND_BIT,
+        VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT,
+        VK_FORMAT_FEATURE_SAMPLED_IMAGE_FILTER_LINEAR_BIT,
+        VK_FORMAT_FEATURE_UNIFORM_TEXEL_BUFFER_BIT,
+        VK_FORMAT_FEATURE_VERTEX_BUFFER_BIT);
+    }
   },
 
   /**
@@ -2708,6 +3409,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public VulkanFormatSpace space()
     {
       return FORMAT_SPACE_LINEAR;
+    }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
     }
   },
 
@@ -2740,6 +3447,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return FORMAT_SPACE_LINEAR;
     }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
+    }
   },
 
   /**
@@ -2770,6 +3483,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public VulkanFormatSpace space()
     {
       return FORMAT_SPACE_LINEAR;
+    }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
     }
   },
 
@@ -2802,6 +3521,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return FORMAT_SPACE_LINEAR;
     }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
+    }
   },
 
   /**
@@ -2832,6 +3557,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public VulkanFormatSpace space()
     {
       return FORMAT_SPACE_LINEAR;
+    }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
     }
   },
 
@@ -2864,6 +3595,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return FORMAT_SPACE_LINEAR;
     }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
+    }
   },
 
   /**
@@ -2894,6 +3631,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public VulkanFormatSpace space()
     {
       return FORMAT_SPACE_LINEAR;
+    }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
     }
   },
 
@@ -2927,6 +3670,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return FORMAT_SPACE_LINEAR;
     }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of(VK_FORMAT_FEATURE_VERTEX_BUFFER_BIT);
+    }
   },
 
   /**
@@ -2958,6 +3707,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public VulkanFormatSpace space()
     {
       return FORMAT_SPACE_LINEAR;
+    }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of(VK_FORMAT_FEATURE_VERTEX_BUFFER_BIT);
     }
   },
 
@@ -2991,6 +3746,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return FORMAT_SPACE_LINEAR;
     }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
+    }
   },
 
   /**
@@ -3022,6 +3783,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public VulkanFormatSpace space()
     {
       return FORMAT_SPACE_LINEAR;
+    }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
     }
   },
 
@@ -3055,6 +3822,20 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return FORMAT_SPACE_LINEAR;
     }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of(
+        VK_FORMAT_FEATURE_BLIT_DST_BIT,
+        VK_FORMAT_FEATURE_BLIT_SRC_BIT,
+        VK_FORMAT_FEATURE_COLOR_ATTACHMENT_BIT,
+        VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT,
+        VK_FORMAT_FEATURE_STORAGE_IMAGE_BIT,
+        VK_FORMAT_FEATURE_STORAGE_TEXEL_BUFFER_BIT,
+        VK_FORMAT_FEATURE_UNIFORM_TEXEL_BUFFER_BIT,
+        VK_FORMAT_FEATURE_VERTEX_BUFFER_BIT);
+    }
   },
 
   /**
@@ -3086,6 +3867,20 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public VulkanFormatSpace space()
     {
       return FORMAT_SPACE_LINEAR;
+    }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of(
+        VK_FORMAT_FEATURE_BLIT_DST_BIT,
+        VK_FORMAT_FEATURE_BLIT_SRC_BIT,
+        VK_FORMAT_FEATURE_COLOR_ATTACHMENT_BIT,
+        VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT,
+        VK_FORMAT_FEATURE_STORAGE_IMAGE_BIT,
+        VK_FORMAT_FEATURE_STORAGE_TEXEL_BUFFER_BIT,
+        VK_FORMAT_FEATURE_UNIFORM_TEXEL_BUFFER_BIT,
+        VK_FORMAT_FEATURE_VERTEX_BUFFER_BIT);
     }
   },
 
@@ -3119,6 +3914,22 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return FORMAT_SPACE_LINEAR;
     }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of(
+        VK_FORMAT_FEATURE_BLIT_DST_BIT,
+        VK_FORMAT_FEATURE_BLIT_SRC_BIT,
+        VK_FORMAT_FEATURE_COLOR_ATTACHMENT_BIT,
+        VK_FORMAT_FEATURE_COLOR_ATTACHMENT_BLEND_BIT,
+        VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT,
+        VK_FORMAT_FEATURE_SAMPLED_IMAGE_FILTER_LINEAR_BIT,
+        VK_FORMAT_FEATURE_STORAGE_IMAGE_BIT,
+        VK_FORMAT_FEATURE_STORAGE_TEXEL_BUFFER_BIT,
+        VK_FORMAT_FEATURE_UNIFORM_TEXEL_BUFFER_BIT,
+        VK_FORMAT_FEATURE_VERTEX_BUFFER_BIT);
+    }
   },
 
   /**
@@ -3148,6 +3959,22 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public VulkanFormatSpace space()
     {
       return FORMAT_SPACE_LINEAR;
+    }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of(
+        VK_FORMAT_FEATURE_BLIT_DST_BIT,
+        VK_FORMAT_FEATURE_BLIT_SRC_BIT,
+        VK_FORMAT_FEATURE_COLOR_ATTACHMENT_BIT,
+        VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT,
+        VK_FORMAT_FEATURE_STORAGE_IMAGE_ATOMIC_BIT,
+        VK_FORMAT_FEATURE_STORAGE_IMAGE_BIT,
+        VK_FORMAT_FEATURE_STORAGE_TEXEL_BUFFER_ATOMIC_BIT,
+        VK_FORMAT_FEATURE_STORAGE_TEXEL_BUFFER_BIT,
+        VK_FORMAT_FEATURE_UNIFORM_TEXEL_BUFFER_BIT,
+        VK_FORMAT_FEATURE_VERTEX_BUFFER_BIT);
     }
   },
 
@@ -3179,6 +4006,22 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return FORMAT_SPACE_LINEAR;
     }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of(
+        VK_FORMAT_FEATURE_BLIT_DST_BIT,
+        VK_FORMAT_FEATURE_BLIT_SRC_BIT,
+        VK_FORMAT_FEATURE_COLOR_ATTACHMENT_BIT,
+        VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT,
+        VK_FORMAT_FEATURE_STORAGE_IMAGE_ATOMIC_BIT,
+        VK_FORMAT_FEATURE_STORAGE_IMAGE_BIT,
+        VK_FORMAT_FEATURE_STORAGE_TEXEL_BUFFER_ATOMIC_BIT,
+        VK_FORMAT_FEATURE_STORAGE_TEXEL_BUFFER_BIT,
+        VK_FORMAT_FEATURE_UNIFORM_TEXEL_BUFFER_BIT,
+        VK_FORMAT_FEATURE_VERTEX_BUFFER_BIT);
+    }
   },
 
   /**
@@ -3208,6 +4051,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public VulkanFormatSpace space()
     {
       return FORMAT_SPACE_LINEAR;
+    }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
     }
   },
 
@@ -3240,6 +4089,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return FORMAT_SPACE_LINEAR;
     }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
+    }
   },
 
   /**
@@ -3270,6 +4125,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public VulkanFormatSpace space()
     {
       return FORMAT_SPACE_LINEAR;
+    }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
     }
   },
 
@@ -3302,6 +4163,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return FORMAT_SPACE_LINEAR;
     }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
+    }
   },
 
   /**
@@ -3332,6 +4199,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public VulkanFormatSpace space()
     {
       return FORMAT_SPACE_LINEAR;
+    }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
     }
   },
 
@@ -3364,6 +4237,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return FORMAT_SPACE_LINEAR;
     }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
+    }
   },
 
   /**
@@ -3394,6 +4273,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public VulkanFormatSpace space()
     {
       return FORMAT_SPACE_LINEAR;
+    }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
     }
   },
 
@@ -3427,6 +4312,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return FORMAT_SPACE_LINEAR;
     }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
+    }
   },
 
   /**
@@ -3458,6 +4349,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public VulkanFormatSpace space()
     {
       return FORMAT_SPACE_LINEAR;
+    }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
     }
   },
 
@@ -3491,6 +4388,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return FORMAT_SPACE_LINEAR;
     }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
+    }
   },
 
   /**
@@ -3520,6 +4423,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public VulkanFormatSpace space()
     {
       return FORMAT_SPACE_LINEAR;
+    }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
     }
   },
 
@@ -3551,6 +4460,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return FORMAT_SPACE_LINEAR;
     }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
+    }
   },
 
   /**
@@ -3580,6 +4495,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public VulkanFormatSpace space()
     {
       return FORMAT_SPACE_LINEAR;
+    }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
     }
   },
 
@@ -3612,6 +4533,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return FORMAT_SPACE_LINEAR;
     }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
+    }
   },
 
   /**
@@ -3642,6 +4569,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public VulkanFormatSpace space()
     {
       return FORMAT_SPACE_LINEAR;
+    }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
     }
   },
 
@@ -3674,6 +4607,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return FORMAT_SPACE_LINEAR;
     }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
+    }
   },
 
   /**
@@ -3704,6 +4643,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public VulkanFormatSpace space()
     {
       return FORMAT_SPACE_LINEAR;
+    }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
     }
   },
 
@@ -3736,6 +4681,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return FORMAT_SPACE_LINEAR;
     }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
+    }
   },
 
   /**
@@ -3766,6 +4717,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public VulkanFormatSpace space()
     {
       return FORMAT_SPACE_LINEAR;
+    }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
     }
   },
 
@@ -3799,6 +4756,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return FORMAT_SPACE_LINEAR;
     }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
+    }
   },
 
   /**
@@ -3831,6 +4794,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return FORMAT_SPACE_LINEAR;
     }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
+    }
   },
 
   /**
@@ -3862,6 +4831,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public VulkanFormatSpace space()
     {
       return FORMAT_SPACE_LINEAR;
+    }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
     }
   },
 
@@ -3896,6 +4871,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return FORMAT_SPACE_LINEAR;
     }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
+    }
   },
 
   /**
@@ -3928,6 +4909,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return FORMAT_SPACE_LINEAR;
     }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
+    }
   },
 
   /**
@@ -3957,6 +4944,15 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public VulkanFormatSpace space()
     {
       return FORMAT_SPACE_LINEAR;
+    }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of(
+        VK_FORMAT_FEATURE_BLIT_SRC_BIT,
+        VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT,
+        VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT);
     }
   },
 
@@ -3989,6 +4985,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return FORMAT_SPACE_LINEAR;
     }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
+    }
   },
 
   /**
@@ -4019,6 +5021,14 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return FORMAT_SPACE_LINEAR;
     }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of(
+        VK_FORMAT_FEATURE_BLIT_SRC_BIT,
+        VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT);
+    }
   },
 
   /**
@@ -4048,6 +5058,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public VulkanFormatSpace space()
     {
       return FORMAT_SPACE_NONE;
+    }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
     }
   },
 
@@ -4080,6 +5096,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return FORMAT_SPACE_LINEAR;
     }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
+    }
   },
 
   /**
@@ -4111,6 +5133,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return FORMAT_SPACE_LINEAR;
     }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
+    }
   },
 
   /**
@@ -4141,6 +5169,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public VulkanFormatSpace space()
     {
       return FORMAT_SPACE_LINEAR;
+    }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
     }
   },
 
@@ -4174,6 +5208,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return FORMAT_SPACE_LINEAR;
     }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
+    }
   },
 
   /**
@@ -4206,6 +5246,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return FORMAT_SPACE_SRGB;
     }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
+    }
   },
 
   /**
@@ -4236,6 +5282,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public VulkanFormatSpace space()
     {
       return FORMAT_SPACE_LINEAR;
+    }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
     }
   },
 
@@ -4269,6 +5321,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return FORMAT_SPACE_SRGB;
     }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
+    }
   },
 
   /**
@@ -4300,6 +5358,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public VulkanFormatSpace space()
     {
       return FORMAT_SPACE_LINEAR;
+    }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
     }
   },
 
@@ -4333,6 +5397,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return FORMAT_SPACE_SRGB;
     }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
+    }
   },
 
   /**
@@ -4364,6 +5434,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public VulkanFormatSpace space()
     {
       return FORMAT_SPACE_LINEAR;
+    }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
     }
   },
 
@@ -4397,6 +5473,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return FORMAT_SPACE_SRGB;
     }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
+    }
   },
 
   /**
@@ -4428,6 +5510,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return FORMAT_SPACE_LINEAR;
     }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
+    }
   },
 
   /**
@@ -4458,6 +5546,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public VulkanFormatSpace space()
     {
       return FORMAT_SPACE_LINEAR;
+    }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
     }
   },
 
@@ -4491,6 +5585,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return FORMAT_SPACE_LINEAR;
     }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
+    }
   },
 
   /**
@@ -4523,6 +5623,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return FORMAT_SPACE_LINEAR;
     }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
+    }
   },
 
   /**
@@ -4553,6 +5659,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public VulkanFormatSpace space()
     {
       return FORMAT_SPACE_LINEAR;
+    }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
     }
   },
 
@@ -4585,6 +5697,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return FORMAT_SPACE_LINEAR;
     }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
+    }
   },
 
   /**
@@ -4615,6 +5733,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public VulkanFormatSpace space()
     {
       return FORMAT_SPACE_LINEAR;
+    }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
     }
   },
 
@@ -4648,6 +5772,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return FORMAT_SPACE_SRGB;
     }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
+    }
   },
 
   /**
@@ -4679,6 +5809,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public VulkanFormatSpace space()
     {
       return FORMAT_SPACE_LINEAR;
+    }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
     }
   },
 
@@ -4712,6 +5848,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return FORMAT_SPACE_SRGB;
     }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
+    }
   },
 
   /**
@@ -4742,6 +5884,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public VulkanFormatSpace space()
     {
       return FORMAT_SPACE_LINEAR;
+    }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
     }
   },
 
@@ -4775,6 +5923,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return FORMAT_SPACE_SRGB;
     }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
+    }
   },
 
   /**
@@ -4806,6 +5960,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public VulkanFormatSpace space()
     {
       return FORMAT_SPACE_LINEAR;
+    }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
     }
   },
 
@@ -4839,6 +5999,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return FORMAT_SPACE_SRGB;
     }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
+    }
   },
 
   /**
@@ -4870,6 +6036,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return FORMAT_SPACE_LINEAR;
     }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
+    }
   },
 
   /**
@@ -4900,6 +6072,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public VulkanFormatSpace space()
     {
       return FORMAT_SPACE_LINEAR;
+    }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
     }
   },
 
@@ -4933,6 +6111,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return FORMAT_SPACE_LINEAR;
     }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
+    }
   },
 
   /**
@@ -4965,6 +6149,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return FORMAT_SPACE_LINEAR;
     }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
+    }
   },
 
   /**
@@ -4995,6 +6185,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public VulkanFormatSpace space()
     {
       return FORMAT_SPACE_LINEAR;
+    }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
     }
   },
 
@@ -5028,6 +6224,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return FORMAT_SPACE_SRGB;
     }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
+    }
   },
 
   /**
@@ -5058,6 +6260,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public VulkanFormatSpace space()
     {
       return FORMAT_SPACE_LINEAR;
+    }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
     }
   },
 
@@ -5091,6 +6299,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return FORMAT_SPACE_SRGB;
     }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
+    }
   },
 
   /**
@@ -5121,6 +6335,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public VulkanFormatSpace space()
     {
       return FORMAT_SPACE_LINEAR;
+    }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
     }
   },
 
@@ -5154,6 +6374,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return FORMAT_SPACE_SRGB;
     }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
+    }
   },
 
   /**
@@ -5184,6 +6410,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public VulkanFormatSpace space()
     {
       return FORMAT_SPACE_LINEAR;
+    }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
     }
   },
 
@@ -5217,6 +6449,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return FORMAT_SPACE_SRGB;
     }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
+    }
   },
 
   /**
@@ -5247,6 +6485,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public VulkanFormatSpace space()
     {
       return FORMAT_SPACE_LINEAR;
+    }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
     }
   },
 
@@ -5280,6 +6524,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return FORMAT_SPACE_SRGB;
     }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
+    }
   },
 
   /**
@@ -5310,6 +6560,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public VulkanFormatSpace space()
     {
       return FORMAT_SPACE_LINEAR;
+    }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
     }
   },
 
@@ -5343,6 +6599,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return FORMAT_SPACE_SRGB;
     }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
+    }
   },
 
   /**
@@ -5373,6 +6635,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public VulkanFormatSpace space()
     {
       return FORMAT_SPACE_LINEAR;
+    }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
     }
   },
 
@@ -5406,6 +6674,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return FORMAT_SPACE_SRGB;
     }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
+    }
   },
 
   /**
@@ -5436,6 +6710,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public VulkanFormatSpace space()
     {
       return FORMAT_SPACE_LINEAR;
+    }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
     }
   },
 
@@ -5469,6 +6749,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return FORMAT_SPACE_SRGB;
     }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
+    }
   },
 
   /**
@@ -5499,6 +6785,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public VulkanFormatSpace space()
     {
       return FORMAT_SPACE_LINEAR;
+    }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
     }
   },
 
@@ -5532,6 +6824,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return FORMAT_SPACE_SRGB;
     }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
+    }
   },
 
   /**
@@ -5562,6 +6860,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public VulkanFormatSpace space()
     {
       return FORMAT_SPACE_LINEAR;
+    }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
     }
   },
 
@@ -5595,6 +6899,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return FORMAT_SPACE_SRGB;
     }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
+    }
   },
 
   /**
@@ -5625,6 +6935,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public VulkanFormatSpace space()
     {
       return FORMAT_SPACE_LINEAR;
+    }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
     }
   },
 
@@ -5658,6 +6974,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return FORMAT_SPACE_SRGB;
     }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
+    }
   },
 
   /**
@@ -5688,6 +7010,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public VulkanFormatSpace space()
     {
       return FORMAT_SPACE_LINEAR;
+    }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
     }
   },
 
@@ -5721,6 +7049,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return FORMAT_SPACE_SRGB;
     }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
+    }
   },
 
   /**
@@ -5751,6 +7085,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public VulkanFormatSpace space()
     {
       return FORMAT_SPACE_LINEAR;
+    }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
     }
   },
 
@@ -5784,6 +7124,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return FORMAT_SPACE_SRGB;
     }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
+    }
   },
 
   /**
@@ -5814,6 +7160,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public VulkanFormatSpace space()
     {
       return FORMAT_SPACE_LINEAR;
+    }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
     }
   },
 
@@ -5846,6 +7198,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public VulkanFormatSpace space()
     {
       return FORMAT_SPACE_SRGB;
+    }
+
+    @Override
+    public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
+    {
+      return Set.of();
     }
   };
 
@@ -5901,4 +7259,15 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    */
 
   public abstract VulkanFormatSpace space();
+
+  /**
+   * Some formats in the Vulkan specification have a degree of mandatory
+   * support. That is, there are some formats in the specification that
+   * are guaranteed to be provided by all Vulkan implementations, and there
+   * is a set of features for each required format that must be supported.
+   *
+   * @return The set of features mandated by the specification
+   */
+
+  public abstract Set<VulkanFormatFeatureFlag> mandatoryFeatures();
 }
