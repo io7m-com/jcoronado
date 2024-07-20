@@ -20,6 +20,14 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
+import static com.io7m.jcoronado.api.VulkanFormatColorChannels.COLOR_CHANNELS_ABGR;
+import static com.io7m.jcoronado.api.VulkanFormatColorChannels.COLOR_CHANNELS_ARGB;
+import static com.io7m.jcoronado.api.VulkanFormatColorChannels.COLOR_CHANNELS_BGR;
+import static com.io7m.jcoronado.api.VulkanFormatColorChannels.COLOR_CHANNELS_BGRA;
+import static com.io7m.jcoronado.api.VulkanFormatColorChannels.COLOR_CHANNELS_R;
+import static com.io7m.jcoronado.api.VulkanFormatColorChannels.COLOR_CHANNELS_RG;
+import static com.io7m.jcoronado.api.VulkanFormatColorChannels.COLOR_CHANNELS_RGB;
+import static com.io7m.jcoronado.api.VulkanFormatColorChannels.COLOR_CHANNELS_RGBA;
 import static com.io7m.jcoronado.api.VulkanFormatCompressed.FORMAT_COMPRESSED;
 import static com.io7m.jcoronado.api.VulkanFormatCompressed.FORMAT_UNCOMPRESSED;
 import static com.io7m.jcoronado.api.VulkanFormatData.FORMAT_DATA_FLOATING_POINT_SIGNED;
@@ -97,6 +105,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return Set.of();
     }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.empty();
+    }
   },
 
   /**
@@ -133,6 +147,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
     {
       return Set.of();
+    }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_RG);
     }
   },
 
@@ -171,6 +191,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
     {
       return Set.of();
+    }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_RGBA);
     }
   },
 
@@ -212,6 +238,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
         VK_FORMAT_FEATURE_BLIT_SRC_BIT,
         VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT,
         VK_FORMAT_FEATURE_SAMPLED_IMAGE_FILTER_LINEAR_BIT);
+    }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_BGRA);
     }
   },
 
@@ -257,6 +289,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
         VK_FORMAT_FEATURE_SAMPLED_IMAGE_FILTER_LINEAR_BIT
       );
     }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_RGB);
+    }
   },
 
   /**
@@ -293,6 +331,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
     {
       return Set.of();
+    }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_BGR);
     }
   },
 
@@ -332,6 +376,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return Set.of();
     }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_RGBA);
+    }
   },
 
   /**
@@ -370,6 +420,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return Set.of();
     }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_BGRA);
+    }
   },
 
   /**
@@ -407,6 +463,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
     {
       return Set.of();
+    }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_ARGB);
     }
   },
 
@@ -452,6 +514,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
         VK_FORMAT_FEATURE_UNIFORM_TEXEL_BUFFER_BIT,
         VK_FORMAT_FEATURE_VERTEX_BUFFER_BIT);
     }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_R);
+    }
   },
 
   /**
@@ -493,6 +561,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
         VK_FORMAT_FEATURE_UNIFORM_TEXEL_BUFFER_BIT,
         VK_FORMAT_FEATURE_VERTEX_BUFFER_BIT);
     }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_R);
+    }
   },
 
   /**
@@ -529,6 +603,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return Set.of();
     }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_R);
+    }
   },
 
   /**
@@ -564,6 +644,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
     {
       return Set.of();
+    }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_R);
     }
   },
 
@@ -607,6 +693,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
         VK_FORMAT_FEATURE_UNIFORM_TEXEL_BUFFER_BIT,
         VK_FORMAT_FEATURE_VERTEX_BUFFER_BIT);
     }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_R);
+    }
   },
 
   /**
@@ -649,6 +741,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
         VK_FORMAT_FEATURE_UNIFORM_TEXEL_BUFFER_BIT,
         VK_FORMAT_FEATURE_VERTEX_BUFFER_BIT);
     }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_R);
+    }
   },
 
   /**
@@ -685,6 +783,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
     {
       return Set.of();
+    }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_R);
     }
   },
 
@@ -731,6 +835,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
         VK_FORMAT_FEATURE_UNIFORM_TEXEL_BUFFER_BIT,
         VK_FORMAT_FEATURE_VERTEX_BUFFER_BIT);
     }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_RG);
+    }
   },
 
   /**
@@ -773,6 +883,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
         VK_FORMAT_FEATURE_UNIFORM_TEXEL_BUFFER_BIT,
         VK_FORMAT_FEATURE_VERTEX_BUFFER_BIT);
     }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_RG);
+    }
   },
 
   /**
@@ -810,6 +926,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return Set.of();
     }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_RG);
+    }
   },
 
   /**
@@ -846,6 +968,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
     {
       return Set.of();
+    }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_RG);
     }
   },
 
@@ -890,6 +1018,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
         VK_FORMAT_FEATURE_UNIFORM_TEXEL_BUFFER_BIT,
         VK_FORMAT_FEATURE_VERTEX_BUFFER_BIT);
     }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_RG);
+    }
   },
 
   /**
@@ -933,6 +1067,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
         VK_FORMAT_FEATURE_UNIFORM_TEXEL_BUFFER_BIT,
         VK_FORMAT_FEATURE_VERTEX_BUFFER_BIT);
     }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_RG);
+    }
   },
 
   /**
@@ -971,6 +1111,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return Set.of();
     }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_RG);
+    }
   },
 
   /**
@@ -1007,6 +1153,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
     {
       return Set.of();
+    }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_RGB);
     }
   },
 
@@ -1045,6 +1197,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return Set.of();
     }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_RGB);
+    }
   },
 
   /**
@@ -1081,6 +1239,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
     {
       return Set.of();
+    }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_RGB);
     }
   },
 
@@ -1119,6 +1283,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return Set.of();
     }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_RGB);
+    }
   },
 
   /**
@@ -1156,6 +1326,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return Set.of();
     }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_RGB);
+    }
   },
 
   /**
@@ -1192,6 +1368,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
     {
       return Set.of();
+    }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_RGB);
     }
   },
 
@@ -1231,6 +1413,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return Set.of();
     }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_RGB);
+    }
   },
 
   /**
@@ -1267,6 +1455,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
     {
       return Set.of();
+    }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_BGR);
     }
   },
 
@@ -1305,6 +1499,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return Set.of();
     }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_BGR);
+    }
   },
 
   /**
@@ -1341,6 +1541,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
     {
       return Set.of();
+    }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_BGR);
     }
   },
 
@@ -1379,6 +1585,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return Set.of();
     }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_BGR);
+    }
   },
 
   /**
@@ -1415,6 +1627,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
     {
       return Set.of();
+    }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_BGR);
     }
   },
 
@@ -1453,6 +1671,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return Set.of();
     }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_BGR);
+    }
   },
 
   /**
@@ -1490,6 +1714,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
     {
       return Set.of();
+    }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_BGR);
     }
   },
 
@@ -1539,6 +1769,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
         VK_FORMAT_FEATURE_UNIFORM_TEXEL_BUFFER_BIT,
         VK_FORMAT_FEATURE_VERTEX_BUFFER_BIT);
     }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_RGBA);
+    }
   },
 
   /**
@@ -1584,6 +1820,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
         VK_FORMAT_FEATURE_UNIFORM_TEXEL_BUFFER_BIT,
         VK_FORMAT_FEATURE_VERTEX_BUFFER_BIT);
     }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_RGBA);
+    }
   },
 
   /**
@@ -1622,6 +1864,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return Set.of();
     }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_RGBA);
+    }
   },
 
   /**
@@ -1658,6 +1906,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
     {
       return Set.of();
+    }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_RGBA);
     }
   },
 
@@ -1705,6 +1959,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
         VK_FORMAT_FEATURE_UNIFORM_TEXEL_BUFFER_BIT,
         VK_FORMAT_FEATURE_VERTEX_BUFFER_BIT);
     }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_RGBA);
+    }
   },
 
   /**
@@ -1751,6 +2011,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
         VK_FORMAT_FEATURE_UNIFORM_TEXEL_BUFFER_BIT,
         VK_FORMAT_FEATURE_VERTEX_BUFFER_BIT);
     }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_RGBA);
+    }
   },
 
   /**
@@ -1795,6 +2061,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
         VK_FORMAT_FEATURE_COLOR_ATTACHMENT_BLEND_BIT,
         VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT,
         VK_FORMAT_FEATURE_SAMPLED_IMAGE_FILTER_LINEAR_BIT);
+    }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_RGBA);
     }
   },
 
@@ -1842,6 +2114,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
         VK_FORMAT_FEATURE_UNIFORM_TEXEL_BUFFER_BIT,
         VK_FORMAT_FEATURE_VERTEX_BUFFER_BIT);
     }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_BGRA);
+    }
   },
 
   /**
@@ -1879,6 +2157,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
     {
       return Set.of();
+    }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_BGRA);
     }
   },
 
@@ -1918,6 +2202,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return Set.of();
     }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_BGRA);
+    }
   },
 
   /**
@@ -1954,6 +2244,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
     {
       return Set.of();
+    }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_BGRA);
     }
   },
 
@@ -1993,6 +2289,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return Set.of();
     }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_BGRA);
+    }
   },
 
   /**
@@ -2030,6 +2332,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
     {
       return Set.of();
+    }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_BGRA);
     }
   },
 
@@ -2075,6 +2383,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
         VK_FORMAT_FEATURE_COLOR_ATTACHMENT_BLEND_BIT,
         VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT,
         VK_FORMAT_FEATURE_SAMPLED_IMAGE_FILTER_LINEAR_BIT);
+    }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_BGRA);
     }
   },
 
@@ -2123,6 +2437,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
         VK_FORMAT_FEATURE_UNIFORM_TEXEL_BUFFER_BIT,
         VK_FORMAT_FEATURE_VERTEX_BUFFER_BIT);
     }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_ABGR);
+    }
   },
 
   /**
@@ -2160,6 +2480,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
     {
       return Set.of();
+    }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_ABGR);
     }
   },
 
@@ -2199,6 +2525,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return Set.of();
     }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_ABGR);
+    }
   },
 
   /**
@@ -2236,6 +2568,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
     {
       return Set.of();
+    }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_ABGR);
     }
   },
 
@@ -2282,6 +2620,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
         VK_FORMAT_FEATURE_UNIFORM_TEXEL_BUFFER_BIT,
         VK_FORMAT_FEATURE_VERTEX_BUFFER_BIT);
     }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_ABGR);
+    }
   },
 
   /**
@@ -2326,6 +2670,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
         VK_FORMAT_FEATURE_STORAGE_TEXEL_BUFFER_BIT,
         VK_FORMAT_FEATURE_UNIFORM_TEXEL_BUFFER_BIT,
         VK_FORMAT_FEATURE_VERTEX_BUFFER_BIT);
+    }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_ABGR);
     }
   },
 
@@ -2372,6 +2722,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
         VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT,
         VK_FORMAT_FEATURE_SAMPLED_IMAGE_FILTER_LINEAR_BIT);
     }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_ABGR);
+    }
   },
 
   /**
@@ -2409,6 +2765,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
     {
       return Set.of();
+    }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_ARGB);
     }
   },
 
@@ -2448,6 +2810,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return Set.of();
     }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_ARGB);
+    }
   },
 
   /**
@@ -2485,6 +2853,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
     {
       return Set.of();
+    }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_ARGB);
     }
   },
 
@@ -2524,6 +2898,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return Set.of();
     }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_ARGB);
+    }
   },
 
   /**
@@ -2561,6 +2941,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
     {
       return Set.of();
+    }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_ARGB);
     }
   },
 
@@ -2600,6 +2986,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return Set.of();
     }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_ARGB);
+    }
   },
 
   /**
@@ -2637,6 +3029,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
     {
       return Set.of();
+    }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_ABGR);
     }
   },
 
@@ -2676,6 +3074,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return Set.of();
     }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_ABGR);
+    }
   },
 
   /**
@@ -2713,6 +3117,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
     {
       return Set.of();
+    }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_ABGR);
     }
   },
 
@@ -2752,6 +3162,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return Set.of();
     }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_ABGR);
+    }
   },
 
   /**
@@ -2789,6 +3205,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
     {
       return Set.of();
+    }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_ABGR);
     }
   },
 
@@ -2828,6 +3250,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return Set.of();
     }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_ABGR);
+    }
   },
 
   /**
@@ -2863,6 +3291,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
     {
       return Set.of(VK_FORMAT_FEATURE_VERTEX_BUFFER_BIT);
+    }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_R);
     }
   },
 
@@ -2900,6 +3334,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return Set.of(VK_FORMAT_FEATURE_VERTEX_BUFFER_BIT);
     }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_R);
+    }
   },
 
   /**
@@ -2936,6 +3376,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return Set.of();
     }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_R);
+    }
   },
 
   /**
@@ -2971,6 +3417,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
     {
       return Set.of();
+    }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_R);
     }
   },
 
@@ -3014,6 +3466,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
         VK_FORMAT_FEATURE_UNIFORM_TEXEL_BUFFER_BIT,
         VK_FORMAT_FEATURE_VERTEX_BUFFER_BIT);
     }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_R);
+    }
   },
 
   /**
@@ -3055,6 +3513,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
         VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT,
         VK_FORMAT_FEATURE_UNIFORM_TEXEL_BUFFER_BIT,
         VK_FORMAT_FEATURE_VERTEX_BUFFER_BIT);
+    }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_R);
     }
   },
 
@@ -3100,6 +3564,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
         VK_FORMAT_FEATURE_UNIFORM_TEXEL_BUFFER_BIT,
         VK_FORMAT_FEATURE_VERTEX_BUFFER_BIT);
     }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_R);
+    }
   },
 
   /**
@@ -3136,6 +3606,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
     {
       return Set.of(VK_FORMAT_FEATURE_VERTEX_BUFFER_BIT);
+    }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_RG);
     }
   },
 
@@ -3174,6 +3650,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return Set.of(VK_FORMAT_FEATURE_VERTEX_BUFFER_BIT);
     }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_RG);
+    }
   },
 
   /**
@@ -3211,6 +3693,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return Set.of();
     }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_RG);
+    }
   },
 
   /**
@@ -3247,6 +3735,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
     {
       return Set.of();
+    }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_RG);
     }
   },
 
@@ -3291,6 +3785,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
         VK_FORMAT_FEATURE_UNIFORM_TEXEL_BUFFER_BIT,
         VK_FORMAT_FEATURE_VERTEX_BUFFER_BIT);
     }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_RG);
+    }
   },
 
   /**
@@ -3333,6 +3833,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
         VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT,
         VK_FORMAT_FEATURE_UNIFORM_TEXEL_BUFFER_BIT,
         VK_FORMAT_FEATURE_VERTEX_BUFFER_BIT);
+    }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_RG);
     }
   },
 
@@ -3379,6 +3885,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
         VK_FORMAT_FEATURE_UNIFORM_TEXEL_BUFFER_BIT,
         VK_FORMAT_FEATURE_VERTEX_BUFFER_BIT);
     }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_RG);
+    }
   },
 
   /**
@@ -3415,6 +3927,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
     {
       return Set.of();
+    }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_RGB);
     }
   },
 
@@ -3453,6 +3971,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return Set.of();
     }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_RGB);
+    }
   },
 
   /**
@@ -3489,6 +4013,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
     {
       return Set.of();
+    }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_RGB);
     }
   },
 
@@ -3527,6 +4057,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return Set.of();
     }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_RGB);
+    }
   },
 
   /**
@@ -3563,6 +4099,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
     {
       return Set.of();
+    }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_RGB);
     }
   },
 
@@ -3601,6 +4143,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return Set.of();
     }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_RGB);
+    }
   },
 
   /**
@@ -3637,6 +4185,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
     {
       return Set.of();
+    }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_RGB);
     }
   },
 
@@ -3676,6 +4230,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return Set.of(VK_FORMAT_FEATURE_VERTEX_BUFFER_BIT);
     }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_RGBA);
+    }
   },
 
   /**
@@ -3713,6 +4273,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
     {
       return Set.of(VK_FORMAT_FEATURE_VERTEX_BUFFER_BIT);
+    }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_RGBA);
     }
   },
 
@@ -3752,6 +4318,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return Set.of();
     }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_RGBA);
+    }
   },
 
   /**
@@ -3789,6 +4361,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
     {
       return Set.of();
+    }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_RGBA);
     }
   },
 
@@ -3836,6 +4414,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
         VK_FORMAT_FEATURE_UNIFORM_TEXEL_BUFFER_BIT,
         VK_FORMAT_FEATURE_VERTEX_BUFFER_BIT);
     }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_RGBA);
+    }
   },
 
   /**
@@ -3881,6 +4465,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
         VK_FORMAT_FEATURE_STORAGE_TEXEL_BUFFER_BIT,
         VK_FORMAT_FEATURE_UNIFORM_TEXEL_BUFFER_BIT,
         VK_FORMAT_FEATURE_VERTEX_BUFFER_BIT);
+    }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_RGBA);
     }
   },
 
@@ -3930,6 +4520,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
         VK_FORMAT_FEATURE_UNIFORM_TEXEL_BUFFER_BIT,
         VK_FORMAT_FEATURE_VERTEX_BUFFER_BIT);
     }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_RGBA);
+    }
   },
 
   /**
@@ -3975,6 +4571,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
         VK_FORMAT_FEATURE_STORAGE_TEXEL_BUFFER_BIT,
         VK_FORMAT_FEATURE_UNIFORM_TEXEL_BUFFER_BIT,
         VK_FORMAT_FEATURE_VERTEX_BUFFER_BIT);
+    }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_R);
     }
   },
 
@@ -4022,6 +4624,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
         VK_FORMAT_FEATURE_UNIFORM_TEXEL_BUFFER_BIT,
         VK_FORMAT_FEATURE_VERTEX_BUFFER_BIT);
     }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_R);
+    }
   },
 
   /**
@@ -4057,6 +4665,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
     {
       return Set.of();
+    }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_R);
     }
   },
 
@@ -4095,6 +4709,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return Set.of();
     }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_RG);
+    }
   },
 
   /**
@@ -4131,6 +4751,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
     {
       return Set.of();
+    }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_RG);
     }
   },
 
@@ -4169,6 +4795,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return Set.of();
     }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_RG);
+    }
   },
 
   /**
@@ -4205,6 +4837,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
     {
       return Set.of();
+    }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_RGB);
     }
   },
 
@@ -4243,6 +4881,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return Set.of();
     }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_RGB);
+    }
   },
 
   /**
@@ -4279,6 +4923,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
     {
       return Set.of();
+    }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_RGB);
     }
   },
 
@@ -4318,6 +4968,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return Set.of();
     }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_RGBA);
+    }
   },
 
   /**
@@ -4355,6 +5011,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
     {
       return Set.of();
+    }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_RGBA);
     }
   },
 
@@ -4394,6 +5056,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return Set.of();
     }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_RGBA);
+    }
   },
 
   /**
@@ -4429,6 +5097,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
     {
       return Set.of();
+    }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_R);
     }
   },
 
@@ -4466,6 +5140,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return Set.of();
     }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_R);
+    }
   },
 
   /**
@@ -4501,6 +5181,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
     {
       return Set.of();
+    }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_R);
     }
   },
 
@@ -4539,6 +5225,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return Set.of();
     }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_RG);
+    }
   },
 
   /**
@@ -4575,6 +5267,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
     {
       return Set.of();
+    }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_RG);
     }
   },
 
@@ -4613,6 +5311,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return Set.of();
     }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_RG);
+    }
   },
 
   /**
@@ -4649,6 +5353,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
     {
       return Set.of();
+    }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_RGB);
     }
   },
 
@@ -4687,6 +5397,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return Set.of();
     }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_RGB);
+    }
   },
 
   /**
@@ -4723,6 +5439,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
     {
       return Set.of();
+    }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_RGB);
     }
   },
 
@@ -4762,6 +5484,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return Set.of();
     }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_RGBA);
+    }
   },
 
   /**
@@ -4800,6 +5528,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return Set.of();
     }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_RGBA);
+    }
   },
 
   /**
@@ -4837,6 +5571,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
     {
       return Set.of();
+    }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_RGBA);
     }
   },
 
@@ -4877,6 +5617,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return Set.of();
     }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_BGR);
+    }
   },
 
   /**
@@ -4914,6 +5660,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
     {
       return Set.of();
+    }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_BGR);
     }
   },
 
@@ -4954,6 +5706,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
         VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT,
         VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT);
     }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.empty();
+    }
   },
 
   /**
@@ -4990,6 +5748,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
     {
       return Set.of();
+    }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.empty();
     }
   },
 
@@ -5029,6 +5793,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
         VK_FORMAT_FEATURE_BLIT_SRC_BIT,
         VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT);
     }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.empty();
+    }
   },
 
   /**
@@ -5064,6 +5834,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
     {
       return Set.of();
+    }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.empty();
     }
   },
 
@@ -5102,6 +5878,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return Set.of();
     }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.empty();
+    }
   },
 
   /**
@@ -5139,6 +5921,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return Set.of();
     }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.empty();
+    }
   },
 
   /**
@@ -5175,6 +5963,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
     {
       return Set.of();
+    }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.empty();
     }
   },
 
@@ -5214,6 +6008,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return Set.of();
     }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_RGB);
+    }
   },
 
   /**
@@ -5252,6 +6052,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return Set.of();
     }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_RGB);
+    }
   },
 
   /**
@@ -5288,6 +6094,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
     {
       return Set.of();
+    }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_RGBA);
     }
   },
 
@@ -5327,6 +6139,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return Set.of();
     }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_RGBA);
+    }
   },
 
   /**
@@ -5364,6 +6182,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
     {
       return Set.of();
+    }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_RGBA);
     }
   },
 
@@ -5403,6 +6227,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return Set.of();
     }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_RGBA);
+    }
   },
 
   /**
@@ -5440,6 +6270,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
     {
       return Set.of();
+    }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_RGBA);
     }
   },
 
@@ -5479,6 +6315,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return Set.of();
     }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_RGBA);
+    }
   },
 
   /**
@@ -5516,6 +6358,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return Set.of();
     }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_R);
+    }
   },
 
   /**
@@ -5552,6 +6400,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
     {
       return Set.of();
+    }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_R);
     }
   },
 
@@ -5591,6 +6445,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return Set.of();
     }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_RG);
+    }
   },
 
   /**
@@ -5629,6 +6489,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return Set.of();
     }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_RG);
+    }
   },
 
   /**
@@ -5665,6 +6531,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
     {
       return Set.of();
+    }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_RGB);
     }
   },
 
@@ -5703,6 +6575,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return Set.of();
     }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_RGB);
+    }
   },
 
   /**
@@ -5739,6 +6617,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
     {
       return Set.of();
+    }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_RGBA);
     }
   },
 
@@ -5778,6 +6662,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return Set.of();
     }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_RGBA);
+    }
   },
 
   /**
@@ -5815,6 +6705,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
     {
       return Set.of();
+    }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_RGB);
     }
   },
 
@@ -5854,6 +6750,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return Set.of();
     }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_RGB);
+    }
   },
 
   /**
@@ -5890,6 +6792,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
     {
       return Set.of();
+    }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_RGBA);
     }
   },
 
@@ -5929,6 +6837,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return Set.of();
     }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_RGB);
+    }
   },
 
   /**
@@ -5966,6 +6880,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
     {
       return Set.of();
+    }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_RGBA);
     }
   },
 
@@ -6005,6 +6925,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return Set.of();
     }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_RGBA);
+    }
   },
 
   /**
@@ -6042,6 +6968,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return Set.of();
     }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_R);
+    }
   },
 
   /**
@@ -6078,6 +7010,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
     {
       return Set.of();
+    }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_R);
     }
   },
 
@@ -6117,6 +7055,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return Set.of();
     }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_RG);
+    }
   },
 
   /**
@@ -6155,6 +7099,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return Set.of();
     }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_RG);
+    }
   },
 
   /**
@@ -6191,6 +7141,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
     {
       return Set.of();
+    }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_RGBA);
     }
   },
 
@@ -6230,6 +7186,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return Set.of();
     }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_RGBA);
+    }
   },
 
   /**
@@ -6266,6 +7228,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
     {
       return Set.of();
+    }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_RGBA);
     }
   },
 
@@ -6305,6 +7273,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return Set.of();
     }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_RGBA);
+    }
   },
 
   /**
@@ -6341,6 +7315,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
     {
       return Set.of();
+    }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_RGBA);
     }
   },
 
@@ -6380,6 +7360,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return Set.of();
     }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_RGBA);
+    }
   },
 
   /**
@@ -6416,6 +7402,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
     {
       return Set.of();
+    }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_RGBA);
     }
   },
 
@@ -6455,6 +7447,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return Set.of();
     }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_RGBA);
+    }
   },
 
   /**
@@ -6491,6 +7489,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
     {
       return Set.of();
+    }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_RGBA);
     }
   },
 
@@ -6530,6 +7534,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return Set.of();
     }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_RGBA);
+    }
   },
 
   /**
@@ -6566,6 +7576,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
     {
       return Set.of();
+    }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_RGBA);
     }
   },
 
@@ -6605,6 +7621,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return Set.of();
     }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_RGBA);
+    }
   },
 
   /**
@@ -6641,6 +7663,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
     {
       return Set.of();
+    }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_RGBA);
     }
   },
 
@@ -6680,6 +7708,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return Set.of();
     }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_RGBA);
+    }
   },
 
   /**
@@ -6716,6 +7750,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
     {
       return Set.of();
+    }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_RGBA);
     }
   },
 
@@ -6755,6 +7795,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return Set.of();
     }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_RGBA);
+    }
   },
 
   /**
@@ -6791,6 +7837,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
     {
       return Set.of();
+    }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_RGBA);
     }
   },
 
@@ -6830,6 +7882,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return Set.of();
     }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_RGBA);
+    }
   },
 
   /**
@@ -6866,6 +7924,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
     {
       return Set.of();
+    }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_RGBA);
     }
   },
 
@@ -6905,6 +7969,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return Set.of();
     }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_RGBA);
+    }
   },
 
   /**
@@ -6941,6 +8011,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
     {
       return Set.of();
+    }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_RGBA);
     }
   },
 
@@ -6980,6 +8056,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return Set.of();
     }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_RGBA);
+    }
   },
 
   /**
@@ -7016,6 +8098,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
     {
       return Set.of();
+    }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_RGBA);
     }
   },
 
@@ -7055,6 +8143,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return Set.of();
     }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_RGBA);
+    }
   },
 
   /**
@@ -7091,6 +8185,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
     {
       return Set.of();
+    }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_RGBA);
     }
   },
 
@@ -7130,6 +8230,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     {
       return Set.of();
     }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_RGBA);
+    }
   },
 
   /**
@@ -7166,6 +8272,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
     {
       return Set.of();
+    }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_RGBA);
     }
   },
 
@@ -7204,6 +8316,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
     public Set<VulkanFormatFeatureFlag> mandatoryFeatures()
     {
       return Set.of();
+    }
+
+    @Override
+    public Optional<VulkanFormatColorChannels> colorChannels()
+    {
+      return Optional.of(COLOR_CHANNELS_RGBA);
     }
   };
 
@@ -7270,4 +8388,10 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    */
 
   public abstract Set<VulkanFormatFeatureFlag> mandatoryFeatures();
+
+  /**
+   * @return The color channels present, if any
+   */
+
+  public abstract Optional<VulkanFormatColorChannels> colorChannels();
 }

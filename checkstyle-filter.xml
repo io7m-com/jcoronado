@@ -12,6 +12,8 @@
   <!-- A large enum with lots of data methods. -->
   <suppress files="VulkanFormat.java"
             checks="FileLength"/>
+  <suppress files="VulkanFormat.java"
+            checks="JavaNCSS"/>
   
   <!-- Not under our control. -->
   <suppress files="VulkanPhysicalDeviceLimitsType.java"

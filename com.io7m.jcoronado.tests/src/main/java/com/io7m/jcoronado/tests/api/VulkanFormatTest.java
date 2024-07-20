@@ -20,6 +20,7 @@ package com.io7m.jcoronado.tests.api;
 import com.io7m.jcoronado.api.VulkanFormat;
 import com.io7m.jcoronado.api.VulkanFormatCompressed;
 import com.io7m.jcoronado.api.VulkanFormatData;
+import com.io7m.jcoronado.api.VulkanFormatFeatureFlag;
 import com.io7m.jcoronado.api.VulkanFormatInterpretation;
 import com.io7m.jcoronado.api.VulkanFormatInterpretation.*;
 import com.io7m.jcoronado.api.VulkanFormatSpace;
@@ -30,6 +31,8 @@ import java.util.Set;
 import static com.io7m.jcoronado.api.VulkanFormat.VK_FORMAT_D16_UNORM_S8_UINT;
 import static com.io7m.jcoronado.api.VulkanFormat.VK_FORMAT_D24_UNORM_S8_UINT;
 import static com.io7m.jcoronado.api.VulkanFormat.VK_FORMAT_D32_SFLOAT_S8_UINT;
+import static com.io7m.jcoronado.api.VulkanFormatFeatureFlag.VK_FORMAT_FEATURE_COLOR_ATTACHMENT_BIT;
+import static com.io7m.jcoronado.api.VulkanFormatFeatureFlag.VK_FORMAT_FEATURE_COLOR_ATTACHMENT_BLEND_BIT;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -228,6 +231,26 @@ public final class VulkanFormatTest
           format.space() != VulkanFormatSpace.FORMAT_SPACE_SRGB,
           "Format %s must not be SRGB".formatted(format)
         );
+      }
+    }
+  }
+
+  @Test
+  public void testShowRenderableBlend()
+  {
+    for (final var format : VulkanFormat.values()) {
+      if (format.mandatoryFeatures().contains(VK_FORMAT_FEATURE_COLOR_ATTACHMENT_BLEND_BIT)) {
+        System.out.println(format);
+      }
+    }
+  }
+
+  @Test
+  public void testShowRenderable()
+  {
+    for (final var format : VulkanFormat.values()) {
+      if (format.mandatoryFeatures().contains(VK_FORMAT_FEATURE_COLOR_ATTACHMENT_BIT)) {
+        System.out.println(format);
       }
     }
   }
