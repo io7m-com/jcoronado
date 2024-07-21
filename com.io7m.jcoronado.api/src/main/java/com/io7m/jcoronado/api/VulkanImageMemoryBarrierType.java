@@ -65,14 +65,14 @@ public interface VulkanImageMemoryBarrierType
    */
 
   @Value.Parameter
-  int sourceQueueFamilyIndex();
+  VulkanQueueFamilyIndex sourceQueueFamilyIndex();
 
   /**
    * @return The target queue family for a queue family ownership transfer.
    */
 
   @Value.Parameter
-  int targetQueueFamilyIndex();
+  VulkanQueueFamilyIndex targetQueueFamilyIndex();
 
   /**
    * @return The image affected by this barrier.

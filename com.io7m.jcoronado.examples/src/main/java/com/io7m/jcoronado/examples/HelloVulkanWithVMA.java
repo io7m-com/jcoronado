@@ -430,8 +430,8 @@ public final class HelloVulkanWithVMA implements ExampleType
   {
     final var barrier_builder =
       VulkanImageMemoryBarrier.builder()
-        .setSourceQueueFamilyIndex(-1)
-        .setTargetQueueFamilyIndex(-1)
+        .setSourceQueueFamilyIndex(new VulkanQueueFamilyIndex(-1))
+        .setTargetQueueFamilyIndex(new VulkanQueueFamilyIndex(-1))
         .setImage(image)
         .setSubresourceRange(
           VulkanImageSubresourceRange.builder()

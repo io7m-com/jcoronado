@@ -23,6 +23,7 @@ import com.io7m.jcoronado.api.VulkanImageLayout;
 import com.io7m.jcoronado.api.VulkanImageMemoryBarrier;
 import com.io7m.jcoronado.api.VulkanImageSubresourceRange;
 import com.io7m.jcoronado.api.VulkanIncompatibleClassException;
+import com.io7m.jcoronado.api.VulkanQueueFamilyIndex;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLImage;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLImageMemoryBarriers;
 import org.junit.jupiter.api.AfterEach;
@@ -101,8 +102,8 @@ public final class VulkanLWJGLImageMemoryBarriersTest
         EnumSet.allOf(VulkanAccessFlag.class),
         VulkanImageLayout.VK_IMAGE_LAYOUT_UNDEFINED,
         VulkanImageLayout.VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
-        23,
-        25,
+        new VulkanQueueFamilyIndex(23),
+        new VulkanQueueFamilyIndex(25),
         image,
         subresource
       );
@@ -135,8 +136,8 @@ public final class VulkanLWJGLImageMemoryBarriersTest
         EnumSet.allOf(VulkanAccessFlag.class),
         VulkanImageLayout.VK_IMAGE_LAYOUT_UNDEFINED,
         VulkanImageLayout.VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
-        23,
-        25,
+        new VulkanQueueFamilyIndex(23),
+        new VulkanQueueFamilyIndex(25),
         image,
         subresource
       );
@@ -173,8 +174,8 @@ public final class VulkanLWJGLImageMemoryBarriersTest
         EnumSet.allOf(VulkanAccessFlag.class),
         VulkanImageLayout.VK_IMAGE_LAYOUT_UNDEFINED,
         VulkanImageLayout.VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
-        23,
-        25,
+        new VulkanQueueFamilyIndex(23),
+        new VulkanQueueFamilyIndex(25),
         image,
         subresource
       );

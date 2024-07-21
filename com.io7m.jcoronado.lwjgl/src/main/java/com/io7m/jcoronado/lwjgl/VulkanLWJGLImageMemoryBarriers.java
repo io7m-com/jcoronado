@@ -87,7 +87,7 @@ public final class VulkanLWJGLImageMemoryBarriers
       .sType(VK10.VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER)
       .pNext(0L)
       .dstAccessMask(VulkanEnumMaps.packValues(source.targetAccessMask()))
-      .dstQueueFamilyIndex(source.targetQueueFamilyIndex())
+      .dstQueueFamilyIndex(source.targetQueueFamilyIndex().value())
       .image(checkInstanceOf(source.image(), VulkanLWJGLImage.class).handle())
       .newLayout(source.newLayout().value())
       .oldLayout(source.oldLayout().value())
@@ -95,7 +95,7 @@ public final class VulkanLWJGLImageMemoryBarriers
         stack,
         source.subresourceRange()))
       .srcAccessMask(VulkanEnumMaps.packValues(source.sourceAccessMask()))
-      .srcQueueFamilyIndex(source.sourceQueueFamilyIndex());
+      .srcQueueFamilyIndex(source.sourceQueueFamilyIndex().value());
   }
 
   /**
