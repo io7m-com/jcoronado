@@ -43,7 +43,7 @@
     <io7m.org.immutables.value.version>2.10.1</io7m.org.immutables.value.version>
     <org.lwjgl.version>3.3.4</org.lwjgl.version>
     <junit.version>5.11.1</junit.version>
-    <mockito.version>5.14.1</mockito.version>
+    <mockito.version>5.14.2</mockito.version>
   </properties>
 
   <licenses>
