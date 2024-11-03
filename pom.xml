@@ -9,7 +9,7 @@
   <parent>
     <groupId>com.io7m.primogenitor</groupId>
     <artifactId>com.io7m.primogenitor.full</artifactId>
-    <version>8.3.0</version>
+    <version>8.3.1</version>
   </parent>
 
   <groupId>com.io7m.jcoronado</groupId>
@@ -27,6 +27,7 @@
     <module>com.io7m.jcoronado.documentation</module>
     <module>com.io7m.jcoronado.examples</module>
     <module>com.io7m.jcoronado.extensions.ext_debug_utils.api</module>
+    <module>com.io7m.jcoronado.extensions.ext_layer_settings.api</module>
     <module>com.io7m.jcoronado.extensions.khr_surface.api</module>
     <module>com.io7m.jcoronado.fake</module>
     <module>com.io7m.jcoronado.lwjgl</module>
@@ -41,8 +42,8 @@
 
     <!-- Third-party dependencies. -->
     <io7m.org.immutables.value.version>2.10.1</io7m.org.immutables.value.version>
-    <org.lwjgl.version>3.3.4</org.lwjgl.version>
-    <junit.version>5.11.2</junit.version>
+    <org.lwjgl.version>3.3.5-SNAPSHOT</org.lwjgl.version>
+    <org.junit.version>5.11.2</org.junit.version>
     <mockito.version>5.14.2</mockito.version>
   </properties>
 
@@ -224,12 +225,12 @@
       <dependency>
         <groupId>org.junit.jupiter</groupId>
         <artifactId>junit-jupiter-engine</artifactId>
-        <version>${junit.version}</version>
+        <version>${org.junit.version}</version>
       </dependency>
       <dependency>
         <groupId>org.junit.jupiter</groupId>
         <artifactId>junit-jupiter-api</artifactId>
-        <version>${junit.version}</version>
+        <version>${org.junit.version}</version>
       </dependency>
       <dependency>
         <groupId>nl.jqno.equalsverifier</groupId>
