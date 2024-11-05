@@ -18,7 +18,7 @@ package com.io7m.jcoronado.tests.lwjgl;
 
 import com.io7m.jcoronado.api.VulkanDescriptorPoolSize;
 import com.io7m.jcoronado.api.VulkanDescriptorType;
-import com.io7m.jcoronado.lwjgl.VulkanLWJGLDescriptorPoolSizes;
+import com.io7m.jcoronado.lwjgl.internal.VulkanLWJGLDescriptorPoolSizes;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

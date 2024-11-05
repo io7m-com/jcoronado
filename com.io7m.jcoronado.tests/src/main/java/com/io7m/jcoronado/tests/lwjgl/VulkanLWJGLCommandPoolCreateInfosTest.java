@@ -20,7 +20,7 @@ import com.io7m.jcoronado.api.VulkanCommandPoolCreateFlag;
 import com.io7m.jcoronado.api.VulkanCommandPoolCreateInfo;
 import com.io7m.jcoronado.api.VulkanEnumMaps;
 import com.io7m.jcoronado.api.VulkanQueueFamilyIndex;
-import com.io7m.jcoronado.lwjgl.VulkanLWJGLCommandPoolCreateInfos;
+import com.io7m.jcoronado.lwjgl.internal.VulkanLWJGLCommandPoolCreateInfos;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

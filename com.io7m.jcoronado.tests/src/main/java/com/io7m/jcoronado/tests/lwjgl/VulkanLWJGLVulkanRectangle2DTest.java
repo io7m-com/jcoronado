@@ -20,7 +20,7 @@ import com.io7m.jcoronado.api.VulkanException;
 import com.io7m.jcoronado.api.VulkanExtent2D;
 import com.io7m.jcoronado.api.VulkanOffset2D;
 import com.io7m.jcoronado.api.VulkanRectangle2D;
-import com.io7m.jcoronado.lwjgl.VulkanLWJGLRect2Ds;
+import com.io7m.jcoronado.lwjgl.internal.VulkanLWJGLRect2Ds;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

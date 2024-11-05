@@ -21,7 +21,7 @@ import com.io7m.jcoronado.api.VulkanClearValueColorIntegerSigned;
 import com.io7m.jcoronado.api.VulkanClearValueColorIntegerUnsigned;
 import com.io7m.jcoronado.api.VulkanClearValueDepthStencil;
 import com.io7m.jcoronado.api.VulkanClearValueType;
-import com.io7m.jcoronado.lwjgl.VulkanLWJGLClearValues;
+import com.io7m.jcoronado.lwjgl.internal.VulkanLWJGLClearValues;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

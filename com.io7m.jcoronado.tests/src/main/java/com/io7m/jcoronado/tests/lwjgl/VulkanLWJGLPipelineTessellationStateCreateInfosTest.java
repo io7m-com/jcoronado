@@ -17,7 +17,7 @@
 package com.io7m.jcoronado.tests.lwjgl;
 
 import com.io7m.jcoronado.api.VulkanPipelineTessellationStateCreateInfo;
-import com.io7m.jcoronado.lwjgl.VulkanLWJGLPipelineTessellationStateCreateInfos;
+import com.io7m.jcoronado.lwjgl.internal.VulkanLWJGLPipelineTessellationStateCreateInfos;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

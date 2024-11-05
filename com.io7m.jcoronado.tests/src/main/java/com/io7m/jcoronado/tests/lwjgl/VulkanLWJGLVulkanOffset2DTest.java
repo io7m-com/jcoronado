@@ -18,7 +18,7 @@ package com.io7m.jcoronado.tests.lwjgl;
 
 import com.io7m.jcoronado.api.VulkanException;
 import com.io7m.jcoronado.api.VulkanOffset2D;
-import com.io7m.jcoronado.lwjgl.VulkanLWJGLOffset2Ds;
+import com.io7m.jcoronado.lwjgl.internal.VulkanLWJGLOffset2Ds;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

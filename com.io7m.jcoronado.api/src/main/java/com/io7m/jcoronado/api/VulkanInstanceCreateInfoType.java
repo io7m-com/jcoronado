@@ -19,6 +19,7 @@ package com.io7m.jcoronado.api;
 import com.io7m.immutables.styles.ImmutablesStyleType;
 import org.immutables.value.Value;
 
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -52,4 +53,14 @@ public interface VulkanInstanceCreateInfoType
 
   @Value.Parameter
   Set<String> enabledLayers();
+
+  /**
+   * @return The list of instance creation extensions
+   */
+
+  @Value.Default
+  default List<VulkanInstanceExtensionInfoType> extensionInfo()
+  {
+    return List.of();
+  }
 }

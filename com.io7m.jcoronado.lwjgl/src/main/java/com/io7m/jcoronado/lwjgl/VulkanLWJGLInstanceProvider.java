@@ -20,11 +20,17 @@ import com.io7m.jcoronado.api.VulkanException;
 import com.io7m.jcoronado.api.VulkanExtensionProperties;
 import com.io7m.jcoronado.api.VulkanHostAllocatorType;
 import com.io7m.jcoronado.api.VulkanInstanceCreateInfo;
+import com.io7m.jcoronado.api.VulkanInstanceExtensionInfoType;
 import com.io7m.jcoronado.api.VulkanInstanceProviderType;
 import com.io7m.jcoronado.api.VulkanInstanceType;
 import com.io7m.jcoronado.api.VulkanLayerProperties;
 import com.io7m.jcoronado.api.VulkanVersion;
 import com.io7m.jcoronado.api.VulkanVersions;
+import com.io7m.jcoronado.lwjgl.internal.VulkanLWJGLExtensionsRegistry;
+import com.io7m.jcoronado.lwjgl.internal.VulkanLWJGLHostAllocatorProxy;
+import com.io7m.jcoronado.lwjgl.internal.VulkanLWJGLInstance;
+import com.io7m.jcoronado.lwjgl.internal.VulkanLWJGLSupportException;
+import com.io7m.jcoronado.lwjgl.internal.VulkanStrings;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.vulkan.VK;
 import org.lwjgl.vulkan.VK10;
@@ -36,7 +42,9 @@ import org.lwjgl.vulkan.VkLayerProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -74,7 +82,8 @@ public final class VulkanLWJGLInstanceProvider
   {
     return new VulkanLWJGLInstanceProvider(
       MemoryStack.create(),
-      new VulkanLWJGLExtensionsRegistry());
+      new VulkanLWJGLExtensionsRegistry()
+    );
   }
 
   /**
@@ -212,11 +221,11 @@ public final class VulkanLWJGLInstanceProvider
     if (LOG.isDebugEnabled()) {
       final var apiVersion =
         VulkanVersions.decode(info.applicationInfo().vulkanAPIVersion());
-      LOG.debug("creating instance for API {}", apiVersion.toHumanString());
+      LOG.debug("Creating instance for API {}", apiVersion.toHumanString());
       enabledLayers
-        .forEach(layer -> LOG.debug("enabling layer: {}", layer));
+        .forEach(layer -> LOG.debug("Enabling layer: {}", layer));
       enabledExtensions
-        .forEach(extension -> LOG.debug("enabling extension: {}", extension));
+        .forEach(extension -> LOG.debug("Enabling extension: {}", extension));
     }
 
     try (var stack = this.initialStack.push()) {
@@ -244,10 +253,13 @@ public final class VulkanLWJGLInstanceProvider
 
       LOG.trace("vkApplicationInfo: {}", vkApplicationInfo);
 
+      final var vkInstanceCreateInfoExtensions =
+        this.createInstanceCreateInfoExtensions(stack, info.extensionInfo());
+
       final var vkInstanceCreateInfo =
         VkInstanceCreateInfo.malloc(stack)
           .sType(VK10.VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO)
-          .pNext(0L)
+          .pNext(vkInstanceCreateInfoExtensions)
           .flags(0)
           .pApplicationInfo(vkApplicationInfo)
           .ppEnabledLayerNames(enableLayersPtr)
@@ -271,7 +283,7 @@ public final class VulkanLWJGLInstanceProvider
       final var instance =
         new VkInstance(instancePtr.get(), vkInstanceCreateInfo);
 
-      LOG.debug("created instance: {}", instance);
+      LOG.debug("Created instance: {}", instance);
 
       final var enabled =
         this.extensions.ofNames(info.enabledExtensions());
@@ -285,5 +297,53 @@ public final class VulkanLWJGLInstanceProvider
         VulkanVersions.decode(info.applicationInfo().vulkanAPIVersion())
       );
     }
+  }
+
+  private long createInstanceCreateInfoExtensions(
+    final MemoryStack stack,
+    final List<VulkanInstanceExtensionInfoType> infos)
+    throws VulkanException
+  {
+    if (infos.isEmpty()) {
+      return 0L;
+    }
+
+    final var handlers =
+      this.extensions.instanceExtensionHandlers();
+
+    final var chain =
+      new ArrayList<Map.Entry<Long, Long>>();
+
+    var next = 0L;
+    INFO_LOOP: for (int infoIndex = infos.size() - 1; infoIndex >= 0; --infoIndex) {
+      final var info = infos.get(infoIndex);
+      for (final var handler : handlers) {
+        if (handler.supports(info.getClass())) {
+          final var newNext = handler.transform(stack, info, next);
+          chain.add(Map.entry(newNext, next));
+          LOG.trace(
+            "Handler {} returned 0x{}",
+            handler.getClass().getName(),
+            Long.toUnsignedString(newNext, 16)
+          );
+          next = newNext;
+          continue INFO_LOOP;
+        }
+      }
+      throw new VulkanLWJGLSupportException(
+        "No instance extension info handler is available for values of type %s"
+          .formatted(info.getClass())
+      );
+    }
+
+    for (final var entry : chain) {
+      LOG.trace(
+        "Extension chain: 0x{} -> 0x{}",
+        Long.toUnsignedString(entry.getKey().longValue(), 16),
+        Long.toUnsignedString(entry.getValue().longValue(), 16)
+      );
+    }
+
+    return next;
   }
 }

@@ -19,7 +19,7 @@ package com.io7m.jcoronado.tests.lwjgl;
 import com.io7m.jcoronado.api.VulkanCommandBufferBeginInfo;
 import com.io7m.jcoronado.api.VulkanCommandBufferUsageFlag;
 import com.io7m.jcoronado.api.VulkanEnumMaps;
-import com.io7m.jcoronado.lwjgl.VulkanLWJGLCommandBufferBeginInfos;
+import com.io7m.jcoronado.lwjgl.internal.VulkanLWJGLCommandBufferBeginInfos;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

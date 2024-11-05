@@ -20,7 +20,7 @@ import com.io7m.jcoronado.api.VulkanClearAttachment;
 import com.io7m.jcoronado.api.VulkanClearValueColorFloatingPoint;
 import com.io7m.jcoronado.api.VulkanException;
 import com.io7m.jcoronado.api.VulkanImageAspectFlag;
-import com.io7m.jcoronado.lwjgl.VulkanLWJGLClearAttachments;
+import com.io7m.jcoronado.lwjgl.internal.VulkanLWJGLClearAttachments;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

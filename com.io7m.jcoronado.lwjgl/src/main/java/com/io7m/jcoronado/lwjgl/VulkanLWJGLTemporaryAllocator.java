@@ -30,8 +30,8 @@ import java.util.Objects;
  * interface.
  */
 
-public final class VulkanLWJGLTemporaryAllocator implements
-  VulkanTemporaryAllocatorType
+public final class VulkanLWJGLTemporaryAllocator
+  implements VulkanTemporaryAllocatorType
 {
   private static final Logger LOG =
     LoggerFactory.getLogger(VulkanLWJGLTemporaryAllocator.class);
@@ -76,7 +76,7 @@ public final class VulkanLWJGLTemporaryAllocator implements
 
       if (LOG.isTraceEnabled()) {
         LOG.trace(
-          "allocated 0x{} (size {} align {})",
+          "Allocated 0x{} (size {} align {})",
           Long.toUnsignedString(address, 16),
           Long.toUnsignedString(size),
           Long.toUnsignedString(alignment));
@@ -87,7 +87,7 @@ public final class VulkanLWJGLTemporaryAllocator implements
       if (address != 0L) {
         if (LOG.isTraceEnabled()) {
           LOG.trace(
-            "freed 0x{} (size {} align {})",
+            "Freed 0x{} (size {} align {})",
             Long.toUnsignedString(address, 16),
             Long.toUnsignedString(size),
             Long.toUnsignedString(alignment));

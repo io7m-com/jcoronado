@@ -17,9 +17,9 @@
 package com.io7m.jcoronado.tests.lwjgl;
 
 import com.io7m.jcoronado.api.VulkanDescriptorImageInfo;
-import com.io7m.jcoronado.lwjgl.VulkanLWJGLDescriptorImageInfos;
-import com.io7m.jcoronado.lwjgl.VulkanLWJGLImageView;
-import com.io7m.jcoronado.lwjgl.VulkanLWJGLSampler;
+import com.io7m.jcoronado.lwjgl.internal.VulkanLWJGLDescriptorImageInfos;
+import com.io7m.jcoronado.lwjgl.internal.VulkanLWJGLImageView;
+import com.io7m.jcoronado.lwjgl.internal.VulkanLWJGLSampler;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

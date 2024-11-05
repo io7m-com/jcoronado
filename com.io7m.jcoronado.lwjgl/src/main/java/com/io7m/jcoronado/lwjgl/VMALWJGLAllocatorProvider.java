@@ -18,6 +18,11 @@ package com.io7m.jcoronado.lwjgl;
 
 import com.io7m.jcoronado.api.VulkanChecks;
 import com.io7m.jcoronado.api.VulkanException;
+import com.io7m.jcoronado.lwjgl.internal.VMALWJGLAllocator;
+import com.io7m.jcoronado.lwjgl.internal.VulkanLWJGLClassChecks;
+import com.io7m.jcoronado.lwjgl.internal.VulkanLWJGLInstance;
+import com.io7m.jcoronado.lwjgl.internal.VulkanLWJGLLogicalDevice;
+import com.io7m.jcoronado.lwjgl.internal.VulkanLWJGLPhysicalDevice;
 import com.io7m.jcoronado.vma.VMAAllocatorCreateInfo;
 import com.io7m.jcoronado.vma.VMAAllocatorProviderType;
 import com.io7m.jcoronado.vma.VMAAllocatorType;

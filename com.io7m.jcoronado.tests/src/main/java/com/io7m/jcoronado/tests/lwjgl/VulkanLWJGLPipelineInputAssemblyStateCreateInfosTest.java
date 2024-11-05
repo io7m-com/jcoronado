@@ -17,7 +17,7 @@
 package com.io7m.jcoronado.tests.lwjgl;
 
 import com.io7m.jcoronado.api.VulkanPipelineInputAssemblyStateCreateInfo;
-import com.io7m.jcoronado.lwjgl.VulkanLWJGLPipelineInputAssemblyStateCreateInfos;
+import com.io7m.jcoronado.lwjgl.internal.VulkanLWJGLPipelineInputAssemblyStateCreateInfos;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

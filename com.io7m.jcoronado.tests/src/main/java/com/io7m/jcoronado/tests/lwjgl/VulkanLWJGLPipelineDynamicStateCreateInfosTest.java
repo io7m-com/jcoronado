@@ -19,7 +19,7 @@ package com.io7m.jcoronado.tests.lwjgl;
 import com.io7m.jcoronado.api.VulkanDynamicState;
 import com.io7m.jcoronado.api.VulkanException;
 import com.io7m.jcoronado.api.VulkanPipelineDynamicStateCreateInfo;
-import com.io7m.jcoronado.lwjgl.VulkanLWJGLPipelineDynamicStateCreateInfos;
+import com.io7m.jcoronado.lwjgl.internal.VulkanLWJGLPipelineDynamicStateCreateInfos;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

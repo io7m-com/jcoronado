@@ -20,7 +20,7 @@ import com.io7m.jcoronado.api.VulkanBlendConstants;
 import com.io7m.jcoronado.api.VulkanLogicOp;
 import com.io7m.jcoronado.api.VulkanPipelineColorBlendAttachmentState;
 import com.io7m.jcoronado.api.VulkanPipelineColorBlendStateCreateInfo;
-import com.io7m.jcoronado.lwjgl.VulkanLWJGLPipelineColorBlendStateCreateInfos;
+import com.io7m.jcoronado.lwjgl.internal.VulkanLWJGLPipelineColorBlendStateCreateInfos;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

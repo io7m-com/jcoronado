@@ -17,8 +17,8 @@
 package com.io7m.jcoronado.tests.lwjgl;
 
 import com.io7m.jcoronado.api.VulkanDescriptorBufferInfo;
-import com.io7m.jcoronado.lwjgl.VulkanLWJGLBuffer;
-import com.io7m.jcoronado.lwjgl.VulkanLWJGLDescriptorBufferInfos;
+import com.io7m.jcoronado.lwjgl.internal.VulkanLWJGLBuffer;
+import com.io7m.jcoronado.lwjgl.internal.VulkanLWJGLDescriptorBufferInfos;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

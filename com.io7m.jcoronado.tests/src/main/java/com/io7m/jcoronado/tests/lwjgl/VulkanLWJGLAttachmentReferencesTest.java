@@ -18,7 +18,7 @@ package com.io7m.jcoronado.tests.lwjgl;
 
 import com.io7m.jcoronado.api.VulkanAttachmentReference;
 import com.io7m.jcoronado.api.VulkanImageLayout;
-import com.io7m.jcoronado.lwjgl.VulkanLWJGLAttachmentReferences;
+import com.io7m.jcoronado.lwjgl.internal.VulkanLWJGLAttachmentReferences;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

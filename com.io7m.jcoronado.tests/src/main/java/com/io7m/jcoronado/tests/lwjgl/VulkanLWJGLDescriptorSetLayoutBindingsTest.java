@@ -17,8 +17,8 @@
 package com.io7m.jcoronado.tests.lwjgl;
 
 import com.io7m.jcoronado.api.VulkanDescriptorSetLayoutBinding;
-import com.io7m.jcoronado.lwjgl.VulkanLWJGLDescriptorSetLayoutBindings;
-import com.io7m.jcoronado.lwjgl.VulkanLWJGLSampler;
+import com.io7m.jcoronado.lwjgl.internal.VulkanLWJGLDescriptorSetLayoutBindings;
+import com.io7m.jcoronado.lwjgl.internal.VulkanLWJGLSampler;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

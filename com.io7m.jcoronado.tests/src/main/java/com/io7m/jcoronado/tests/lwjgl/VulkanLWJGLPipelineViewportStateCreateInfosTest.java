@@ -21,7 +21,7 @@ import com.io7m.jcoronado.api.VulkanOffset2D;
 import com.io7m.jcoronado.api.VulkanPipelineViewportStateCreateInfo;
 import com.io7m.jcoronado.api.VulkanRectangle2D;
 import com.io7m.jcoronado.api.VulkanViewport;
-import com.io7m.jcoronado.lwjgl.VulkanLWJGLPipelineViewportStateCreateInfos;
+import com.io7m.jcoronado.lwjgl.internal.VulkanLWJGLPipelineViewportStateCreateInfos;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

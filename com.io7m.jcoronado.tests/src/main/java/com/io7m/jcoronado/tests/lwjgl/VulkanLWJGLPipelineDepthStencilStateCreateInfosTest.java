@@ -18,7 +18,7 @@ package com.io7m.jcoronado.tests.lwjgl;
 
 import com.io7m.jcoronado.api.VulkanPipelineDepthStencilStateCreateInfo;
 import com.io7m.jcoronado.api.VulkanStencilOpState;
-import com.io7m.jcoronado.lwjgl.VulkanLWJGLPipelineDepthStencilStateCreateInfos;
+import com.io7m.jcoronado.lwjgl.internal.VulkanLWJGLPipelineDepthStencilStateCreateInfos;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

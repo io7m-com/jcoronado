@@ -20,7 +20,7 @@ import com.io7m.jcoronado.api.VulkanAccessFlag;
 import com.io7m.jcoronado.api.VulkanDependencyFlag;
 import com.io7m.jcoronado.api.VulkanPipelineStageFlag;
 import com.io7m.jcoronado.api.VulkanSubpassDependency;
-import com.io7m.jcoronado.lwjgl.VulkanLWJGLSubpasses;
+import com.io7m.jcoronado.lwjgl.internal.VulkanLWJGLSubpasses;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

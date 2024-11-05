@@ -22,7 +22,7 @@ import com.io7m.jcoronado.api.VulkanImageAspectFlag;
 import com.io7m.jcoronado.api.VulkanImageCopy;
 import com.io7m.jcoronado.api.VulkanImageSubresourceLayers;
 import com.io7m.jcoronado.api.VulkanOffset3D;
-import com.io7m.jcoronado.lwjgl.VulkanLWJGLImageCopies;
+import com.io7m.jcoronado.lwjgl.internal.VulkanLWJGLImageCopies;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

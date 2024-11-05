@@ -28,7 +28,7 @@ import com.io7m.jcoronado.api.VulkanRenderPassCreateInfo;
 import com.io7m.jcoronado.api.VulkanSubpassDependency;
 import com.io7m.jcoronado.api.VulkanSubpassDescription;
 import com.io7m.jcoronado.api.VulkanSubpassDescriptionFlag;
-import com.io7m.jcoronado.lwjgl.VulkanLWJGLRenderPasses;
+import com.io7m.jcoronado.lwjgl.internal.VulkanLWJGLRenderPasses;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

@@ -18,7 +18,7 @@ package com.io7m.jcoronado.tests.lwjgl;
 
 import com.io7m.jcoronado.api.VulkanSpecializationMap;
 import com.io7m.jcoronado.api.VulkanSpecializationMapEntry;
-import com.io7m.jcoronado.lwjgl.VulkanLWJGLSpecializationInfos;
+import com.io7m.jcoronado.lwjgl.internal.VulkanLWJGLSpecializationInfos;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

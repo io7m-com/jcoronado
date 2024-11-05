@@ -17,9 +17,9 @@
 package com.io7m.jcoronado.tests.lwjgl;
 
 import com.io7m.jcoronado.api.VulkanDescriptorSetAllocateInfo;
-import com.io7m.jcoronado.lwjgl.VulkanLWJGLDescriptorPool;
-import com.io7m.jcoronado.lwjgl.VulkanLWJGLDescriptorSetAllocateInfos;
-import com.io7m.jcoronado.lwjgl.VulkanLWJGLDescriptorSetLayout;
+import com.io7m.jcoronado.lwjgl.internal.VulkanLWJGLDescriptorPool;
+import com.io7m.jcoronado.lwjgl.internal.VulkanLWJGLDescriptorSetAllocateInfos;
+import com.io7m.jcoronado.lwjgl.internal.VulkanLWJGLDescriptorSetLayout;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

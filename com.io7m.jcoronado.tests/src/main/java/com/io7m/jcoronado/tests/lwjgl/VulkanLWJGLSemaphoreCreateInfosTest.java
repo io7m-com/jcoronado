@@ -18,7 +18,7 @@ package com.io7m.jcoronado.tests.lwjgl;
 
 import com.io7m.jcoronado.api.VulkanSemaphoreCreateFlag;
 import com.io7m.jcoronado.api.VulkanSemaphoreCreateInfo;
-import com.io7m.jcoronado.lwjgl.VulkanLWJGLSemaphoreCreateInfos;
+import com.io7m.jcoronado.lwjgl.internal.VulkanLWJGLSemaphoreCreateInfos;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

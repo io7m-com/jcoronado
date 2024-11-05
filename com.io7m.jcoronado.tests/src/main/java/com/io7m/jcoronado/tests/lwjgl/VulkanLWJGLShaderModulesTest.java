@@ -18,7 +18,7 @@ package com.io7m.jcoronado.tests.lwjgl;
 
 import com.io7m.jcoronado.api.VulkanShaderModuleCreateFlag;
 import com.io7m.jcoronado.api.VulkanShaderModuleCreateInfo;
-import com.io7m.jcoronado.lwjgl.VulkanLWJGLShaderModules;
+import com.io7m.jcoronado.lwjgl.internal.VulkanLWJGLShaderModules;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

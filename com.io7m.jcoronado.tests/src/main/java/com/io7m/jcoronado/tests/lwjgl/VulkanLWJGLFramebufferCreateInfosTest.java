@@ -18,9 +18,9 @@ package com.io7m.jcoronado.tests.lwjgl;
 
 import com.io7m.jcoronado.api.VulkanException;
 import com.io7m.jcoronado.api.VulkanFramebufferCreateInfo;
-import com.io7m.jcoronado.lwjgl.VulkanLWJGLFramebufferCreateInfos;
-import com.io7m.jcoronado.lwjgl.VulkanLWJGLImageView;
-import com.io7m.jcoronado.lwjgl.VulkanLWJGLRenderPass;
+import com.io7m.jcoronado.lwjgl.internal.VulkanLWJGLFramebufferCreateInfos;
+import com.io7m.jcoronado.lwjgl.internal.VulkanLWJGLImageView;
+import com.io7m.jcoronado.lwjgl.internal.VulkanLWJGLRenderPass;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

@@ -17,14 +17,11 @@
 package com.io7m.jcoronado.tests;
 
 import com.io7m.jcoronado.api.VulkanApplicationInfo;
-import com.io7m.jcoronado.api.VulkanException;
 import com.io7m.jcoronado.api.VulkanInstanceCreateInfo;
-import com.io7m.jcoronado.api.VulkanPhysicalDeviceProperties;
 import com.io7m.jcoronado.api.VulkanVendorIDs;
 import com.io7m.jcoronado.api.VulkanVersions;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLInstanceProvider;
 import com.io7m.jmulticlose.core.CloseableCollection;
-import com.io7m.jmulticlose.core.CloseableCollectionType;
 
 import java.util.Optional;
 

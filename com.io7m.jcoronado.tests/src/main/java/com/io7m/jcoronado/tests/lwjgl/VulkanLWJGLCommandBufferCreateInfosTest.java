@@ -17,8 +17,8 @@
 package com.io7m.jcoronado.tests.lwjgl;
 
 import com.io7m.jcoronado.api.VulkanCommandBufferCreateInfo;
-import com.io7m.jcoronado.lwjgl.VulkanLWJGLCommandBufferCreateInfos;
-import com.io7m.jcoronado.lwjgl.VulkanLWJGLCommandPool;
+import com.io7m.jcoronado.lwjgl.internal.VulkanLWJGLCommandBufferCreateInfos;
+import com.io7m.jcoronado.lwjgl.internal.VulkanLWJGLCommandPool;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

@@ -43,7 +43,7 @@
     <!-- Third-party dependencies. -->
     <io7m.org.immutables.value.version>2.10.1</io7m.org.immutables.value.version>
     <org.lwjgl.version>3.3.5-SNAPSHOT</org.lwjgl.version>
-    <org.junit.version>5.11.2</org.junit.version>
+    <org.junit.version>5.11.3</org.junit.version>
     <mockito.version>5.14.2</mockito.version>
   </properties>
 
@@ -99,6 +99,13 @@
     <maven>3.5.0</maven>
   </prerequisites>
 
+  <repositories>
+    <repository>
+      <id>sonatype-nexus-snapshots</id>
+      <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+    </repository>
+  </repositories>
+
   <dependencyManagement>
     <dependencies>
       <dependency>
@@ -117,9 +124,9 @@
         <version>4.0.2</version>
       </dependency>
       <dependency>
-        <groupId>com.io7m.immutables.style</groupId>
-        <artifactId>com.io7m.immutables.style</artifactId>
-        <version>0.0.1</version>
+        <groupId>com.io7m.immutables-style</groupId>
+        <artifactId>com.io7m.immutables-style</artifactId>
+        <version>1.0.0</version>
       </dependency>
       <dependency>
         <groupId>org.osgi</groupId>
@@ -213,6 +220,13 @@
       </dependency>
 
       <dependency>
+        <groupId>org.junit</groupId>
+        <artifactId>junit-bom</artifactId>
+        <version>${org.junit.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-api</artifactId>
         <version>2.0.16</version>
@@ -235,7 +249,7 @@
       <dependency>
         <groupId>nl.jqno.equalsverifier</groupId>
         <artifactId>equalsverifier</artifactId>
-        <version>3.17.1</version>
+        <version>3.17.2</version>
       </dependency>
       <dependency>
         <groupId>org.reflections</groupId>
@@ -245,7 +259,7 @@
       <dependency>
         <groupId>it.unimi.dsi</groupId>
         <artifactId>fastutil</artifactId>
-        <version>8.5.14</version>
+        <version>8.5.15</version>
       </dependency>
       <dependency>
         <groupId>com.io7m.primogenitor</groupId>

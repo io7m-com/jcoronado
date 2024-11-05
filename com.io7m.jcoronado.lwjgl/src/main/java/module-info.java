@@ -23,10 +23,11 @@ module com.io7m.jcoronado.lwjgl
   requires static org.osgi.annotation.bundle;
   requires static org.osgi.annotation.versioning;
 
-  requires transitive com.io7m.jcoronado.api;
-  requires transitive com.io7m.jcoronado.extensions.ext_debug_utils.api;
-  requires transitive com.io7m.jcoronado.extensions.khr.surface.api;
-  requires transitive com.io7m.jcoronado.vma;
+  requires com.io7m.jcoronado.api;
+  requires com.io7m.jcoronado.extensions.ext_debug_utils.api;
+  requires com.io7m.jcoronado.extensions.ext_layer_settings.api;
+  requires com.io7m.jcoronado.extensions.khr.surface.api;
+  requires com.io7m.jcoronado.vma;
 
   requires com.io7m.junreachable.core;
   requires org.slf4j;
@@ -37,4 +38,7 @@ module com.io7m.jcoronado.lwjgl
   requires org.lwjgl.glfw;
 
   exports com.io7m.jcoronado.lwjgl;
+
+  exports com.io7m.jcoronado.lwjgl.internal
+    to com.io7m.jcoronado.tests;
 }

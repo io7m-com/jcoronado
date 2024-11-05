@@ -20,9 +20,7 @@ package com.io7m.jcoronado.tests.api;
 import com.io7m.jcoronado.api.VulkanFormat;
 import com.io7m.jcoronado.api.VulkanFormatCompressed;
 import com.io7m.jcoronado.api.VulkanFormatData;
-import com.io7m.jcoronado.api.VulkanFormatFeatureFlag;
 import com.io7m.jcoronado.api.VulkanFormatInterpretation;
-import com.io7m.jcoronado.api.VulkanFormatInterpretation.*;
 import com.io7m.jcoronado.api.VulkanFormatSpace;
 import org.junit.jupiter.api.Test;
 
@@ -30,7 +28,6 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import static com.io7m.jcoronado.api.VulkanFormat.VK_FORMAT_D16_UNORM_S8_UINT;
 import static com.io7m.jcoronado.api.VulkanFormat.VK_FORMAT_D24_UNORM_S8_UINT;
@@ -40,9 +37,6 @@ import static com.io7m.jcoronado.api.VulkanFormatFeatureFlag.VK_FORMAT_FEATURE_B
 import static com.io7m.jcoronado.api.VulkanFormatFeatureFlag.VK_FORMAT_FEATURE_COLOR_ATTACHMENT_BIT;
 import static com.io7m.jcoronado.api.VulkanFormatFeatureFlag.VK_FORMAT_FEATURE_COLOR_ATTACHMENT_BLEND_BIT;
 import static com.io7m.jcoronado.api.VulkanFormatFeatureFlag.VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT;
-import static com.io7m.jcoronado.api.VulkanFormatFeatureFlag.VK_FORMAT_FEATURE_TRANSFER_DST_BIT;
-import static com.io7m.jcoronado.api.VulkanFormatFeatureFlag.VK_FORMAT_FEATURE_TRANSFER_SRC_BIT;
-import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**

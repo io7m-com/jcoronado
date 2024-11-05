@@ -20,7 +20,7 @@ import com.io7m.jcoronado.api.VulkanCullModeFlag;
 import com.io7m.jcoronado.api.VulkanFrontFace;
 import com.io7m.jcoronado.api.VulkanPipelineRasterizationStateCreateInfo;
 import com.io7m.jcoronado.api.VulkanPolygonMode;
-import com.io7m.jcoronado.lwjgl.VulkanLWJGLPipelineRasterizationStateCreateInfos;
+import com.io7m.jcoronado.lwjgl.internal.VulkanLWJGLPipelineRasterizationStateCreateInfos;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

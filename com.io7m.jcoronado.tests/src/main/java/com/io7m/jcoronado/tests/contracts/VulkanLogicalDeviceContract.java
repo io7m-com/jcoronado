@@ -99,7 +99,6 @@ import static com.io7m.jcoronado.api.VulkanPipelineStageFlag.VK_PIPELINE_STAGE_H
 import static com.io7m.jcoronado.api.VulkanPipelineStageFlag.VK_PIPELINE_STAGE_TRANSFER_BIT;
 import static com.io7m.jcoronado.api.VulkanQueueFamilyPropertyFlag.VK_QUEUE_TRANSFER_BIT;
 import static com.io7m.jcoronado.api.VulkanSampleCountFlag.VK_SAMPLE_COUNT_1_BIT;
-import static com.io7m.jcoronado.api.VulkanSampleCountFlag.VK_SAMPLE_COUNT_8_BIT;
 import static com.io7m.jcoronado.api.VulkanSamplerAddressMode.VK_SAMPLER_ADDRESS_MODE_REPEAT;
 import static com.io7m.jcoronado.api.VulkanSamplerMipmapMode.VK_SAMPLER_MIPMAP_MODE_NEAREST;
 import static com.io7m.jcoronado.api.VulkanSharingMode.VK_SHARING_MODE_EXCLUSIVE;

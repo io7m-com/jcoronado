@@ -18,7 +18,7 @@ package com.io7m.jcoronado.tests.lwjgl;
 
 import com.io7m.jcoronado.api.VulkanFenceCreateFlag;
 import com.io7m.jcoronado.api.VulkanFenceCreateInfo;
-import com.io7m.jcoronado.lwjgl.VulkanLWJGLFenceCreateInfos;
+import com.io7m.jcoronado.lwjgl.internal.VulkanLWJGLFenceCreateInfos;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
