@@ -30,6 +30,7 @@
     <module>com.io7m.jcoronado.extensions.ext_layer_settings.api</module>
     <module>com.io7m.jcoronado.extensions.khr_surface.api</module>
     <module>com.io7m.jcoronado.fake</module>
+    <module>com.io7m.jcoronado.layers.khronos_validation.api</module>
     <module>com.io7m.jcoronado.lwjgl</module>
     <module>com.io7m.jcoronado.tests</module>
     <module>com.io7m.jcoronado.vma</module>
