@@ -77,6 +77,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
 
   VK_FORMAT_UNDEFINED(0) {
     @Override
+    public int texelSizeOctets()
+    {
+      return 0;
+    }
+
+    @Override
     public VulkanFormatCompressed compressed()
     {
       return FORMAT_UNCOMPRESSED;
@@ -119,6 +125,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    */
 
   VK_FORMAT_R4G4_UNORM_PACK8(1) {
+    @Override
+    public int texelSizeOctets()
+    {
+      return 1;
+    }
+
     @Override
     public VulkanFormatCompressed compressed()
     {
@@ -164,6 +176,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
 
   VK_FORMAT_R4G4B4A4_UNORM_PACK16(2) {
     @Override
+    public int texelSizeOctets()
+    {
+      return 2;
+    }
+
+    @Override
     public VulkanFormatCompressed compressed()
     {
       return FORMAT_UNCOMPRESSED;
@@ -207,6 +225,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    */
 
   VK_FORMAT_B4G4R4A4_UNORM_PACK16(3) {
+    @Override
+    public int texelSizeOctets()
+    {
+      return 2;
+    }
+
     @Override
     public VulkanFormatCompressed compressed()
     {
@@ -253,6 +277,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    */
 
   VK_FORMAT_R5G6B5_UNORM_PACK16(4) {
+    @Override
+    public int texelSizeOctets()
+    {
+      return 2;
+    }
+
     @Override
     public VulkanFormatCompressed compressed()
     {
@@ -304,6 +334,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
 
   VK_FORMAT_B5G6R5_UNORM_PACK16(5) {
     @Override
+    public int texelSizeOctets()
+    {
+      return 2;
+    }
+
+    @Override
     public VulkanFormatCompressed compressed()
     {
       return FORMAT_UNCOMPRESSED;
@@ -347,6 +383,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    */
 
   VK_FORMAT_R5G5B5A1_UNORM_PACK16(6) {
+    @Override
+    public int texelSizeOctets()
+    {
+      return 2;
+    }
+
     @Override
     public VulkanFormatCompressed compressed()
     {
@@ -392,6 +434,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
 
   VK_FORMAT_B5G5R5A1_UNORM_PACK16(7) {
     @Override
+    public int texelSizeOctets()
+    {
+      return 2;
+    }
+
+    @Override
     public VulkanFormatCompressed compressed()
     {
       return FORMAT_UNCOMPRESSED;
@@ -436,6 +484,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
 
   VK_FORMAT_A1R5G5B5_UNORM_PACK16(8) {
     @Override
+    public int texelSizeOctets()
+    {
+      return 2;
+    }
+
+    @Override
     public VulkanFormatCompressed compressed()
     {
       return FORMAT_UNCOMPRESSED;
@@ -477,6 +531,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    */
 
   VK_FORMAT_R8_UNORM(9) {
+    @Override
+    public int texelSizeOctets()
+    {
+      return 1;
+    }
+
     @Override
     public VulkanFormatCompressed compressed()
     {
@@ -528,6 +588,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
 
   VK_FORMAT_R8_SNORM(10) {
     @Override
+    public int texelSizeOctets()
+    {
+      return 1;
+    }
+
+    @Override
     public VulkanFormatCompressed compressed()
     {
       return FORMAT_UNCOMPRESSED;
@@ -575,6 +641,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
 
   VK_FORMAT_R8_USCALED(11) {
     @Override
+    public int texelSizeOctets()
+    {
+      return 1;
+    }
+
+    @Override
     public VulkanFormatCompressed compressed()
     {
       return FORMAT_UNCOMPRESSED;
@@ -617,6 +689,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
 
   VK_FORMAT_R8_SSCALED(12) {
     @Override
+    public int texelSizeOctets()
+    {
+      return 1;
+    }
+
+    @Override
     public VulkanFormatCompressed compressed()
     {
       return FORMAT_UNCOMPRESSED;
@@ -658,6 +736,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    */
 
   VK_FORMAT_R8_UINT(13) {
+    @Override
+    public int texelSizeOctets()
+    {
+      return 1;
+    }
+
     @Override
     public VulkanFormatCompressed compressed()
     {
@@ -706,6 +790,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    */
 
   VK_FORMAT_R8_SINT(14) {
+    @Override
+    public int texelSizeOctets()
+    {
+      return 1;
+    }
+
     @Override
     public VulkanFormatCompressed compressed()
     {
@@ -756,6 +846,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
 
   VK_FORMAT_R8_SRGB(15) {
     @Override
+    public int texelSizeOctets()
+    {
+      return 1;
+    }
+
+    @Override
     public VulkanFormatCompressed compressed()
     {
       return FORMAT_UNCOMPRESSED;
@@ -798,6 +894,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    */
 
   VK_FORMAT_R8G8_UNORM(16) {
+    @Override
+    public int texelSizeOctets()
+    {
+      return 2;
+    }
+
     @Override
     public VulkanFormatCompressed compressed()
     {
@@ -850,6 +952,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
 
   VK_FORMAT_R8G8_SNORM(17) {
     @Override
+    public int texelSizeOctets()
+    {
+      return 2;
+    }
+
+    @Override
     public VulkanFormatCompressed compressed()
     {
       return FORMAT_UNCOMPRESSED;
@@ -898,6 +1006,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
 
   VK_FORMAT_R8G8_USCALED(18) {
     @Override
+    public int texelSizeOctets()
+    {
+      return 2;
+    }
+
+    @Override
     public VulkanFormatCompressed compressed()
     {
       return FORMAT_UNCOMPRESSED;
@@ -941,6 +1055,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
 
   VK_FORMAT_R8G8_SSCALED(19) {
     @Override
+    public int texelSizeOctets()
+    {
+      return 2;
+    }
+
+    @Override
     public VulkanFormatCompressed compressed()
     {
       return FORMAT_UNCOMPRESSED;
@@ -983,6 +1103,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    */
 
   VK_FORMAT_R8G8_UINT(20) {
+    @Override
+    public int texelSizeOctets()
+    {
+      return 2;
+    }
+
     @Override
     public VulkanFormatCompressed compressed()
     {
@@ -1032,6 +1158,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    */
 
   VK_FORMAT_R8G8_SINT(21) {
+    @Override
+    public int texelSizeOctets()
+    {
+      return 2;
+    }
+
     @Override
     public VulkanFormatCompressed compressed()
     {
@@ -1083,6 +1215,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
 
   VK_FORMAT_R8G8_SRGB(22) {
     @Override
+    public int texelSizeOctets()
+    {
+      return 2;
+    }
+
+    @Override
     public VulkanFormatCompressed compressed()
     {
       return FORMAT_UNCOMPRESSED;
@@ -1125,6 +1263,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    */
 
   VK_FORMAT_R8G8B8_UNORM(23) {
+    @Override
+    public int texelSizeOctets()
+    {
+      return 3;
+    }
+
     @Override
     public VulkanFormatCompressed compressed()
     {
@@ -1169,6 +1313,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
 
   VK_FORMAT_R8G8B8_SNORM(24) {
     @Override
+    public int texelSizeOctets()
+    {
+      return 3;
+    }
+
+    @Override
     public VulkanFormatCompressed compressed()
     {
       return FORMAT_UNCOMPRESSED;
@@ -1211,6 +1361,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    */
 
   VK_FORMAT_R8G8B8_USCALED(25) {
+    @Override
+    public int texelSizeOctets()
+    {
+      return 3;
+    }
+
     @Override
     public VulkanFormatCompressed compressed()
     {
@@ -1255,6 +1411,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
 
   VK_FORMAT_R8G8B8_SSCALED(26) {
     @Override
+    public int texelSizeOctets()
+    {
+      return 3;
+    }
+
+    @Override
     public VulkanFormatCompressed compressed()
     {
       return FORMAT_UNCOMPRESSED;
@@ -1298,6 +1460,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
 
   VK_FORMAT_R8G8B8_UINT(27) {
     @Override
+    public int texelSizeOctets()
+    {
+      return 3;
+    }
+
+    @Override
     public VulkanFormatCompressed compressed()
     {
       return FORMAT_UNCOMPRESSED;
@@ -1340,6 +1508,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    */
 
   VK_FORMAT_R8G8B8_SINT(28) {
+    @Override
+    public int texelSizeOctets()
+    {
+      return 3;
+    }
+
     @Override
     public VulkanFormatCompressed compressed()
     {
@@ -1385,6 +1559,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
 
   VK_FORMAT_R8G8B8_SRGB(29) {
     @Override
+    public int texelSizeOctets()
+    {
+      return 3;
+    }
+
+    @Override
     public VulkanFormatCompressed compressed()
     {
       return FORMAT_UNCOMPRESSED;
@@ -1427,6 +1607,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    */
 
   VK_FORMAT_B8G8R8_UNORM(30) {
+    @Override
+    public int texelSizeOctets()
+    {
+      return 3;
+    }
+
     @Override
     public VulkanFormatCompressed compressed()
     {
@@ -1471,6 +1657,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
 
   VK_FORMAT_B8G8R8_SNORM(31) {
     @Override
+    public int texelSizeOctets()
+    {
+      return 3;
+    }
+
+    @Override
     public VulkanFormatCompressed compressed()
     {
       return FORMAT_UNCOMPRESSED;
@@ -1513,6 +1705,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    */
 
   VK_FORMAT_B8G8R8_USCALED(32) {
+    @Override
+    public int texelSizeOctets()
+    {
+      return 3;
+    }
+
     @Override
     public VulkanFormatCompressed compressed()
     {
@@ -1557,6 +1755,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
 
   VK_FORMAT_B8G8R8_SSCALED(33) {
     @Override
+    public int texelSizeOctets()
+    {
+      return 3;
+    }
+
+    @Override
     public VulkanFormatCompressed compressed()
     {
       return FORMAT_UNCOMPRESSED;
@@ -1600,6 +1804,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
 
   VK_FORMAT_B8G8R8_UINT(34) {
     @Override
+    public int texelSizeOctets()
+    {
+      return 3;
+    }
+
+    @Override
     public VulkanFormatCompressed compressed()
     {
       return FORMAT_UNCOMPRESSED;
@@ -1642,6 +1852,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    */
 
   VK_FORMAT_B8G8R8_SINT(35) {
+    @Override
+    public int texelSizeOctets()
+    {
+      return 3;
+    }
+
     @Override
     public VulkanFormatCompressed compressed()
     {
@@ -1687,6 +1903,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
 
   VK_FORMAT_B8G8R8_SRGB(36) {
     @Override
+    public int texelSizeOctets()
+    {
+      return 3;
+    }
+
+    @Override
     public VulkanFormatCompressed compressed()
     {
       return FORMAT_UNCOMPRESSED;
@@ -1730,6 +1952,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    */
 
   VK_FORMAT_R8G8B8A8_UNORM(37) {
+    @Override
+    public int texelSizeOctets()
+    {
+      return 4;
+    }
+
     @Override
     public VulkanFormatCompressed compressed()
     {
@@ -1785,6 +2013,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
 
   VK_FORMAT_R8G8B8A8_SNORM(38) {
     @Override
+    public int texelSizeOctets()
+    {
+      return 4;
+    }
+
+    @Override
     public VulkanFormatCompressed compressed()
     {
       return FORMAT_UNCOMPRESSED;
@@ -1836,6 +2070,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
 
   VK_FORMAT_R8G8B8A8_USCALED(39) {
     @Override
+    public int texelSizeOctets()
+    {
+      return 4;
+    }
+
+    @Override
     public VulkanFormatCompressed compressed()
     {
       return FORMAT_UNCOMPRESSED;
@@ -1878,6 +2118,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    */
 
   VK_FORMAT_R8G8B8A8_SSCALED(40) {
+    @Override
+    public int texelSizeOctets()
+    {
+      return 4;
+    }
+
     @Override
     public VulkanFormatCompressed compressed()
     {
@@ -1922,6 +2168,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    */
 
   VK_FORMAT_R8G8B8A8_UINT(41) {
+    @Override
+    public int texelSizeOctets()
+    {
+      return 4;
+    }
+
     @Override
     public VulkanFormatCompressed compressed()
     {
@@ -1974,6 +2226,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    */
 
   VK_FORMAT_R8G8B8A8_SINT(42) {
+    @Override
+    public int texelSizeOctets()
+    {
+      return 4;
+    }
+
     @Override
     public VulkanFormatCompressed compressed()
     {
@@ -2028,6 +2286,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
 
   VK_FORMAT_R8G8B8A8_SRGB(43) {
     @Override
+    public int texelSizeOctets()
+    {
+      return 4;
+    }
+
+    @Override
     public VulkanFormatCompressed compressed()
     {
       return FORMAT_UNCOMPRESSED;
@@ -2077,6 +2341,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    */
 
   VK_FORMAT_B8G8R8A8_UNORM(44) {
+    @Override
+    public int texelSizeOctets()
+    {
+      return 4;
+    }
+
     @Override
     public VulkanFormatCompressed compressed()
     {
@@ -2130,6 +2400,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
 
   VK_FORMAT_B8G8R8A8_SNORM(45) {
     @Override
+    public int texelSizeOctets()
+    {
+      return 4;
+    }
+
+    @Override
     public VulkanFormatCompressed compressed()
     {
       return FORMAT_UNCOMPRESSED;
@@ -2174,6 +2450,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
 
   VK_FORMAT_B8G8R8A8_USCALED(46) {
     @Override
+    public int texelSizeOctets()
+    {
+      return 4;
+    }
+
+    @Override
     public VulkanFormatCompressed compressed()
     {
       return FORMAT_UNCOMPRESSED;
@@ -2216,6 +2498,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    */
 
   VK_FORMAT_B8G8R8A8_SSCALED(47) {
+    @Override
+    public int texelSizeOctets()
+    {
+      return 4;
+    }
+
     @Override
     public VulkanFormatCompressed compressed()
     {
@@ -2261,6 +2549,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
 
   VK_FORMAT_B8G8R8A8_UINT(48) {
     @Override
+    public int texelSizeOctets()
+    {
+      return 4;
+    }
+
+    @Override
     public VulkanFormatCompressed compressed()
     {
       return FORMAT_UNCOMPRESSED;
@@ -2304,6 +2598,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    */
 
   VK_FORMAT_B8G8R8A8_SINT(49) {
+    @Override
+    public int texelSizeOctets()
+    {
+      return 4;
+    }
+
     @Override
     public VulkanFormatCompressed compressed()
     {
@@ -2349,6 +2649,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    */
 
   VK_FORMAT_B8G8R8A8_SRGB(50) {
+    @Override
+    public int texelSizeOctets()
+    {
+      return 4;
+    }
+
     @Override
     public VulkanFormatCompressed compressed()
     {
@@ -2399,6 +2705,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    */
 
   VK_FORMAT_A8B8G8R8_UNORM_PACK32(51) {
+    @Override
+    public int texelSizeOctets()
+    {
+      return 4;
+    }
+
     @Override
     public VulkanFormatCompressed compressed()
     {
@@ -2453,6 +2765,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
 
   VK_FORMAT_A8B8G8R8_SNORM_PACK32(52) {
     @Override
+    public int texelSizeOctets()
+    {
+      return 4;
+    }
+
+    @Override
     public VulkanFormatCompressed compressed()
     {
       return FORMAT_UNCOMPRESSED;
@@ -2496,6 +2814,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    */
 
   VK_FORMAT_A8B8G8R8_USCALED_PACK32(53) {
+    @Override
+    public int texelSizeOctets()
+    {
+      return 4;
+    }
+
     @Override
     public VulkanFormatCompressed compressed()
     {
@@ -2541,6 +2865,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
 
   VK_FORMAT_A8B8G8R8_SSCALED_PACK32(54) {
     @Override
+    public int texelSizeOctets()
+    {
+      return 4;
+    }
+
+    @Override
     public VulkanFormatCompressed compressed()
     {
       return FORMAT_UNCOMPRESSED;
@@ -2584,6 +2914,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    */
 
   VK_FORMAT_A8B8G8R8_UINT_PACK32(55) {
+    @Override
+    public int texelSizeOctets()
+    {
+      return 4;
+    }
+
     @Override
     public VulkanFormatCompressed compressed()
     {
@@ -2635,6 +2971,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    */
 
   VK_FORMAT_A8B8G8R8_SINT_PACK32(56) {
+    @Override
+    public int texelSizeOctets()
+    {
+      return 4;
+    }
+
     @Override
     public VulkanFormatCompressed compressed()
     {
@@ -2688,6 +3030,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
 
   VK_FORMAT_A8B8G8R8_SRGB_PACK32(57) {
     @Override
+    public int texelSizeOctets()
+    {
+      return 4;
+    }
+
+    @Override
     public VulkanFormatCompressed compressed()
     {
       return FORMAT_UNCOMPRESSED;
@@ -2738,6 +3086,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
 
   VK_FORMAT_A2R10G10B10_UNORM_PACK32(58) {
     @Override
+    public int texelSizeOctets()
+    {
+      return 4;
+    }
+
+    @Override
     public VulkanFormatCompressed compressed()
     {
       return FORMAT_UNCOMPRESSED;
@@ -2781,6 +3135,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    */
 
   VK_FORMAT_A2R10G10B10_SNORM_PACK32(59) {
+    @Override
+    public int texelSizeOctets()
+    {
+      return 4;
+    }
+
     @Override
     public VulkanFormatCompressed compressed()
     {
@@ -2826,6 +3186,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
 
   VK_FORMAT_A2R10G10B10_USCALED_PACK32(60) {
     @Override
+    public int texelSizeOctets()
+    {
+      return 4;
+    }
+
+    @Override
     public VulkanFormatCompressed compressed()
     {
       return FORMAT_UNCOMPRESSED;
@@ -2869,6 +3235,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    */
 
   VK_FORMAT_A2R10G10B10_SSCALED_PACK32(61) {
+    @Override
+    public int texelSizeOctets()
+    {
+      return 4;
+    }
+
     @Override
     public VulkanFormatCompressed compressed()
     {
@@ -2914,6 +3286,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
 
   VK_FORMAT_A2R10G10B10_UINT_PACK32(62) {
     @Override
+    public int texelSizeOctets()
+    {
+      return 4;
+    }
+
+    @Override
     public VulkanFormatCompressed compressed()
     {
       return FORMAT_UNCOMPRESSED;
@@ -2957,6 +3335,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    */
 
   VK_FORMAT_A2R10G10B10_SINT_PACK32(63) {
+    @Override
+    public int texelSizeOctets()
+    {
+      return 4;
+    }
+
     @Override
     public VulkanFormatCompressed compressed()
     {
@@ -3002,6 +3386,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
 
   VK_FORMAT_A2B10G10R10_UNORM_PACK32(64) {
     @Override
+    public int texelSizeOctets()
+    {
+      return 4;
+    }
+
+    @Override
     public VulkanFormatCompressed compressed()
     {
       return FORMAT_UNCOMPRESSED;
@@ -3045,6 +3435,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    */
 
   VK_FORMAT_A2B10G10R10_SNORM_PACK32(65) {
+    @Override
+    public int texelSizeOctets()
+    {
+      return 4;
+    }
+
     @Override
     public VulkanFormatCompressed compressed()
     {
@@ -3090,6 +3486,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
 
   VK_FORMAT_A2B10G10R10_USCALED_PACK32(66) {
     @Override
+    public int texelSizeOctets()
+    {
+      return 4;
+    }
+
+    @Override
     public VulkanFormatCompressed compressed()
     {
       return FORMAT_UNCOMPRESSED;
@@ -3133,6 +3535,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    */
 
   VK_FORMAT_A2B10G10R10_SSCALED_PACK32(67) {
+    @Override
+    public int texelSizeOctets()
+    {
+      return 4;
+    }
+
     @Override
     public VulkanFormatCompressed compressed()
     {
@@ -3178,6 +3586,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
 
   VK_FORMAT_A2B10G10R10_UINT_PACK32(68) {
     @Override
+    public int texelSizeOctets()
+    {
+      return 4;
+    }
+
+    @Override
     public VulkanFormatCompressed compressed()
     {
       return FORMAT_UNCOMPRESSED;
@@ -3222,6 +3636,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
 
   VK_FORMAT_A2B10G10R10_SINT_PACK32(69) {
     @Override
+    public int texelSizeOctets()
+    {
+      return 4;
+    }
+
+    @Override
     public VulkanFormatCompressed compressed()
     {
       return FORMAT_UNCOMPRESSED;
@@ -3263,6 +3683,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    */
 
   VK_FORMAT_R16_UNORM(70) {
+    @Override
+    public int texelSizeOctets()
+    {
+      return 2;
+    }
+
     @Override
     public VulkanFormatCompressed compressed()
     {
@@ -3306,6 +3732,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
 
   VK_FORMAT_R16_SNORM(71) {
     @Override
+    public int texelSizeOctets()
+    {
+      return 2;
+    }
+
+    @Override
     public VulkanFormatCompressed compressed()
     {
       return FORMAT_UNCOMPRESSED;
@@ -3347,6 +3779,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    */
 
   VK_FORMAT_R16_USCALED(72) {
+    @Override
+    public int texelSizeOctets()
+    {
+      return 2;
+    }
+
     @Override
     public VulkanFormatCompressed compressed()
     {
@@ -3390,6 +3828,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
 
   VK_FORMAT_R16_SSCALED(73) {
     @Override
+    public int texelSizeOctets()
+    {
+      return 2;
+    }
+
+    @Override
     public VulkanFormatCompressed compressed()
     {
       return FORMAT_UNCOMPRESSED;
@@ -3431,6 +3875,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    */
 
   VK_FORMAT_R16_UINT(74) {
+    @Override
+    public int texelSizeOctets()
+    {
+      return 2;
+    }
+
     @Override
     public VulkanFormatCompressed compressed()
     {
@@ -3480,6 +3930,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
 
   VK_FORMAT_R16_SINT(75) {
     @Override
+    public int texelSizeOctets()
+    {
+      return 2;
+    }
+
+    @Override
     public VulkanFormatCompressed compressed()
     {
       return FORMAT_UNCOMPRESSED;
@@ -3527,6 +3983,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    */
 
   VK_FORMAT_R16_SFLOAT(76) {
+    @Override
+    public int texelSizeOctets()
+    {
+      return 2;
+    }
+
     @Override
     public VulkanFormatCompressed compressed()
     {
@@ -3579,6 +4041,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
 
   VK_FORMAT_R16G16_UNORM(77) {
     @Override
+    public int texelSizeOctets()
+    {
+      return 4;
+    }
+
+    @Override
     public VulkanFormatCompressed compressed()
     {
       return FORMAT_UNCOMPRESSED;
@@ -3621,6 +4089,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    */
 
   VK_FORMAT_R16G16_SNORM(78) {
+    @Override
+    public int texelSizeOctets()
+    {
+      return 4;
+    }
+
     @Override
     public VulkanFormatCompressed compressed()
     {
@@ -3665,6 +4139,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
 
   VK_FORMAT_R16G16_USCALED(79) {
     @Override
+    public int texelSizeOctets()
+    {
+      return 4;
+    }
+
+    @Override
     public VulkanFormatCompressed compressed()
     {
       return FORMAT_UNCOMPRESSED;
@@ -3708,6 +4188,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
 
   VK_FORMAT_R16G16_SSCALED(80) {
     @Override
+    public int texelSizeOctets()
+    {
+      return 4;
+    }
+
+    @Override
     public VulkanFormatCompressed compressed()
     {
       return FORMAT_UNCOMPRESSED;
@@ -3750,6 +4236,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    */
 
   VK_FORMAT_R16G16_UINT(81) {
+    @Override
+    public int texelSizeOctets()
+    {
+      return 4;
+    }
+
     @Override
     public VulkanFormatCompressed compressed()
     {
@@ -3800,6 +4292,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
 
   VK_FORMAT_R16G16_SINT(82) {
     @Override
+    public int texelSizeOctets()
+    {
+      return 4;
+    }
+
+    @Override
     public VulkanFormatCompressed compressed()
     {
       return FORMAT_UNCOMPRESSED;
@@ -3848,6 +4346,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    */
 
   VK_FORMAT_R16G16_SFLOAT(83) {
+    @Override
+    public int texelSizeOctets()
+    {
+      return 4;
+    }
+
     @Override
     public VulkanFormatCompressed compressed()
     {
@@ -3900,6 +4404,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
 
   VK_FORMAT_R16G16B16_UNORM(84) {
     @Override
+    public int texelSizeOctets()
+    {
+      return 3 * 2;
+    }
+
+    @Override
     public VulkanFormatCompressed compressed()
     {
       return FORMAT_UNCOMPRESSED;
@@ -3942,6 +4452,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    */
 
   VK_FORMAT_R16G16B16_SNORM(85) {
+    @Override
+    public int texelSizeOctets()
+    {
+      return 3 * 2;
+    }
+
     @Override
     public VulkanFormatCompressed compressed()
     {
@@ -3986,6 +4502,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
 
   VK_FORMAT_R16G16B16_USCALED(86) {
     @Override
+    public int texelSizeOctets()
+    {
+      return 3 * 2;
+    }
+
+    @Override
     public VulkanFormatCompressed compressed()
     {
       return FORMAT_UNCOMPRESSED;
@@ -4028,6 +4550,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    */
 
   VK_FORMAT_R16G16B16_SSCALED(87) {
+    @Override
+    public int texelSizeOctets()
+    {
+      return 3 * 2;
+    }
+
     @Override
     public VulkanFormatCompressed compressed()
     {
@@ -4072,6 +4600,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
 
   VK_FORMAT_R16G16B16_UINT(88) {
     @Override
+    public int texelSizeOctets()
+    {
+      return 3 * 2;
+    }
+
+    @Override
     public VulkanFormatCompressed compressed()
     {
       return FORMAT_UNCOMPRESSED;
@@ -4115,6 +4649,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
 
   VK_FORMAT_R16G16B16_SINT(89) {
     @Override
+    public int texelSizeOctets()
+    {
+      return 3 * 2;
+    }
+
+    @Override
     public VulkanFormatCompressed compressed()
     {
       return FORMAT_UNCOMPRESSED;
@@ -4157,6 +4697,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    */
 
   VK_FORMAT_R16G16B16_SFLOAT(90) {
+    @Override
+    public int texelSizeOctets()
+    {
+      return 3 * 2;
+    }
+
     @Override
     public VulkanFormatCompressed compressed()
     {
@@ -4202,6 +4748,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
 
   VK_FORMAT_R16G16B16A16_UNORM(91) {
     @Override
+    public int texelSizeOctets()
+    {
+      return 4 * 2;
+    }
+
+    @Override
     public VulkanFormatCompressed compressed()
     {
       return FORMAT_UNCOMPRESSED;
@@ -4245,6 +4797,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    */
 
   VK_FORMAT_R16G16B16A16_SNORM(92) {
+    @Override
+    public int texelSizeOctets()
+    {
+      return 4 * 2;
+    }
+
     @Override
     public VulkanFormatCompressed compressed()
     {
@@ -4290,6 +4848,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
 
   VK_FORMAT_R16G16B16A16_USCALED(93) {
     @Override
+    public int texelSizeOctets()
+    {
+      return 4 * 2;
+    }
+
+    @Override
     public VulkanFormatCompressed compressed()
     {
       return FORMAT_UNCOMPRESSED;
@@ -4334,6 +4898,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
 
   VK_FORMAT_R16G16B16A16_SSCALED(94) {
     @Override
+    public int texelSizeOctets()
+    {
+      return 4 * 2;
+    }
+
+    @Override
     public VulkanFormatCompressed compressed()
     {
       return FORMAT_UNCOMPRESSED;
@@ -4377,6 +4947,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    */
 
   VK_FORMAT_R16G16B16A16_UINT(95) {
+    @Override
+    public int texelSizeOctets()
+    {
+      return 4 * 2;
+    }
+
     @Override
     public VulkanFormatCompressed compressed()
     {
@@ -4430,6 +5006,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
 
   VK_FORMAT_R16G16B16A16_SINT(96) {
     @Override
+    public int texelSizeOctets()
+    {
+      return 4 * 2;
+    }
+
+    @Override
     public VulkanFormatCompressed compressed()
     {
       return FORMAT_UNCOMPRESSED;
@@ -4481,6 +5063,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    */
 
   VK_FORMAT_R16G16B16A16_SFLOAT(97) {
+    @Override
+    public int texelSizeOctets()
+    {
+      return 4 * 2;
+    }
+
     @Override
     public VulkanFormatCompressed compressed()
     {
@@ -4534,6 +5122,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
 
   VK_FORMAT_R32_UINT(98) {
     @Override
+    public int texelSizeOctets()
+    {
+      return 4;
+    }
+
+    @Override
     public VulkanFormatCompressed compressed()
     {
       return FORMAT_UNCOMPRESSED;
@@ -4585,6 +5179,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    */
 
   VK_FORMAT_R32_SINT(99) {
+    @Override
+    public int texelSizeOctets()
+    {
+      return 4;
+    }
+
     @Override
     public VulkanFormatCompressed compressed()
     {
@@ -4638,6 +5238,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
 
   VK_FORMAT_R32_SFLOAT(100) {
     @Override
+    public int texelSizeOctets()
+    {
+      return 4;
+    }
+
+    @Override
     public VulkanFormatCompressed compressed()
     {
       return FORMAT_UNCOMPRESSED;
@@ -4680,6 +5286,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    */
 
   VK_FORMAT_R32G32_UINT(101) {
+    @Override
+    public int texelSizeOctets()
+    {
+      return 4 * 2;
+    }
+
     @Override
     public VulkanFormatCompressed compressed()
     {
@@ -4724,6 +5336,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
 
   VK_FORMAT_R32G32_SINT(102) {
     @Override
+    public int texelSizeOctets()
+    {
+      return 4 * 2;
+    }
+
+    @Override
     public VulkanFormatCompressed compressed()
     {
       return FORMAT_UNCOMPRESSED;
@@ -4766,6 +5384,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    */
 
   VK_FORMAT_R32G32_SFLOAT(103) {
+    @Override
+    public int texelSizeOctets()
+    {
+      return 4 * 2;
+    }
+
     @Override
     public VulkanFormatCompressed compressed()
     {
@@ -4810,6 +5434,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
 
   VK_FORMAT_R32G32B32_UINT(104) {
     @Override
+    public int texelSizeOctets()
+    {
+      return 4 * 3;
+    }
+
+    @Override
     public VulkanFormatCompressed compressed()
     {
       return FORMAT_UNCOMPRESSED;
@@ -4853,6 +5483,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
 
   VK_FORMAT_R32G32B32_SINT(105) {
     @Override
+    public int texelSizeOctets()
+    {
+      return 4 * 3;
+    }
+
+    @Override
     public VulkanFormatCompressed compressed()
     {
       return FORMAT_UNCOMPRESSED;
@@ -4895,6 +5531,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    */
 
   VK_FORMAT_R32G32B32_SFLOAT(106) {
+    @Override
+    public int texelSizeOctets()
+    {
+      return 4 * 3;
+    }
+
     @Override
     public VulkanFormatCompressed compressed()
     {
@@ -4940,6 +5582,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
 
   VK_FORMAT_R32G32B32A32_UINT(107) {
     @Override
+    public int texelSizeOctets()
+    {
+      return 4 * 4;
+    }
+
+    @Override
     public VulkanFormatCompressed compressed()
     {
       return FORMAT_UNCOMPRESSED;
@@ -4983,6 +5631,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    */
 
   VK_FORMAT_R32G32B32A32_SINT(108) {
+    @Override
+    public int texelSizeOctets()
+    {
+      return 4 * 4;
+    }
+
     @Override
     public VulkanFormatCompressed compressed()
     {
@@ -5028,6 +5682,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
 
   VK_FORMAT_R32G32B32A32_SFLOAT(109) {
     @Override
+    public int texelSizeOctets()
+    {
+      return 4 * 4;
+    }
+
+    @Override
     public VulkanFormatCompressed compressed()
     {
       return FORMAT_UNCOMPRESSED;
@@ -5069,6 +5729,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    */
 
   VK_FORMAT_R64_UINT(110) {
+    @Override
+    public int texelSizeOctets()
+    {
+      return 8 * 1;
+    }
+
     @Override
     public VulkanFormatCompressed compressed()
     {
@@ -5112,6 +5778,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
 
   VK_FORMAT_R64_SINT(111) {
     @Override
+    public int texelSizeOctets()
+    {
+      return 8 * 1;
+    }
+
+    @Override
     public VulkanFormatCompressed compressed()
     {
       return FORMAT_UNCOMPRESSED;
@@ -5153,6 +5825,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    */
 
   VK_FORMAT_R64_SFLOAT(112) {
+    @Override
+    public int texelSizeOctets()
+    {
+      return 8 * 1;
+    }
+
     @Override
     public VulkanFormatCompressed compressed()
     {
@@ -5197,6 +5875,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
 
   VK_FORMAT_R64G64_UINT(113) {
     @Override
+    public int texelSizeOctets()
+    {
+      return 8 * 2;
+    }
+
+    @Override
     public VulkanFormatCompressed compressed()
     {
       return FORMAT_UNCOMPRESSED;
@@ -5239,6 +5923,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    */
 
   VK_FORMAT_R64G64_SINT(114) {
+    @Override
+    public int texelSizeOctets()
+    {
+      return 8 * 2;
+    }
+
     @Override
     public VulkanFormatCompressed compressed()
     {
@@ -5283,6 +5973,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
 
   VK_FORMAT_R64G64_SFLOAT(115) {
     @Override
+    public int texelSizeOctets()
+    {
+      return 8 * 2;
+    }
+
+    @Override
     public VulkanFormatCompressed compressed()
     {
       return FORMAT_UNCOMPRESSED;
@@ -5325,6 +6021,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    */
 
   VK_FORMAT_R64G64B64_UINT(116) {
+    @Override
+    public int texelSizeOctets()
+    {
+      return 8 * 3;
+    }
+
     @Override
     public VulkanFormatCompressed compressed()
     {
@@ -5369,6 +6071,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
 
   VK_FORMAT_R64G64B64_SINT(117) {
     @Override
+    public int texelSizeOctets()
+    {
+      return 8 * 3;
+    }
+
+    @Override
     public VulkanFormatCompressed compressed()
     {
       return FORMAT_UNCOMPRESSED;
@@ -5411,6 +6119,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    */
 
   VK_FORMAT_R64G64B64_SFLOAT(118) {
+    @Override
+    public int texelSizeOctets()
+    {
+      return 8 * 3;
+    }
+
     @Override
     public VulkanFormatCompressed compressed()
     {
@@ -5456,6 +6170,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
 
   VK_FORMAT_R64G64B64A64_UINT(119) {
     @Override
+    public int texelSizeOctets()
+    {
+      return 8 * 4;
+    }
+
+    @Override
     public VulkanFormatCompressed compressed()
     {
       return FORMAT_UNCOMPRESSED;
@@ -5500,6 +6220,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
 
   VK_FORMAT_R64G64B64A64_SINT(120) {
     @Override
+    public int texelSizeOctets()
+    {
+      return 8 * 4;
+    }
+
+    @Override
     public VulkanFormatCompressed compressed()
     {
       return FORMAT_UNCOMPRESSED;
@@ -5543,6 +6269,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    */
 
   VK_FORMAT_R64G64B64A64_SFLOAT(121) {
+    @Override
+    public int texelSizeOctets()
+    {
+      return 8 * 4;
+    }
+
     @Override
     public VulkanFormatCompressed compressed()
     {
@@ -5589,6 +6321,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
 
   VK_FORMAT_B10G11R11_UFLOAT_PACK32(122) {
     @Override
+    public int texelSizeOctets()
+    {
+      return 4;
+    }
+
+    @Override
     public VulkanFormatCompressed compressed()
     {
       return FORMAT_UNCOMPRESSED;
@@ -5633,6 +6371,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
 
   VK_FORMAT_E5B9G9R9_UFLOAT_PACK32(123) {
     @Override
+    public int texelSizeOctets()
+    {
+      return 4;
+    }
+
+    @Override
     public VulkanFormatCompressed compressed()
     {
       return FORMAT_UNCOMPRESSED;
@@ -5674,6 +6418,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    */
 
   VK_FORMAT_D16_UNORM(124) {
+    @Override
+    public int texelSizeOctets()
+    {
+      return 2;
+    }
+
     @Override
     public VulkanFormatCompressed compressed()
     {
@@ -5721,6 +6471,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
 
   VK_FORMAT_X8_D24_UNORM_PACK32(125) {
     @Override
+    public int texelSizeOctets()
+    {
+      return 4;
+    }
+
+    @Override
     public VulkanFormatCompressed compressed()
     {
       return FORMAT_UNCOMPRESSED;
@@ -5762,6 +6518,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    */
 
   VK_FORMAT_D32_SFLOAT(126) {
+    @Override
+    public int texelSizeOctets()
+    {
+      return 4;
+    }
+
     @Override
     public VulkanFormatCompressed compressed()
     {
@@ -5807,6 +6569,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
 
   VK_FORMAT_S8_UINT(127) {
     @Override
+    public int texelSizeOctets()
+    {
+      return 1;
+    }
+
+    @Override
     public VulkanFormatCompressed compressed()
     {
       return FORMAT_UNCOMPRESSED;
@@ -5849,6 +6617,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    */
 
   VK_FORMAT_D16_UNORM_S8_UINT(128) {
+    @Override
+    public int texelSizeOctets()
+    {
+      return 3;
+    }
+
     @Override
     public VulkanFormatCompressed compressed()
     {
@@ -5893,6 +6667,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
 
   VK_FORMAT_D24_UNORM_S8_UINT(129) {
     @Override
+    public int texelSizeOctets()
+    {
+      return 4;
+    }
+
+    @Override
     public VulkanFormatCompressed compressed()
     {
       return FORMAT_UNCOMPRESSED;
@@ -5935,6 +6715,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    */
 
   VK_FORMAT_D32_SFLOAT_S8_UINT(130) {
+    @Override
+    public int texelSizeOctets()
+    {
+      return 4 + 4;
+    }
+
     @Override
     public VulkanFormatCompressed compressed()
     {
@@ -5980,6 +6766,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
 
   VK_FORMAT_BC1_RGB_UNORM_BLOCK(131) {
     @Override
+    public int texelSizeOctets()
+    {
+      return 8;
+    }
+
+    @Override
     public VulkanFormatCompressed compressed()
     {
       return FORMAT_COMPRESSED;
@@ -6024,6 +6816,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
 
   VK_FORMAT_BC1_RGB_SRGB_BLOCK(132) {
     @Override
+    public int texelSizeOctets()
+    {
+      return 8;
+    }
+
+    @Override
     public VulkanFormatCompressed compressed()
     {
       return FORMAT_COMPRESSED;
@@ -6066,6 +6864,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    */
 
   VK_FORMAT_BC1_RGBA_UNORM_BLOCK(133) {
+    @Override
+    public int texelSizeOctets()
+    {
+      return 8;
+    }
+
     @Override
     public VulkanFormatCompressed compressed()
     {
@@ -6111,6 +6915,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
 
   VK_FORMAT_BC1_RGBA_SRGB_BLOCK(134) {
     @Override
+    public int texelSizeOctets()
+    {
+      return 8;
+    }
+
+    @Override
     public VulkanFormatCompressed compressed()
     {
       return FORMAT_COMPRESSED;
@@ -6154,6 +6964,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    */
 
   VK_FORMAT_BC2_UNORM_BLOCK(135) {
+    @Override
+    public int texelSizeOctets()
+    {
+      return 16;
+    }
+
     @Override
     public VulkanFormatCompressed compressed()
     {
@@ -6199,6 +7015,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
 
   VK_FORMAT_BC2_SRGB_BLOCK(136) {
     @Override
+    public int texelSizeOctets()
+    {
+      return 16;
+    }
+
+    @Override
     public VulkanFormatCompressed compressed()
     {
       return FORMAT_COMPRESSED;
@@ -6242,6 +7064,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    */
 
   VK_FORMAT_BC3_UNORM_BLOCK(137) {
+    @Override
+    public int texelSizeOctets()
+    {
+      return 16;
+    }
+
     @Override
     public VulkanFormatCompressed compressed()
     {
@@ -6287,6 +7115,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
 
   VK_FORMAT_BC3_SRGB_BLOCK(138) {
     @Override
+    public int texelSizeOctets()
+    {
+      return 16;
+    }
+
+    @Override
     public VulkanFormatCompressed compressed()
     {
       return FORMAT_COMPRESSED;
@@ -6330,6 +7164,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
 
   VK_FORMAT_BC4_UNORM_BLOCK(139) {
     @Override
+    public int texelSizeOctets()
+    {
+      return 8;
+    }
+
+    @Override
     public VulkanFormatCompressed compressed()
     {
       return FORMAT_COMPRESSED;
@@ -6372,6 +7212,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    */
 
   VK_FORMAT_BC4_SNORM_BLOCK(140) {
+    @Override
+    public int texelSizeOctets()
+    {
+      return 8;
+    }
+
     @Override
     public VulkanFormatCompressed compressed()
     {
@@ -6417,6 +7263,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
 
   VK_FORMAT_BC5_UNORM_BLOCK(141) {
     @Override
+    public int texelSizeOctets()
+    {
+      return 16;
+    }
+
+    @Override
     public VulkanFormatCompressed compressed()
     {
       return FORMAT_COMPRESSED;
@@ -6461,6 +7313,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
 
   VK_FORMAT_BC5_SNORM_BLOCK(142) {
     @Override
+    public int texelSizeOctets()
+    {
+      return 16;
+    }
+
+    @Override
     public VulkanFormatCompressed compressed()
     {
       return FORMAT_COMPRESSED;
@@ -6503,6 +7361,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    */
 
   VK_FORMAT_BC6H_UFLOAT_BLOCK(143) {
+    @Override
+    public int texelSizeOctets()
+    {
+      return 16;
+    }
+
     @Override
     public VulkanFormatCompressed compressed()
     {
@@ -6547,6 +7411,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
 
   VK_FORMAT_BC6H_SFLOAT_BLOCK(144) {
     @Override
+    public int texelSizeOctets()
+    {
+      return 16;
+    }
+
+    @Override
     public VulkanFormatCompressed compressed()
     {
       return FORMAT_COMPRESSED;
@@ -6589,6 +7459,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    */
 
   VK_FORMAT_BC7_UNORM_BLOCK(145) {
+    @Override
+    public int texelSizeOctets()
+    {
+      return 16;
+    }
+
     @Override
     public VulkanFormatCompressed compressed()
     {
@@ -6634,6 +7510,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
 
   VK_FORMAT_BC7_SRGB_BLOCK(146) {
     @Override
+    public int texelSizeOctets()
+    {
+      return 16;
+    }
+
+    @Override
     public VulkanFormatCompressed compressed()
     {
       return FORMAT_COMPRESSED;
@@ -6677,6 +7559,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    */
 
   VK_FORMAT_ETC2_R8G8B8_UNORM_BLOCK(147) {
+    @Override
+    public int texelSizeOctets()
+    {
+      return 8;
+    }
+
     @Override
     public VulkanFormatCompressed compressed()
     {
@@ -6722,6 +7610,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
 
   VK_FORMAT_ETC2_R8G8B8_SRGB_BLOCK(148) {
     @Override
+    public int texelSizeOctets()
+    {
+      return 8;
+    }
+
+    @Override
     public VulkanFormatCompressed compressed()
     {
       return FORMAT_COMPRESSED;
@@ -6764,6 +7658,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    */
 
   VK_FORMAT_ETC2_R8G8B8A1_UNORM_BLOCK(149) {
+    @Override
+    public int texelSizeOctets()
+    {
+      return 8;
+    }
+
     @Override
     public VulkanFormatCompressed compressed()
     {
@@ -6809,6 +7709,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
 
   VK_FORMAT_ETC2_R8G8B8A1_SRGB_BLOCK(150) {
     @Override
+    public int texelSizeOctets()
+    {
+      return 8;
+    }
+
+    @Override
     public VulkanFormatCompressed compressed()
     {
       return FORMAT_COMPRESSED;
@@ -6852,6 +7758,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    */
 
   VK_FORMAT_ETC2_R8G8B8A8_UNORM_BLOCK(151) {
+    @Override
+    public int texelSizeOctets()
+    {
+      return 16;
+    }
+
     @Override
     public VulkanFormatCompressed compressed()
     {
@@ -6897,6 +7809,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
 
   VK_FORMAT_ETC2_R8G8B8A8_SRGB_BLOCK(152) {
     @Override
+    public int texelSizeOctets()
+    {
+      return 8;
+    }
+
+    @Override
     public VulkanFormatCompressed compressed()
     {
       return FORMAT_COMPRESSED;
@@ -6940,6 +7858,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
 
   VK_FORMAT_EAC_R11_UNORM_BLOCK(153) {
     @Override
+    public int texelSizeOctets()
+    {
+      return 8;
+    }
+
+    @Override
     public VulkanFormatCompressed compressed()
     {
       return FORMAT_COMPRESSED;
@@ -6982,6 +7906,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    */
 
   VK_FORMAT_EAC_R11_SNORM_BLOCK(154) {
+    @Override
+    public int texelSizeOctets()
+    {
+      return 8;
+    }
+
     @Override
     public VulkanFormatCompressed compressed()
     {
@@ -7027,6 +7957,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
 
   VK_FORMAT_EAC_R11G11_UNORM_BLOCK(155) {
     @Override
+    public int texelSizeOctets()
+    {
+      return 16;
+    }
+
+    @Override
     public VulkanFormatCompressed compressed()
     {
       return FORMAT_COMPRESSED;
@@ -7071,6 +8007,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
 
   VK_FORMAT_EAC_R11G11_SNORM_BLOCK(156) {
     @Override
+    public int texelSizeOctets()
+    {
+      return 16;
+    }
+
+    @Override
     public VulkanFormatCompressed compressed()
     {
       return FORMAT_COMPRESSED;
@@ -7113,6 +8055,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    */
 
   VK_FORMAT_ASTC_4x4_UNORM_BLOCK(157) {
+    @Override
+    public int texelSizeOctets()
+    {
+      return 16;
+    }
+
     @Override
     public VulkanFormatCompressed compressed()
     {
@@ -7158,6 +8106,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
 
   VK_FORMAT_ASTC_4x4_SRGB_BLOCK(158) {
     @Override
+    public int texelSizeOctets()
+    {
+      return 16;
+    }
+
+    @Override
     public VulkanFormatCompressed compressed()
     {
       return FORMAT_COMPRESSED;
@@ -7200,6 +8154,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    */
 
   VK_FORMAT_ASTC_5x4_UNORM_BLOCK(159) {
+    @Override
+    public int texelSizeOctets()
+    {
+      return 16;
+    }
+
     @Override
     public VulkanFormatCompressed compressed()
     {
@@ -7245,6 +8205,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
 
   VK_FORMAT_ASTC_5x4_SRGB_BLOCK(160) {
     @Override
+    public int texelSizeOctets()
+    {
+      return 16;
+    }
+
+    @Override
     public VulkanFormatCompressed compressed()
     {
       return FORMAT_COMPRESSED;
@@ -7287,6 +8253,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    */
 
   VK_FORMAT_ASTC_5x5_UNORM_BLOCK(161) {
+    @Override
+    public int texelSizeOctets()
+    {
+      return 16;
+    }
+
     @Override
     public VulkanFormatCompressed compressed()
     {
@@ -7332,6 +8304,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
 
   VK_FORMAT_ASTC_5x5_SRGB_BLOCK(162) {
     @Override
+    public int texelSizeOctets()
+    {
+      return 16;
+    }
+
+    @Override
     public VulkanFormatCompressed compressed()
     {
       return FORMAT_COMPRESSED;
@@ -7374,6 +8352,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    */
 
   VK_FORMAT_ASTC_6x5_UNORM_BLOCK(163) {
+    @Override
+    public int texelSizeOctets()
+    {
+      return 16;
+    }
+
     @Override
     public VulkanFormatCompressed compressed()
     {
@@ -7419,6 +8403,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
 
   VK_FORMAT_ASTC_6x5_SRGB_BLOCK(164) {
     @Override
+    public int texelSizeOctets()
+    {
+      return 16;
+    }
+
+    @Override
     public VulkanFormatCompressed compressed()
     {
       return FORMAT_COMPRESSED;
@@ -7461,6 +8451,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    */
 
   VK_FORMAT_ASTC_6x6_UNORM_BLOCK(165) {
+    @Override
+    public int texelSizeOctets()
+    {
+      return 16;
+    }
+
     @Override
     public VulkanFormatCompressed compressed()
     {
@@ -7506,6 +8502,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
 
   VK_FORMAT_ASTC_6x6_SRGB_BLOCK(166) {
     @Override
+    public int texelSizeOctets()
+    {
+      return 16;
+    }
+
+    @Override
     public VulkanFormatCompressed compressed()
     {
       return FORMAT_COMPRESSED;
@@ -7548,6 +8550,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    */
 
   VK_FORMAT_ASTC_8x5_UNORM_BLOCK(167) {
+    @Override
+    public int texelSizeOctets()
+    {
+      return 16;
+    }
+
     @Override
     public VulkanFormatCompressed compressed()
     {
@@ -7593,6 +8601,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
 
   VK_FORMAT_ASTC_8x5_SRGB_BLOCK(168) {
     @Override
+    public int texelSizeOctets()
+    {
+      return 16;
+    }
+
+    @Override
     public VulkanFormatCompressed compressed()
     {
       return FORMAT_COMPRESSED;
@@ -7635,6 +8649,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    */
 
   VK_FORMAT_ASTC_8x6_UNORM_BLOCK(169) {
+    @Override
+    public int texelSizeOctets()
+    {
+      return 16;
+    }
+
     @Override
     public VulkanFormatCompressed compressed()
     {
@@ -7680,6 +8700,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
 
   VK_FORMAT_ASTC_8x6_SRGB_BLOCK(170) {
     @Override
+    public int texelSizeOctets()
+    {
+      return 16;
+    }
+
+    @Override
     public VulkanFormatCompressed compressed()
     {
       return FORMAT_COMPRESSED;
@@ -7722,6 +8748,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    */
 
   VK_FORMAT_ASTC_8x8_UNORM_BLOCK(171) {
+    @Override
+    public int texelSizeOctets()
+    {
+      return 16;
+    }
+
     @Override
     public VulkanFormatCompressed compressed()
     {
@@ -7767,6 +8799,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
 
   VK_FORMAT_ASTC_8x8_SRGB_BLOCK(172) {
     @Override
+    public int texelSizeOctets()
+    {
+      return 16;
+    }
+
+    @Override
     public VulkanFormatCompressed compressed()
     {
       return FORMAT_COMPRESSED;
@@ -7809,6 +8847,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    */
 
   VK_FORMAT_ASTC_10x5_UNORM_BLOCK(173) {
+    @Override
+    public int texelSizeOctets()
+    {
+      return 16;
+    }
+
     @Override
     public VulkanFormatCompressed compressed()
     {
@@ -7854,6 +8898,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
 
   VK_FORMAT_ASTC_10x5_SRGB_BLOCK(174) {
     @Override
+    public int texelSizeOctets()
+    {
+      return 16;
+    }
+
+    @Override
     public VulkanFormatCompressed compressed()
     {
       return FORMAT_COMPRESSED;
@@ -7896,6 +8946,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    */
 
   VK_FORMAT_ASTC_10x6_UNORM_BLOCK(175) {
+    @Override
+    public int texelSizeOctets()
+    {
+      return 16;
+    }
+
     @Override
     public VulkanFormatCompressed compressed()
     {
@@ -7941,6 +8997,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
 
   VK_FORMAT_ASTC_10x6_SRGB_BLOCK(176) {
     @Override
+    public int texelSizeOctets()
+    {
+      return 16;
+    }
+
+    @Override
     public VulkanFormatCompressed compressed()
     {
       return FORMAT_COMPRESSED;
@@ -7983,6 +9045,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    */
 
   VK_FORMAT_ASTC_10x8_UNORM_BLOCK(177) {
+    @Override
+    public int texelSizeOctets()
+    {
+      return 16;
+    }
+
     @Override
     public VulkanFormatCompressed compressed()
     {
@@ -8028,6 +9096,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
 
   VK_FORMAT_ASTC_10x8_SRGB_BLOCK(178) {
     @Override
+    public int texelSizeOctets()
+    {
+      return 16;
+    }
+
+    @Override
     public VulkanFormatCompressed compressed()
     {
       return FORMAT_COMPRESSED;
@@ -8070,6 +9144,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    */
 
   VK_FORMAT_ASTC_10x10_UNORM_BLOCK(179) {
+    @Override
+    public int texelSizeOctets()
+    {
+      return 16;
+    }
+
     @Override
     public VulkanFormatCompressed compressed()
     {
@@ -8115,6 +9195,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
 
   VK_FORMAT_ASTC_10x10_SRGB_BLOCK(180) {
     @Override
+    public int texelSizeOctets()
+    {
+      return 16;
+    }
+
+    @Override
     public VulkanFormatCompressed compressed()
     {
       return FORMAT_COMPRESSED;
@@ -8157,6 +9243,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    */
 
   VK_FORMAT_ASTC_12x10_UNORM_BLOCK(181) {
+    @Override
+    public int texelSizeOctets()
+    {
+      return 16;
+    }
+
     @Override
     public VulkanFormatCompressed compressed()
     {
@@ -8202,6 +9294,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
 
   VK_FORMAT_ASTC_12x10_SRGB_BLOCK(182) {
     @Override
+    public int texelSizeOctets()
+    {
+      return 16;
+    }
+
+    @Override
     public VulkanFormatCompressed compressed()
     {
       return FORMAT_COMPRESSED;
@@ -8244,6 +9342,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    */
 
   VK_FORMAT_ASTC_12x12_UNORM_BLOCK(183) {
+    @Override
+    public int texelSizeOctets()
+    {
+      return 16;
+    }
+
     @Override
     public VulkanFormatCompressed compressed()
     {
@@ -8288,6 +9392,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
    */
 
   VK_FORMAT_ASTC_12x12_SRGB_BLOCK(184) {
+    @Override
+    public int texelSizeOctets()
+    {
+      return 16;
+    }
+
     @Override
     public VulkanFormatCompressed compressed()
     {
@@ -8353,6 +9463,12 @@ public enum VulkanFormat implements VulkanEnumIntegerType
   {
     return this.value;
   }
+
+  /**
+   * @return The size of a single texel in octets
+   */
+
+  public abstract int texelSizeOctets();
 
   /**
    * @return Whether this format is compressed

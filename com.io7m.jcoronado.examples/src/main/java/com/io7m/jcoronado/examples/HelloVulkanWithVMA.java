@@ -146,7 +146,6 @@ import java.util.Optional;
 import java.util.OptionalInt;
 import java.util.Random;
 import java.util.Set;
-import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -216,7 +215,6 @@ import static com.io7m.jcoronado.extensions.khr_swapchain.api.VulkanPresentModeK
 import static com.io7m.jcoronado.extensions.khr_swapchain.api.VulkanPresentModeKHR.VK_PRESENT_MODE_MAILBOX_KHR;
 import static com.io7m.jcoronado.vma.VMAMemoryUsage.VMA_MEMORY_USAGE_CPU_ONLY;
 import static com.io7m.jcoronado.vma.VMAMemoryUsage.VMA_MEMORY_USAGE_GPU_ONLY;
-import static java.util.concurrent.TimeUnit.SECONDS;
 
 public final class HelloVulkanWithVMA implements ExampleType
 {
