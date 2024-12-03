@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!DOCTYPE suppressions PUBLIC
+  "-//Checkstyle//DTD SuppressionFilter Configuration 1.0//EN"
+  "https://checkstyle.org/dtds/suppressions_1_0.dtd">
+
+<suppressions>
+  <!-- Very difficult to break up this implementation. -->
+  <suppress files="VulkanLWJGLLogicalDevice.java"
+            checks="FileLength"/>
+
+  <!-- A large enum with lots of data methods. -->
+  <suppress files="VulkanFormat.java"
+            checks="FileLength"/>
+  <suppress files="VulkanFormat.java"
+            checks="JavaNCSS"/>
+  
+  <!-- Not under our control. -->
+  <suppress files="VulkanPhysicalDeviceLimitsType.java"
+            checks="MethodCount"/>
+
+  <!-- Manually copying String -->
+  <suppress files="VulkanLWJGLExtDebugUtils.java"
+            checks="IllegalInstantiation"/>
+
+  <!-- Generated. -->
+  <suppress files="VulkanPhysicalDeviceFeaturesFunctions.java"
+            checks="CyclomaticComplexity"/>
+  <suppress files="VulkanPhysicalDeviceFeaturesFunctions.java"
+            checks="LineLength"/>
+  <suppress files="VulkanPhysicalDeviceFeaturesFunctions.java"
+            checks="ExecutableStatementCount"/>
+
+  <!-- Large switch over sealed class. -->
+  <suppress files="VulkanLWJGLExtDebugUtils.java"
+            checks="RedundantModifier"/>
+  <suppress files="VulkanLWJGLExtDebugUtils.java"
+            checks="CyclomaticComplexity"/>
+
+</suppressions>

@@ -1,0 +1,4 @@
+VK_CULL_MODE_NONE           : 0          : Specifies that no triangles are discarded
+VK_CULL_MODE_FRONT_BIT      : 0x00000001 : Specifies that front-facing triangles are discarded
+VK_CULL_MODE_BACK_BIT       : 0x00000002 : Specifies that back-facing triangles are discarded
+VK_CULL_MODE_FRONT_AND_BACK : 0x00000003 : Specifies that all triangles are discarded

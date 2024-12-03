@@ -1,0 +1,152 @@
+/*
+ * Copyright © 2018 Mark Raynsford <code@io7m.com> http://io7m.com
+ *
+ * Permission to use, copy, modify, and/or distribute this software for any
+ * purpose with or without fee is hereby granted, provided that the above
+ * copyright notice and this permission notice appear in all copies.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY
+ * SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR
+ * IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ */
+
+package com.io7m.jcoronado.api;
+
+/**
+ * @see "VkBlendFactor"
+ */
+
+@VulkanAPIEnumType(vulkanEnum = "VkBlendFactor")
+public enum VulkanBlendFactor implements VulkanEnumIntegerType
+{
+  /**
+   * VK_BLEND_FACTOR_ZERO
+   */
+
+  VK_BLEND_FACTOR_ZERO(0),
+
+  /**
+   * VK_BLEND_FACTOR_ONE
+   */
+
+  VK_BLEND_FACTOR_ONE(1),
+
+  /**
+   * VK_BLEND_FACTOR_SRC_COLOR
+   */
+
+  VK_BLEND_FACTOR_SRC_COLOR(2),
+
+  /**
+   * VK_BLEND_FACTOR_ONE_MINUS_SRC_COLOR
+   */
+
+  VK_BLEND_FACTOR_ONE_MINUS_SRC_COLOR(3),
+
+  /**
+   * VK_BLEND_FACTOR_DST_COLOR
+   */
+
+  VK_BLEND_FACTOR_DST_COLOR(4),
+
+  /**
+   * VK_BLEND_FACTOR_ONE_MINUS_DST_COLOR
+   */
+
+  VK_BLEND_FACTOR_ONE_MINUS_DST_COLOR(5),
+
+  /**
+   * VK_BLEND_FACTOR_SRC_ALPHA
+   */
+
+  VK_BLEND_FACTOR_SRC_ALPHA(6),
+
+  /**
+   * VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA
+   */
+
+  VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA(7),
+
+  /**
+   * VK_BLEND_FACTOR_DST_ALPHA
+   */
+
+  VK_BLEND_FACTOR_DST_ALPHA(8),
+
+  /**
+   * VK_BLEND_FACTOR_ONE_MINUS_DST_ALPHA
+   */
+
+  VK_BLEND_FACTOR_ONE_MINUS_DST_ALPHA(9),
+
+  /**
+   * VK_BLEND_FACTOR_CONSTANT_COLOR
+   */
+
+  VK_BLEND_FACTOR_CONSTANT_COLOR(10),
+
+  /**
+   * VK_BLEND_FACTOR_ONE_MINUS_CONSTANT_COLOR
+   */
+
+  VK_BLEND_FACTOR_ONE_MINUS_CONSTANT_COLOR(11),
+
+  /**
+   * VK_BLEND_FACTOR_CONSTANT_ALPHA
+   */
+
+  VK_BLEND_FACTOR_CONSTANT_ALPHA(12),
+
+  /**
+   * VK_BLEND_FACTOR_ONE_MINUS_CONSTANT_ALPHA
+   */
+
+  VK_BLEND_FACTOR_ONE_MINUS_CONSTANT_ALPHA(13),
+
+  /**
+   * VK_BLEND_FACTOR_SRC_ALPHA_SATURATE
+   */
+
+  VK_BLEND_FACTOR_SRC_ALPHA_SATURATE(14),
+
+  /**
+   * VK_BLEND_FACTOR_SRC1_COLOR
+   */
+
+  VK_BLEND_FACTOR_SRC1_COLOR(15),
+
+  /**
+   * VK_BLEND_FACTOR_ONE_MINUS_SRC1_COLOR
+   */
+
+  VK_BLEND_FACTOR_ONE_MINUS_SRC1_COLOR(16),
+
+  /**
+   * VK_BLEND_FACTOR_SRC1_ALPHA
+   */
+
+  VK_BLEND_FACTOR_SRC1_ALPHA(17),
+
+  /**
+   * VK_BLEND_FACTOR_ONE_MINUS_SRC1_ALPHA
+   */
+
+  VK_BLEND_FACTOR_ONE_MINUS_SRC1_ALPHA(18);
+
+  private final int value;
+
+  VulkanBlendFactor(final int i)
+  {
+    this.value = i;
+  }
+
+  @Override
+  public int value()
+  {
+    return this.value;
+  }
+}

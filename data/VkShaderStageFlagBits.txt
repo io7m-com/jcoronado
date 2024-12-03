@@ -1,0 +1,8 @@
+VK_SHADER_STAGE_VERTEX_BIT                  : 0x00000001 : the vertex stage.
+VK_SHADER_STAGE_TESSELLATION_CONTROL_BIT    : 0x00000002 : the tessellation control stage.
+VK_SHADER_STAGE_TESSELLATION_EVALUATION_BIT : 0x00000004 : the tessellation evaluation stage.
+VK_SHADER_STAGE_GEOMETRY_BIT                : 0x00000008 : the geometry stage.
+VK_SHADER_STAGE_FRAGMENT_BIT                : 0x00000010 : the fragment stage.
+VK_SHADER_STAGE_COMPUTE_BIT                 : 0x00000020 : the compute stage.
+VK_SHADER_STAGE_ALL_GRAPHICS                : 0x0000001F : a combination of bits used as shorthand to specify all graphics stages defined above (excluding the compute stage).
+VK_SHADER_STAGE_ALL                         : 0x7FFFFFFF : a combination of bits used as shorthand to specify all shader stages supported by the device, including all additional stages which are introduced by extensions.

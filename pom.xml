@@ -1,0 +1,321 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+  xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>com.io7m.primogenitor</groupId>
+    <artifactId>com.io7m.primogenitor.full</artifactId>
+    <version>8.3.1</version>
+  </parent>
+
+  <groupId>com.io7m.jcoronado</groupId>
+  <artifactId>com.io7m.jcoronado</artifactId>
+  <version>0.0.1</version>
+
+  <packaging>pom</packaging>
+  <name>com.io7m.jcoronado</name>
+  <description>Type-safe Vulkan frontend</description>
+  <url>https://www.io7m.com/software/jcoronado</url>
+
+  <modules>
+    <module>com.io7m.jcoronado.allocation_tracker</module>
+    <module>com.io7m.jcoronado.api</module>
+    <module>com.io7m.jcoronado.documentation</module>
+    <module>com.io7m.jcoronado.examples</module>
+    <module>com.io7m.jcoronado.extensions.ext_debug_utils.api</module>
+    <module>com.io7m.jcoronado.extensions.ext_layer_settings.api</module>
+    <module>com.io7m.jcoronado.extensions.khr_surface.api</module>
+    <module>com.io7m.jcoronado.fake</module>
+    <module>com.io7m.jcoronado.layers.khronos_validation.api</module>
+    <module>com.io7m.jcoronado.lwjgl</module>
+    <module>com.io7m.jcoronado.tests</module>
+    <module>com.io7m.jcoronado.vma</module>
+  </modules>
+
+  <properties>
+    <!-- Configuration. -->
+    <io7m.api.previousVersion>0.0.1</io7m.api.previousVersion>
+    <io7m.java.targetJavaVersion>22</io7m.java.targetJavaVersion>
+
+    <!-- Third-party dependencies. -->
+    <io7m.org.immutables.value.version>2.10.1</io7m.org.immutables.value.version>
+    <org.lwjgl.version>3.3.5-SNAPSHOT</org.lwjgl.version>
+    <org.junit.version>5.11.3</org.junit.version>
+    <mockito.version>5.14.2</mockito.version>
+  </properties>
+
+  <licenses>
+    <license>
+      <name>ISC</name>
+      <url>https://www.io7m.com/license/isc.txt</url>
+    </license>
+  </licenses>
+
+  <scm>
+    <url>https://www.github.com/io7m-com/jcoronado</url>
+    <connection>scm:git:https://www.github.com/io7m-com/jcoronado</connection>
+    <developerConnection>scm:git:https://www.github.com/io7m-com/jcoronado</developerConnection>
+  </scm>
+
+  <developers>
+    <developer>
+      <id>io7m</id>
+      <name>io7m</name>
+      <email>code@io7m.com</email>
+      <url>https://io7m.com</url>
+    </developer>
+  </developers>
+
+  <issueManagement>
+    <url>https://www.github.com/io7m-com/jcoronado/issues</url>
+    <system>GitHub Issues</system>
+  </issueManagement>
+
+  <distributionManagement>
+    <site>
+      <id>io7m.com</id>
+      <name>io7m.com</name>
+      <url>https://www.io7m.com/software/jcoronado</url>
+    </site>
+    <repository>
+      <id>sonatype-nexus-staging</id>
+      <url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+    </repository>
+    <snapshotRepository>
+      <id>sonatype-nexus-snapshots</id>
+      <url>https://s01.oss.sonatype.org/content/repositories/snapshots/</url>
+    </snapshotRepository>
+  </distributionManagement>
+
+  <ciManagement>
+    <system>GitHub Actions</system>
+    <url>https://www.github.com/io7m-com/jcoronado/actions</url>
+  </ciManagement>
+
+  <prerequisites>
+    <maven>3.5.0</maven>
+  </prerequisites>
+
+  <repositories>
+    <repository>
+      <id>sonatype-nexus-snapshots</id>
+      <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+    </repository>
+  </repositories>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.immutables</groupId>
+        <artifactId>value</artifactId>
+        <version>${io7m.org.immutables.value.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.io7m.jmulticlose</groupId>
+        <artifactId>com.io7m.jmulticlose.core</artifactId>
+        <version>1.1.3</version>
+      </dependency>
+      <dependency>
+        <groupId>com.io7m.junreachable</groupId>
+        <artifactId>com.io7m.junreachable.core</artifactId>
+        <version>4.0.2</version>
+      </dependency>
+      <dependency>
+        <groupId>com.io7m.immutables-style</groupId>
+        <artifactId>com.io7m.immutables-style</artifactId>
+        <version>1.0.0</version>
+      </dependency>
+      <dependency>
+        <groupId>org.osgi</groupId>
+        <artifactId>org.osgi.service.component.annotations</artifactId>
+        <version>1.5.1</version>
+      </dependency>
+      <dependency>
+        <groupId>org.osgi</groupId>
+        <artifactId>org.osgi.annotation.bundle</artifactId>
+        <version>2.0.0</version>
+      </dependency>
+      <dependency>
+        <groupId>org.osgi</groupId>
+        <artifactId>org.osgi.annotation.versioning</artifactId>
+        <version>1.1.2</version>
+      </dependency>
+
+      <!-- LWJGL -->
+      <dependency>
+        <groupId>org.lwjgl</groupId>
+        <artifactId>lwjgl</artifactId>
+        <version>${org.lwjgl.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.lwjgl</groupId>
+        <artifactId>lwjgl</artifactId>
+        <version>${org.lwjgl.version}</version>
+        <classifier>natives-linux</classifier>
+      </dependency>
+      <dependency>
+        <groupId>org.lwjgl</groupId>
+        <artifactId>lwjgl</artifactId>
+        <version>${org.lwjgl.version}</version>
+        <classifier>natives-windows</classifier>
+      </dependency>
+      <dependency>
+        <groupId>org.lwjgl</groupId>
+        <artifactId>lwjgl-jemalloc</artifactId>
+        <version>${org.lwjgl.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.lwjgl</groupId>
+        <artifactId>lwjgl-jemalloc</artifactId>
+        <version>${org.lwjgl.version}</version>
+        <classifier>natives-linux</classifier>
+      </dependency>
+      <dependency>
+        <groupId>org.lwjgl</groupId>
+        <artifactId>lwjgl-jemalloc</artifactId>
+        <version>${org.lwjgl.version}</version>
+        <classifier>natives-windows</classifier>
+      </dependency>
+      <dependency>
+        <groupId>org.lwjgl</groupId>
+        <artifactId>lwjgl-vulkan</artifactId>
+        <version>${org.lwjgl.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.lwjgl</groupId>
+        <artifactId>lwjgl-glfw</artifactId>
+        <version>${org.lwjgl.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.lwjgl</groupId>
+        <artifactId>lwjgl-glfw</artifactId>
+        <version>${org.lwjgl.version}</version>
+        <classifier>natives-linux</classifier>
+      </dependency>
+      <dependency>
+        <groupId>org.lwjgl</groupId>
+        <artifactId>lwjgl-glfw</artifactId>
+        <version>${org.lwjgl.version}</version>
+        <classifier>natives-windows</classifier>
+      </dependency>
+      <dependency>
+        <groupId>org.lwjgl</groupId>
+        <artifactId>lwjgl-vma</artifactId>
+        <version>${org.lwjgl.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.lwjgl</groupId>
+        <artifactId>lwjgl-vma</artifactId>
+        <version>${org.lwjgl.version}</version>
+        <classifier>natives-linux</classifier>
+      </dependency>
+      <dependency>
+        <groupId>org.lwjgl</groupId>
+        <artifactId>lwjgl-vma</artifactId>
+        <version>${org.lwjgl.version}</version>
+        <classifier>natives-windows</classifier>
+      </dependency>
+
+      <dependency>
+        <groupId>org.junit</groupId>
+        <artifactId>junit-bom</artifactId>
+        <version>${org.junit.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-api</artifactId>
+        <version>2.0.16</version>
+      </dependency>
+      <dependency>
+        <groupId>ch.qos.logback</groupId>
+        <artifactId>logback-classic</artifactId>
+        <version>1.5.12</version>
+      </dependency>
+      <dependency>
+        <groupId>nl.jqno.equalsverifier</groupId>
+        <artifactId>equalsverifier</artifactId>
+        <version>3.17.4</version>
+      </dependency>
+      <dependency>
+        <groupId>org.reflections</groupId>
+        <artifactId>reflections</artifactId>
+        <version>0.10.2</version>
+      </dependency>
+      <dependency>
+        <groupId>it.unimi.dsi</groupId>
+        <artifactId>fastutil</artifactId>
+        <version>8.5.15</version>
+      </dependency>
+      <dependency>
+        <groupId>com.io7m.primogenitor</groupId>
+        <artifactId>com.io7m.primogenitor.support</artifactId>
+        <version>8.3.1</version>
+      </dependency>
+      <dependency>
+        <groupId>org.mockito</groupId>
+        <artifactId>mockito-core</artifactId>
+        <version>${mockito.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.mockito</groupId>
+        <artifactId>mockito-junit-jupiter</artifactId>
+        <version>${mockito.version}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <build>
+    <pluginManagement>
+      <plugins>
+        <!-- Configure compiler -->
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <configuration>
+            <annotationProcessorPaths>
+              <dependency>
+                <groupId>org.immutables</groupId>
+                <artifactId>value</artifactId>
+                <version>${io7m.org.immutables.value.version}</version>
+              </dependency>
+            </annotationProcessorPaths>
+          </configuration>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-checkstyle-plugin</artifactId>
+          <configuration>
+            <suppressionsLocation>checkstyle-filter.xml</suppressionsLocation>
+          </configuration>
+        </plugin>
+
+        <!-- Spot bugs -->
+        <plugin>
+          <groupId>com.github.spotbugs</groupId>
+          <artifactId>spotbugs-maven-plugin</artifactId>
+          <configuration>
+            <excludeFilterFile>spotbugs-filter.xml</excludeFilterFile>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+
+    <plugins>
+      <!-- Generate a site -->
+      <plugin>
+        <groupId>com.io7m.minisite</groupId>
+        <artifactId>com.io7m.minisite.maven_plugin</artifactId>
+        <inherited>false</inherited>
+      </plugin>
+    </plugins>
+  </build>
+
+</project>

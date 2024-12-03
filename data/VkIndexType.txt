@@ -1,0 +1,2 @@
+VK_INDEX_TYPE_UINT16 : 0 : Specifies that indices are 16-bit unsigned integer values
+VK_INDEX_TYPE_UINT32 : 1 : Specifies that indices are 32-bit unsigned integer values

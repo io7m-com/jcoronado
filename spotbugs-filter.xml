@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FindBugsFilter xmlns="https://github.com/spotbugs/filter/3.0.0">
+
+  <!-- Generated types -->
+  <Match>
+    <Or>
+      <Class name="com.io7m.jcoronado.extensions.khr_surface.api.VulkanSurfaceCapabilitiesKHR"/>
+      <Class name="com.io7m.jcoronado.extensions.khr_surface.api.VulkanSurfaceFormatKHR"/>
+      <Class name="com.io7m.jcoronado.extensions.khr_swapchain.api.VulkanPresentInfoKHR"/>
+      <Class name="com.io7m.jcoronado.extensions.khr_swapchain.api.VulkanSwapChainCreateInfo"/>
+      <Class name="com.io7m.jcoronado.extensions.khr_swapchain.api.VulkanSwapChainImageAcquisition"/>
+
+      <Class name="~com\.io7m\.jcoronado\..+\$Builder"/>
+      <Class name="~com\.io7m\.jcoronado\..+\$InitShim"/>
+
+      <Class name="com.io7m.jcoronado.vma.VMAAllocationCreateInfo"/>
+      <Class name="com.io7m.jcoronado.vma.VMAAllocationInfo"/>
+      <Class name="com.io7m.jcoronado.vma.VMAAllocatorCreateInfo"/>
+
+      <Class name="com.io7m.jcoronado.api.VulkanApplicationInfo"/>
+      <Class name="com.io7m.jcoronado.api.VulkanAttachmentDescription"/>
+      <Class name="com.io7m.jcoronado.api.VulkanAttachmentReference"/>
+      <Class name="com.io7m.jcoronado.api.VulkanBlendConstants"/>
+      <Class name="com.io7m.jcoronado.api.VulkanBufferCopy"/>
+      <Class name="com.io7m.jcoronado.api.VulkanBufferCreateInfo"/>
+      <Class name="com.io7m.jcoronado.api.VulkanBufferImageCopy"/>
+      <Class name="com.io7m.jcoronado.api.VulkanBufferMemoryBarrier"/>
+      <Class name="com.io7m.jcoronado.api.VulkanBufferViewCreateInfo"/>
+      <Class name="com.io7m.jcoronado.api.VulkanClearAttachment"/>
+      <Class name="com.io7m.jcoronado.api.VulkanClearRectangle"/>
+      <Class name="com.io7m.jcoronado.api.VulkanClearValueColorFloatingPoint"/>
+      <Class name="com.io7m.jcoronado.api.VulkanClearValueColorIntegerSigned"/>
+      <Class name="com.io7m.jcoronado.api.VulkanClearValueColorIntegerUnsigned"/>
+      <Class name="com.io7m.jcoronado.api.VulkanClearValueDepthStencil"/>
+      <Class name="com.io7m.jcoronado.api.VulkanCommandBufferBeginInfo"/>
+      <Class name="com.io7m.jcoronado.api.VulkanCommandBufferCreateInfo"/>
+      <Class name="com.io7m.jcoronado.api.VulkanCommandPoolCreateInfo"/>
+      <Class name="com.io7m.jcoronado.api.VulkanComponentMapping"/>
+      <Class name="com.io7m.jcoronado.api.VulkanComputePipelineCreateInfo"/>
+      <Class name="com.io7m.jcoronado.api.VulkanComputeWorkGroupCount"/>
+      <Class name="com.io7m.jcoronado.api.VulkanComputeWorkGroupSize"/>
+      <Class name="com.io7m.jcoronado.api.VulkanCopyDescriptorSet"/>
+      <Class name="com.io7m.jcoronado.api.VulkanDescriptorBufferInfo"/>
+      <Class name="com.io7m.jcoronado.api.VulkanDescriptorImageInfo"/>
+      <Class name="com.io7m.jcoronado.api.VulkanDescriptorPoolCreateInfo"/>
+      <Class name="com.io7m.jcoronado.api.VulkanDescriptorPoolSize"/>
+      <Class name="com.io7m.jcoronado.api.VulkanDescriptorSetAllocateInfo"/>
+      <Class name="com.io7m.jcoronado.api.VulkanDescriptorSetLayoutBinding"/>
+      <Class name="com.io7m.jcoronado.api.VulkanDescriptorSetLayoutCreateInfo"/>
+      <Class name="com.io7m.jcoronado.api.VulkanEventCreateInfo"/>
+      <Class name="com.io7m.jcoronado.api.VulkanExtensionProperties"/>
+      <Class name="com.io7m.jcoronado.api.VulkanExtent2D"/>
+      <Class name="com.io7m.jcoronado.api.VulkanExtent3D"/>
+      <Class name="com.io7m.jcoronado.api.VulkanFenceCreateInfo"/>
+      <Class name="com.io7m.jcoronado.api.VulkanFormatProperties"/>
+      <Class name="com.io7m.jcoronado.api.VulkanFramebufferCreateInfo"/>
+      <Class name="com.io7m.jcoronado.api.VulkanGraphicsPipelineCreateInfo"/>
+      <Class name="com.io7m.jcoronado.api.VulkanHostAllocatorCallbacks"/>
+      <Class name="com.io7m.jcoronado.api.VulkanImageBlit"/>
+      <Class name="com.io7m.jcoronado.api.VulkanImageCreateInfo"/>
+      <Class name="com.io7m.jcoronado.api.VulkanImageFormatProperties"/>
+      <Class name="com.io7m.jcoronado.api.VulkanImageMemoryBarrier"/>
+      <Class name="com.io7m.jcoronado.api.VulkanImageSubresource"/>
+      <Class name="com.io7m.jcoronado.api.VulkanImageSubresourceLayers"/>
+      <Class name="com.io7m.jcoronado.api.VulkanImageSubresourceRange"/>
+      <Class name="com.io7m.jcoronado.api.VulkanImageViewCreateInfo"/>
+      <Class name="com.io7m.jcoronado.api.VulkanInstanceCreateInfo"/>
+      <Class name="com.io7m.jcoronado.api.VulkanLayerProperties"/>
+      <Class name="com.io7m.jcoronado.api.VulkanLineWidthRange"/>
+      <Class name="com.io7m.jcoronado.api.VulkanLogicalDeviceCreateInfo"/>
+      <Class name="com.io7m.jcoronado.api.VulkanLogicalDeviceQueueCreateInfo"/>
+      <Class name="com.io7m.jcoronado.api.VulkanMappedMemoryRange"/>
+      <Class name="com.io7m.jcoronado.api.VulkanMemoryAllocateInfo"/>
+      <Class name="com.io7m.jcoronado.api.VulkanMemoryBarrier"/>
+      <Class name="com.io7m.jcoronado.api.VulkanMemoryHeap"/>
+      <Class name="com.io7m.jcoronado.api.VulkanMemoryRequirements"/>
+      <Class name="com.io7m.jcoronado.api.VulkanMemoryType"/>
+      <Class name="com.io7m.jcoronado.api.VulkanOffset2D"/>
+      <Class name="com.io7m.jcoronado.api.VulkanOffset3D"/>
+      <Class name="com.io7m.jcoronado.api.VulkanPhysicalDeviceFeatures"/>
+      <Class name="com.io7m.jcoronado.api.VulkanPhysicalDeviceLimits"/>
+      <Class name="com.io7m.jcoronado.api.VulkanPhysicalDeviceMemoryProperties"/>
+      <Class name="com.io7m.jcoronado.api.VulkanPhysicalDeviceProperties"/>
+      <Class name="com.io7m.jcoronado.api.VulkanPipelineCacheCreateInfo"/>
+      <Class name="com.io7m.jcoronado.api.VulkanPipelineColorBlendAttachmentState"/>
+      <Class name="com.io7m.jcoronado.api.VulkanPipelineColorBlendStateCreateInfo"/>
+      <Class name="com.io7m.jcoronado.api.VulkanPipelineDepthStencilStateCreateInfo"/>
+      <Class name="com.io7m.jcoronado.api.VulkanPipelineDynamicStateCreateInfo"/>
+      <Class name="com.io7m.jcoronado.api.VulkanPipelineInputAssemblyStateCreateInfo"/>
+      <Class name="com.io7m.jcoronado.api.VulkanPipelineLayoutCreateInfo"/>
+      <Class name="com.io7m.jcoronado.api.VulkanPipelineMultisampleStateCreateInfo"/>
+      <Class name="com.io7m.jcoronado.api.VulkanPipelineRasterizationStateCreateInfo"/>
+      <Class name="com.io7m.jcoronado.api.VulkanPipelineShaderStageCreateInfo"/>
+      <Class name="com.io7m.jcoronado.api.VulkanPipelineTessellationStateCreateInfo"/>
+      <Class name="com.io7m.jcoronado.api.VulkanPipelineVertexInputStateCreateInfo"/>
+      <Class name="com.io7m.jcoronado.api.VulkanPipelineViewportStateCreateInfo"/>
+      <Class name="com.io7m.jcoronado.api.VulkanPointSizeRange"/>
+      <Class name="com.io7m.jcoronado.api.VulkanPushConstantRange"/>
+      <Class name="com.io7m.jcoronado.api.VulkanQueryPoolCreateInfo"/>
+      <Class name="com.io7m.jcoronado.api.VulkanQueueFamilyProperties"/>
+      <Class name="com.io7m.jcoronado.api.VulkanRectangle2D"/>
+      <Class name="com.io7m.jcoronado.api.VulkanRenderPassBeginInfo"/>
+      <Class name="com.io7m.jcoronado.api.VulkanRenderPassCreateInfo"/>
+      <Class name="com.io7m.jcoronado.api.VulkanSamplerCreateInfo"/>
+      <Class name="com.io7m.jcoronado.api.VulkanSemaphoreCreateInfo"/>
+      <Class name="com.io7m.jcoronado.api.VulkanShaderModuleCreateInfo"/>
+      <Class name="com.io7m.jcoronado.api.VulkanSpecializationMap"/>
+      <Class name="com.io7m.jcoronado.api.VulkanSpecializationMapEntry"/>
+      <Class name="com.io7m.jcoronado.api.VulkanStencilOpState"/>
+      <Class name="com.io7m.jcoronado.api.VulkanSubmitInfo"/>
+      <Class name="com.io7m.jcoronado.api.VulkanSubpassDependency"/>
+      <Class name="com.io7m.jcoronado.api.VulkanSubpassDescription"/>
+      <Class name="com.io7m.jcoronado.api.VulkanVersion"/>
+      <Class name="com.io7m.jcoronado.api.VulkanVertexInputAttributeDescription"/>
+      <Class name="com.io7m.jcoronado.api.VulkanVertexInputBindingDescription"/>
+      <Class name="com.io7m.jcoronado.api.VulkanViewport"/>
+      <Class name="com.io7m.jcoronado.api.VulkanViewportBoundsRange"/>
+      <Class name="com.io7m.jcoronado.api.VulkanViewportDimensions"/>
+      <Class name="com.io7m.jcoronado.api.VulkanWriteDescriptorSet"/>
+    </Or>
+  </Match>
+
+  <Match>
+    <And>
+      <Class name="com.io7m.jcoronado.lwjgl.VulkanLWJGLQueue"/>
+      <Bug pattern="FCBL_FIELD_COULD_BE_LOCAL"/>
+    </And>
+  </Match>
+
+  <Match>
+    <And>
+      <Class name="com.io7m.jcoronado.lwjgl.VulkanLWJGLLogicalDevice"/>
+      <Bug pattern="FCCD_FIND_CLASS_CIRCULAR_DEPENDENCY"/>
+    </And>
+  </Match>
+
+  <Match>
+    <And>
+      <Class name="com.io7m.jcoronado.lwjgl.VulkanLWJGLExtensionsRegistry"/>
+      <Bug pattern="FCCD_FIND_CLASS_CIRCULAR_DEPENDENCY"/>
+    </And>
+  </Match>
+
+  <Match>
+    <And>
+      <Class name="com.io7m.jcoronado.lwjgl.VulkanLWJGLInstance"/>
+      <Bug pattern="FCCD_FIND_CLASS_CIRCULAR_DEPENDENCY"/>
+    </And>
+  </Match>
+
+  <Match>
+    <And>
+      <Class name="com.io7m.jcoronado.lwjgl.VulkanLWJGLExtKHRSwapChain"/>
+      <Bug pattern="FCCD_FIND_CLASS_CIRCULAR_DEPENDENCY"/>
+    </And>
+  </Match>
+
+  <Match>
+    <And>
+      <Class name="com.io7m.jcoronado.lwjgl.VulkanLWJGLLogicalDevice"/>
+      <Method name="createFramebuffer"/>
+      <Bug pattern="LEST_LOST_EXCEPTION_STACK_TRACE"/>
+    </And>
+  </Match>
+
+  <Match>
+    <And>
+      <Class name="com.io7m.jcoronado.lwjgl.VulkanLWJGLPipelineDynamicStateCreateInfos"/>
+      <Method name="packOptional"/>
+      <Bug pattern="LEST_LOST_EXCEPTION_STACK_TRACE"/>
+    </And>
+  </Match>
+
+  <Match>
+    <Class name="com.io7m.jcoronado.lwjgl.VulkanLWJGLComputePipelineCreateInfos"/>
+    <Method name="mapBasePipelineHandle"/>
+    <Bug pattern="LEST_LOST_EXCEPTION_STACK_TRACE"/>
+  </Match>
+
+  <Match>
+    <And>
+      <Class name="com.io7m.jcoronado.api.VulkanMissingRequiredMemoryTypeException"/>
+      <Bug pattern="SE_BAD_FIELD"/>
+    </And>
+  </Match>
+
+  <Match>
+    <Class name="com.io7m.jcoronado.lwjgl.VulkanLWJGLHostAllocatorProxy"/>
+    <Method name="close"/>
+    <Bug pattern="SEO_SUBOPTIMAL_EXPRESSION_ORDER"/>
+  </Match>
+
+  <Match>
+    <Class name="com.io7m.jcoronado.lwjgl.VulkanLWJGLClearValues"/>
+    <Method name="packTo"/>
+    <Bug pattern="BC_UNCONFIRMED_CAST"/>
+  </Match>
+
+  <!-- These exceptions do not leak internal structures. -->
+  <Match>
+    <And>
+      <Or>
+        <Class name="com.io7m.jcoronado.api.VulkanMissingRequiredExtensionsException"/>
+        <Class name="com.io7m.jcoronado.api.VulkanMissingRequiredLayersException"/>
+        <Class name="com.io7m.jcoronado.api.VulkanMissingRequiredMemoryTypeException"/>
+        <Class name="com.io7m.jcoronado.api.VulkanUncheckedException"/>
+      </Or>
+      <Or>
+        <Bug pattern="EI_EXPOSE_REP"/>
+        <Bug pattern="EI_EXPOSE_REP2"/>
+      </Or>
+    </And>
+  </Match>
+
+  <!-- The class intends to expose an internal logical device! -->
+  <Match>
+    <Class name="com.io7m.jcoronado.vma.VMAAllocatorCreateInfo"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <!-- These classes all intentionally expose fields. -->
+  <Match>
+    <Or>
+      <Class name="com.io7m.jcoronado.lwjgl.VulkanLWJGLCommandBuffer"/>
+      <Class name="com.io7m.jcoronado.lwjgl.VulkanLWJGLHostAllocatorProxy"/>
+      <Class name="com.io7m.jcoronado.lwjgl.VulkanLWJGLInstance"/>
+      <Class name="com.io7m.jcoronado.lwjgl.VulkanLWJGLLogicalDevice"/>
+      <Class name="com.io7m.jcoronado.lwjgl.VulkanLWJGLLogicalDevice"/>
+      <Class name="com.io7m.jcoronado.lwjgl.VulkanLWJGLMappedMemory"/>
+      <Class name="com.io7m.jcoronado.lwjgl.VulkanLWJGLPhysicalDevice"/>
+      <Class name="com.io7m.jcoronado.lwjgl.VulkanLWJGLQueue"/>
+    </Or>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <!-- An exception there indicates a failure to open an internal resource -->
+  <Match>
+    <Class name="com.io7m.jcoronado.api.VulkanErrorCodes"/>
+    <Bug pattern="EXS_EXCEPTION_SOFTENING_NO_CONSTRAINTS"/>
+  </Match>
+
+  <Match>
+    <Or>
+      <Bug pattern="AI_ANNOTATION_ISSUES_NEEDS_NULLABLE"/>
+      <Bug pattern="BED_HIERARCHICAL_EXCEPTION_DECLARATION"/>
+      <Bug pattern="CE_CLASS_ENVY"/>
+      <Bug pattern="CRLF_INJECTION_LOGS"/>
+      <Bug pattern="FCBL_FIELD_COULD_BE_LOCAL"/>
+      <Bug pattern="IMC_IMMATURE_CLASS_NO_TOSTRING"/>
+      <Bug pattern="MRC_METHOD_RETURNS_CONSTANT"/>
+      <Bug pattern="OCP_OVERLY_CONCRETE_PARAMETER"/>
+      <Bug pattern="OPM_OVERLY_PERMISSIVE_METHOD"/>
+      <Bug pattern="RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE"/>
+      <Bug pattern="UPM_UNCALLED_PRIVATE_METHOD"/>
+      <Bug pattern="UVA_USE_VAR_ARGS"/>
+      <Bug pattern="WEM_WEAK_EXCEPTION_MESSAGING"/>
+    </Or>
+  </Match>
+
+</FindBugsFilter>

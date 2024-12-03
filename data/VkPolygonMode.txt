@@ -1,0 +1,4 @@
+VK_POLYGON_MODE_FILL              : 0          : Specifies that polygon vertices are drawn as points.
+VK_POLYGON_MODE_LINE              : 1          : Specifies that polygon edges are drawn as line segments.
+VK_POLYGON_MODE_POINT             : 2          : Specifies that polygons are rendered using the standard polygon rasterization rules.
+VK_POLYGON_MODE_FILL_RECTANGLE_NV : 1000153000 : Specifies that polygons are rendered using polygon rasterization rules, modified to consider a sample within the primitive if the sample location is inside the axis-aligned bounding box of the triangle after projection.
