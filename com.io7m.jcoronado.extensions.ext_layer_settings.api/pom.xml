@@ -9,7 +9,7 @@
   <parent>
     <artifactId>com.io7m.jcoronado</artifactId>
     <groupId>com.io7m.jcoronado</groupId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.1</version>
   </parent>
 
   <artifactId>com.io7m.jcoronado.extensions.ext_layer_settings.api</artifactId>

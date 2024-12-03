@@ -14,7 +14,7 @@
 
   <groupId>com.io7m.jcoronado</groupId>
   <artifactId>com.io7m.jcoronado</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>0.0.1</version>
 
   <packaging>pom</packaging>
   <name>com.io7m.jcoronado</name>
@@ -38,7 +38,7 @@
 
   <properties>
     <!-- Configuration. -->
-    <io7m.api.previousVersion>0.0.1-SNAPSHOT</io7m.api.previousVersion>
+    <io7m.api.previousVersion>0.0.1</io7m.api.previousVersion>
     <io7m.java.targetJavaVersion>22</io7m.java.targetJavaVersion>
 
     <!-- Third-party dependencies. -->
