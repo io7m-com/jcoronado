@@ -9,7 +9,7 @@
   <parent>
     <artifactId>com.io7m.jcoronado</artifactId>
     <groupId>com.io7m.jcoronado</groupId>
-    <version>0.0.1</version>
+    <version>0.0.2-SNAPSHOT</version>
   </parent>
 
   <artifactId>com.io7m.jcoronado.layers.khronos_validation.api</artifactId>
