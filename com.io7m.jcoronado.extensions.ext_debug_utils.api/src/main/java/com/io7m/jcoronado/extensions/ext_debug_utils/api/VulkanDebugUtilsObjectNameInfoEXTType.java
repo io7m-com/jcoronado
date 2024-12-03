@@ -18,6 +18,7 @@ package com.io7m.jcoronado.extensions.ext_debug_utils.api;
 
 import com.io7m.immutables.styles.ImmutablesStyleType;
 import com.io7m.jcoronado.api.VulkanAPIStructType;
+import com.io7m.jcoronado.api.VulkanHandleType;
 import org.immutables.value.Value;
 
 /**
@@ -29,6 +30,12 @@ import org.immutables.value.Value;
 @Value.Immutable
 public interface VulkanDebugUtilsObjectNameInfoEXTType
 {
+  /**
+   * @return The object handle
+   */
+
+  VulkanHandleType objectHandle();
+
   /**
    * @return The object name
    */

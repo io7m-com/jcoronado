@@ -29,6 +29,7 @@ import com.io7m.jcoronado.api.VulkanCommandPoolResetFlag;
 import com.io7m.jcoronado.api.VulkanCommandPoolType;
 import com.io7m.jcoronado.api.VulkanComputePipelineCreateInfo;
 import com.io7m.jcoronado.api.VulkanCopyDescriptorSet;
+import com.io7m.jcoronado.api.VulkanDebuggingType;
 import com.io7m.jcoronado.api.VulkanDescriptorPoolCreateInfo;
 import com.io7m.jcoronado.api.VulkanDescriptorPoolResetFlag;
 import com.io7m.jcoronado.api.VulkanDescriptorPoolType;
@@ -92,10 +93,11 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public final class VFakeLogicalDevice implements VulkanLogicalDeviceType
 {
-  private final VFakePhysicalDevice physicalDevice;
-  private final AtomicBoolean closed;
   private List<VulkanQueueType> queues;
   private Map<String, VulkanExtensionType> enabledExtensions;
+  private final AtomicBoolean closed;
+  private final VFakePhysicalDevice physicalDevice;
+  private final VKFakeDebugging debugging;
 
   /**
    * A logical device.
@@ -108,6 +110,8 @@ public final class VFakeLogicalDevice implements VulkanLogicalDeviceType
   {
     this.physicalDevice =
       Objects.requireNonNull(inPhysicalDevice, "inPhysicalDevice");
+    this.debugging =
+      new VKFakeDebugging();
     this.closed =
       new AtomicBoolean(false);
     this.queues =
@@ -139,6 +143,12 @@ public final class VFakeLogicalDevice implements VulkanLogicalDeviceType
   {
     this.enabledExtensions =
       Objects.requireNonNull(inExtensions, "enabledExtensions");
+  }
+
+  @Override
+  public VulkanDebuggingType debugging()
+  {
+    return this.debugging;
   }
 
   @Override
@@ -325,9 +335,8 @@ public final class VFakeLogicalDevice implements VulkanLogicalDeviceType
   @Override
   public VulkanCommandPoolType createCommandPool(
     final VulkanCommandPoolCreateInfo create_info)
-    throws VulkanException
   {
-    throw errorNotImplemented("createCommandPool");
+    return new VFakeCommandPool();
   }
 
   @Override

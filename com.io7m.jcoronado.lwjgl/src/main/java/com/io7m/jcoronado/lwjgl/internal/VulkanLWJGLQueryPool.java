@@ -28,52 +28,23 @@ import java.util.Objects;
  * LWJGL {@link VulkanQueryPoolType}.
  */
 
-public final class VulkanLWJGLQueryPool extends VulkanLWJGLHandle implements
-  VulkanQueryPoolType
+public final class VulkanLWJGLQueryPool
+  extends VulkanLWJGLHandle
+  implements VulkanQueryPoolType
 {
-  private static final Logger LOG = LoggerFactory.getLogger(VulkanLWJGLQueryPool.class);
+  private static final Logger LOG =
+    LoggerFactory.getLogger(VulkanLWJGLQueryPool.class);
 
-  private final long handle;
   private final VkDevice device;
 
   VulkanLWJGLQueryPool(
     final Ownership ownership,
-    final VkDevice in_device,
-    final long in_handle,
-    final VulkanLWJGLHostAllocatorProxy in_host_allocator_proxy)
+    final VkDevice inDevice,
+    final long inHandle,
+    final VulkanLWJGLHostAllocatorProxy inHostAllocatorProxy)
   {
-    super(ownership, in_host_allocator_proxy);
-    this.device = Objects.requireNonNull(in_device, "device");
-    this.handle = in_handle;
-  }
-
-  @Override
-  public boolean equals(final Object o)
-  {
-    if (this == o) {
-      return true;
-    }
-    if (o == null || !Objects.equals(this.getClass(), o.getClass())) {
-      return false;
-    }
-    final var that = (VulkanLWJGLQueryPool) o;
-    return this.handle == that.handle;
-  }
-
-  @Override
-  public int hashCode()
-  {
-    return Objects.hash(Long.valueOf(this.handle));
-  }
-
-  @Override
-  public String toString()
-  {
-    return new StringBuilder(32)
-      .append("[VulkanLWJGLQueryPool 0x")
-      .append(Long.toUnsignedString(this.handle, 16))
-      .append("]")
-      .toString();
+    super(ownership, inHostAllocatorProxy, inHandle);
+    this.device = Objects.requireNonNull(inDevice, "device");
   }
 
   @Override
@@ -88,18 +59,11 @@ public final class VulkanLWJGLQueryPool extends VulkanLWJGLHandle implements
     if (LOG.isTraceEnabled()) {
       LOG.trace("Destroying query pool: {}", this);
     }
+
     VK10.vkDestroyQueryPool(
       this.device,
-      this.handle,
-      this.hostAllocatorProxy().callbackBuffer());
-  }
-
-  /**
-   * @return The raw handle
-   */
-
-  public long handle()
-  {
-    return this.handle;
+      this.handle(),
+      this.hostAllocatorProxy().callbackBuffer()
+    );
   }
 }

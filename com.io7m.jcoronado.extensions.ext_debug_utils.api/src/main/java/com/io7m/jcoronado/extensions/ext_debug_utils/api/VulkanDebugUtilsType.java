@@ -16,10 +16,12 @@
 
 package com.io7m.jcoronado.extensions.ext_debug_utils.api;
 
+import com.io7m.jcoronado.api.VulkanAPIFunctionType;
 import com.io7m.jcoronado.api.VulkanCommandBufferType;
 import com.io7m.jcoronado.api.VulkanException;
 import com.io7m.jcoronado.api.VulkanExtensionType;
 import com.io7m.jcoronado.api.VulkanInstanceType;
+import com.io7m.jcoronado.api.VulkanLogicalDeviceType;
 
 /**
  * @see "VK_EXT_debug_utils"
@@ -56,6 +58,10 @@ public interface VulkanDebugUtilsType extends VulkanExtensionType
    * @throws VulkanException On errors
    */
 
+  @VulkanAPIFunctionType(
+    api = "VK_EXT_debug_utils",
+    vulkanFunction = "vkCreateDebugUtilsMessengerEXT"
+  )
   VulkanDebugUtilsMessengerEXTType createDebugUtilsMessenger(
     VulkanInstanceType instance,
     VulkanDebugUtilsMessengerCreateInfoEXT info)
@@ -72,6 +78,10 @@ public interface VulkanDebugUtilsType extends VulkanExtensionType
    * @throws VulkanException On errors
    */
 
+  @VulkanAPIFunctionType(
+    api = "VK_EXT_debug_utils",
+    vulkanFunction = "vkCmdBeginDebugUtilsLabelEXT"
+  )
   VulkanDebugUtilsRegionType begin(
     VulkanCommandBufferType commandBuffer,
     VulkanDebugUtilsLabelEXT label)
@@ -88,6 +98,10 @@ public interface VulkanDebugUtilsType extends VulkanExtensionType
    * @throws VulkanException On errors
    */
 
+  @VulkanAPIFunctionType(
+    api = "VK_EXT_debug_utils",
+    vulkanFunction = "vkCmdBeginDebugUtilsLabelEXT"
+  )
   default VulkanDebugUtilsRegionType begin(
     final VulkanCommandBufferType commandBuffer,
     final String label)
@@ -111,6 +125,10 @@ public interface VulkanDebugUtilsType extends VulkanExtensionType
    * @throws VulkanException On errors
    */
 
+  @VulkanAPIFunctionType(
+    api = "VK_EXT_debug_utils",
+    vulkanFunction = "vkCmdInsertDebugUtilsLabelEXT"
+  )
   void insertInto(
     VulkanCommandBufferType commandBuffer,
     VulkanDebugUtilsLabelEXT label)
@@ -125,6 +143,10 @@ public interface VulkanDebugUtilsType extends VulkanExtensionType
    * @throws VulkanException On errors
    */
 
+  @VulkanAPIFunctionType(
+    api = "VK_EXT_debug_utils",
+    vulkanFunction = "vkCmdInsertDebugUtilsLabelEXT"
+  )
   default void insertInto(
     final VulkanCommandBufferType commandBuffer,
     final String label)
@@ -138,4 +160,22 @@ public interface VulkanDebugUtilsType extends VulkanExtensionType
         .build()
     );
   }
+
+  /**
+   * Set the name of a given object.
+   *
+   * @param device The logical device
+   * @param info   The info
+   *
+   * @throws VulkanException On errors
+   */
+
+  @VulkanAPIFunctionType(
+    api = "VK_EXT_debug_utils",
+    vulkanFunction = "vkSetDebugUtilsObjectNameEXT"
+  )
+  void setObjectName(
+    VulkanLogicalDeviceType device,
+    VulkanDebugUtilsObjectNameInfoEXT info)
+    throws VulkanException;
 }

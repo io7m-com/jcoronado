@@ -114,7 +114,7 @@ public final class VulkanLWJGLPhysicalDevice
     final Optional<VulkanPhysicalDeviceDriverProperties> inDriverProperties,
     final Optional<VulkanPhysicalDeviceIDProperties> inIdProperties)
   {
-    super(Ownership.USER_OWNED, inHostAllocatorProxy);
+    super(Ownership.USER_OWNED, inHostAllocatorProxy, inDevice.address());
 
     this.instance =
       Objects.requireNonNull(inInstance, "instance");
@@ -525,25 +525,6 @@ public final class VulkanLWJGLPhysicalDevice
     vkDeviceCreateInfo.pEnabledFeatures(null);
   }
 
-  @Override
-  public boolean equals(final Object o)
-  {
-    if (this == o) {
-      return true;
-    }
-    if (o == null || !Objects.equals(this.getClass(), o.getClass())) {
-      return false;
-    }
-    final var that = (VulkanLWJGLPhysicalDevice) o;
-    return Objects.equals(this.device, that.device);
-  }
-
-  @Override
-  public int hashCode()
-  {
-    return Objects.hash(this.device);
-  }
-
   /**
    * @return The underlying device
    */
@@ -551,24 +532,6 @@ public final class VulkanLWJGLPhysicalDevice
   public VkPhysicalDevice device()
   {
     return this.device;
-  }
-
-  @Override
-  public String toString()
-  {
-    return new StringBuilder(128)
-      .append("[VulkanLWJGLPhysicalDevice 0x")
-      .append(Integer.toUnsignedString(this.properties.vendorId(), 16))
-      .append(":0x")
-      .append(Integer.toUnsignedString(this.properties.id(), 16))
-      .append(" \"")
-      .append(this.properties.name())
-      .append("\" ")
-      .append(this.properties.apiVersion().toHumanString())
-      .append(" (driver ")
-      .append(this.properties.driverVersion().toHumanString())
-      .append(')')
-      .append(']').toString();
   }
 
   @Override

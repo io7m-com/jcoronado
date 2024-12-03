@@ -75,53 +75,28 @@ import static com.io7m.jcoronado.lwjgl.internal.VulkanLWJGLScalarArrays.packLong
  */
 
 public final class VulkanLWJGLCommandBuffer
-  extends VulkanLWJGLHandle implements VulkanCommandBufferType
+  extends VulkanLWJGLHandle
+  implements VulkanCommandBufferType
 {
-  private static final Logger LOG = LoggerFactory.getLogger(
-    VulkanLWJGLCommandBuffer.class);
+  private static final Logger LOG =
+    LoggerFactory.getLogger(VulkanLWJGLCommandBuffer.class);
 
-  private final VkCommandBuffer handle;
-  private final MemoryStack stack_initial;
+  private final MemoryStack stackInitial;
+  private final VkCommandBuffer buffer;
 
   VulkanLWJGLCommandBuffer(
     final Ownership ownership,
-    final VkCommandBuffer in_handle,
-    final VulkanLWJGLHostAllocatorProxy in_host_allocator_proxy)
+    final VkCommandBuffer inHandle,
+    final VulkanLWJGLHostAllocatorProxy inHostAllocatorProxy)
   {
-    super(ownership, in_host_allocator_proxy);
-    this.handle = in_handle;
-
-    this.stack_initial =
-      MemoryStack.create();
+    super(ownership, inHostAllocatorProxy, inHandle.address());
+    this.stackInitial = MemoryStack.create();
+    this.buffer = Objects.requireNonNull(inHandle, "inHandle");
   }
 
-  @Override
-  public boolean equals(final Object o)
+  VkCommandBuffer buffer()
   {
-    if (this == o) {
-      return true;
-    }
-    if (o == null || !Objects.equals(this.getClass(), o.getClass())) {
-      return false;
-    }
-    final var that = (VulkanLWJGLCommandBuffer) o;
-    return Objects.equals(this.handle, that.handle);
-  }
-
-  @Override
-  public int hashCode()
-  {
-    return Objects.hash(Long.valueOf(this.handle.address()));
-  }
-
-  @Override
-  public String toString()
-  {
-    return new StringBuilder(32)
-      .append("[VulkanLWJGLCommandBuffer 0x")
-      .append(Long.toUnsignedString(this.handle.address(), 16))
-      .append("]")
-      .toString();
+    return this.buffer;
   }
 
   @Override
@@ -145,11 +120,12 @@ public final class VulkanLWJGLCommandBuffer
 
     this.checkNotClosed();
 
-    try (var stack = this.stack_initial.push()) {
-      final var packed = VulkanLWJGLCommandBufferBeginInfos.pack(stack, info);
+    try (var stack = this.stackInitial.push()) {
+      final var packed =
+        VulkanLWJGLCommandBufferBeginInfos.pack(stack, info);
 
       VulkanChecks.checkReturnCode(
-        VK10.vkBeginCommandBuffer(this.handle, packed),
+        VK10.vkBeginCommandBuffer(this.buffer, packed),
         "vkBeginCommandBuffer");
     }
   }
@@ -167,10 +143,11 @@ public final class VulkanLWJGLCommandBuffer
     this.checkNotClosed();
 
     VK10.vkCmdBeginQuery(
-      this.handle,
+      this.buffer,
       checkInstanceOf(pool, VulkanLWJGLQueryPool.class).handle(),
       query,
-      VulkanEnumMaps.packValues(flags));
+      VulkanEnumMaps.packValues(flags)
+    );
   }
 
   @Override
@@ -184,9 +161,10 @@ public final class VulkanLWJGLCommandBuffer
     this.checkNotClosed();
 
     VK10.vkCmdEndQuery(
-      this.handle,
+      this.buffer,
       checkInstanceOf(pool, VulkanLWJGLQueryPool.class).handle(),
-      query);
+      query
+    );
   }
 
   @Override
@@ -205,7 +183,7 @@ public final class VulkanLWJGLCommandBuffer
     final var framebuffer =
       checkInstanceOf(info.framebuffer(), VulkanLWJGLFramebuffer.class);
 
-    try (var stack = this.stack_initial.push()) {
+    try (var stack = this.stackInitial.push()) {
       final var packed =
         VulkanLWJGLRenderPassBeginInfos.pack(
           stack,
@@ -213,7 +191,7 @@ public final class VulkanLWJGLCommandBuffer
           render_pass,
           framebuffer);
 
-      VK10.vkCmdBeginRenderPass(this.handle, packed, contents.value());
+      VK10.vkCmdBeginRenderPass(this.buffer, packed, contents.value());
     }
   }
 
@@ -229,9 +207,10 @@ public final class VulkanLWJGLCommandBuffer
     this.checkNotClosed();
 
     VK10.vkCmdBindPipeline(
-      this.handle,
+      this.buffer,
       bind_point.value(),
-      checkInstanceOf(pipeline, VulkanLWJGLPipeline.class).handle());
+      checkInstanceOf(pipeline, VulkanLWJGLPipeline.class).handle()
+    );
   }
 
   @Override
@@ -247,9 +226,9 @@ public final class VulkanLWJGLCommandBuffer
 
     this.checkNotClosed();
 
-    try (var stack = this.stack_initial.push()) {
+    try (var stack = this.stackInitial.push()) {
       VK10.vkCmdBindVertexBuffers(
-        this.handle,
+        this.buffer,
         first_binding,
         packLongs(
           stack,
@@ -261,21 +240,22 @@ public final class VulkanLWJGLCommandBuffer
 
   @Override
   public void bindIndexBuffer(
-    final VulkanBufferType buffer,
+    final VulkanBufferType indexBuffer,
     final long offset,
     final VulkanIndexType index_type)
     throws VulkanException
   {
-    Objects.requireNonNull(buffer, "buffer");
+    Objects.requireNonNull(indexBuffer, "buffer");
     Objects.requireNonNull(index_type, "index_type");
 
     this.checkNotClosed();
 
     VK10.vkCmdBindIndexBuffer(
-      this.handle,
-      checkInstanceOf(buffer, VulkanLWJGLBuffer.class).handle(),
+      this.buffer,
+      checkInstanceOf(indexBuffer, VulkanLWJGLBuffer.class).handle(),
       offset,
-      index_type.value());
+      index_type.value()
+    );
   }
 
   @Override
@@ -298,9 +278,9 @@ public final class VulkanLWJGLCommandBuffer
       layout,
       VulkanLWJGLPipelineLayout.class);
 
-    try (var stack = this.stack_initial.push()) {
+    try (var stack = this.stackInitial.push()) {
       VK10.vkCmdBindDescriptorSets(
-        this.handle,
+        this.buffer,
         pipeline_bind_point.value(),
         clayout.handle(),
         first_set,
@@ -310,7 +290,8 @@ public final class VulkanLWJGLCommandBuffer
           value -> checkInstanceOf(
             value,
             VulkanLWJGLDescriptorSet.class).handle()),
-        packIntsOrNull(stack, dynamic_offsets, Integer::intValue));
+        packIntsOrNull(stack, dynamic_offsets, Integer::intValue)
+      );
     }
   }
 
@@ -336,15 +317,16 @@ public final class VulkanLWJGLCommandBuffer
     final var csource = checkInstanceOf(source_image, VulkanLWJGLImage.class);
     final var ctarget = checkInstanceOf(target_image, VulkanLWJGLImage.class);
 
-    try (var stack = this.stack_initial.push()) {
+    try (var stack = this.stackInitial.push()) {
       VK10.vkCmdBlitImage(
-        this.handle,
+        this.buffer,
         csource.handle(),
         source_image_layout.value(),
         ctarget.handle(),
         target_image_layout.value(),
         VulkanLWJGLImageBlits.packList(stack, regions),
-        filter.value());
+        filter.value()
+      );
     }
   }
 
@@ -368,14 +350,15 @@ public final class VulkanLWJGLCommandBuffer
     final var csource = checkInstanceOf(source_image, VulkanLWJGLImage.class);
     final var ctarget = checkInstanceOf(target_image, VulkanLWJGLImage.class);
 
-    try (var stack = this.stack_initial.push()) {
+    try (var stack = this.stackInitial.push()) {
       VK10.vkCmdCopyImage(
-        this.handle,
+        this.buffer,
         csource.handle(),
         source_image_layout.value(),
         ctarget.handle(),
         target_image_layout.value(),
-        VulkanLWJGLImageCopies.packList(stack, regions));
+        VulkanLWJGLImageCopies.packList(stack, regions)
+      );
     }
   }
 
@@ -390,11 +373,12 @@ public final class VulkanLWJGLCommandBuffer
 
     this.checkNotClosed();
 
-    try (var stack = this.stack_initial.push()) {
+    try (var stack = this.stackInitial.push()) {
       VK10.vkCmdClearAttachments(
-        this.handle,
+        this.buffer,
         VulkanLWJGLClearAttachments.packList(stack, attachments),
-        VulkanLWJGLClearRectangles.packList(stack, rectangles));
+        VulkanLWJGLClearRectangles.packList(stack, rectangles)
+      );
     }
   }
 
@@ -415,13 +399,14 @@ public final class VulkanLWJGLCommandBuffer
 
     final var cimage = checkInstanceOf(image, VulkanLWJGLImage.class);
 
-    try (var stack = this.stack_initial.push()) {
+    try (var stack = this.stackInitial.push()) {
       VK10.vkCmdClearColorImage(
-        this.handle,
+        this.buffer,
         cimage.handle(),
         image_layout.value(),
         VulkanLWJGLClearValues.packColor(stack, color),
-        VulkanLWJGLImageSubresourceRanges.packList(stack, ranges));
+        VulkanLWJGLImageSubresourceRanges.packList(stack, ranges)
+      );
     }
   }
 
@@ -442,13 +427,14 @@ public final class VulkanLWJGLCommandBuffer
 
     final var cimage = checkInstanceOf(image, VulkanLWJGLImage.class);
 
-    try (var stack = this.stack_initial.push()) {
+    try (var stack = this.stackInitial.push()) {
       VK10.vkCmdClearDepthStencilImage(
-        this.handle,
+        this.buffer,
         cimage.handle(),
         image_layout.value(),
         VulkanLWJGLClearValues.packDepthStencil(stack, depth_stencil),
-        VulkanLWJGLImageSubresourceRanges.packList(stack, ranges));
+        VulkanLWJGLImageSubresourceRanges.packList(stack, ranges)
+      );
     }
   }
 
@@ -459,10 +445,11 @@ public final class VulkanLWJGLCommandBuffer
     final int group_count_z)
   {
     VK10.vkCmdDispatch(
-      this.handle,
+      this.buffer,
       group_count_x,
       group_count_y,
-      group_count_z);
+      group_count_z
+    );
   }
 
   @Override
@@ -481,12 +468,13 @@ public final class VulkanLWJGLCommandBuffer
     final var csource = checkInstanceOf(source, VulkanLWJGLBuffer.class);
     final var ctarget = checkInstanceOf(target, VulkanLWJGLBuffer.class);
 
-    try (var stack = this.stack_initial.push()) {
+    try (var stack = this.stackInitial.push()) {
       VK10.vkCmdCopyBuffer(
-        this.handle,
+        this.buffer,
         csource.handle(),
         ctarget.handle(),
-        VulkanLWJGLBufferCopy.packList(stack, regions));
+        VulkanLWJGLBufferCopy.packList(stack, regions)
+      );
     }
   }
 
@@ -508,13 +496,14 @@ public final class VulkanLWJGLCommandBuffer
     final var cimage = checkInstanceOf(source_image, VulkanLWJGLImage.class);
     final var cbuffer = checkInstanceOf(target_buffer, VulkanLWJGLBuffer.class);
 
-    try (var stack = this.stack_initial.push()) {
+    try (var stack = this.stackInitial.push()) {
       VK10.vkCmdCopyImageToBuffer(
-        this.handle,
+        this.buffer,
         cimage.handle(),
         source_layout.value(),
         cbuffer.handle(),
-        VulkanLWJGLBufferImageCopy.packList(stack, regions));
+        VulkanLWJGLBufferImageCopy.packList(stack, regions)
+      );
     }
   }
 
@@ -536,13 +525,14 @@ public final class VulkanLWJGLCommandBuffer
     final var cbuffer = checkInstanceOf(source_buffer, VulkanLWJGLBuffer.class);
     final var cimage = checkInstanceOf(target_image, VulkanLWJGLImage.class);
 
-    try (var stack = this.stack_initial.push()) {
+    try (var stack = this.stackInitial.push()) {
       VK10.vkCmdCopyBufferToImage(
-        this.handle,
+        this.buffer,
         cbuffer.handle(),
         cimage.handle(),
         target_image_layout.value(),
-        VulkanLWJGLBufferImageCopy.packList(stack, regions));
+        VulkanLWJGLBufferImageCopy.packList(stack, regions)
+      );
     }
   }
 
@@ -557,11 +547,12 @@ public final class VulkanLWJGLCommandBuffer
     this.checkNotClosed();
 
     VK10.vkCmdDraw(
-      this.handle,
+      this.buffer,
       vertex_count,
       instance_count,
       first_vertex,
-      first_instance);
+      first_instance
+    );
   }
 
   @Override
@@ -576,52 +567,55 @@ public final class VulkanLWJGLCommandBuffer
     this.checkNotClosed();
 
     VK10.vkCmdDrawIndexed(
-      this.handle,
+      this.buffer,
       vertex_count,
       instance_count,
       first_vertex,
       vertex_offset,
-      first_instance);
+      first_instance
+    );
   }
 
   @Override
   public @VulkanExternallySynchronizedType void drawIndirect(
-    final VulkanBufferType buffer,
+    final VulkanBufferType indirectBuffer,
     final long offset,
     final int draw_count,
     final int stride)
     throws VulkanException
   {
-    Objects.requireNonNull(buffer, "buffer");
+    Objects.requireNonNull(indirectBuffer, "buffer");
 
     this.checkNotClosed();
 
     VK10.vkCmdDrawIndirect(
-      this.handle,
-      checkInstanceOf(buffer, VulkanLWJGLBuffer.class).handle(),
+      this.buffer,
+      checkInstanceOf(indirectBuffer, VulkanLWJGLBuffer.class).handle(),
       offset,
       draw_count,
-      stride);
+      stride
+    );
   }
 
   @Override
   public @VulkanExternallySynchronizedType void drawIndexedIndirect(
-    final VulkanBufferType buffer,
+    final VulkanBufferType indirectBuffer,
     final long offset,
     final int draw_count,
     final int stride)
     throws VulkanException
   {
-    Objects.requireNonNull(buffer, "buffer");
+    Objects.requireNonNull(indirectBuffer, "buffer");
 
     this.checkNotClosed();
 
     VK10.vkCmdDrawIndexedIndirect(
-      this.handle,
-      checkInstanceOf(buffer, VulkanLWJGLBuffer.class).handle(),
+      this.buffer,
+      checkInstanceOf(indirectBuffer, VulkanLWJGLBuffer.class).handle(),
       offset,
       draw_count,
-      stride);
+      stride
+    );
   }
 
   @Override
@@ -633,7 +627,7 @@ public final class VulkanLWJGLCommandBuffer
 
     this.checkNotClosed();
 
-    try (var stack = this.stack_initial.push()) {
+    try (var stack = this.stackInitial.push()) {
       final var pointers =
         stack.mallocPointer(commandBuffers.size());
 
@@ -641,12 +635,13 @@ public final class VulkanLWJGLCommandBuffer
         final var secondary =
           checkInstanceOf(
             commandBuffers.get(index),
-            VulkanLWJGLCommandBuffer.class);
-        pointers.put(index, secondary.handle.address());
+            VulkanLWJGLCommandBuffer.class
+          );
+        pointers.put(index, secondary.buffer.address());
       }
 
       VK10.vkCmdExecuteCommands(
-        this.handle,
+        this.buffer,
         pointers
       );
     }
@@ -654,22 +649,23 @@ public final class VulkanLWJGLCommandBuffer
 
   @Override
   public @VulkanExternallySynchronizedType void fillBuffer(
-    final VulkanBufferType buffer,
+    final VulkanBufferType outputBuffer,
     final long offset,
     final long size,
     final int data)
     throws VulkanException
   {
-    Objects.requireNonNull(buffer, "buffer");
+    Objects.requireNonNull(outputBuffer, "buffer");
 
     this.checkNotClosed();
 
     VK10.vkCmdFillBuffer(
-      this.handle,
-      checkInstanceOf(buffer, VulkanLWJGLBuffer.class).handle(),
+      this.buffer,
+      checkInstanceOf(outputBuffer, VulkanLWJGLBuffer.class).handle(),
       offset,
       size,
-      data);
+      data
+    );
   }
 
   @Override
@@ -677,7 +673,7 @@ public final class VulkanLWJGLCommandBuffer
     throws VulkanDestroyedException
   {
     this.checkNotClosed();
-    VK10.vkCmdEndRenderPass(this.handle);
+    VK10.vkCmdEndRenderPass(this.buffer);
   }
 
   @Override
@@ -699,15 +695,16 @@ public final class VulkanLWJGLCommandBuffer
 
     this.checkNotClosed();
 
-    try (var stack = this.stack_initial.push()) {
+    try (var stack = this.stackInitial.push()) {
       VK10.vkCmdPipelineBarrier(
-        this.handle,
+        this.buffer,
         VulkanEnumMaps.packValues(source_stage_mask),
         VulkanEnumMaps.packValues(target_stage_mask),
         VulkanEnumMaps.packValues(dependency_flags),
         VulkanLWJGLMemoryBarriers.packList(stack, memory_barriers),
         VulkanLWJGLBufferMemoryBarriers.packList(stack, buffer_memory_barriers),
-        VulkanLWJGLImageMemoryBarriers.packList(stack, image_memory_barriers));
+        VulkanLWJGLImageMemoryBarriers.packList(stack, image_memory_barriers)
+      );
     }
   }
 
@@ -720,7 +717,7 @@ public final class VulkanLWJGLCommandBuffer
 
     this.checkNotClosed();
 
-    VK10.vkCmdNextSubpass(this.handle, contents.value());
+    VK10.vkCmdNextSubpass(this.buffer, contents.value());
   }
 
   @Override
@@ -730,7 +727,7 @@ public final class VulkanLWJGLCommandBuffer
   {
     this.checkNotClosed();
 
-    VK10.vkCmdSetLineWidth(this.handle, width);
+    VK10.vkCmdSetLineWidth(this.buffer, width);
   }
 
   @Override
@@ -743,10 +740,11 @@ public final class VulkanLWJGLCommandBuffer
     this.checkNotClosed();
 
     VK10.vkCmdSetDepthBias(
-      this.handle,
+      this.buffer,
       depth_bias_constant_factor,
       depth_bias_clamp,
-      depth_bias_slope_factor);
+      depth_bias_slope_factor
+    );
   }
 
   @Override
@@ -757,7 +755,7 @@ public final class VulkanLWJGLCommandBuffer
   {
     this.checkNotClosed();
 
-    VK10.vkCmdSetDepthBounds(this.handle, min_depth_bounds, max_depth_bounds);
+    VK10.vkCmdSetDepthBounds(this.buffer, min_depth_bounds, max_depth_bounds);
   }
 
   @Override
@@ -769,7 +767,7 @@ public final class VulkanLWJGLCommandBuffer
 
     this.checkNotClosed();
 
-    VK10.vkCmdSetBlendConstants(this.handle, new float[]{
+    VK10.vkCmdSetBlendConstants(this.buffer, new float[]{
       constants.r(),
       constants.g(),
       constants.b(),
@@ -788,9 +786,10 @@ public final class VulkanLWJGLCommandBuffer
     this.checkNotClosed();
 
     VK10.vkCmdSetStencilReference(
-      this.handle,
+      this.buffer,
       VulkanEnumMaps.packValues(face_mask),
-      reference);
+      reference
+    );
   }
 
   @Override
@@ -804,9 +803,10 @@ public final class VulkanLWJGLCommandBuffer
     this.checkNotClosed();
 
     VK10.vkCmdSetStencilCompareMask(
-      this.handle,
+      this.buffer,
       VulkanEnumMaps.packValues(face_mask),
-      mask);
+      mask
+    );
   }
 
   @Override
@@ -820,9 +820,10 @@ public final class VulkanLWJGLCommandBuffer
     this.checkNotClosed();
 
     VK10.vkCmdSetStencilWriteMask(
-      this.handle,
+      this.buffer,
       VulkanEnumMaps.packValues(face_mask),
-      mask);
+      mask
+    );
   }
 
   @Override
@@ -835,11 +836,12 @@ public final class VulkanLWJGLCommandBuffer
 
     this.checkNotClosed();
 
-    try (var stack = this.stack_initial.push()) {
+    try (var stack = this.stackInitial.push()) {
       VK10.vkCmdSetScissor(
-        this.handle,
+        this.buffer,
         first_scissor,
-        VulkanLWJGLRect2Ds.packList(stack, rectangles));
+        VulkanLWJGLRect2Ds.packList(stack, rectangles)
+      );
     }
   }
 
@@ -853,11 +855,12 @@ public final class VulkanLWJGLCommandBuffer
 
     this.checkNotClosed();
 
-    try (var stack = this.stack_initial.push()) {
+    try (var stack = this.stackInitial.push()) {
       VK10.vkCmdSetViewport(
-        this.handle,
+        this.buffer,
         first_viewport,
-        VulkanLWJGLViewports.packList(stack, viewports));
+        VulkanLWJGLViewports.packList(stack, viewports)
+      );
     }
   }
 
@@ -871,9 +874,10 @@ public final class VulkanLWJGLCommandBuffer
     Objects.requireNonNull(mask, "mask");
 
     VK10.vkCmdSetEvent(
-      this.handle,
+      this.buffer,
       checkInstanceOf(event, VulkanLWJGLEvent.class).handle(),
-      VulkanEnumMaps.packValues(mask));
+      VulkanEnumMaps.packValues(mask)
+    );
   }
 
   @Override
@@ -888,9 +892,10 @@ public final class VulkanLWJGLCommandBuffer
     this.checkNotClosed();
 
     VK10.vkCmdResetEvent(
-      this.handle,
+      this.buffer,
       checkInstanceOf(event, VulkanLWJGLEvent.class).handle(),
-      VulkanEnumMaps.packValues(mask));
+      VulkanEnumMaps.packValues(mask)
+    );
   }
 
   @Override
@@ -905,10 +910,11 @@ public final class VulkanLWJGLCommandBuffer
     this.checkNotClosed();
 
     VK10.vkCmdResetQueryPool(
-      this.handle,
+      this.buffer,
       checkInstanceOf(pool, VulkanLWJGLQueryPool.class).handle(),
       first_query,
-      query_count);
+      query_count
+    );
   }
 
   @Override
@@ -918,8 +924,9 @@ public final class VulkanLWJGLCommandBuffer
     this.checkNotClosed();
 
     VulkanChecks.checkReturnCode(
-      VK10.vkEndCommandBuffer(this.handle),
-      "vkEndCommandBuffer");
+      VK10.vkEndCommandBuffer(this.buffer),
+      "vkEndCommandBuffer"
+    );
   }
 
   @Override
@@ -935,10 +942,11 @@ public final class VulkanLWJGLCommandBuffer
     this.checkNotClosed();
 
     VK10.vkCmdWriteTimestamp(
-      this.handle,
+      this.buffer,
       stage.value(),
       checkInstanceOf(pool, VulkanLWJGLQueryPool.class).handle(),
-      query_index);
+      query_index
+    );
   }
 
   @Override
@@ -960,9 +968,9 @@ public final class VulkanLWJGLCommandBuffer
 
     this.checkNotClosed();
 
-    try (var stack = this.stack_initial.push()) {
+    try (var stack = this.stackInitial.push()) {
       VK10.vkCmdWaitEvents(
-        this.handle,
+        this.buffer,
         packLongs(
           stack,
           events,
@@ -971,7 +979,8 @@ public final class VulkanLWJGLCommandBuffer
         VulkanEnumMaps.packValues(target_stage_mask),
         VulkanLWJGLMemoryBarriers.packList(stack, memory_barriers),
         VulkanLWJGLBufferMemoryBarriers.packList(stack, buffer_memory_barriers),
-        VulkanLWJGLImageMemoryBarriers.packList(stack, image_memory_barriers));
+        VulkanLWJGLImageMemoryBarriers.packList(stack, image_memory_barriers)
+      );
     }
   }
 
@@ -985,17 +994,8 @@ public final class VulkanLWJGLCommandBuffer
     this.checkNotClosed();
 
     VK10.vkResetCommandBuffer(
-      this.handle,
+      this.buffer,
       VulkanEnumMaps.packValues(flags)
     );
-  }
-
-  /**
-   * @return The raw handle
-   */
-
-  public VkCommandBuffer handle()
-  {
-    return this.handle;
   }
 }

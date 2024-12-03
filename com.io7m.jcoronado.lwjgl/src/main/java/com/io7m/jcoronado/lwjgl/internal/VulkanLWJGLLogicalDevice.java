@@ -28,6 +28,7 @@ import com.io7m.jcoronado.api.VulkanCommandPoolResetFlag;
 import com.io7m.jcoronado.api.VulkanCommandPoolType;
 import com.io7m.jcoronado.api.VulkanComputePipelineCreateInfo;
 import com.io7m.jcoronado.api.VulkanCopyDescriptorSet;
+import com.io7m.jcoronado.api.VulkanDebuggingType;
 import com.io7m.jcoronado.api.VulkanDescriptorPoolCreateInfo;
 import com.io7m.jcoronado.api.VulkanDescriptorPoolResetFlag;
 import com.io7m.jcoronado.api.VulkanDescriptorPoolType;
@@ -82,6 +83,7 @@ import com.io7m.jcoronado.api.VulkanShaderModuleType;
 import com.io7m.jcoronado.api.VulkanSubresourceLayout;
 import com.io7m.jcoronado.api.VulkanUncheckedException;
 import com.io7m.jcoronado.api.VulkanWriteDescriptorSet;
+import com.io7m.jcoronado.extensions.ext_debug_utils.api.VulkanDebugUtilsType;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.vulkan.VK10;
@@ -136,26 +138,27 @@ public final class VulkanLWJGLLogicalDevice
   private final List<VulkanQueueType> queues_read;
   private final Map<String, VulkanExtensionType> extensions_enabled_read_only;
   private final PointerBuffer pointer_buffer;
+  private final VulkanDebuggingType debugging;
 
   VulkanLWJGLLogicalDevice(
-    final Map<String, VulkanExtensionType> in_extensions_enabled,
-    final VulkanLWJGLPhysicalDevice in_physical_device,
-    final VkDevice in_device,
-    final VulkanLogicalDeviceCreateInfo in_creation,
-    final VulkanLWJGLHostAllocatorProxy in_host_allocator_proxy)
+    final Map<String, VulkanExtensionType> inExtensionsEnabled,
+    final VulkanLWJGLPhysicalDevice inPhysicalDevice,
+    final VkDevice inDevice,
+    final VulkanLogicalDeviceCreateInfo inCreation,
+    final VulkanLWJGLHostAllocatorProxy inHostAllocatorProxy)
     throws VulkanException
   {
-    super(USER_OWNED, in_host_allocator_proxy);
+    super(USER_OWNED, inHostAllocatorProxy, inDevice.address());
 
     this.extensions_enabled_read_only =
       Collections.unmodifiableMap(
-        Objects.requireNonNull(in_extensions_enabled, "in_extensions"));
+        Objects.requireNonNull(inExtensionsEnabled, "in_extensions"));
     this.physical_device =
-      Objects.requireNonNull(in_physical_device, "in_physical_device");
+      Objects.requireNonNull(inPhysicalDevice, "inPhysicalDevice");
     this.device =
-      Objects.requireNonNull(in_device, "in_device");
+      Objects.requireNonNull(inDevice, "inDevice");
     this.creation =
-      Objects.requireNonNull(in_creation, "in_creation");
+      Objects.requireNonNull(inCreation, "inCreation");
     this.queues =
       new ArrayList<>(32);
     this.queues_read =
@@ -166,6 +169,31 @@ public final class VulkanLWJGLLogicalDevice
       this.stack_initial.mallocPointer(1);
 
     this.initializeQueues();
+    this.debugging = this.initializeDebugging();
+  }
+
+  private VulkanDebuggingType initializeDebugging()
+  {
+    final Optional<VulkanDebugUtilsType> debug;
+    try {
+      debug =
+        this.physical_device.instance()
+          .findEnabledExtension(
+            "VK_EXT_debug_utils",
+            VulkanDebugUtilsType.class
+          );
+    } catch (final VulkanException e) {
+      LOG.warn("Debugging could not be enabled: ", e);
+      return new VulkanLWJGLDebuggingNoOp();
+    }
+
+    if (debug.isPresent()) {
+      LOG.debug("VK_EXT_debug_utils is enabled, debugging is enabled.");
+      return new VulkanLWJGLDebugging(this, debug.get());
+    }
+
+    LOG.debug("VK_EXT_debug_utils is not present, debugging is no-op.");
+    return new VulkanLWJGLDebuggingNoOp();
   }
 
   @SuppressWarnings("unchecked")
@@ -185,26 +213,6 @@ public final class VulkanLWJGLLogicalDevice
         VulkanLWJGLPipelineCache.class).handle();
     }
     return 0L;
-  }
-
-  @Override
-  public boolean equals(final Object o)
-  {
-    if (this == o) {
-      return true;
-    }
-    if (o == null || !Objects.equals(this.getClass(), o.getClass())) {
-      return false;
-    }
-    final var that = (VulkanLWJGLLogicalDevice) o;
-    return Objects.equals(this.physical_device, that.physical_device)
-      && Objects.equals(this.device, that.device);
-  }
-
-  @Override
-  public int hashCode()
-  {
-    return Objects.hash(this.physical_device, this.device);
   }
 
   /**
@@ -253,7 +261,6 @@ public final class VulkanLWJGLLogicalDevice
           final var queue = new VkQueue(queueBuffer.get(0), this.device);
           this.queues.add(
             new VulkanLWJGLQueue(
-              this,
               queue,
               family,
               new VulkanQueueIndex(queueIndex),
@@ -265,13 +272,9 @@ public final class VulkanLWJGLLogicalDevice
   }
 
   @Override
-  public String toString()
+  public VulkanDebuggingType debugging()
   {
-    return new StringBuilder(32)
-      .append("[VulkanLWJGLLogicalDevice 0x")
-      .append(Long.toUnsignedString(this.device.address(), 16))
-      .append(']')
-      .toString();
+    return this.debugging;
   }
 
   @Override
@@ -587,13 +590,13 @@ public final class VulkanLWJGLLogicalDevice
         "vkAllocateDescriptorSets");
 
       if (LOG.isTraceEnabled()) {
-        LOG.trace("allocated {} descriptor sets", Integer.valueOf(count));
+        LOG.trace("Allocated {} descriptor sets", Integer.valueOf(count));
       }
 
       final ArrayList<VulkanDescriptorSetType> results = new ArrayList<>(count);
       for (var index = 0; index < count; ++index) {
         results.add(new VulkanLWJGLDescriptorSet(
-          this.device, handles.get(index), this.hostAllocatorProxy()));
+          handles.get(index), this.hostAllocatorProxy()));
       }
       return results;
     }
@@ -645,7 +648,7 @@ public final class VulkanLWJGLLogicalDevice
       final var pass_handle = pass[0];
       if (LOG.isTraceEnabled()) {
         LOG.trace(
-          "created render pass: 0x{}",
+          "Created render pass: 0x{}",
           Long.toUnsignedString(pass_handle, 16));
       }
 
@@ -966,7 +969,7 @@ public final class VulkanLWJGLLogicalDevice
       if (LOG.isTraceEnabled()) {
         for (var index = 0; index < count; ++index) {
           LOG.trace(
-            "created command buffer: 0x{}",
+            "Created command buffer: 0x{}",
             Long.toUnsignedString(buffers.get(index), 16));
         }
       }
@@ -1208,7 +1211,6 @@ public final class VulkanLWJGLLogicalDevice
       final Runnable deallocate = () -> this.destroyBuffer(proxy, handle);
       return new VulkanLWJGLBuffer(
         USER_OWNED,
-        this.device,
         handle,
         deallocate,
         proxy);
@@ -1243,7 +1245,6 @@ public final class VulkanLWJGLLogicalDevice
       final Runnable deallocate = () -> this.destroyImage(proxy, handle);
       return new VulkanLWJGLImage(
         USER_OWNED,
-        this.device,
         handle,
         deallocate,
         proxy);
@@ -1321,8 +1322,9 @@ public final class VulkanLWJGLLogicalDevice
       final var handle = handles[0];
       if (LOG.isTraceEnabled()) {
         LOG.trace(
-          "allocated device memory: 0x{}",
-          Long.toUnsignedString(handle, 16));
+          "Allocated device memory: 0x{}",
+          Long.toUnsignedString(handle, 16)
+        );
       }
 
       return new VulkanLWJGLDeviceMemory(
@@ -1618,8 +1620,10 @@ public final class VulkanLWJGLLogicalDevice
     if (LOG.isTraceEnabled()) {
       LOG.trace("Destroying logical device: {}", this);
     }
+
     VK10.vkDestroyDevice(
       this.device,
-      this.hostAllocatorProxy().callbackBuffer());
+      this.hostAllocatorProxy().callbackBuffer()
+    );
   }
 }

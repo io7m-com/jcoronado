@@ -31,4 +31,10 @@
   <suppress files="VulkanPhysicalDeviceFeaturesFunctions.java"
             checks="ExecutableStatementCount"/>
 
+  <!-- Large switch over sealed class. -->
+  <suppress files="VulkanLWJGLExtDebugUtils.java"
+            checks="RedundantModifier"/>
+  <suppress files="VulkanLWJGLExtDebugUtils.java"
+            checks="CyclomaticComplexity"/>
+
 </suppressions>

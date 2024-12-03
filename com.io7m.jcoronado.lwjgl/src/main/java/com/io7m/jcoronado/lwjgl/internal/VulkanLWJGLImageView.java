@@ -29,63 +29,25 @@ import java.util.Objects;
  * LWJGL {@link VulkanImageViewType}.
  */
 
-public final class VulkanLWJGLImageView extends VulkanLWJGLHandle implements
-  VulkanImageViewType
+public final class VulkanLWJGLImageView
+  extends VulkanLWJGLHandle
+  implements VulkanImageViewType
 {
-  private static final Logger LOG = LoggerFactory.getLogger(VulkanLWJGLImageView.class);
+  private static final Logger LOG =
+    LoggerFactory.getLogger(VulkanLWJGLImageView.class);
 
-  private final long handle;
   private final VulkanLWJGLImage image;
   private final VkDevice device;
 
   VulkanLWJGLImageView(
-    final VkDevice in_device,
-    final long in_handle,
-    final VulkanLWJGLImage in_image,
-    final VulkanLWJGLHostAllocatorProxy in_host_allocator_proxy)
+    final VkDevice inDevice,
+    final long inHandle,
+    final VulkanLWJGLImage inImage,
+    final VulkanLWJGLHostAllocatorProxy inHostAllocatorProxy)
   {
-    super(Ownership.USER_OWNED, in_host_allocator_proxy);
-    this.device = Objects.requireNonNull(in_device, "device");
-    this.image = Objects.requireNonNull(in_image, "image");
-    this.handle = in_handle;
-  }
-
-  @Override
-  public boolean equals(final Object o)
-  {
-    if (this == o) {
-      return true;
-    }
-    if (o == null || !Objects.equals(this.getClass(), o.getClass())) {
-      return false;
-    }
-    final var that = (VulkanLWJGLImageView) o;
-    return this.handle == that.handle;
-  }
-
-  @Override
-  public int hashCode()
-  {
-    return Objects.hash(Long.valueOf(this.handle));
-  }
-
-  @Override
-  public String toString()
-  {
-    return new StringBuilder(32)
-      .append("[VulkanLWJGLImageView 0x")
-      .append(Long.toUnsignedString(this.handle, 16))
-      .append("]")
-      .toString();
-  }
-
-  /**
-   * @return The raw handle
-   */
-
-  public long handle()
-  {
-    return this.handle;
+    super(Ownership.USER_OWNED, inHostAllocatorProxy, inHandle);
+    this.device = Objects.requireNonNull(inDevice, "device");
+    this.image = Objects.requireNonNull(inImage, "image");
   }
 
   @Override
@@ -100,10 +62,12 @@ public final class VulkanLWJGLImageView extends VulkanLWJGLHandle implements
     if (LOG.isTraceEnabled()) {
       LOG.trace("Destroying image view: {}", this);
     }
+
     VK10.vkDestroyImageView(
       this.device,
-      this.handle,
-      this.hostAllocatorProxy().callbackBuffer());
+      this.handle(),
+      this.hostAllocatorProxy().callbackBuffer()
+    );
   }
 
   @Override

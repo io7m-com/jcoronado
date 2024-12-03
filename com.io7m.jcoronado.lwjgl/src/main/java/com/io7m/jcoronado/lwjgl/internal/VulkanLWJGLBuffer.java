@@ -17,7 +17,6 @@
 package com.io7m.jcoronado.lwjgl.internal;
 
 import com.io7m.jcoronado.api.VulkanBufferType;
-import org.lwjgl.vulkan.VkDevice;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,55 +26,25 @@ import java.util.Objects;
  * LWJGL {@link VulkanBufferType}.
  */
 
-public final class VulkanLWJGLBuffer extends VulkanLWJGLHandle implements
-  VulkanBufferType
+public final class VulkanLWJGLBuffer
+  extends VulkanLWJGLHandle
+  implements VulkanBufferType
 {
-  private static final Logger LOG = LoggerFactory.getLogger(VulkanLWJGLBuffer.class);
+  private static final Logger LOG =
+    LoggerFactory.getLogger(VulkanLWJGLBuffer.class);
 
-  private final long handle;
-  private final VkDevice device;
   private final Runnable deallocate;
 
   VulkanLWJGLBuffer(
     final Ownership ownership,
-    final VkDevice in_device,
-    final long in_handle,
-    final Runnable in_deallocate,
-    final VulkanLWJGLHostAllocatorProxy in_host_allocator_proxy)
+    final long inHandle,
+    final Runnable inDeallocate,
+    final VulkanLWJGLHostAllocatorProxy inHostAllocatorProxy)
   {
-    super(ownership, in_host_allocator_proxy);
-    this.device = Objects.requireNonNull(in_device, "device");
-    this.handle = in_handle;
-    this.deallocate = Objects.requireNonNull(in_deallocate, "deallocate");
-  }
+    super(ownership, inHostAllocatorProxy, inHandle);
 
-  @Override
-  public boolean equals(final Object o)
-  {
-    if (this == o) {
-      return true;
-    }
-    if (o == null || !Objects.equals(this.getClass(), o.getClass())) {
-      return false;
-    }
-    final var that = (VulkanLWJGLBuffer) o;
-    return this.handle == that.handle;
-  }
-
-  @Override
-  public int hashCode()
-  {
-    return Objects.hash(Long.valueOf(this.handle));
-  }
-
-  @Override
-  public String toString()
-  {
-    return new StringBuilder(32)
-      .append("[VulkanLWJGLBuffer 0x")
-      .append(Long.toUnsignedString(this.handle, 16))
-      .append("]")
-      .toString();
+    this.deallocate =
+      Objects.requireNonNull(inDeallocate, "deallocate");
   }
 
   @Override
@@ -92,14 +61,5 @@ public final class VulkanLWJGLBuffer extends VulkanLWJGLHandle implements
     }
 
     this.deallocate.run();
-  }
-
-  /**
-   * @return The underlying Vulkan handle
-   */
-
-  public long handle()
-  {
-    return this.handle;
   }
 }

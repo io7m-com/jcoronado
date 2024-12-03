@@ -29,56 +29,29 @@ import java.util.Objects;
  * LWJGL {@link VulkanBufferViewType}.
  */
 
-public final class VulkanLWJGLBufferView extends VulkanLWJGLHandle implements
-  VulkanBufferViewType
+public final class VulkanLWJGLBufferView
+  extends VulkanLWJGLHandle
+  implements VulkanBufferViewType
 {
-  private static final Logger LOG = LoggerFactory.getLogger(
-    VulkanLWJGLBufferView.class);
+  private static final Logger LOG =
+    LoggerFactory.getLogger(VulkanLWJGLBufferView.class);
 
-  private final long handle;
   private final VkDevice device;
   private final VulkanLWJGLBuffer buffer;
 
   VulkanLWJGLBufferView(
     final Ownership ownership,
-    final VkDevice in_device,
-    final long in_handle,
-    final VulkanLWJGLBuffer in_buffer,
-    final VulkanLWJGLHostAllocatorProxy in_host_allocator_proxy)
+    final VkDevice inDevice,
+    final long inHandle,
+    final VulkanLWJGLBuffer inBuffer,
+    final VulkanLWJGLHostAllocatorProxy inHostAllocatorProxy)
   {
-    super(ownership, in_host_allocator_proxy);
-    this.device = Objects.requireNonNull(in_device, "device");
-    this.buffer = Objects.requireNonNull(in_buffer, "buffer");
-    this.handle = in_handle;
-  }
+    super(ownership, inHostAllocatorProxy, inHandle);
 
-  @Override
-  public boolean equals(final Object o)
-  {
-    if (this == o) {
-      return true;
-    }
-    if (o == null || !Objects.equals(this.getClass(), o.getClass())) {
-      return false;
-    }
-    final var that = (VulkanLWJGLBufferView) o;
-    return this.handle == that.handle;
-  }
-
-  @Override
-  public int hashCode()
-  {
-    return Objects.hash(Long.valueOf(this.handle));
-  }
-
-  @Override
-  public String toString()
-  {
-    return new StringBuilder(32)
-      .append("[VulkanLWJGLBufferView 0x")
-      .append(Long.toUnsignedString(this.handle, 16))
-      .append("]")
-      .toString();
+    this.device =
+      Objects.requireNonNull(inDevice, "device");
+    this.buffer =
+      Objects.requireNonNull(inBuffer, "buffer");
   }
 
   @Override
@@ -96,17 +69,9 @@ public final class VulkanLWJGLBufferView extends VulkanLWJGLHandle implements
 
     VK10.vkDestroyBufferView(
       this.device,
-      this.handle,
-      this.hostAllocatorProxy().callbackBuffer());
-  }
-
-  /**
-   * @return The underlying Vulkan handle
-   */
-
-  public long handle()
-  {
-    return this.handle;
+      this.handle(),
+      this.hostAllocatorProxy().callbackBuffer()
+    );
   }
 
   @Override

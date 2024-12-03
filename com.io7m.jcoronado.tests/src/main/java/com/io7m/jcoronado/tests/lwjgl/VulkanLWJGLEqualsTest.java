@@ -70,7 +70,6 @@ public final class VulkanLWJGLEqualsTest
     EqualsVerifier.forClass(VulkanLWJGLDescriptorSet.class)
       .withIgnoredFields(
         "ownership",
-        "device",
         "closed",
         "host_allocator_proxy")
       .withNonnullFields("handle")
@@ -82,7 +81,8 @@ public final class VulkanLWJGLEqualsTest
   {
     EqualsVerifier.forClass(VulkanLWJGLCommandBuffer.class)
       .withIgnoredFields(
-        "stack_initial",
+        "stackInitial",
+        "buffer",
         "ownership",
         "closed",
         "host_allocator_proxy")
@@ -135,7 +135,6 @@ public final class VulkanLWJGLEqualsTest
     EqualsVerifier.forClass(VulkanLWJGLImage.class)
       .withIgnoredFields(
         "ownership",
-        "device",
         "deallocate",
         "closed",
         "host_allocator_proxy")
@@ -149,7 +148,6 @@ public final class VulkanLWJGLEqualsTest
     EqualsVerifier.forClass(VulkanLWJGLBuffer.class)
       .withIgnoredFields(
         "ownership",
-        "device",
         "deallocate",
         "closed",
         "host_allocator_proxy")
@@ -161,13 +159,7 @@ public final class VulkanLWJGLEqualsTest
   public void testVulkanLWJGLBufferView()
   {
     EqualsVerifier.forClass(VulkanLWJGLBufferView.class)
-      .withIgnoredFields(
-        "ownership",
-        "device",
-        "buffer",
-        "closed",
-        "host_allocator_proxy")
-      .withNonnullFields("handle")
+      .withOnlyTheseFields("handle")
       .verify();
   }
 
@@ -189,7 +181,7 @@ public final class VulkanLWJGLEqualsTest
   public void testVulkanLWJGLInstance()
   {
     EqualsVerifier.forClass(VulkanLWJGLInstance.class)
-      .withOnlyTheseFields("instance")
+      .withOnlyTheseFields("handle")
       .verify();
   }
 
@@ -244,7 +236,7 @@ public final class VulkanLWJGLEqualsTest
     final @Mock VulkanLWJGLLogicalDevice device_black)
   {
     EqualsVerifier.forClass(VulkanLWJGLQueue.class)
-      .withOnlyTheseFields("queueIndex", "queue", "properties")
+      .withOnlyTheseFields("handle")
       .withPrefabValues(
         VulkanLWJGLLogicalDevice.class,
         device_red,
@@ -308,12 +300,7 @@ public final class VulkanLWJGLEqualsTest
   public void testVulkanLWJGLSampler()
   {
     EqualsVerifier.forClass(VulkanLWJGLSampler.class)
-      .withIgnoredFields(
-        "ownership",
-        "device",
-        "closed",
-        "host_allocator_proxy")
-      .withNonnullFields("handle")
+      .withOnlyTheseFields("handle")
       .verify();
   }
 

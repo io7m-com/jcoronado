@@ -49,7 +49,7 @@ public final class VulkanLWJGLSubmitInfos
    * @param infos  A list of structures
    * @param buffer A buffer
    *
-   * @throws VulkanException                  On errors
+   * @throws VulkanException On errors
    */
 
   public static void packInfos(
@@ -102,17 +102,19 @@ public final class VulkanLWJGLSubmitInfos
 
   private static PointerBuffer packCommandBuffers(
     final MemoryStack stack,
-    final List<VulkanCommandBufferType> command_buffers)
+    final List<VulkanCommandBufferType> commandBuffers)
     throws VulkanException
   {
     return VulkanLWJGLScalarArrays.packPointersOrNull(
       stack,
-      command_buffers,
-      command_buffer ->
-        VulkanLWJGLClassChecks.checkInstanceOf(
-            command_buffer,
-            VulkanLWJGLCommandBuffer.class)
-          .handle()
-          .address());
+      commandBuffers,
+      commandBuffer -> {
+        final var actualBuffer =
+          VulkanLWJGLClassChecks.checkInstanceOf(
+            commandBuffer,
+            VulkanLWJGLCommandBuffer.class
+          );
+        return actualBuffer.handle();
+      });
   }
 }

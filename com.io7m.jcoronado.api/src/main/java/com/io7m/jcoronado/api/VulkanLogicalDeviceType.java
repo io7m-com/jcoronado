@@ -32,9 +32,16 @@ import java.util.function.Predicate;
 
 public interface VulkanLogicalDeviceType extends VulkanHandleDispatchableType
 {
+  /**
+   * @return A reference to a possibly no-op debugging interface
+   */
+
+  VulkanDebuggingType debugging();
+
   @VulkanAPIFunctionType(vulkanFunction = "vkDestroyDevice")
   @Override
-  @VulkanExternallySynchronizedType void close()
+  @VulkanExternallySynchronizedType
+  void close()
     throws VulkanException;
 
   /**

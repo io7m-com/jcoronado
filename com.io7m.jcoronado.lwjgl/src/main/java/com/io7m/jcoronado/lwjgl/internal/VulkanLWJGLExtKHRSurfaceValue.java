@@ -30,47 +30,17 @@ final class VulkanLWJGLExtKHRSurfaceValue
   private static final Logger LOG =
     LoggerFactory.getLogger(VulkanLWJGLExtKHRSurfaceValue.class);
 
-  private final long handle;
   private final Runnable deallocate;
 
   VulkanLWJGLExtKHRSurfaceValue(
     final Ownership ownership,
-    final long in_handle,
-    final Runnable in_deallocate,
-    final VulkanLWJGLHostAllocatorProxy in_host_allocator_proxy)
+    final long inHandle,
+    final Runnable inDeallocate,
+    final VulkanLWJGLHostAllocatorProxy inHostAllocatorProxy)
   {
-    super(ownership, in_host_allocator_proxy);
-    this.handle = in_handle;
-    this.deallocate = Objects.requireNonNull(in_deallocate, "deallocate");
-  }
-
-  @Override
-  public boolean equals(final Object o)
-  {
-    if (this == o) {
-      return true;
-    }
-    if (o == null || !Objects.equals(this.getClass(), o.getClass())) {
-      return false;
-    }
-    final var that = (VulkanLWJGLExtKHRSurfaceValue) o;
-    return this.handle == that.handle;
-  }
-
-  @Override
-  public int hashCode()
-  {
-    return Objects.hash(Long.valueOf(this.handle));
-  }
-
-  @Override
-  public String toString()
-  {
-    return new StringBuilder(32)
-      .append("[VulkanLWJGLExtKHRSurfaceValue 0x")
-      .append(Long.toUnsignedString(this.handle, 16))
-      .append("]")
-      .toString();
+    super(ownership, inHostAllocatorProxy, inHandle);
+    this.deallocate =
+      Objects.requireNonNull(inDeallocate, "deallocate");
   }
 
   @Override
@@ -87,14 +57,5 @@ final class VulkanLWJGLExtKHRSurfaceValue
     }
 
     this.deallocate.run();
-  }
-
-  /**
-   * @return The underlying Vulkan handle
-   */
-
-  public long handle()
-  {
-    return this.handle;
   }
 }

@@ -22,15 +22,49 @@ import org.slf4j.Logger;
 
 import java.util.Objects;
 
-abstract class VulkanLWJGLHandle implements VulkanHandleType
+sealed abstract class VulkanLWJGLHandle
+  implements VulkanHandleType
+  permits
+  VMALWJGLAllocator,
+  VMALWJGLAllocator.VMALWJGLMappedMemory,
+  VulkanLWJGLBuffer,
+  VulkanLWJGLBufferView,
+  VulkanLWJGLCommandBuffer,
+  VulkanLWJGLCommandPool,
+  VulkanLWJGLDescriptorPool,
+  VulkanLWJGLDescriptorSet,
+  VulkanLWJGLDescriptorSetLayout,
+  VulkanLWJGLDeviceMemory,
+  VulkanLWJGLEvent,
+  VulkanLWJGLExtDebugUtilsMessenger,
+  VulkanLWJGLExtKHRSurfaceValue,
+  VulkanLWJGLExtKHRSwapChain.VulkanLWJGLKHRSwapChain,
+  VulkanLWJGLFence,
+  VulkanLWJGLFramebuffer,
+  VulkanLWJGLImage,
+  VulkanLWJGLImageView,
+  VulkanLWJGLInstance,
+  VulkanLWJGLLogicalDevice,
+  VulkanLWJGLPhysicalDevice,
+  VulkanLWJGLPipeline,
+  VulkanLWJGLPipelineCache,
+  VulkanLWJGLPipelineLayout,
+  VulkanLWJGLQueryPool,
+  VulkanLWJGLQueue,
+  VulkanLWJGLRenderPass,
+  VulkanLWJGLSampler,
+  VulkanLWJGLSemaphore,
+  VulkanLWJGLShaderModule
 {
   private final Ownership ownership;
   private final VulkanLWJGLHostAllocatorProxy host_allocator_proxy;
+  private final long handle;
   private boolean closed;
 
   VulkanLWJGLHandle(
     final Ownership in_ownership,
-    final VulkanLWJGLHostAllocatorProxy in_host_allocator_proxy)
+    final VulkanLWJGLHostAllocatorProxy in_host_allocator_proxy,
+    final long inHandle)
   {
     this.closed = false;
     this.ownership =
@@ -38,7 +72,9 @@ abstract class VulkanLWJGLHandle implements VulkanHandleType
     this.host_allocator_proxy =
       Objects.requireNonNull(
         in_host_allocator_proxy,
-        "in_host_allocator_proxy");
+        "in_host_allocator_proxy"
+      );
+    this.handle = inHandle;
   }
 
   /**
@@ -78,6 +114,44 @@ abstract class VulkanLWJGLHandle implements VulkanHandleType
         this.closed = true;
       }
     }
+  }
+
+  @Override
+  public final boolean equals(
+    final Object o)
+  {
+    if (this == o) {
+      return true;
+    }
+    if (!(o instanceof final VulkanLWJGLHandle that)) {
+      return false;
+    }
+    return this.handle == that.handle;
+  }
+
+  @Override
+  public final int hashCode()
+  {
+    return Objects.hashCode(Long.valueOf(this.handle));
+  }
+
+  @Override
+  public final String toString()
+  {
+    return String.format(
+      "[%s 0x%s]",
+      this.getClass().getSimpleName(),
+      Long.toUnsignedString(this.handle, 16)
+    );
+  }
+
+  /**
+   * @return The raw handle
+   */
+
+  public final long handle()
+  {
+    return this.handle;
   }
 
   protected final void checkNotClosed()

@@ -21,6 +21,7 @@ import com.io7m.jcoronado.api.VulkanCommandBufferType;
 import com.io7m.jcoronado.api.VulkanEnumMaps;
 import com.io7m.jcoronado.api.VulkanException;
 import com.io7m.jcoronado.api.VulkanInstanceType;
+import com.io7m.jcoronado.api.VulkanLogicalDeviceType;
 import com.io7m.jcoronado.extensions.ext_debug_utils.api.VulkanDebugUtilsLabelEXT;
 import com.io7m.jcoronado.extensions.ext_debug_utils.api.VulkanDebugUtilsMessageSeverityFlag;
 import com.io7m.jcoronado.extensions.ext_debug_utils.api.VulkanDebugUtilsMessageTypeFlag;
@@ -28,33 +29,40 @@ import com.io7m.jcoronado.extensions.ext_debug_utils.api.VulkanDebugUtilsMesseng
 import com.io7m.jcoronado.extensions.ext_debug_utils.api.VulkanDebugUtilsMessengerCallbackEXTType;
 import com.io7m.jcoronado.extensions.ext_debug_utils.api.VulkanDebugUtilsMessengerCreateInfoEXT;
 import com.io7m.jcoronado.extensions.ext_debug_utils.api.VulkanDebugUtilsMessengerEXTType;
+import com.io7m.jcoronado.extensions.ext_debug_utils.api.VulkanDebugUtilsObjectNameInfoEXT;
 import com.io7m.jcoronado.extensions.ext_debug_utils.api.VulkanDebugUtilsRegionType;
 import com.io7m.jcoronado.extensions.ext_debug_utils.api.VulkanDebugUtilsType;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.vulkan.EXTDebugUtils;
+import org.lwjgl.vulkan.VK10;
 import org.lwjgl.vulkan.VkDebugUtilsLabelEXT;
 import org.lwjgl.vulkan.VkDebugUtilsMessengerCallbackDataEXT;
 import org.lwjgl.vulkan.VkDebugUtilsMessengerCallbackEXTI;
 import org.lwjgl.vulkan.VkDebugUtilsMessengerCreateInfoEXT;
+import org.lwjgl.vulkan.VkDebugUtilsObjectNameInfoEXT;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.nio.ByteBuffer;
 import java.util.Objects;
+import java.util.OptionalInt;
 
 import static com.io7m.jcoronado.lwjgl.internal.VulkanLWJGLClassChecks.checkInstanceOf;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.lwjgl.vulkan.EXTDebugUtils.VK_STRUCTURE_TYPE_DEBUG_UTILS_LABEL_EXT;
 import static org.lwjgl.vulkan.EXTDebugUtils.VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
+import static org.lwjgl.vulkan.EXTDebugUtils.VK_STRUCTURE_TYPE_DEBUG_UTILS_OBJECT_NAME_INFO_EXT;
 import static org.lwjgl.vulkan.EXTDebugUtils.vkCmdBeginDebugUtilsLabelEXT;
 import static org.lwjgl.vulkan.EXTDebugUtils.vkCmdEndDebugUtilsLabelEXT;
 import static org.lwjgl.vulkan.EXTDebugUtils.vkCmdInsertDebugUtilsLabelEXT;
+import static org.lwjgl.vulkan.EXTDebugUtils.vkSetDebugUtilsObjectNameEXT;
 
 /**
  * The EXT_debug_utils extension.
  */
 
-public final class VulkanLWJGLExtDebugUtils implements VulkanDebugUtilsType
+public final class VulkanLWJGLExtDebugUtils
+  implements VulkanDebugUtilsType
 {
   private static final Logger LOG =
     LoggerFactory.getLogger(VulkanLWJGLExtDebugUtils.class);
@@ -219,7 +227,10 @@ public final class VulkanLWJGLExtDebugUtils implements VulkanDebugUtilsType
     try (var stack = this.stackInitial.push()) {
       final var lwjglInfo = VkDebugUtilsLabelEXT.malloc(stack);
       packLabel(stack, label, lwjglInfo);
-      vkCmdBeginDebugUtilsLabelEXT(lwjglCommandBuffer.handle(), lwjglInfo);
+      vkCmdBeginDebugUtilsLabelEXT(
+        lwjglCommandBuffer.buffer(),
+        lwjglInfo
+      );
     }
 
     return new Region(lwjglCommandBuffer);
@@ -237,8 +248,124 @@ public final class VulkanLWJGLExtDebugUtils implements VulkanDebugUtilsType
     try (var stack = this.stackInitial.push()) {
       final var lwjglInfo = VkDebugUtilsLabelEXT.malloc(stack);
       packLabel(stack, label, lwjglInfo);
-      vkCmdInsertDebugUtilsLabelEXT(lwjglCommandBuffer.handle(), lwjglInfo);
+      vkCmdInsertDebugUtilsLabelEXT(lwjglCommandBuffer.buffer(), lwjglInfo);
     }
+  }
+
+  @Override
+  public void setObjectName(
+    final VulkanLogicalDeviceType device,
+    final VulkanDebugUtilsObjectNameInfoEXT info)
+    throws VulkanException
+  {
+    final var lwjglDevice =
+      checkInstanceOf(device, VulkanLWJGLLogicalDevice.class);
+
+    if (info.objectHandle() instanceof final VulkanLWJGLHandle handle) {
+      final var handleTypeOpt =
+        objectTypeOfHandleInt(handle);
+
+      if (handleTypeOpt.isEmpty()) {
+        return;
+      }
+
+      try (var stack = this.stackInitial.push()) {
+        final var debugInfo =
+          VkDebugUtilsObjectNameInfoEXT.calloc(stack)
+            .sType(VK_STRUCTURE_TYPE_DEBUG_UTILS_OBJECT_NAME_INFO_EXT)
+            .pObjectName(stack.UTF8(info.objectName()))
+            .objectHandle(handle.handle())
+            .objectType(handleTypeOpt.getAsInt());
+
+        vkSetDebugUtilsObjectNameEXT(lwjglDevice.device(), debugInfo);
+      }
+    }
+  }
+
+  private static OptionalInt objectTypeOfHandleInt(
+    final VulkanLWJGLHandle handle)
+  {
+    return switch (handle) {
+      case final VulkanLWJGLBuffer _ -> {
+        yield OptionalInt.of(VK10.VK_OBJECT_TYPE_BUFFER);
+      }
+      case final VulkanLWJGLBufferView _ -> {
+        yield OptionalInt.of(VK10.VK_OBJECT_TYPE_BUFFER_VIEW);
+      }
+      case final VulkanLWJGLCommandBuffer _ -> {
+        yield OptionalInt.of(VK10.VK_OBJECT_TYPE_COMMAND_BUFFER);
+      }
+      case final VulkanLWJGLCommandPool _ -> {
+        yield OptionalInt.of(VK10.VK_OBJECT_TYPE_COMMAND_POOL);
+      }
+      case final VulkanLWJGLDescriptorPool _ -> {
+        yield OptionalInt.of(VK10.VK_OBJECT_TYPE_DESCRIPTOR_POOL);
+      }
+      case final VulkanLWJGLDescriptorSet _ -> {
+        yield OptionalInt.of(VK10.VK_OBJECT_TYPE_DESCRIPTOR_SET);
+      }
+      case final VulkanLWJGLDescriptorSetLayout _ -> {
+        yield OptionalInt.of(VK10.VK_OBJECT_TYPE_DESCRIPTOR_SET_LAYOUT);
+      }
+      case final VulkanLWJGLDeviceMemory _ -> {
+        yield OptionalInt.of(VK10.VK_OBJECT_TYPE_DEVICE_MEMORY);
+      }
+      case final VulkanLWJGLEvent _ -> {
+        yield OptionalInt.of(VK10.VK_OBJECT_TYPE_EVENT);
+      }
+      case final VulkanLWJGLFence _ -> {
+        yield OptionalInt.of(VK10.VK_OBJECT_TYPE_FENCE);
+      }
+      case final VulkanLWJGLFramebuffer _ -> {
+        yield OptionalInt.of(VK10.VK_OBJECT_TYPE_FRAMEBUFFER);
+      }
+      case final VulkanLWJGLImage _ -> {
+        yield OptionalInt.of(VK10.VK_OBJECT_TYPE_IMAGE);
+      }
+      case final VulkanLWJGLImageView _ -> {
+        yield OptionalInt.of(VK10.VK_OBJECT_TYPE_IMAGE_VIEW);
+      }
+      case final VulkanLWJGLInstance _ -> {
+        yield OptionalInt.of(VK10.VK_OBJECT_TYPE_INSTANCE);
+      }
+      case final VulkanLWJGLLogicalDevice _ -> {
+        yield OptionalInt.of(VK10.VK_OBJECT_TYPE_DEVICE);
+      }
+      case final VulkanLWJGLPhysicalDevice _ -> {
+        yield OptionalInt.of(VK10.VK_OBJECT_TYPE_PHYSICAL_DEVICE);
+      }
+      case final VulkanLWJGLPipeline _ -> {
+        yield OptionalInt.of(VK10.VK_OBJECT_TYPE_PIPELINE);
+      }
+      case final VulkanLWJGLPipelineCache _ -> {
+        yield OptionalInt.of(VK10.VK_OBJECT_TYPE_PIPELINE_CACHE);
+      }
+      case final VulkanLWJGLPipelineLayout _ -> {
+        yield OptionalInt.of(VK10.VK_OBJECT_TYPE_PIPELINE_LAYOUT);
+      }
+      case final VulkanLWJGLQueryPool _ -> {
+        yield OptionalInt.of(VK10.VK_OBJECT_TYPE_QUERY_POOL);
+      }
+      case final VulkanLWJGLQueue _ -> {
+        yield OptionalInt.of(VK10.VK_OBJECT_TYPE_QUEUE);
+      }
+      case final VulkanLWJGLRenderPass _ -> {
+        yield OptionalInt.of(VK10.VK_OBJECT_TYPE_RENDER_PASS);
+      }
+      case final VulkanLWJGLSampler _ -> {
+        yield OptionalInt.of(VK10.VK_OBJECT_TYPE_SAMPLER);
+      }
+      case final VulkanLWJGLSemaphore _ -> {
+        yield OptionalInt.of(VK10.VK_OBJECT_TYPE_SEMAPHORE);
+      }
+      case final VulkanLWJGLShaderModule _ -> {
+        yield OptionalInt.of(VK10.VK_OBJECT_TYPE_SHADER_MODULE);
+      }
+      default -> {
+        LOG.warn("Unrecognized handle type: {}", handle);
+        yield OptionalInt.empty();
+      }
+    };
   }
 
   private static final class Region
@@ -256,11 +383,10 @@ public final class VulkanLWJGLExtDebugUtils implements VulkanDebugUtilsType
 
     @Override
     public void close()
-      throws VulkanException
     {
       if (!this.isClosed()) {
         this.closed = true;
-        vkCmdEndDebugUtilsLabelEXT(this.commandBuffer.handle());
+        vkCmdEndDebugUtilsLabelEXT(this.commandBuffer.buffer());
       }
     }
 

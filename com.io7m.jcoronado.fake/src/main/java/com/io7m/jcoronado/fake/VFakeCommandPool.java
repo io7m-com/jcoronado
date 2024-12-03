@@ -1,5 +1,5 @@
 /*
- * Copyright © 2018 Mark Raynsford <code@io7m.com> http://io7m.com
+ * Copyright © 2024 Mark Raynsford <code@io7m.com> https://www.io7m.com
  *
  * Permission to use, copy, modify, and/or distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -14,38 +14,38 @@
  * IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-package com.io7m.jcoronado.lwjgl.internal;
 
-import com.io7m.jcoronado.api.VulkanDescriptorSetType;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+package com.io7m.jcoronado.fake;
+
+import com.io7m.jcoronado.api.VulkanCommandPoolType;
+
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
- * LWJGL {@code VkDescriptorSet}
+ * A fake command buffer pool.
  */
 
-public final class VulkanLWJGLDescriptorSet
-  extends VulkanLWJGLHandle implements VulkanDescriptorSetType
+public final class VFakeCommandPool implements VulkanCommandPoolType
 {
-  private static final Logger LOG = LoggerFactory.getLogger(
-    VulkanLWJGLDescriptorSet.class);
+  private final AtomicBoolean closed;
 
-  VulkanLWJGLDescriptorSet(
-    final long inHandle,
-    final VulkanLWJGLHostAllocatorProxy inHostAllocatorProxy)
+  VFakeCommandPool()
   {
-    super(Ownership.USER_OWNED, inHostAllocatorProxy, inHandle);
+    this.closed =
+      new AtomicBoolean(false);
   }
 
   @Override
-  protected Logger logger()
+  public void close()
   {
-    return LOG;
+    if (this.closed.compareAndSet(false, true)) {
+      // Nothing
+    }
   }
 
   @Override
-  protected void closeActual()
+  public boolean isClosed()
   {
-
+    return this.closed.get();
   }
 }

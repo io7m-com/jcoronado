@@ -186,7 +186,6 @@ public final class VulkanLWJGLExtKHRSwapChain implements
       .mapToObj(image ->
                   new VulkanLWJGLImage(
                     VULKAN_OWNED,
-                    chain.device.device(),
                     image,
                     () -> {
                     },
@@ -363,7 +362,7 @@ public final class VulkanLWJGLExtKHRSwapChain implements
     }
   }
 
-  private static final class VulkanLWJGLKHRSwapChain
+  static final class VulkanLWJGLKHRSwapChain
     extends VulkanLWJGLHandle implements VulkanKHRSwapChainType
   {
     private final long chain;
@@ -371,36 +370,24 @@ public final class VulkanLWJGLExtKHRSwapChain implements
     private final VulkanLWJGLExtKHRSwapChain extension;
 
     VulkanLWJGLKHRSwapChain(
-      final VulkanLWJGLExtKHRSwapChain in_extension,
-      final VulkanLWJGLLogicalDevice in_device,
-      final long in_chain,
-      final VulkanLWJGLHostAllocatorProxy in_host_allocator_proxy)
+      final VulkanLWJGLExtKHRSwapChain inExtension,
+      final VulkanLWJGLLogicalDevice inDevice,
+      final long inChain,
+      final VulkanLWJGLHostAllocatorProxy inHostAllocatorProxy)
     {
-      super(USER_OWNED, in_host_allocator_proxy);
+      super(USER_OWNED, inHostAllocatorProxy, inChain);
 
-      this.extension = Objects.requireNonNull(in_extension, "Extension");
-      this.chain = in_chain;
-      this.device = Objects.requireNonNull(in_device, "Device");
+      this.extension =
+        Objects.requireNonNull(inExtension, "Extension");
+      this.chain =
+        inChain;
+      this.device =
+        Objects.requireNonNull(inDevice, "Device");
     }
 
     long chain()
     {
       return this.chain;
-    }
-
-    @Override
-    public String toString()
-    {
-      return new StringBuilder(64)
-        .append("[VulkanLWJGLKHRSwapChain ")
-        .append("0x")
-        .append(Long.toUnsignedString(this.chain, 16))
-        .append(' ')
-        .append(this.device)
-        .append(' ')
-        .append(this.extension)
-        .append(']')
-        .toString();
     }
 
     @Override
@@ -413,13 +400,14 @@ public final class VulkanLWJGLExtKHRSwapChain implements
     protected void closeActual()
     {
       if (LOG.isTraceEnabled()) {
-        LOG.trace("destroying swapchain: {}", this);
+        LOG.trace("Destroying swapchain: {}", this);
       }
 
       KHRSwapchain.vkDestroySwapchainKHR(
         this.device.device(),
         this.chain,
-        null);
+        null
+      );
     }
 
     @Override

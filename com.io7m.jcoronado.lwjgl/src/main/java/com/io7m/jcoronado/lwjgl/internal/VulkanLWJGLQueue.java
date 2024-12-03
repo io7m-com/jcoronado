@@ -43,25 +43,22 @@ import static com.io7m.jcoronado.lwjgl.internal.VulkanLWJGLHandle.Ownership.VULK
 public final class VulkanLWJGLQueue
   extends VulkanLWJGLHandle implements VulkanQueueType
 {
-  private static final Logger LOG = LoggerFactory.getLogger(VulkanLWJGLQueue.class);
+  private static final Logger LOG =
+    LoggerFactory.getLogger(VulkanLWJGLQueue.class);
 
-  private final VulkanLWJGLLogicalDevice device;
   private final VkQueue queue;
   private final VulkanQueueFamilyProperties properties;
   private final VulkanQueueIndex queueIndex;
   private final MemoryStack stackInitial;
 
   VulkanLWJGLQueue(
-    final VulkanLWJGLLogicalDevice inDevice,
     final VkQueue inQueue,
     final VulkanQueueFamilyProperties inProperties,
     final VulkanQueueIndex inQueueIndex,
     final VulkanLWJGLHostAllocatorProxy inHostAllocatorProxy)
   {
-    super(VULKAN_OWNED, inHostAllocatorProxy);
+    super(VULKAN_OWNED, inHostAllocatorProxy, inQueue.address());
 
-    this.device =
-      Objects.requireNonNull(inDevice, "device");
     this.queue =
       Objects.requireNonNull(inQueue, "queue");
     this.properties =
@@ -79,43 +76,6 @@ public final class VulkanLWJGLQueue
   public VkQueue rawQueue()
   {
     return this.queue;
-  }
-
-  @Override
-  public boolean equals(final Object o)
-  {
-    if (this == o) {
-      return true;
-    }
-    if (o == null || !Objects.equals(this.getClass(), o.getClass())) {
-      return false;
-    }
-    final var that = (VulkanLWJGLQueue) o;
-    return Objects.equals(this.queueIndex, that.queueIndex)
-      && Objects.equals(this.queue, that.queue)
-      && Objects.equals(this.properties, that.properties);
-  }
-
-  @Override
-  public int hashCode()
-  {
-    return Objects.hash(
-      this.queue,
-      this.properties,
-      this.queueIndex
-    );
-  }
-
-  @Override
-  public String toString()
-  {
-    return new StringBuilder(64)
-      .append("[VulkanLWJGLQueue family ")
-      .append(this.properties.queueFamilyIndex())
-      .append(" index ")
-      .append(this.queueIndex.value())
-      .append(']')
-      .toString();
   }
 
   @Override
@@ -178,6 +138,7 @@ public final class VulkanLWJGLQueue
   {
     VulkanChecks.checkReturnCode(
       VK10.vkQueueWaitIdle(this.queue),
-      "vkQueueWaitIdle");
+      "vkQueueWaitIdle"
+    );
   }
 }

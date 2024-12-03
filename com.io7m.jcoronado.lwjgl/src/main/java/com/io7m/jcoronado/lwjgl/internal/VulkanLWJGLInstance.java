@@ -108,7 +108,8 @@ import static org.lwjgl.vulkan.VK13.VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_3
 public final class VulkanLWJGLInstance
   extends VulkanLWJGLHandle implements VulkanInstanceType
 {
-  private static final Logger LOG = LoggerFactory.getLogger(VulkanLWJGLInstance.class);
+  private static final Logger LOG =
+    LoggerFactory.getLogger(VulkanLWJGLInstance.class);
 
   private final VkInstance instance;
   private final MemoryStack initialStack;
@@ -136,7 +137,7 @@ public final class VulkanLWJGLInstance
     final VulkanVersion inApiVersionMaximumSupported,
     final VulkanVersion inApiVersionUsed)
   {
-    super(Ownership.USER_OWNED, inHostAllocatorProxy);
+    super(Ownership.USER_OWNED, inHostAllocatorProxy, inInstance.address());
 
     this.instance =
       Objects.requireNonNull(inInstance, "instance");
@@ -245,30 +246,30 @@ public final class VulkanLWJGLInstance
 
     if (LOG.isDebugEnabled()) {
       LOG.debug(
-        "device [{}]: Property device name: {}",
+        "Device [{}]: Property device name: {}",
         Integer.valueOf(index),
         device_name);
       LOG.debug(
-        "device [{}]: Property device type: {}",
+        "Device [{}]: Property device type: {}",
         Integer.valueOf(index),
         device_type);
       LOG.debug(
-        "device [{}]: Property device id: 0x{}",
+        "Device [{}]: Property device id: 0x{}",
         Integer.valueOf(index),
         Integer.toUnsignedString(device_id, 16));
       LOG.debug(
-        "device [{}]: Property device vendor: 0x{}",
+        "Device [{}]: Property device vendor: 0x{}",
         Integer.valueOf(index),
         Integer.toUnsignedString(device_vendor, 16));
       LOG.debug(
-        "device [{}]: Property device api: 0x{} ({}.{}.{})",
+        "Device [{}]: Property device api: 0x{} ({}.{}.{})",
         Integer.valueOf(index),
         Integer.toUnsignedString(device_api, 16),
         Integer.valueOf(version.major()),
         Integer.valueOf(version.minor()),
         Integer.valueOf(version.patch()));
       LOG.debug(
-        "device [{}]: Property device driver version: 0x{} ({}.{}.{})",
+        "Device [{}]: Property device driver version: 0x{} ({}.{}.{})",
         Integer.valueOf(index),
         Integer.toUnsignedString(device_api, 16),
         Integer.valueOf(driver_version.major()),
@@ -1016,38 +1017,9 @@ public final class VulkanLWJGLInstance
       .build();
   }
 
-  @Override
-  public boolean equals(final Object o)
-  {
-    if (this == o) {
-      return true;
-    }
-    if (o == null || !Objects.equals(this.getClass(), o.getClass())) {
-      return false;
-    }
-    final var that = (VulkanLWJGLInstance) o;
-    return Objects.equals(this.instance, that.instance);
-  }
-
-  @Override
-  public int hashCode()
-  {
-    return Objects.hash(this.instance);
-  }
-
   VulkanLWJGLExtensionsRegistry extensionRegistry()
   {
     return this.extensionsRegistry;
-  }
-
-  @Override
-  public String toString()
-  {
-    return new StringBuilder(64)
-      .append("[VulkanLWJGLInstance 0x")
-      .append(Long.toUnsignedString(this.instance.address(), 16))
-      .append(']')
-      .toString();
   }
 
   @Override
