@@ -20,6 +20,7 @@ import com.io7m.jcoronado.api.VulkanApplicationInfo;
 import com.io7m.jcoronado.api.VulkanException;
 import com.io7m.jcoronado.api.VulkanInstanceCreateInfo;
 import com.io7m.jcoronado.api.VulkanInstanceProviderType;
+import com.io7m.jcoronado.api.VulkanMissingRequiredVersionException;
 import com.io7m.jcoronado.api.VulkanVersions;
 import com.io7m.jcoronado.extensions.ext_layer_settings.api.VulkanLayerSettingBoolean;
 import com.io7m.jcoronado.extensions.ext_layer_settings.api.VulkanLayerSettingIntegerSigned32;
@@ -36,6 +37,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static java.lang.Boolean.TRUE;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public abstract class VulkanInstanceContract extends VulkanOnDeviceContract
 {
@@ -63,11 +65,9 @@ public abstract class VulkanInstanceContract extends VulkanOnDeviceContract
         .setEnabledLayers(List.of("VK_LAYER_KHRONOS_validation"))
         .build();
 
-    try (var instance =
-           provider.createInstance(info, Optional.empty())) {
-      instance.enabledExtensions().forEach(
-        (name, extension) -> logger.debug("extension: {}", extension.name()));
-    }
+    assertThrows(VulkanMissingRequiredVersionException.class, () -> {
+      provider.createInstance(info, Optional.empty());
+    });
   }
 
   @Test
@@ -116,7 +116,7 @@ public abstract class VulkanInstanceContract extends VulkanOnDeviceContract
             VulkanVersions.encode(0, 0, 1),
             "com.io7m.jcoronado.tests",
             VulkanVersions.encode(0, 0, 1),
-            VulkanVersions.encode(1, 0, 0)))
+            VulkanVersions.encode(1, 3, 0)))
         .setEnabledExtensions(List.of())
         .setEnabledLayers(List.of("VK_LAYER_KHRONOS_validation"))
         .build();
@@ -188,7 +188,7 @@ public abstract class VulkanInstanceContract extends VulkanOnDeviceContract
             VulkanVersions.encode(0, 0, 1),
             "com.io7m.jcoronado.tests",
             VulkanVersions.encode(0, 0, 1),
-            VulkanVersions.encode(1, 0, 0)))
+            VulkanVersions.encode(1, 3, 0)))
         .setEnabledExtensions(List.of())
         .setEnabledLayers(List.of("VK_LAYER_KHRONOS_validation"))
         .addExtensionInfo(
@@ -237,7 +237,7 @@ public abstract class VulkanInstanceContract extends VulkanOnDeviceContract
             VulkanVersions.encode(0, 0, 1),
             "com.io7m.jcoronado.tests",
             VulkanVersions.encode(0, 0, 1),
-            VulkanVersions.encode(1, 0, 0)))
+            VulkanVersions.encode(1, 3, 0)))
         .setEnabledExtensions(List.of())
         .setEnabledLayers(List.of("VK_LAYER_KHRONOS_validation"))
         .addExtensionInfo(
@@ -286,7 +286,7 @@ public abstract class VulkanInstanceContract extends VulkanOnDeviceContract
             VulkanVersions.encode(0, 0, 1),
             "com.io7m.jcoronado.tests",
             VulkanVersions.encode(0, 0, 1),
-            VulkanVersions.encode(1, 0, 0)))
+            VulkanVersions.encode(1, 3, 0)))
         .setEnabledExtensions(List.of())
         .setEnabledLayers(List.of("VK_LAYER_KHRONOS_validation"))
         .addExtensionInfo(
@@ -335,7 +335,7 @@ public abstract class VulkanInstanceContract extends VulkanOnDeviceContract
             VulkanVersions.encode(0, 0, 1),
             "com.io7m.jcoronado.tests",
             VulkanVersions.encode(0, 0, 1),
-            VulkanVersions.encode(1, 0, 0)))
+            VulkanVersions.encode(1, 3, 0)))
         .setEnabledExtensions(List.of())
         .setEnabledLayers(List.of("VK_LAYER_KHRONOS_validation"))
         .addExtensionInfo(

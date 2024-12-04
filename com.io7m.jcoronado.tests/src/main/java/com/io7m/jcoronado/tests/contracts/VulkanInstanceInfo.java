@@ -31,14 +31,20 @@ public final class VulkanInstanceInfo
 
   public static VulkanInstanceCreateInfo info()
   {
+    final var applicationInfo =
+      VulkanApplicationInfo.builder()
+        .setVulkanAPIVersion(
+          VulkanVersions.encode(1, 3, 0))
+        .setApplicationVersion(
+          VulkanVersions.encode(0, 0, 1))
+        .setEngineVersion(
+          VulkanVersions.encode(0, 0, 1))
+        .setEngineName("com.io7m.jcoronado")
+        .setApplicationName("com.io7m.jcoronado.tests.Test")
+        .build();
+
     return VulkanInstanceCreateInfo.builder()
-      .setApplicationInfo(
-        VulkanApplicationInfo.of(
-          "com.io7m.jcoronado.tests.Test",
-          VulkanVersions.encode(0, 0, 1),
-          "com.io7m.jcoronado.tests",
-          VulkanVersions.encode(0, 0, 1),
-          VulkanVersions.encode(1, 0, 0)))
+      .setApplicationInfo(applicationInfo)
       .setEnabledExtensions(List.of())
       .setEnabledLayers(List.of("VK_LAYER_KHRONOS_validation"))
       .build();

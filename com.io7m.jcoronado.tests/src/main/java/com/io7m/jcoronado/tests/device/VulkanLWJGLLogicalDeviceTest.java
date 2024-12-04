@@ -65,7 +65,7 @@ public final class VulkanLWJGLLogicalDeviceTest
               VulkanVersions.encode(0, 0, 1),
               "com.io7m.jcoronado.tests",
               VulkanVersions.encode(0, 0, 1),
-              VulkanVersions.encode(1, 0, 0)))
+              VulkanVersions.encode(1, 3, 0)))
           .setEnabledLayers(List.of("VK_LAYER_KHRONOS_validation"))
           .build();
 
@@ -142,7 +142,7 @@ public final class VulkanLWJGLLogicalDeviceTest
       VulkanLWJGLInstanceProvider.create();
 
     final var requestedVersion =
-      VulkanVersions.encode(1, 0, 0);
+      VulkanVersions.encode(1, 3, 0);
 
     final var instanceInfo =
       VulkanInstanceCreateInfo.builder()
@@ -287,7 +287,7 @@ public final class VulkanLWJGLLogicalDeviceTest
       VulkanLWJGLInstanceProvider.create();
 
     final var requestedVersion =
-      VulkanVersions.encode(1, 0, 0);
+      VulkanVersions.encode(1, 3, 0);
 
     final var instanceInfo =
       VulkanInstanceCreateInfo.builder()

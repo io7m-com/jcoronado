@@ -24,6 +24,7 @@ import com.io7m.jcoronado.api.VulkanInstanceExtensionInfoType;
 import com.io7m.jcoronado.api.VulkanInstanceProviderType;
 import com.io7m.jcoronado.api.VulkanInstanceType;
 import com.io7m.jcoronado.api.VulkanLayerProperties;
+import com.io7m.jcoronado.api.VulkanMissingRequiredVersionException;
 import com.io7m.jcoronado.api.VulkanVersion;
 import com.io7m.jcoronado.api.VulkanVersions;
 import com.io7m.jcoronado.lwjgl.internal.VulkanLWJGLExtensionsRegistry;
@@ -60,6 +61,9 @@ public final class VulkanLWJGLInstanceProvider
 {
   private static final Logger LOG =
     LoggerFactory.getLogger(VulkanLWJGLInstanceProvider.class);
+
+  private static final VulkanVersion VULKAN_13 =
+    VulkanVersion.of(1, 3, 0);
 
   private final MemoryStack initialStack;
   private final VulkanLWJGLExtensionsRegistry extensions;
@@ -218,10 +222,28 @@ public final class VulkanLWJGLInstanceProvider
     final var enabledExtensions =
       info.enabledExtensions();
 
+    final var requestedVersion =
+      VulkanVersions.decode(info.applicationInfo().vulkanAPIVersion());
+
     if (LOG.isDebugEnabled()) {
-      final var apiVersion =
-        VulkanVersions.decode(info.applicationInfo().vulkanAPIVersion());
-      LOG.debug("Creating instance for API {}", apiVersion.toHumanString());
+      LOG.debug("Requested Vulkan version: {}", requestedVersion);
+      LOG.debug("Required Vulkan version:  {}", VULKAN_13);
+    }
+
+    /*
+     * We require Vulkan 1.3+ as various extensions such as
+     * VK_KHR_synchronization2 were moved to core.
+     */
+
+    if (requestedVersion.compareTo(VULKAN_13) < 0) {
+      throw new VulkanMissingRequiredVersionException(
+        requestedVersion,
+        VULKAN_13,
+        Optional.empty()
+      );
+    }
+
+    if (LOG.isDebugEnabled()) {
       enabledLayers
         .forEach(layer -> LOG.debug("Enabling layer: {}", layer));
       enabledExtensions
@@ -287,6 +309,19 @@ public final class VulkanLWJGLInstanceProvider
 
       final var enabled =
         this.extensions.ofNames(info.enabledExtensions());
+
+      final var supported =
+        this.findSupportedInstanceVersion();
+
+      if (supported.compareTo(requestedVersion) < 0) {
+        VK10.vkDestroyInstance(instance, allocatorProxy.callbackBuffer());
+
+        throw new VulkanMissingRequiredVersionException(
+          requestedVersion,
+          VULKAN_13,
+          Optional.of(supported)
+        );
+      }
 
       return new VulkanLWJGLInstance(
         instance,
