@@ -38,7 +38,7 @@
 
   <properties>
     <!-- Configuration. -->
-    <io7m.api.previousVersion>0.0.1</io7m.api.previousVersion>
+    <io7m.api.previousVersion>0.0.2-SNAPSHOT</io7m.api.previousVersion>
     <io7m.java.targetJavaVersion>22</io7m.java.targetJavaVersion>
 
     <!-- Third-party dependencies. -->
