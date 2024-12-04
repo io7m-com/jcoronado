@@ -26,6 +26,12 @@ import java.util.Optional;
 public interface VulkanInstanceProviderType
 {
   /**
+   * @return The minimum version required by the instance provider
+   */
+
+  VulkanVersion minimumRequiredVersion();
+
+  /**
    * @return The name of the (software) provider
    */
 

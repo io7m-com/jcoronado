@@ -1691,7 +1691,7 @@ public final class HelloVulkanWithVMA implements ExampleType
               VulkanVersions.encode(0, 0, 1),
               "com.io7m.jcoronado.tests",
               VulkanVersions.encode(0, 0, 1),
-              VulkanVersions.encode(1, 0, 0)))
+              VulkanVersions.encode(instances.minimumRequiredVersion())))
           .setEnabledExtensions(enableExtensions)
           .setEnabledLayers(enableLayers)
           .build();

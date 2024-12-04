@@ -145,6 +145,12 @@ public final class VFakeInstances
   }
 
   @Override
+  public VulkanVersion minimumRequiredVersion()
+  {
+    return VulkanVersion.of(1, 0, 0);
+  }
+
+  @Override
   public String providerName()
   {
     return this.providerName;

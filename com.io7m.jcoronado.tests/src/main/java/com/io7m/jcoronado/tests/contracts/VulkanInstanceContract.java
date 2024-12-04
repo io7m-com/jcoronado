@@ -116,7 +116,7 @@ public abstract class VulkanInstanceContract extends VulkanOnDeviceContract
             VulkanVersions.encode(0, 0, 1),
             "com.io7m.jcoronado.tests",
             VulkanVersions.encode(0, 0, 1),
-            VulkanVersions.encode(1, 3, 0)))
+            VulkanVersions.encode(this.instanceProvider().minimumRequiredVersion())))
         .setEnabledExtensions(List.of())
         .setEnabledLayers(List.of("VK_LAYER_KHRONOS_validation"))
         .build();
@@ -188,7 +188,7 @@ public abstract class VulkanInstanceContract extends VulkanOnDeviceContract
             VulkanVersions.encode(0, 0, 1),
             "com.io7m.jcoronado.tests",
             VulkanVersions.encode(0, 0, 1),
-            VulkanVersions.encode(1, 3, 0)))
+            VulkanVersions.encode(this.instanceProvider().minimumRequiredVersion())))
         .setEnabledExtensions(List.of())
         .setEnabledLayers(List.of("VK_LAYER_KHRONOS_validation"))
         .addExtensionInfo(
@@ -237,7 +237,7 @@ public abstract class VulkanInstanceContract extends VulkanOnDeviceContract
             VulkanVersions.encode(0, 0, 1),
             "com.io7m.jcoronado.tests",
             VulkanVersions.encode(0, 0, 1),
-            VulkanVersions.encode(1, 3, 0)))
+            VulkanVersions.encode(this.instanceProvider().minimumRequiredVersion())))
         .setEnabledExtensions(List.of())
         .setEnabledLayers(List.of("VK_LAYER_KHRONOS_validation"))
         .addExtensionInfo(
@@ -286,7 +286,7 @@ public abstract class VulkanInstanceContract extends VulkanOnDeviceContract
             VulkanVersions.encode(0, 0, 1),
             "com.io7m.jcoronado.tests",
             VulkanVersions.encode(0, 0, 1),
-            VulkanVersions.encode(1, 3, 0)))
+            VulkanVersions.encode(this.instanceProvider().minimumRequiredVersion())))
         .setEnabledExtensions(List.of())
         .setEnabledLayers(List.of("VK_LAYER_KHRONOS_validation"))
         .addExtensionInfo(
@@ -335,7 +335,7 @@ public abstract class VulkanInstanceContract extends VulkanOnDeviceContract
             VulkanVersions.encode(0, 0, 1),
             "com.io7m.jcoronado.tests",
             VulkanVersions.encode(0, 0, 1),
-            VulkanVersions.encode(1, 3, 0)))
+            VulkanVersions.encode(this.instanceProvider().minimumRequiredVersion())))
         .setEnabledExtensions(List.of())
         .setEnabledLayers(List.of("VK_LAYER_KHRONOS_validation"))
         .addExtensionInfo(

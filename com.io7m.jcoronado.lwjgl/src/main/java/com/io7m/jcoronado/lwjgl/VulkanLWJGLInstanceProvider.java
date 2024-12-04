@@ -100,6 +100,12 @@ public final class VulkanLWJGLInstanceProvider
   }
 
   @Override
+  public VulkanVersion minimumRequiredVersion()
+  {
+    return VULKAN_13;
+  }
+
+  @Override
   public String providerName()
   {
     return "com.io7m.jcoronado.lwjgl";
@@ -224,10 +230,16 @@ public final class VulkanLWJGLInstanceProvider
 
     final var requestedVersion =
       VulkanVersions.decode(info.applicationInfo().vulkanAPIVersion());
+    final var supportedVersion =
+      this.findSupportedInstanceVersion();
 
     if (LOG.isDebugEnabled()) {
-      LOG.debug("Requested Vulkan version: {}", requestedVersion);
-      LOG.debug("Required Vulkan version:  {}", VULKAN_13);
+      LOG.debug("Requested Vulkan version: {}",
+                requestedVersion.toHumanString());
+      LOG.debug("Required Vulkan version:  {}",
+                VULKAN_13.toHumanString());
+      LOG.debug("Supported Vulkan version: {}",
+                supportedVersion.toHumanString());
     }
 
     /*
@@ -239,7 +251,14 @@ public final class VulkanLWJGLInstanceProvider
       throw new VulkanMissingRequiredVersionException(
         requestedVersion,
         VULKAN_13,
-        Optional.empty()
+        supportedVersion
+      );
+    }
+    if (supportedVersion.compareTo(requestedVersion) < 0) {
+      throw new VulkanMissingRequiredVersionException(
+        requestedVersion,
+        VULKAN_13,
+        supportedVersion
       );
     }
 
@@ -309,19 +328,6 @@ public final class VulkanLWJGLInstanceProvider
 
       final var enabled =
         this.extensions.ofNames(info.enabledExtensions());
-
-      final var supported =
-        this.findSupportedInstanceVersion();
-
-      if (supported.compareTo(requestedVersion) < 0) {
-        VK10.vkDestroyInstance(instance, allocatorProxy.callbackBuffer());
-
-        throw new VulkanMissingRequiredVersionException(
-          requestedVersion,
-          VULKAN_13,
-          Optional.of(supported)
-        );
-      }
 
       return new VulkanLWJGLInstance(
         instance,

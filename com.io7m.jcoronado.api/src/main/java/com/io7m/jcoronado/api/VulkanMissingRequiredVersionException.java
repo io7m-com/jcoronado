@@ -17,7 +17,6 @@
 package com.io7m.jcoronado.api;
 
 import java.util.Objects;
-import java.util.Optional;
 
 /**
  * An exception raised by the Vulkan version not being supported.
@@ -28,7 +27,7 @@ public final class VulkanMissingRequiredVersionException
 {
   private final VulkanVersion requested;
   private final VulkanVersion required;
-  private final Optional<VulkanVersion> supported;
+  private final VulkanVersion supported;
 
   /**
    * An exception raised by the Vulkan version not being supported.
@@ -41,15 +40,10 @@ public final class VulkanMissingRequiredVersionException
   public VulkanMissingRequiredVersionException(
     final VulkanVersion inRequested,
     final VulkanVersion inRequired,
-    final Optional<VulkanVersion> inSupported)
+    final VulkanVersion inSupported)
   {
     super(
-      "The required Vulkan version (%s) is not supported (%s is supported, %s was requested)."
-        .formatted(
-          inRequired.toHumanString(),
-          inSupported.map(VulkanVersionType::toHumanString)
-            .orElse("<unavailable>"),
-          inRequested.toHumanString())
+      formatMessage(inRequested, inRequired, inSupported)
     );
 
     this.requested =
@@ -58,6 +52,27 @@ public final class VulkanMissingRequiredVersionException
       Objects.requireNonNull(inRequired, "inRequired");
     this.supported =
       Objects.requireNonNull(inSupported, "inSupported");
+  }
+
+  private static String formatMessage(
+    final VulkanVersion inRequested,
+    final VulkanVersion inRequired,
+    final VulkanVersion inSupported)
+  {
+    final var text = new StringBuilder(256);
+    text.append("The current Vulkan implementation does not match the given version constraints.");
+    text.append('\n');
+    text.append("The Vulkan implementation supports: ");
+    text.append(inSupported.toHumanString());
+    text.append('\n');
+    text.append("The application requested:          ");
+    text.append(inRequested.toHumanString());
+    text.append('\n');
+    text.append("The jcoronado package requires:     ");
+    text.append(inRequired.toHumanString());
+    text.append('\n');
+    text.append("The versions must obey the constraint: required <= requested <= supported.");
+    return text.toString();
   }
 
   /**
@@ -82,7 +97,7 @@ public final class VulkanMissingRequiredVersionException
    * @return The supported version
    */
 
-  public Optional<VulkanVersion> supported()
+  public VulkanVersion supported()
   {
     return this.supported;
   }
