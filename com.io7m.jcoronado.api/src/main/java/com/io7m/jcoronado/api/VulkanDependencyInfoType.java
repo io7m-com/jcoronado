@@ -1,5 +1,5 @@
 /*
- * Copyright © 2018 Mark Raynsford <code@io7m.com> http://io7m.com
+ * Copyright © 2024 Mark Raynsford <code@io7m.com> https://www.io7m.com
  *
  * Permission to use, copy, modify, and/or distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -14,33 +14,45 @@
  * IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+
 package com.io7m.jcoronado.api;
 
 import com.io7m.immutables.styles.ImmutablesStyleType;
 import org.immutables.value.Value;
 
+import java.util.List;
 import java.util.Set;
 
 /**
- * Structure specifying the parameters of a global memory barrier.
+ * @see "VkDependencyInfo"
  */
 
-@VulkanAPIStructType(vulkanStruct = "VkMemoryBarrier2")
+@VulkanAPIStructType(vulkanStruct = "VkDependencyInfo")
 @ImmutablesStyleType
 @Value.Immutable
-public interface VulkanMemoryBarrierType
+public interface VulkanDependencyInfoType
 {
   /**
-   * @return The source access mask
+   * @return A set of flags specifying how execution and memory dependencies are formed.
    */
 
-  @Value.Parameter
-  Set<VulkanAccessFlag> srcAccessMask();
+  Set<VulkanDependencyFlag> flags();
 
   /**
-   * @return The destination access mask
+   * @return The memory barriers for any memory accesses
    */
 
-  @Value.Parameter
-  Set<VulkanAccessFlag> dstAccessMask();
+  List<VulkanMemoryBarrier> memoryBarriers();
+
+  /**
+   * @return The memory dependencies between buffer ranges
+   */
+
+  List<VulkanBufferMemoryBarrier> bufferMemoryBarriers();
+
+  /**
+   * @return The memory dependencies between image subresources
+   */
+
+  List<VulkanImageMemoryBarrier> imageMemoryBarriers();
 }

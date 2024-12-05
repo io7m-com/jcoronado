@@ -164,7 +164,7 @@ public final class VulkanLWJGLExtDebugUtils
 
     try (var stack = this.stackInitial.push()) {
       final var lwjglInfo =
-        VkDebugUtilsMessengerCreateInfoEXT.malloc(stack);
+        VkDebugUtilsMessengerCreateInfoEXT.calloc(stack);
 
       final var lwjglCallback =
         (VkDebugUtilsMessengerCallbackEXTI)
@@ -225,7 +225,7 @@ public final class VulkanLWJGLExtDebugUtils
       checkInstanceOf(commandBuffer, VulkanLWJGLCommandBuffer.class);
 
     try (var stack = this.stackInitial.push()) {
-      final var lwjglInfo = VkDebugUtilsLabelEXT.malloc(stack);
+      final var lwjglInfo = VkDebugUtilsLabelEXT.calloc(stack);
       packLabel(stack, label, lwjglInfo);
       vkCmdBeginDebugUtilsLabelEXT(
         lwjglCommandBuffer.buffer(),
@@ -246,7 +246,7 @@ public final class VulkanLWJGLExtDebugUtils
       checkInstanceOf(commandBuffer, VulkanLWJGLCommandBuffer.class);
 
     try (var stack = this.stackInitial.push()) {
-      final var lwjglInfo = VkDebugUtilsLabelEXT.malloc(stack);
+      final var lwjglInfo = VkDebugUtilsLabelEXT.calloc(stack);
       packLabel(stack, label, lwjglInfo);
       vkCmdInsertDebugUtilsLabelEXT(lwjglCommandBuffer.buffer(), lwjglInfo);
     }

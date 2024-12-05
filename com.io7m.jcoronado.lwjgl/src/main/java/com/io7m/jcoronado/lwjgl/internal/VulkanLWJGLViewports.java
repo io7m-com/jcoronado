@@ -51,7 +51,7 @@ public final class VulkanLWJGLViewports
     Objects.requireNonNull(stack, "stack");
     Objects.requireNonNull(info, "info");
 
-    return packInto(info, VkViewport.malloc(stack));
+    return packInto(info, VkViewport.calloc(stack));
   }
 
   /**
@@ -101,7 +101,7 @@ public final class VulkanLWJGLViewports
     return VulkanLWJGLArrays.pack(
       infos,
       (stack1, source, target) -> packInto(source, target),
-      VkViewport::malloc,
+      VkViewport::calloc,
       stack
     );
   }
@@ -128,7 +128,7 @@ public final class VulkanLWJGLViewports
     return VulkanLWJGLArrays.packOrNull(
       infos,
       (stack1, source, target) -> packInto(source, target),
-      VkViewport::malloc,
+      VkViewport::calloc,
       stack
     );
   }

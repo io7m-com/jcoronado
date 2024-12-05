@@ -173,7 +173,7 @@ public final class VulkanLWJGLInstance
       }
 
       final var vkQueueFamilies =
-        VkQueueFamilyProperties.malloc(queueFamilyCount, stack);
+        VkQueueFamilyProperties.calloc(queueFamilyCount, stack);
 
       VK10.vkGetPhysicalDeviceQueueFamilyProperties(
         vkDevice, count, vkQueueFamilies);
@@ -1019,9 +1019,9 @@ public final class VulkanLWJGLInstance
         "vkEnumeratePhysicalDevices");
 
       final var vkProperties =
-        VkPhysicalDeviceProperties.malloc(stack);
+        VkPhysicalDeviceProperties.calloc(stack);
       final var vkMemory =
-        VkPhysicalDeviceMemoryProperties.malloc(stack);
+        VkPhysicalDeviceMemoryProperties.calloc(stack);
 
       devices = new ArrayList<>(deviceCount);
       for (var index = 0; index < deviceCount; ++index) {
@@ -1039,7 +1039,16 @@ public final class VulkanLWJGLInstance
             index,
             vkProperties,
             vkMemory,
-            this.apiVersionUsed);
+            this.apiVersionUsed
+          );
+
+        final var features13 = device.features().features13();
+        if (!features13.synchronization2()) {
+          LOG.warn(
+            "Device {} does not support synchronization2 and so is being ignored.",
+            device
+          );
+        }
 
         devices.add(device);
       }
@@ -1113,18 +1122,18 @@ public final class VulkanLWJGLInstance
     final VulkanVersion apiVersion)
   {
     final var vkIdProperties =
-      VkPhysicalDeviceIDProperties.malloc(stack);
+      VkPhysicalDeviceIDProperties.calloc(stack);
     vkIdProperties.sType(VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_ID_PROPERTIES);
     vkIdProperties.pNext(0L);
 
     final var vkProperties2 =
-      VkPhysicalDeviceProperties2.malloc(stack);
+      VkPhysicalDeviceProperties2.calloc(stack);
     vkProperties2.sType(VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PROPERTIES_2);
     vkProperties2.pNext(vkIdProperties.address());
 
     VkPhysicalDeviceDriverProperties vkDriverProperties = null;
     if (apiVersion.major() >= 1 && apiVersion.minor() >= 2) {
-      vkDriverProperties = VkPhysicalDeviceDriverProperties.malloc(stack);
+      vkDriverProperties = VkPhysicalDeviceDriverProperties.calloc(stack);
       vkDriverProperties.sType(
         VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DRIVER_PROPERTIES);
       vkDriverProperties.pNext(0L);

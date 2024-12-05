@@ -51,7 +51,7 @@ public final class VulkanLWJGLFenceCreateInfos
     Objects.requireNonNull(stack, "stack");
     Objects.requireNonNull(info, "info");
 
-    return VkFenceCreateInfo.malloc(stack)
+    return VkFenceCreateInfo.calloc(stack)
       .sType(VK10.VK_STRUCTURE_TYPE_FENCE_CREATE_INFO)
       .pNext(0L)
       .flags(VulkanEnumMaps.packValues(info.flags()));

@@ -87,6 +87,7 @@ import com.io7m.jcoronado.extensions.ext_debug_utils.api.VulkanDebugUtilsType;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.vulkan.VK10;
+import org.lwjgl.vulkan.VK13;
 import org.lwjgl.vulkan.VkCommandBuffer;
 import org.lwjgl.vulkan.VkDevice;
 import org.lwjgl.vulkan.VkMemoryRequirements;
@@ -636,14 +637,16 @@ public final class VulkanLWJGLLogicalDevice
       final var pass = new long[1];
       final var proxy = this.hostAllocatorProxy();
       VulkanChecks.checkReturnCode(
-        VK10.vkCreateRenderPass(
+        VK13.vkCreateRenderPass2(
           this.device,
           VulkanLWJGLRenderPasses.packRenderPassCreateInfo(
             stack,
             render_pass_create_info),
           proxy.callbackBuffer(),
-          pass),
-        "vkCreateRenderPass");
+          pass
+        ),
+        "vkCreateRenderPass"
+      );
 
       final var pass_handle = pass[0];
       if (LOG.isTraceEnabled()) {
@@ -730,7 +733,7 @@ public final class VulkanLWJGLLogicalDevice
       checkInstanceOf(image, VulkanLWJGLImage.class);
 
     try (var stack = this.stack_initial.push()) {
-      final var info = VkMemoryRequirements.malloc(stack);
+      final var info = VkMemoryRequirements.calloc(stack);
 
       VK10.vkGetImageMemoryRequirements(this.device, cimage.handle(), info);
 
@@ -1287,7 +1290,7 @@ public final class VulkanLWJGLLogicalDevice
     final var cbuffer = checkInstanceOf(buffer, VulkanLWJGLBuffer.class);
 
     try (var stack = this.stack_initial.push()) {
-      final var info = VkMemoryRequirements.malloc(stack);
+      final var info = VkMemoryRequirements.calloc(stack);
 
       VK10.vkGetBufferMemoryRequirements(this.device, cbuffer.handle(), info);
 
@@ -1550,7 +1553,7 @@ public final class VulkanLWJGLLogicalDevice
     this.checkNotClosed();
 
     try (var stack = this.stack_initial.push()) {
-      final var vk_layout = VkSubresourceLayout.malloc(stack);
+      final var vk_layout = VkSubresourceLayout.calloc(stack);
 
       VK10.vkGetImageSubresourceLayout(
         this.device,

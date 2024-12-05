@@ -22,25 +22,47 @@ import org.immutables.value.Value;
 import java.util.Set;
 
 /**
- * Structure specifying the parameters of a global memory barrier.
+ * The type of Vulkan semaphore submission information.
+ *
+ * @see "VkSemaphoreSubmitInfo"
  */
 
-@VulkanAPIStructType(vulkanStruct = "VkMemoryBarrier2")
+@VulkanAPIStructType(vulkanStruct = "VkSemaphoreSubmitInfo")
 @ImmutablesStyleType
 @Value.Immutable
-public interface VulkanMemoryBarrierType
+public interface VulkanSemaphoreSubmitInfoType
 {
   /**
-   * @return The source access mask
+   * @return The semaphore
    */
 
-  @Value.Parameter
-  Set<VulkanAccessFlag> srcAccessMask();
+  VulkanSemaphoreType semaphore();
 
   /**
-   * @return The destination access mask
+   * @return The value used to signal semaphore or the value waited on by
+   * semaphore, if semaphore is a timeline semaphore
    */
 
-  @Value.Parameter
-  Set<VulkanAccessFlag> dstAccessMask();
+  @Value.Default
+  default long value()
+  {
+    return 0L;
+  }
+
+  /**
+   * @return The stage mask
+   */
+
+  Set<VulkanPipelineStageFlag> stageMask();
+
+  /**
+   * @return The index of the device within a device group that executes the
+   * semaphore wait or signal operation.
+   */
+
+  @Value.Default
+  default long deviceIndex()
+  {
+    return 0L;
+  }
 }

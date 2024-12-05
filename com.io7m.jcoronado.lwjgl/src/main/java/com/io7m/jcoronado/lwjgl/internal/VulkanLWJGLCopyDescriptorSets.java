@@ -57,7 +57,7 @@ public final class VulkanLWJGLCopyDescriptorSets
     Objects.requireNonNull(stack, "stack");
     Objects.requireNonNull(info, "info");
 
-    return packInto(stack, info, VkCopyDescriptorSet.malloc(stack));
+    return packInto(stack, info, VkCopyDescriptorSet.calloc(stack));
   }
 
   /**
@@ -121,7 +121,7 @@ public final class VulkanLWJGLCopyDescriptorSets
     return VulkanLWJGLArrays.pack(
       infos,
       VulkanLWJGLCopyDescriptorSets::packInto,
-      VkCopyDescriptorSet::malloc,
+      VkCopyDescriptorSet::calloc,
       stack
     );
   }

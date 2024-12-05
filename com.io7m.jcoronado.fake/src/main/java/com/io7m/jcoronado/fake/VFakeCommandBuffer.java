@@ -20,7 +20,6 @@ package com.io7m.jcoronado.fake;
 import com.io7m.jcoronado.api.VulkanBlendConstants;
 import com.io7m.jcoronado.api.VulkanBufferCopy;
 import com.io7m.jcoronado.api.VulkanBufferImageCopy;
-import com.io7m.jcoronado.api.VulkanBufferMemoryBarrier;
 import com.io7m.jcoronado.api.VulkanBufferType;
 import com.io7m.jcoronado.api.VulkanClearAttachment;
 import com.io7m.jcoronado.api.VulkanClearRectangle;
@@ -29,18 +28,16 @@ import com.io7m.jcoronado.api.VulkanClearValueType;
 import com.io7m.jcoronado.api.VulkanCommandBufferBeginInfo;
 import com.io7m.jcoronado.api.VulkanCommandBufferResetFlag;
 import com.io7m.jcoronado.api.VulkanCommandBufferType;
-import com.io7m.jcoronado.api.VulkanDependencyFlag;
+import com.io7m.jcoronado.api.VulkanDependencyInfo;
 import com.io7m.jcoronado.api.VulkanDescriptorSetType;
 import com.io7m.jcoronado.api.VulkanEventType;
 import com.io7m.jcoronado.api.VulkanFilter;
 import com.io7m.jcoronado.api.VulkanImageBlit;
 import com.io7m.jcoronado.api.VulkanImageCopy;
 import com.io7m.jcoronado.api.VulkanImageLayout;
-import com.io7m.jcoronado.api.VulkanImageMemoryBarrier;
 import com.io7m.jcoronado.api.VulkanImageSubresourceRange;
 import com.io7m.jcoronado.api.VulkanImageType;
 import com.io7m.jcoronado.api.VulkanIndexType;
-import com.io7m.jcoronado.api.VulkanMemoryBarrier;
 import com.io7m.jcoronado.api.VulkanPipelineBindPoint;
 import com.io7m.jcoronado.api.VulkanPipelineLayoutType;
 import com.io7m.jcoronado.api.VulkanPipelineStageFlag;
@@ -296,12 +293,7 @@ public final class VFakeCommandBuffer implements VulkanCommandBufferType
 
   @Override
   public void pipelineBarrier(
-    final Set<VulkanPipelineStageFlag> source_stage_mask,
-    final Set<VulkanPipelineStageFlag> target_stage_mask,
-    final Set<VulkanDependencyFlag> dependency_flags,
-    final List<VulkanMemoryBarrier> memory_barriers,
-    final List<VulkanBufferMemoryBarrier> buffer_memory_barriers,
-    final List<VulkanImageMemoryBarrier> image_memory_barriers)
+    final VulkanDependencyInfo info)
   {
 
   }
@@ -387,7 +379,7 @@ public final class VFakeCommandBuffer implements VulkanCommandBufferType
   @Override
   public void setEvent(
     final VulkanEventType event,
-    final Set<VulkanPipelineStageFlag> mask)
+    final VulkanDependencyInfo info)
   {
 
   }
@@ -427,11 +419,7 @@ public final class VFakeCommandBuffer implements VulkanCommandBufferType
   @Override
   public void waitEvents(
     final List<VulkanEventType> events,
-    final Set<VulkanPipelineStageFlag> source_stage_mask,
-    final Set<VulkanPipelineStageFlag> target_stage_mask,
-    final List<VulkanMemoryBarrier> memory_barriers,
-    final List<VulkanBufferMemoryBarrier> buffer_memory_barriers,
-    final List<VulkanImageMemoryBarrier> image_memory_barriers)
+    final List<VulkanDependencyInfo> dependencyInfos)
   {
 
   }

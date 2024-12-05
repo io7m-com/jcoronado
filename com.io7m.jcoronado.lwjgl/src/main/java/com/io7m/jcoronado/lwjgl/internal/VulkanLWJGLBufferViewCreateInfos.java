@@ -59,7 +59,7 @@ public final class VulkanLWJGLBufferViewCreateInfos
     Objects.requireNonNull(stack, "stack");
     Objects.requireNonNull(info, "info");
 
-    return packInto(info, VkBufferViewCreateInfo.malloc(stack));
+    return packInto(info, VkBufferViewCreateInfo.calloc(stack));
   }
 
   /**
@@ -116,7 +116,7 @@ public final class VulkanLWJGLBufferViewCreateInfos
     return VulkanLWJGLArrays.pack(
       infos,
       (sstack, value, output) -> packInto(value, output),
-      VkBufferViewCreateInfo::malloc,
+      VkBufferViewCreateInfo::calloc,
       stack
     );
   }
@@ -143,7 +143,7 @@ public final class VulkanLWJGLBufferViewCreateInfos
     return VulkanLWJGLArrays.packOrNull(
       infos,
       (sstack, value, output) -> packInto(value, output),
-      VkBufferViewCreateInfo::malloc,
+      VkBufferViewCreateInfo::calloc,
       stack
     );
   }

@@ -130,7 +130,7 @@ public final class VulkanLWJGLHostAllocatorProxy implements AutoCloseable
               VulkanSystemAllocationScope.ofInt(scope)));
 
       final var callback_buffer =
-        VkAllocationCallbacks.malloc(stack)
+        VkAllocationCallbacks.calloc(stack)
           .pfnAllocation(pfn_allocate)
           .pfnFree(pfn_free)
           .pfnReallocation(pfn_reallocate)

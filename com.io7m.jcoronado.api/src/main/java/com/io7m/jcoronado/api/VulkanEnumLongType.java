@@ -16,31 +16,15 @@
 
 package com.io7m.jcoronado.api;
 
-import com.io7m.immutables.styles.ImmutablesStyleType;
-import org.immutables.value.Value;
-
-import java.util.Set;
-
 /**
- * Structure specifying the parameters of a global memory barrier.
+ * The type of enums with long integer values.
  */
 
-@VulkanAPIStructType(vulkanStruct = "VkMemoryBarrier2")
-@ImmutablesStyleType
-@Value.Immutable
-public interface VulkanMemoryBarrierType
+public interface VulkanEnumLongType
 {
   /**
-   * @return The source access mask
+   * @return The long integer value of the constant
    */
 
-  @Value.Parameter
-  Set<VulkanAccessFlag> srcAccessMask();
-
-  /**
-   * @return The destination access mask
-   */
-
-  @Value.Parameter
-  Set<VulkanAccessFlag> dstAccessMask();
+  long value();
 }

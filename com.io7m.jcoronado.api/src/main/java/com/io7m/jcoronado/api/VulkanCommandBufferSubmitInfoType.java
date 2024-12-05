@@ -19,28 +19,30 @@ package com.io7m.jcoronado.api;
 import com.io7m.immutables.styles.ImmutablesStyleType;
 import org.immutables.value.Value;
 
-import java.util.Set;
-
 /**
- * Structure specifying the parameters of a global memory barrier.
+ * The type of Vulkan command buffer submission information.
+ *
+ * @see "VkCommandBufferSubmitInfo"
  */
 
-@VulkanAPIStructType(vulkanStruct = "VkMemoryBarrier2")
+@VulkanAPIStructType(vulkanStruct = "VkCommandBufferSubmitInfo")
 @ImmutablesStyleType
 @Value.Immutable
-public interface VulkanMemoryBarrierType
+public interface VulkanCommandBufferSubmitInfoType
 {
   /**
-   * @return The source access mask
+   * @return The command buffer
    */
 
-  @Value.Parameter
-  Set<VulkanAccessFlag> srcAccessMask();
+  VulkanCommandBufferType commandBuffer();
 
   /**
-   * @return The destination access mask
+   * @return A bitmask indicating which devices in a device group execute the command buffer
    */
 
-  @Value.Parameter
-  Set<VulkanAccessFlag> dstAccessMask();
+  @Value.Default
+  default long deviceMask()
+  {
+    return 0L;
+  }
 }

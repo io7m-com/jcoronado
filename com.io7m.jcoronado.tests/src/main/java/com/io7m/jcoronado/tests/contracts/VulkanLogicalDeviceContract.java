@@ -22,8 +22,10 @@ import com.io7m.jcoronado.api.VulkanBufferCopy;
 import com.io7m.jcoronado.api.VulkanBufferCreateInfo;
 import com.io7m.jcoronado.api.VulkanBufferMemoryBarrier;
 import com.io7m.jcoronado.api.VulkanBufferViewCreateInfo;
+import com.io7m.jcoronado.api.VulkanCommandBufferSubmitInfo;
 import com.io7m.jcoronado.api.VulkanCommandPoolCreateInfo;
 import com.io7m.jcoronado.api.VulkanComponentMapping;
+import com.io7m.jcoronado.api.VulkanDependencyInfo;
 import com.io7m.jcoronado.api.VulkanEventCreateInfo;
 import com.io7m.jcoronado.api.VulkanException;
 import com.io7m.jcoronado.api.VulkanExtent2D;
@@ -290,11 +292,14 @@ public abstract class VulkanLogicalDeviceContract extends VulkanOnDeviceContract
           .findFirst()
           .orElseThrow();
 
+      final var queueFamilyIndex =
+        queue.queueFamilyProperties().queueFamilyIndex();
+
       final var commandPool =
         resources.add(
           this.device.createCommandPool(
             VulkanCommandPoolCreateInfo.builder()
-              .setQueueFamilyIndex(queue.queueFamilyProperties().queueFamilyIndex())
+              .setQueueFamilyIndex(queueFamilyIndex)
               .build())
         );
 
@@ -311,81 +316,92 @@ public abstract class VulkanLogicalDeviceContract extends VulkanOnDeviceContract
         );
 
       final var fillBarrier0 =
-        VulkanBufferMemoryBarrier.of(
-          Set.of(VK_ACCESS_TRANSFER_WRITE_BIT),
-          Set.of(VK_ACCESS_TRANSFER_READ_BIT),
-          queue.queueFamilyProperties().queueFamilyIndex(),
-          queue.queueFamilyProperties().queueFamilyIndex(),
-          buffer0,
-          0L,
-          128L
-        );
+        VulkanBufferMemoryBarrier.builder()
+          .setBuffer(buffer0)
+          .setSrcStageMask(Set.of(VK_PIPELINE_STAGE_TRANSFER_BIT))
+          .setSrcAccessMask(Set.of(VK_ACCESS_TRANSFER_WRITE_BIT))
+          .setSrcQueueFamilyIndex(queueFamilyIndex)
+          .setDstStageMask(Set.of(VK_PIPELINE_STAGE_TRANSFER_BIT))
+          .setDstAccessMask(Set.of(VK_ACCESS_TRANSFER_READ_BIT))
+          .setDstQueueFamilyIndex(queueFamilyIndex)
+          .setOffset(0L)
+          .setSize(128L)
+          .build();
 
       final var fillBarrier1 =
-        VulkanBufferMemoryBarrier.of(
-          Set.of(VK_ACCESS_TRANSFER_WRITE_BIT),
-          Set.of(VK_ACCESS_TRANSFER_READ_BIT),
-          queue.queueFamilyProperties().queueFamilyIndex(),
-          queue.queueFamilyProperties().queueFamilyIndex(),
-          buffer1,
-          0L,
-          128L
-        );
+        VulkanBufferMemoryBarrier.builder()
+          .setBuffer(buffer1)
+          .setSrcStageMask(Set.of(VK_PIPELINE_STAGE_TRANSFER_BIT))
+          .setSrcAccessMask(Set.of(VK_ACCESS_TRANSFER_WRITE_BIT))
+          .setSrcQueueFamilyIndex(queueFamilyIndex)
+          .setDstStageMask(Set.of(VK_PIPELINE_STAGE_TRANSFER_BIT))
+          .setDstAccessMask(Set.of(VK_ACCESS_TRANSFER_READ_BIT))
+          .setDstQueueFamilyIndex(queueFamilyIndex)
+          .setOffset(0L)
+          .setSize(128L)
+          .build();
 
       final var copyBarrier0 =
-        VulkanBufferMemoryBarrier.of(
-          Set.of(VK_ACCESS_TRANSFER_WRITE_BIT),
-          Set.of(VK_ACCESS_HOST_READ_BIT),
-          queue.queueFamilyProperties().queueFamilyIndex(),
-          queue.queueFamilyProperties().queueFamilyIndex(),
-          buffer0,
-          0L,
-          128L
-        );
+        VulkanBufferMemoryBarrier.builder()
+          .setBuffer(buffer0)
+          .setSrcStageMask(Set.of(VK_PIPELINE_STAGE_TRANSFER_BIT))
+          .setSrcAccessMask(Set.of(VK_ACCESS_TRANSFER_WRITE_BIT))
+          .setSrcQueueFamilyIndex(queueFamilyIndex)
+          .setDstStageMask(Set.of(VK_PIPELINE_STAGE_HOST_BIT))
+          .setDstAccessMask(Set.of(VK_ACCESS_HOST_READ_BIT))
+          .setDstQueueFamilyIndex(queueFamilyIndex)
+          .setSize(128L)
+          .setOffset(0L)
+          .build();
 
       final var copyBarrier1 =
-        VulkanBufferMemoryBarrier.of(
-          Set.of(VK_ACCESS_TRANSFER_WRITE_BIT),
-          Set.of(VK_ACCESS_HOST_READ_BIT),
-          queue.queueFamilyProperties().queueFamilyIndex(),
-          queue.queueFamilyProperties().queueFamilyIndex(),
-          buffer1,
-          0L,
-          128L
-        );
+        VulkanBufferMemoryBarrier.builder()
+          .setBuffer(buffer1)
+          .setSrcStageMask(Set.of(VK_PIPELINE_STAGE_TRANSFER_BIT))
+          .setSrcAccessMask(Set.of(VK_ACCESS_TRANSFER_WRITE_BIT))
+          .setSrcQueueFamilyIndex(queueFamilyIndex)
+          .setDstStageMask(Set.of(VK_PIPELINE_STAGE_HOST_BIT))
+          .setDstAccessMask(Set.of(VK_ACCESS_HOST_READ_BIT))
+          .setDstQueueFamilyIndex(queueFamilyIndex)
+          .setSize(128L)
+          .setOffset(0L)
+          .build();
 
       commandBuffer.beginCommandBuffer(
         VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT);
 
       commandBuffer.fillBuffer(buffer0, 0L, 128L, 0x41414141);
       commandBuffer.fillBuffer(buffer1, 0L, 128L, 0x42424242);
+
       commandBuffer.pipelineBarrier(
-        Set.of(VK_PIPELINE_STAGE_TRANSFER_BIT),
-        Set.of(VK_PIPELINE_STAGE_TRANSFER_BIT),
-        Set.of(),
-        List.of(),
-        List.of(fillBarrier0, fillBarrier1),
-        List.of()
+        VulkanDependencyInfo.builder()
+          .addBufferMemoryBarriers(fillBarrier0)
+          .addBufferMemoryBarriers(fillBarrier1)
+          .build()
       );
 
       commandBuffer.copyBuffer(
         buffer0,
         buffer1,
-        List.of(VulkanBufferCopy.of(0L, 0L, 128L)));
-      commandBuffer.pipelineBarrier(
-        Set.of(VK_PIPELINE_STAGE_TRANSFER_BIT),
-        Set.of(VK_PIPELINE_STAGE_HOST_BIT),
-        Set.of(),
-        List.of(),
-        List.of(copyBarrier0, copyBarrier1),
-        List.of()
+        List.of(VulkanBufferCopy.of(0L, 0L, 128L))
       );
+
+      commandBuffer.pipelineBarrier(
+        VulkanDependencyInfo.builder()
+          .addBufferMemoryBarriers(copyBarrier0)
+          .addBufferMemoryBarriers(copyBarrier1)
+          .build()
+      );
+
       commandBuffer.endCommandBuffer();
 
       queue.submit(List.of(
         VulkanSubmitInfo.builder()
-          .addCommandBuffers(commandBuffer)
-          .build()
+          .addCommandBuffers(
+            VulkanCommandBufferSubmitInfo.builder()
+              .setCommandBuffer(commandBuffer)
+              .build()
+          ).build()
       ), Optional.of(fence));
 
       this.device.waitForFence(fence, 1_000_000_000L);
@@ -516,7 +532,9 @@ public abstract class VulkanLogicalDeviceContract extends VulkanOnDeviceContract
         .setMipLevels(1)
         .setSharingMode(VK_SHARING_MODE_EXCLUSIVE)
         .setTiling(VK_IMAGE_TILING_LINEAR)
-        .setUsage(Set.of(VK_IMAGE_USAGE_TRANSFER_SRC_BIT, VK_IMAGE_USAGE_SAMPLED_BIT))
+        .setUsage(Set.of(
+          VK_IMAGE_USAGE_TRANSFER_SRC_BIT,
+          VK_IMAGE_USAGE_SAMPLED_BIT))
         .build()
     )) {
       final var subresourceRange =
@@ -653,10 +671,12 @@ public abstract class VulkanLogicalDeviceContract extends VulkanOnDeviceContract
                          .build())
                      .addSubpasses(
                        VulkanSubpassDescription.builder()
-                         .addColorAttachments(VulkanAttachmentReference.of(
-                           0,
-                           VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL))
-                         .setPipelineBindPoint(VK_PIPELINE_BIND_POINT_GRAPHICS)
+                         .addColorAttachments(
+                           VulkanAttachmentReference.builder()
+                             .setAttachment(0)
+                             .setLayout(VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL)
+                             .build()
+                         ).setPipelineBindPoint(VK_PIPELINE_BIND_POINT_GRAPHICS)
                          .build())
                      .build()
                  )) {
@@ -747,28 +767,34 @@ public abstract class VulkanLogicalDeviceContract extends VulkanOnDeviceContract
                    .build()
                )) {
 
+          final var subpassDescription =
+            VulkanSubpassDescription.builder()
+              .addColorAttachments(
+                VulkanAttachmentReference.builder()
+                  .setAttachment(0)
+                  .setLayout(VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL)
+                  .build()
+              )
+              .setPipelineBindPoint(VK_PIPELINE_BIND_POINT_GRAPHICS)
+              .build();
+
+          final var attachmentDescription =
+            VulkanAttachmentDescription.builder()
+              .setInitialLayout(VK_IMAGE_LAYOUT_UNDEFINED)
+              .setFormat(VK_FORMAT_R5G6B5_UNORM_PACK16)
+              .setSamples(VK_SAMPLE_COUNT_1_BIT)
+              .setFinalLayout(VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL)
+              .setLoadOp(VK_ATTACHMENT_LOAD_OP_DONT_CARE)
+              .setStoreOp(VK_ATTACHMENT_STORE_OP_DONT_CARE)
+              .setStencilLoadOp(VK_ATTACHMENT_LOAD_OP_DONT_CARE)
+              .setStencilStoreOp(VK_ATTACHMENT_STORE_OP_DONT_CARE)
+              .build();
+
           try (var renderPass =
                  this.device.createRenderPass(
                    VulkanRenderPassCreateInfo.builder()
-                     .addAttachments(
-                       VulkanAttachmentDescription.builder()
-                         .setInitialLayout(VK_IMAGE_LAYOUT_UNDEFINED)
-                         .setFormat(VK_FORMAT_R5G6B5_UNORM_PACK16)
-                         .setSamples(VK_SAMPLE_COUNT_1_BIT)
-                         .setFinalLayout(
-                           VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL)
-                         .setLoadOp(VK_ATTACHMENT_LOAD_OP_DONT_CARE)
-                         .setStoreOp(VK_ATTACHMENT_STORE_OP_DONT_CARE)
-                         .setStencilLoadOp(VK_ATTACHMENT_LOAD_OP_DONT_CARE)
-                         .setStencilStoreOp(VK_ATTACHMENT_STORE_OP_DONT_CARE)
-                         .build())
-                     .addSubpasses(
-                       VulkanSubpassDescription.builder()
-                         .addColorAttachments(VulkanAttachmentReference.of(
-                           0,
-                           VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL))
-                         .setPipelineBindPoint(VK_PIPELINE_BIND_POINT_GRAPHICS)
-                         .build())
+                     .addAttachments(attachmentDescription)
+                     .addSubpasses(subpassDescription)
                      .build()
                  )) {
 

@@ -25,6 +25,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.vulkan.VkMemoryBarrier;
+import org.lwjgl.vulkan.VkMemoryBarrier2;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,10 +43,10 @@ public final class VulkanLWJGLMemoryBarriersTest
   private MemoryStack stack = MemoryStack.create();
 
   private static void checkPacked(
-    final VkMemoryBarrier out)
+    final VkMemoryBarrier2 out)
   {
-    assertEquals(0b1111_1111_1111_1111_1111, out.srcAccessMask());
-    assertEquals(0b1111_1111_1111_1111_1111, out.dstAccessMask());
+    assertEquals(0b11100000000000000011111111111111111L, out.srcAccessMask());
+    assertEquals(0b11100000000000000011111111111111111L, out.dstAccessMask());
   }
 
   @BeforeEach

@@ -52,7 +52,7 @@ public final class VulkanLWJGLClearAttachments
     Objects.requireNonNull(stack, "stack");
     Objects.requireNonNull(info, "info");
 
-    return packInto(stack, info, VkClearAttachment.malloc(stack));
+    return packInto(stack, info, VkClearAttachment.calloc(stack));
   }
 
   /**
@@ -101,7 +101,7 @@ public final class VulkanLWJGLClearAttachments
     return VulkanLWJGLArrays.pack(
       infos,
       VulkanLWJGLClearAttachments::packInto,
-      VkClearAttachment::malloc,
+      VkClearAttachment::calloc,
       stack
     );
   }
@@ -128,7 +128,7 @@ public final class VulkanLWJGLClearAttachments
     return VulkanLWJGLArrays.packOrNull(
       infos,
       VulkanLWJGLClearAttachments::packInto,
-      VkClearAttachment::malloc,
+      VkClearAttachment::calloc,
       stack
     );
   }

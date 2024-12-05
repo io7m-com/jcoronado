@@ -25,10 +25,10 @@ import java.util.Set;
 /**
  * Structure specifying parameters of a newly created render pass.
  *
- * @see "VkRenderPassCreateInfo"
+ * @see "VkRenderPassCreateInfo2"
  */
 
-@VulkanAPIStructType(vulkanStruct = "VkRenderPassCreateInfo")
+@VulkanAPIStructType(vulkanStruct = "VkRenderPassCreateInfo2")
 @ImmutablesStyleType
 @Value.Immutable
 public interface VulkanRenderPassCreateInfoType

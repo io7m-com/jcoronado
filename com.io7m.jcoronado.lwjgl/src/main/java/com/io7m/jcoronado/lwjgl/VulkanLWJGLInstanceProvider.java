@@ -145,7 +145,7 @@ public final class VulkanLWJGLInstanceProvider
       }
 
       final var instanceExtensions =
-        VkExtensionProperties.malloc(size, stack);
+        VkExtensionProperties.calloc(size, stack);
 
       checkReturnCode(
         VK10.vkEnumerateInstanceExtensionProperties(
@@ -189,7 +189,7 @@ public final class VulkanLWJGLInstanceProvider
       }
 
       final var layersBuffer =
-        VkLayerProperties.malloc(size, stack);
+        VkLayerProperties.calloc(size, stack);
 
       checkReturnCode(
         VK10.vkEnumerateInstanceLayerProperties(
@@ -283,7 +283,7 @@ public final class VulkanLWJGLInstanceProvider
         stack.ASCII(applicationInfo.engineName());
 
       final var vkApplicationInfo =
-        VkApplicationInfo.malloc(stack)
+        VkApplicationInfo.calloc(stack)
           .sType(VK10.VK_STRUCTURE_TYPE_APPLICATION_INFO)
           .pNext(0L)
           .pApplicationName(appNamePtr)
@@ -298,7 +298,7 @@ public final class VulkanLWJGLInstanceProvider
         this.createInstanceCreateInfoExtensions(stack, info.extensionInfo());
 
       final var vkInstanceCreateInfo =
-        VkInstanceCreateInfo.malloc(stack)
+        VkInstanceCreateInfo.calloc(stack)
           .sType(VK10.VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO)
           .pNext(vkInstanceCreateInfoExtensions)
           .flags(0)

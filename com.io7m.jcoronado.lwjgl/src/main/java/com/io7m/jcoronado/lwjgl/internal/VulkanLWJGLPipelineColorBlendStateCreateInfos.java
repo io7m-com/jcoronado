@@ -55,7 +55,7 @@ public final class VulkanLWJGLPipelineColorBlendStateCreateInfos
     Objects.requireNonNull(info, "info");
 
     final var target =
-      VkPipelineColorBlendStateCreateInfo.malloc(stack);
+      VkPipelineColorBlendStateCreateInfo.calloc(stack);
 
     target
       .sType(VK10.VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO)
