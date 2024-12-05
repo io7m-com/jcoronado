@@ -18,7 +18,9 @@ package com.io7m.jcoronado.lwjgl.internal;
 
 import com.io7m.jcoronado.api.VulkanEnumMaps;
 import com.io7m.jcoronado.api.VulkanIncompatibleClassException;
+import com.io7m.jcoronado.api.VulkanSemaphoreBinaryType;
 import com.io7m.jcoronado.api.VulkanSemaphoreSubmitInfo;
+import com.io7m.jcoronado.api.VulkanSemaphoreTimelineType;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.vulkan.VK13;
 import org.lwjgl.vulkan.VkSemaphoreSubmitInfo;
@@ -76,12 +78,21 @@ public final class VulkanLWJGLSemaphoreSubmitInfos
     final VkSemaphoreSubmitInfo output)
     throws VulkanIncompatibleClassException
   {
+    final var semaphoreHandle =
+      switch (info.semaphore()) {
+        case final VulkanSemaphoreBinaryType b -> {
+          yield checkInstanceOf(b, VulkanLWJGLSemaphoreBinary.class)
+            .handle();
+        }
+        case final VulkanSemaphoreTimelineType t -> {
+          yield checkInstanceOf(t, VulkanLWJGLSemaphoreTimeline.class)
+            .handle();
+        }
+      };
+
     return output.sType(VK13.VK_STRUCTURE_TYPE_SEMAPHORE_SUBMIT_INFO)
       .pNext(0L)
-      .semaphore(
-        checkInstanceOf(info.semaphore(), VulkanLWJGLSemaphore.class)
-          .handle()
-      )
+      .semaphore(semaphoreHandle)
       .value(info.value())
       .deviceIndex((int) info.deviceIndex())
       .stageMask(VulkanEnumMaps.packValuesLong(info.stageMask()));

@@ -16,6 +16,9 @@
 
 package com.io7m.jcoronado.api;
 
+import com.io7m.immutables.styles.ImmutablesStyleType;
+import org.immutables.value.Value;
+
 /**
  * The type of Vulkan semaphore creation information.
  *
@@ -23,9 +26,10 @@ package com.io7m.jcoronado.api;
  */
 
 @VulkanAPIStructType(vulkanStruct = "VkSemaphoreCreateInfo")
-public sealed interface VulkanSemaphoreCreateInfoType
-  permits VulkanSemaphoreTimelineCreateInfoType,
-    VulkanSemaphoreBinaryCreateInfoType
+@ImmutablesStyleType
+@Value.Immutable
+public non-sealed interface VulkanSemaphoreBinaryCreateInfoType
+  extends VulkanSemaphoreCreateInfoType
 {
 
 }

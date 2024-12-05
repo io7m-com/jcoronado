@@ -37,15 +37,14 @@ import com.io7m.jcoronado.lwjgl.internal.VulkanLWJGLQueryPool;
 import com.io7m.jcoronado.lwjgl.internal.VulkanLWJGLQueue;
 import com.io7m.jcoronado.lwjgl.internal.VulkanLWJGLRenderPass;
 import com.io7m.jcoronado.lwjgl.internal.VulkanLWJGLSampler;
-import com.io7m.jcoronado.lwjgl.internal.VulkanLWJGLSemaphore;
+import com.io7m.jcoronado.lwjgl.internal.VulkanLWJGLSemaphoreBinary;
+import com.io7m.jcoronado.lwjgl.internal.VulkanLWJGLSemaphoreTimeline;
 import com.io7m.jcoronado.lwjgl.internal.VulkanLWJGLShaderModule;
 import nl.jqno.equalsverifier.EqualsVerifier;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.lwjgl.vulkan.VkDevice;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
@@ -258,9 +257,22 @@ public final class VulkanLWJGLEqualsTest
   }
 
   @Test
-  public void testVulkanLWJGLSemaphore()
+  public void testVulkanLWJGLSemaphoreBinary()
   {
-    EqualsVerifier.forClass(VulkanLWJGLSemaphore.class)
+    EqualsVerifier.forClass(VulkanLWJGLSemaphoreBinary.class)
+      .withIgnoredFields(
+        "ownership",
+        "device",
+        "closed",
+        "host_allocator_proxy")
+      .withNonnullFields("handle")
+      .verify();
+  }
+
+  @Test
+  public void testVulkanLWJGLSemaphoreTimeline()
+  {
+    EqualsVerifier.forClass(VulkanLWJGLSemaphoreTimeline.class)
       .withIgnoredFields(
         "ownership",
         "device",

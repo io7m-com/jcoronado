@@ -17,33 +17,14 @@
 package com.io7m.jcoronado.api;
 
 /**
- * Flags specified when creating semaphores.
+ * A semaphore represents a GPU to GPU synchronization.
  *
- * Vulkan 1.1 specification: "VkSemaphoreCreateFlags is a bitmask type for setting a mask, but is
- * currently reserved for future use."
- *
- * @see "VkSemaphoreCreateFlags"
+ * @see "VkSemaphore"
  */
 
-@VulkanAPIEnumType(vulkanEnum = "VkSemaphoreCreateFlags")
-public enum VulkanSemaphoreCreateFlag implements VulkanEnumBitmaskType
+public non-sealed interface VulkanSemaphoreBinaryType
+  extends VulkanSemaphoreType
 {
-  /**
-   * No flags set.
-   */
 
-  VK_SEMAPHORE_CREATE_FLAG_NONE(0x0);
-
-  private final int value;
-
-  VulkanSemaphoreCreateFlag(final int i)
-  {
-    this.value = i;
-  }
-
-  @Override
-  public int value()
-  {
-    return this.value;
-  }
 }
+

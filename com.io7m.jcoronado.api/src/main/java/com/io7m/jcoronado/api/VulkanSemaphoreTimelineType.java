@@ -17,15 +17,14 @@
 package com.io7m.jcoronado.api;
 
 /**
- * The type of Vulkan semaphore creation information.
+ * A semaphore represents a GPU to GPU synchronization.
  *
- * @see "VkSemaphoreCreateInfo"
+ * @see "VkSemaphore"
  */
 
-@VulkanAPIStructType(vulkanStruct = "VkSemaphoreCreateInfo")
-public sealed interface VulkanSemaphoreCreateInfoType
-  permits VulkanSemaphoreTimelineCreateInfoType,
-    VulkanSemaphoreBinaryCreateInfoType
+public non-sealed interface VulkanSemaphoreTimelineType
+  extends VulkanSemaphoreType
 {
 
 }
+

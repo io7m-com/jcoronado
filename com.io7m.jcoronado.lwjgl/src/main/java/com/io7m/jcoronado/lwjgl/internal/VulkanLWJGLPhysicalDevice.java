@@ -531,11 +531,19 @@ public final class VulkanLWJGLPhysicalDevice
     );
 
     /*
+     * jcoronado itself requires the timelineSemaphore feature as part of
+     * the API.
+     */
+
+    requestFeatures = requestFeatures.withFeatures12(
+      requestFeatures.features12()
+        .withTimelineSemaphore(true)
+    );
+
+    /*
      * On Vulkan 1.1+, the required features are specified in a set of
      * structures chained in the "next" pointer.
      */
-
-    LOG.debug("Enabling features using chained VkPhysicalDeviceFeatures2");
 
     final var vkFeatures11 =
       VkPhysicalDeviceVulkan11Features.calloc(stack);

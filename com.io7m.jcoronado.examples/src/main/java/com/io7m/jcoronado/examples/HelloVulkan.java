@@ -66,7 +66,7 @@ import com.io7m.jcoronado.api.VulkanRectangle2D;
 import com.io7m.jcoronado.api.VulkanRenderPassBeginInfo;
 import com.io7m.jcoronado.api.VulkanRenderPassCreateInfo;
 import com.io7m.jcoronado.api.VulkanResourceException;
-import com.io7m.jcoronado.api.VulkanSemaphoreCreateInfo;
+import com.io7m.jcoronado.api.VulkanSemaphoreBinaryCreateInfo;
 import com.io7m.jcoronado.api.VulkanSemaphoreSubmitInfo;
 import com.io7m.jcoronado.api.VulkanSemaphoreType;
 import com.io7m.jcoronado.api.VulkanShaderModuleCreateInfo;
@@ -1316,14 +1316,14 @@ public final class HelloVulkan implements ExampleType
        */
 
       final var renderFinished =
-        resources.add(device.createSemaphore(
-          VulkanSemaphoreCreateInfo.builder()
-            .build()));
+        resources.add(device.createBinarySemaphore(
+          VulkanSemaphoreBinaryCreateInfo.builder().build()
+        ));
 
       final var imageAvailable =
-        resources.add(device.createSemaphore(
-          VulkanSemaphoreCreateInfo.builder()
-            .build()));
+        resources.add(device.createBinarySemaphore(
+          VulkanSemaphoreBinaryCreateInfo.builder().build()
+        ));
 
       /*
        * Start recording commands.

@@ -22,7 +22,9 @@ package com.io7m.jcoronado.api;
  * @see "VkSemaphore"
  */
 
-public interface VulkanSemaphoreType extends VulkanHandleNonDispatchableType
+public sealed interface VulkanSemaphoreType
+  extends VulkanHandleNonDispatchableType
+  permits VulkanSemaphoreTimelineType, VulkanSemaphoreBinaryType
 {
   @VulkanAPIFunctionType(vulkanFunction = "vkDestroySemaphore")
   @Override

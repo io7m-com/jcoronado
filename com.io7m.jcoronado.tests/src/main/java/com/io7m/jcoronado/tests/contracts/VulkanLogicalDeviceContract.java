@@ -47,7 +47,8 @@ import com.io7m.jcoronado.api.VulkanRectangle2D;
 import com.io7m.jcoronado.api.VulkanRenderPassBeginInfo;
 import com.io7m.jcoronado.api.VulkanRenderPassCreateInfo;
 import com.io7m.jcoronado.api.VulkanSamplerCreateInfo;
-import com.io7m.jcoronado.api.VulkanSemaphoreCreateInfo;
+import com.io7m.jcoronado.api.VulkanSemaphoreBinaryCreateInfo;
+import com.io7m.jcoronado.api.VulkanSemaphoreTimelineCreateInfo;
 import com.io7m.jcoronado.api.VulkanShaderModuleCreateInfo;
 import com.io7m.jcoronado.api.VulkanSubmitInfo;
 import com.io7m.jcoronado.api.VulkanSubpassContents;
@@ -942,14 +943,34 @@ public abstract class VulkanLogicalDeviceContract extends VulkanOnDeviceContract
    */
 
   @Test
-  public final void testCreateSemaphore()
+  public final void testCreateSemaphoreBinary()
     throws Exception
   {
     Assumptions.assumeTrue(this.shouldRun(), "Test should run");
 
     try (var semaphore =
-           this.device.createSemaphore(
-             VulkanSemaphoreCreateInfo.builder()
+           this.device.createBinarySemaphore(
+             VulkanSemaphoreBinaryCreateInfo.builder().build())) {
+      assertFalse(semaphore.isClosed());
+    }
+  }
+
+  /**
+   * Try creating a semaphore.
+   *
+   * @throws Exception On errors
+   */
+
+  @Test
+  public final void testCreateSemaphoreTimeline()
+    throws Exception
+  {
+    Assumptions.assumeTrue(this.shouldRun(), "Test should run");
+
+    try (var semaphore =
+           this.device.createTimelineSemaphore(
+             VulkanSemaphoreTimelineCreateInfo.builder()
+               .setInitialValue(23L)
                .build())) {
       assertFalse(semaphore.isClosed());
     }

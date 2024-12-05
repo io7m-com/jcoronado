@@ -24,8 +24,7 @@ import java.util.Objects;
 
 sealed abstract class VulkanLWJGLHandle
   implements VulkanHandleType
-  permits
-  VMALWJGLAllocator,
+  permits VMALWJGLAllocator,
   VMALWJGLAllocator.VMALWJGLMappedMemory,
   VulkanLWJGLBuffer,
   VulkanLWJGLBufferView,
@@ -53,7 +52,8 @@ sealed abstract class VulkanLWJGLHandle
   VulkanLWJGLQueue,
   VulkanLWJGLRenderPass,
   VulkanLWJGLSampler,
-  VulkanLWJGLSemaphore,
+  VulkanLWJGLSemaphoreBinary,
+  VulkanLWJGLSemaphoreTimeline,
   VulkanLWJGLShaderModule
 {
   private final Ownership ownership;

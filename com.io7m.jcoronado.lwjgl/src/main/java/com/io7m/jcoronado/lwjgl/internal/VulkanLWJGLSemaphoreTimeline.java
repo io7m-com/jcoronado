@@ -16,7 +16,7 @@
 
 package com.io7m.jcoronado.lwjgl.internal;
 
-import com.io7m.jcoronado.api.VulkanSemaphoreType;
+import com.io7m.jcoronado.api.VulkanSemaphoreTimelineType;
 import org.lwjgl.vulkan.VK10;
 import org.lwjgl.vulkan.VkDevice;
 import org.slf4j.Logger;
@@ -25,26 +25,27 @@ import org.slf4j.LoggerFactory;
 import java.util.Objects;
 
 /**
- * A semaphore.
+ * A timeline semaphore.
  */
 
-public final class VulkanLWJGLSemaphore
+public final class VulkanLWJGLSemaphoreTimeline
   extends VulkanLWJGLHandle
-  implements VulkanSemaphoreType
+  implements VulkanSemaphoreTimelineType
 {
   private static final Logger LOG =
-    LoggerFactory.getLogger(VulkanLWJGLSemaphore.class);
+    LoggerFactory.getLogger(VulkanLWJGLSemaphoreTimeline.class);
 
   private final VkDevice device;
 
-  VulkanLWJGLSemaphore(
+  VulkanLWJGLSemaphoreTimeline(
     final Ownership ownership,
     final VkDevice inDevice,
     final long inHandle,
     final VulkanLWJGLHostAllocatorProxy inHostAllocatorProxy)
   {
     super(ownership, inHostAllocatorProxy, inHandle);
-    this.device = Objects.requireNonNull(inDevice, "device");
+    this.device =
+      Objects.requireNonNull(inDevice, "device");
   }
 
   @Override

@@ -72,8 +72,10 @@ import com.io7m.jcoronado.api.VulkanRenderPassCreateInfo;
 import com.io7m.jcoronado.api.VulkanRenderPassType;
 import com.io7m.jcoronado.api.VulkanSamplerCreateInfo;
 import com.io7m.jcoronado.api.VulkanSamplerType;
-import com.io7m.jcoronado.api.VulkanSemaphoreCreateInfo;
-import com.io7m.jcoronado.api.VulkanSemaphoreType;
+import com.io7m.jcoronado.api.VulkanSemaphoreBinaryCreateInfo;
+import com.io7m.jcoronado.api.VulkanSemaphoreBinaryType;
+import com.io7m.jcoronado.api.VulkanSemaphoreTimelineCreateInfo;
+import com.io7m.jcoronado.api.VulkanSemaphoreTimelineType;
 import com.io7m.jcoronado.api.VulkanShaderModuleCreateInfo;
 import com.io7m.jcoronado.api.VulkanShaderModuleType;
 import com.io7m.jcoronado.api.VulkanSubresourceLayout;
@@ -348,11 +350,19 @@ public final class VFakeLogicalDevice implements VulkanLogicalDeviceType
   }
 
   @Override
-  public VulkanSemaphoreType createSemaphore(
-    final VulkanSemaphoreCreateInfo create_info)
+  public VulkanSemaphoreBinaryType createBinarySemaphore(
+    final VulkanSemaphoreBinaryCreateInfo info)
     throws VulkanException
   {
-    throw errorNotImplemented("createSemaphore");
+    throw errorNotImplemented("createBinarySemaphore");
+  }
+
+  @Override
+  public VulkanSemaphoreTimelineType createTimelineSemaphore(
+    final VulkanSemaphoreTimelineCreateInfo info)
+    throws VulkanException
+  {
+    throw errorNotImplemented("createTimelineSemaphore");
   }
 
   @Override

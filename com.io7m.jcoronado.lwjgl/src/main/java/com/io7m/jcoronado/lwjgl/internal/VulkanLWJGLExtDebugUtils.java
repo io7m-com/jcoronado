@@ -355,7 +355,10 @@ public final class VulkanLWJGLExtDebugUtils
       case final VulkanLWJGLSampler _ -> {
         yield OptionalInt.of(VK10.VK_OBJECT_TYPE_SAMPLER);
       }
-      case final VulkanLWJGLSemaphore _ -> {
+      case final VulkanLWJGLSemaphoreTimeline _ -> {
+        yield OptionalInt.of(VK10.VK_OBJECT_TYPE_SEMAPHORE);
+      }
+      case final VulkanLWJGLSemaphoreBinary _ -> {
         yield OptionalInt.of(VK10.VK_OBJECT_TYPE_SEMAPHORE);
       }
       case final VulkanLWJGLShaderModule _ -> {

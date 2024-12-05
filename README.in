@@ -23,10 +23,28 @@ Vulkan bindings, and adds a thin layer of immutable types and interfaces.
 
 ## Requirements
 
-The `jcoronado` package currently targets Vulkan 1.3 and up. It requires the
-`synchronization2` feature to be available and enabled. According to the
-[Vulkan hardware database](https://vulkan.gpuinfo.org/), this currently
-covers around `99.82%` of hardware.
+The `jcoronado` package currently targets Vulkan 1.3 and up. Some optional
+device features are _required_ by the package.
+
+### synchronization2
+
+The package requires the `synchronization2` feature to be available and enabled.
+This is necessary to avoid having a lot of branching code paths around queue
+submission and render passes.
+
+At the time of writing, according to the
+[Vulkan hardware database](https://vulkan.gpuinfo.org/listdevicescoverage.php?core=1.3&feature=synchronization2&platform=all),
+this feature is available on `99.82%` of hardware.
+
+### timelineSemaphore
+
+The package requires the `timelineSemaphore` feature to be available and
+enabled. This is necessary because timeline semaphores are a mandatory part
+of the API exposed by the package.
+
+At the time of writing, according to the
+[Vulkan hardware database](https://vulkan.gpuinfo.org/listdevicescoverage.php?core=1.2&feature=timelineSemaphore&platform=all),
+this feature is available on `99.88%` of hardware.
 
 ## Building
 
