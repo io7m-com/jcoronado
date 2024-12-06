@@ -16,71 +16,37 @@
 
 package com.io7m.jcoronado.api;
 
-import java.util.Objects;
+import java.util.Map;
+import java.util.Optional;
 
 /**
  * An exception raised by a failing Vulkan call.
  */
 
-public final class VulkanCallFailedException extends VulkanException
+public final class VulkanCallFailedException
+  extends VulkanException
 {
-  private final int code;
-  private final String function;
-
   /**
    * Construct an exception.
    *
-   * @param in_code     The returned error code
-   * @param in_function The function that failed
+   * @param inErrorCode The returned error code
+   * @param inFunction  The function that failed
    * @param message     The error message
    */
 
   public VulkanCallFailedException(
-    final int in_code,
-    final String in_function,
+    final int inErrorCode,
+    final String inFunction,
     final String message)
   {
-    super(Objects.requireNonNull(message, "message"));
-    this.code = in_code;
-    this.function = Objects.requireNonNull(in_function, "function");
-  }
-
-  @Override
-  public boolean equals(final Object o)
-  {
-    if (this == o) {
-      return true;
-    }
-    if (o == null || !Objects.equals(this.getClass(), o.getClass())) {
-      return false;
-    }
-    final var that = (VulkanCallFailedException) o;
-    return this.code == that.code && Objects.equals(
-      this.function,
-      that.function);
-  }
-
-  @Override
-  public int hashCode()
-  {
-    return Objects.hash(Integer.valueOf(this.code), this.function);
-  }
-
-  /**
-   * @return The name of the function that failed
-   */
-
-  public String function()
-  {
-    return this.function;
-  }
-
-  /**
-   * @return The error code returned by the function that failed
-   */
-
-  public int errorCode()
-  {
-    return this.code;
+    super(
+      message,
+      Map.ofEntries(
+        Map.entry("ErrorCode", Integer.toString(inErrorCode)),
+        Map.entry("Function", inFunction)
+      ),
+      "error-vulkan-call",
+      Optional.empty()
+    );
   }
 }

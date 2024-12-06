@@ -41,9 +41,15 @@
     <io7m.api.previousVersion>0.0.2-SNAPSHOT</io7m.api.previousVersion>
     <io7m.java.targetJavaVersion>22</io7m.java.targetJavaVersion>
 
+    <!-- io7m dependencies. -->
+    <com.io7m.immutables-style.version>1.0.0</com.io7m.immutables-style.version>
+    <com.io7m.jmulticlose.version>1.1.3</com.io7m.jmulticlose.version>
+    <com.io7m.junreachable.version>4.0.2</com.io7m.junreachable.version>
+    <com.io7m.seltzer.version>1.1.0</com.io7m.seltzer.version>
+
     <!-- Third-party dependencies. -->
-    <io7m.org.immutables.value.version>2.10.1</io7m.org.immutables.value.version>
     <mockito.version>5.14.2</mockito.version>
+    <org.immutables.value.version>2.10.1</org.immutables.value.version>
     <org.jspecify.version>1.0.0</org.jspecify.version>
     <org.junit.version>5.11.3</org.junit.version>
     <org.lwjgl.version>3.3.5-SNAPSHOT</org.lwjgl.version>
@@ -113,22 +119,27 @@
       <dependency>
         <groupId>org.immutables</groupId>
         <artifactId>value</artifactId>
-        <version>${io7m.org.immutables.value.version}</version>
+        <version>${org.immutables.value.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.io7m.seltzer</groupId>
+        <artifactId>com.io7m.seltzer.api</artifactId>
+        <version>${com.io7m.seltzer.version}</version>
       </dependency>
       <dependency>
         <groupId>com.io7m.jmulticlose</groupId>
         <artifactId>com.io7m.jmulticlose.core</artifactId>
-        <version>1.1.3</version>
+        <version>${com.io7m.jmulticlose.version}</version>
       </dependency>
       <dependency>
         <groupId>com.io7m.junreachable</groupId>
         <artifactId>com.io7m.junreachable.core</artifactId>
-        <version>4.0.2</version>
+        <version>${com.io7m.junreachable.version}</version>
       </dependency>
       <dependency>
         <groupId>com.io7m.immutables-style</groupId>
         <artifactId>com.io7m.immutables-style</artifactId>
-        <version>1.0.0</version>
+        <version>${com.io7m.immutables-style.version}</version>
       </dependency>
       <dependency>
         <groupId>org.osgi</groupId>
@@ -290,7 +301,7 @@
               <dependency>
                 <groupId>org.immutables</groupId>
                 <artifactId>value</artifactId>
-                <version>${io7m.org.immutables.value.version}</version>
+                <version>${org.immutables.value.version}</version>
               </dependency>
               <dependency>
                 <groupId>org.jspecify</groupId>

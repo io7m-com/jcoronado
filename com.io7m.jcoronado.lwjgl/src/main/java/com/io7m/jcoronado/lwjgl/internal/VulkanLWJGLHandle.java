@@ -158,7 +158,10 @@ sealed abstract class VulkanLWJGLHandle
     throws VulkanDestroyedException
   {
     if (this.closed) {
-      throw new VulkanDestroyedException("Object has been closed/destroyed.");
+      throw new VulkanDestroyedException(
+        "Object has been closed/destroyed.",
+        this.getClass()
+      );
     }
   }
 

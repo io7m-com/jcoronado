@@ -16,7 +16,10 @@
 
 package com.io7m.jcoronado.api;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -26,30 +29,33 @@ import java.util.Set;
 public final class VulkanMissingRequiredLayersException
   extends VulkanException
 {
-  private final Set<String> missing;
-
   /**
    * Construct an exception.
    *
-   * @param in_missing The missing extensions
+   * @param missing The missing extensions
    * @param message    The error message
    */
 
   public VulkanMissingRequiredLayersException(
-    final Set<String> in_missing,
+    final Set<String> missing,
     final String message)
   {
-    super(Objects.requireNonNull(message, "message"));
-    this.missing =
-      Set.copyOf(Objects.requireNonNull(in_missing, "missing"));
+    super(
+      Objects.requireNonNull(message, "message"),
+      createAttributes(missing),
+      "error-vulkan-missing-layer",
+      Optional.empty()
+    );
   }
 
-  /**
-   * @return The set of missing extensions
-   */
-
-  public Set<String> missing()
+  private static Map<String, String> createAttributes(
+    final Iterable<String> missing)
   {
-    return this.missing;
+    final var r = new HashMap<String, String>();
+    final var index = 0;
+    for (final var m : missing) {
+      r.put("Missing Layer (%d)".formatted(Integer.valueOf(index)), m);
+    }
+    return Map.copyOf(r);
   }
 }

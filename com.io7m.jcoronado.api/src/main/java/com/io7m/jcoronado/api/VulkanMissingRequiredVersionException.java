@@ -16,7 +16,9 @@
 
 package com.io7m.jcoronado.api;
 
+import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * An exception raised by the Vulkan version not being supported.
@@ -43,7 +45,12 @@ public final class VulkanMissingRequiredVersionException
     final VulkanVersion inSupported)
   {
     super(
-      formatMessage(inRequested, inRequired, inSupported)
+      "The current Vulkan implementation does not match the given version constraints.",
+      createAttributes(inRequested, inRequired, inSupported),
+      "error-vulkan-version-constraint",
+      Optional.of(
+        "The versions must obey the constraint: required <= requested <= supported."
+      )
     );
 
     this.requested =
@@ -54,25 +61,16 @@ public final class VulkanMissingRequiredVersionException
       Objects.requireNonNull(inSupported, "inSupported");
   }
 
-  private static String formatMessage(
+  private static Map<String, String> createAttributes(
     final VulkanVersion inRequested,
     final VulkanVersion inRequired,
     final VulkanVersion inSupported)
   {
-    final var text = new StringBuilder(256);
-    text.append("The current Vulkan implementation does not match the given version constraints.");
-    text.append('\n');
-    text.append("The Vulkan implementation supports: ");
-    text.append(inSupported.toHumanString());
-    text.append('\n');
-    text.append("The application requested:          ");
-    text.append(inRequested.toHumanString());
-    text.append('\n');
-    text.append("The jcoronado package requires:     ");
-    text.append(inRequired.toHumanString());
-    text.append('\n');
-    text.append("The versions must obey the constraint: required <= requested <= supported.");
-    return text.toString();
+    return Map.ofEntries(
+      Map.entry("Version (Requested)", inRequested.toHumanString()),
+      Map.entry("Version (Required)", inRequired.toHumanString()),
+      Map.entry("Version (Supported)", inSupported.toHumanString())
+    );
   }
 
   /**

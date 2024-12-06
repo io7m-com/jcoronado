@@ -21,6 +21,11 @@
 
   <dependencies>
     <dependency>
+      <groupId>com.io7m.seltzer</groupId>
+      <artifactId>com.io7m.seltzer.api</artifactId>
+    </dependency>
+
+    <dependency>
       <groupId>com.io7m.immutables-style</groupId>
       <artifactId>com.io7m.immutables-style</artifactId>
       <scope>provided</scope>

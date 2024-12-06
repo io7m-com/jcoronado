@@ -19,6 +19,9 @@ package com.io7m.jcoronado.lwjgl.internal;
 
 import com.io7m.jcoronado.api.VulkanException;
 
+import java.util.Map;
+import java.util.Optional;
+
 /**
  * An exception relating to a lack of software support.
  */
@@ -35,6 +38,6 @@ public final class VulkanLWJGLSupportException
   public VulkanLWJGLSupportException(
     final String message)
   {
-    super(message);
+    super(message, Map.of(), "error-vulkan-lwjgl-support", Optional.empty());
   }
 }

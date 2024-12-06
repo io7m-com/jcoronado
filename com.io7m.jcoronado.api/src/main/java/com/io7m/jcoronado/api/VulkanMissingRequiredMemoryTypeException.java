@@ -16,85 +16,52 @@
 
 package com.io7m.jcoronado.api;
 
-import java.util.Collection;
-import java.util.List;
+import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
+import java.util.Optional;
 
 /**
  * An exception raised by no memory type being available to provide for a specific allocation.
  */
 
-public final class VulkanMissingRequiredMemoryTypeException extends
-  VulkanException
+public final class VulkanMissingRequiredMemoryTypeException
+  extends VulkanException
 {
-  private final VulkanMemoryRequirements requirements;
-  private final Set<VulkanMemoryPropertyFlag> flags;
-  private final Collection<VulkanMemoryHeap> heaps;
-  private final Collection<VulkanMemoryType> types;
-
   /**
    * Construct an exception.
    *
-   * @param message         The error message
-   * @param in_requirements The memory requirements
-   * @param in_flags        The memory properties
-   * @param in_heaps        The available heaps
-   * @param in_types        The available types
+   * @param message      The error message
+   * @param requirements The memory requirements
    */
 
   public VulkanMissingRequiredMemoryTypeException(
     final String message,
-    final VulkanMemoryRequirements in_requirements,
-    final Set<VulkanMemoryPropertyFlag> in_flags,
-    final Collection<VulkanMemoryHeap> in_heaps,
-    final Collection<VulkanMemoryType> in_types)
+    final VulkanMemoryRequirements requirements)
   {
-    super(Objects.requireNonNull(message, "message"));
-
-    this.requirements =
-      Objects.requireNonNull(in_requirements, "requirements");
-    this.flags =
-      Set.copyOf(Objects.requireNonNull(in_flags, "flags"));
-    this.heaps =
-      List.copyOf(Objects.requireNonNull(in_heaps, "heaps"));
-    this.types =
-      List.copyOf(Objects.requireNonNull(in_types, "types"));
+    super(
+      Objects.requireNonNull(message, "message"),
+      createAttributes(requirements),
+      "error-vulkan-memory-type-unavailable",
+      Optional.empty()
+    );
   }
 
-  /**
-   * @return The memory requirements
-   */
-
-  public VulkanMemoryRequirements requirements()
+  private static Map<String, String> createAttributes(
+    final VulkanMemoryRequirements requirements)
   {
-    return this.requirements;
-  }
+    final var typeString =
+      "0x%s".formatted(
+        Integer.toUnsignedString(requirements.memoryTypeBits(), 16)
+      );
+    final var sizeString =
+      Long.toUnsignedString(requirements.size());
+    final var alignString =
+      Long.toUnsignedString(requirements.alignment());
 
-  /**
-   * @return The memory properties
-   */
-
-  public Set<VulkanMemoryPropertyFlag> flags()
-  {
-    return this.flags;
-  }
-
-  /**
-   * @return The available heaps
-   */
-
-  public Collection<VulkanMemoryHeap> heaps()
-  {
-    return this.heaps;
-  }
-
-  /**
-   * @return The available types
-   */
-
-  public Collection<VulkanMemoryType> types()
-  {
-    return this.types;
+    return Map.ofEntries(
+      Map.entry("Type Bits", typeString),
+      Map.entry("Size", sizeString),
+      Map.entry("Alignment", alignString)
+    );
   }
 }

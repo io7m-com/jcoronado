@@ -16,7 +16,9 @@
 
 package com.io7m.jcoronado.api;
 
+import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * An exception raised by attempting to use a class that is not compatible with a particular
@@ -34,6 +36,11 @@ public final class VulkanIncompatibleClassException extends VulkanException
   public VulkanIncompatibleClassException(
     final String message)
   {
-    super(Objects.requireNonNull(message, "message"));
+    super(
+      Objects.requireNonNull(message, "message"),
+      Map.of(),
+      "error-vulkan-incompatible-class",
+      Optional.empty()
+    );
   }
 }

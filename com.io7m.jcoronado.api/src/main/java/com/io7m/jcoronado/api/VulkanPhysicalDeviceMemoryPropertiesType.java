@@ -118,9 +118,7 @@ public interface VulkanPhysicalDeviceMemoryPropertiesType
 
     throw new VulkanMissingRequiredMemoryTypeException(
       "No suitable memory type is available.",
-      requirements,
-      flags,
-      this.heaps().values(),
-      types.values());
+      requirements
+    );
   }
 }
