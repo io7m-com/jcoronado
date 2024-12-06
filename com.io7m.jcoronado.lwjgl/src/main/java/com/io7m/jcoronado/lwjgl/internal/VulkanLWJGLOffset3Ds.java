@@ -51,7 +51,7 @@ public final class VulkanLWJGLOffset3Ds
     Objects.requireNonNull(stack, "stack");
     Objects.requireNonNull(offset, "offset");
 
-    return packInto(offset, VkOffset3D.malloc(stack));
+    return packInto(offset, VkOffset3D.calloc(stack));
   }
 
   private static VkOffset3D packInto(
@@ -83,7 +83,7 @@ public final class VulkanLWJGLOffset3Ds
     return VulkanLWJGLArrays.pack(
       infos,
       (sstack, value, output) -> packInto(value, output),
-      VkOffset3D::malloc,
+      VkOffset3D::calloc,
       stack
     );
   }
@@ -110,7 +110,7 @@ public final class VulkanLWJGLOffset3Ds
     return VulkanLWJGLArrays.packOrNull(
       infos,
       (sstack, value, output) -> packInto(value, output),
-      VkOffset3D::malloc,
+      VkOffset3D::calloc,
       stack
     );
   }

@@ -653,26 +653,15 @@ public interface VulkanCommandBufferType extends VulkanHandleDispatchableType
   /**
    * Insert a memory dependency.
    *
-   * @param source_stage_mask      The source stage mask
-   * @param target_stage_mask      The target state mask
-   * @param dependency_flags       Flags specifying how execution and memory
-   *                               dependencies are formed.
-   * @param memory_barriers        A list of memory barriers
-   * @param buffer_memory_barriers A list of buffer memory barriers
-   * @param image_memory_barriers  A list of image memory barriers
+   * @param info The dependency info
    *
    * @throws VulkanException On errors
    */
 
-  @VulkanAPIFunctionType(vulkanFunction = "vkCmdPipelineBarrier")
+  @VulkanAPIFunctionType(vulkanFunction = "vkCmdPipelineBarrier2")
   @VulkanExternallySynchronizedType
   void pipelineBarrier(
-    Set<VulkanPipelineStageFlag> source_stage_mask,
-    Set<VulkanPipelineStageFlag> target_stage_mask,
-    Set<VulkanDependencyFlag> dependency_flags,
-    List<VulkanMemoryBarrier> memory_barriers,
-    List<VulkanBufferMemoryBarrier> buffer_memory_barriers,
-    List<VulkanImageMemoryBarrier> image_memory_barriers)
+    VulkanDependencyInfo info)
     throws VulkanException;
 
   /**
@@ -846,17 +835,16 @@ public interface VulkanCommandBufferType extends VulkanHandleDispatchableType
    * Set an event object to signaled state.
    *
    * @param event The event
-   * @param mask  The source stage mask used to determine when the event is
-   *              signaled.
+   * @param info  The dependency info.
    *
    * @throws VulkanException On errors
    */
 
-  @VulkanAPIFunctionType(vulkanFunction = "vkCmdSetEvent")
+  @VulkanAPIFunctionType(vulkanFunction = "vkCmdSetEvent2")
   @VulkanExternallySynchronizedType
   void setEvent(
     VulkanEventType event,
-    Set<VulkanPipelineStageFlag> mask)
+    VulkanDependencyInfo info)
     throws VulkanException;
 
   /**
@@ -926,25 +914,17 @@ public interface VulkanCommandBufferType extends VulkanHandleDispatchableType
   /**
    * Wait for one or more events and insert a set of memory barriers.
    *
-   * @param events                 The events upon which to wait
-   * @param source_stage_mask      The source stage mask
-   * @param target_stage_mask      The target state mask
-   * @param memory_barriers        A list of memory barriers
-   * @param buffer_memory_barriers A list of buffer memory barriers
-   * @param image_memory_barriers  A list of image memory barriers
+   * @param events          The events upon which to wait
+   * @param dependencyInfos The dependency info
    *
    * @throws VulkanException On errors
    */
 
-  @VulkanAPIFunctionType(vulkanFunction = "vkCmdWaitEvents")
+  @VulkanAPIFunctionType(vulkanFunction = "vkCmdWaitEvents2")
   @VulkanExternallySynchronizedType
   void waitEvents(
     List<VulkanEventType> events,
-    Set<VulkanPipelineStageFlag> source_stage_mask,
-    Set<VulkanPipelineStageFlag> target_stage_mask,
-    List<VulkanMemoryBarrier> memory_barriers,
-    List<VulkanBufferMemoryBarrier> buffer_memory_barriers,
-    List<VulkanImageMemoryBarrier> image_memory_barriers)
+    List<VulkanDependencyInfo> dependencyInfos)
     throws VulkanException;
 
   /**

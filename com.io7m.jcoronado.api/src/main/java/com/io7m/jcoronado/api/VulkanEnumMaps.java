@@ -41,6 +41,25 @@ public final class VulkanEnumMaps
    * @return The integer-packed values
    */
 
+  public static <T extends Enum<T> & VulkanEnumBitmaskLongType> long packValuesLong(
+    final Iterable<T> values)
+  {
+    var result = 0L;
+    for (final var constant : values) {
+      result |= constant.value();
+    }
+    return result;
+  }
+
+  /**
+   * Bitwise OR the integer values of all the given constants.
+   *
+   * @param values The values
+   * @param <T>    The precise type of enum
+   *
+   * @return The integer-packed values
+   */
+
   public static <T extends Enum<T> & VulkanEnumBitmaskType> int packValues(
     final Iterable<T> values)
   {

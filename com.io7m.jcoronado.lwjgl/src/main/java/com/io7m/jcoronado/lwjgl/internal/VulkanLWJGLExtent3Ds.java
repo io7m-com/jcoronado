@@ -49,7 +49,7 @@ public final class VulkanLWJGLExtent3Ds
     Objects.requireNonNull(stack, "stack");
     Objects.requireNonNull(extent, "extent");
 
-    return VkExtent3D.malloc(stack)
+    return VkExtent3D.calloc(stack)
       .set(extent.width(), extent.height(), extent.depth());
   }
 }

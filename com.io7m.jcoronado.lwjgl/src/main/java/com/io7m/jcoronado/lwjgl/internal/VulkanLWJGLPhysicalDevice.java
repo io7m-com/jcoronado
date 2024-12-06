@@ -39,6 +39,8 @@ import com.io7m.jcoronado.api.VulkanPhysicalDeviceFeatures;
 import com.io7m.jcoronado.api.VulkanPhysicalDeviceFeatures10;
 import com.io7m.jcoronado.api.VulkanPhysicalDeviceFeatures11;
 import com.io7m.jcoronado.api.VulkanPhysicalDeviceFeatures12;
+import com.io7m.jcoronado.api.VulkanPhysicalDeviceFeatures13;
+import com.io7m.jcoronado.api.VulkanPhysicalDeviceFeaturesFunctions;
 import com.io7m.jcoronado.api.VulkanPhysicalDeviceIDProperties;
 import com.io7m.jcoronado.api.VulkanPhysicalDeviceLimits;
 import com.io7m.jcoronado.api.VulkanPhysicalDeviceMemoryProperties;
@@ -60,6 +62,7 @@ import org.lwjgl.vulkan.VkPhysicalDeviceFeatures;
 import org.lwjgl.vulkan.VkPhysicalDeviceFeatures2;
 import org.lwjgl.vulkan.VkPhysicalDeviceVulkan11Features;
 import org.lwjgl.vulkan.VkPhysicalDeviceVulkan12Features;
+import org.lwjgl.vulkan.VkPhysicalDeviceVulkan13Features;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -77,6 +80,7 @@ import static com.io7m.jcoronado.api.VulkanChecks.checkReturnCode;
 import static org.lwjgl.vulkan.VK11.VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FEATURES_2;
 import static org.lwjgl.vulkan.VK12.VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_1_FEATURES;
 import static org.lwjgl.vulkan.VK12.VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_2_FEATURES;
+import static org.lwjgl.vulkan.VK13.VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_3_FEATURES;
 
 /**
  * LWJGL {@link VkPhysicalDevice}
@@ -400,13 +404,55 @@ public final class VulkanLWJGLPhysicalDevice
         outFeatures.vulkanMemoryModelDeviceScope());
   }
 
+  /**
+   * This method was not hand-written. See: GenerateFeatures13ToVkFeatures
+   */
+
+  private static void packPhysicalDeviceFeatures13(
+    final VkPhysicalDeviceVulkan13Features vkFeatures,
+    final VulkanPhysicalDeviceFeatures13 outFeatures)
+  {
+    vkFeatures
+      .computeFullSubgroups(
+        outFeatures.computeFullSubgroups())
+      .descriptorBindingInlineUniformBlockUpdateAfterBind(
+        outFeatures.descriptorBindingInlineUniformBlockUpdateAfterBind())
+      .dynamicRendering(
+        outFeatures.dynamicRendering())
+      .inlineUniformBlock(
+        outFeatures.inlineUniformBlock())
+      .maintenance4(
+        outFeatures.maintenance4())
+      .pipelineCreationCacheControl(
+        outFeatures.pipelineCreationCacheControl())
+      .privateData(
+        outFeatures.privateData())
+      .robustImageAccess(
+        outFeatures.robustImageAccess())
+      .shaderDemoteToHelperInvocation(
+        outFeatures.shaderDemoteToHelperInvocation())
+      .shaderIntegerDotProduct(
+        outFeatures.shaderIntegerDotProduct())
+      .shaderTerminateInvocation(
+        outFeatures.shaderTerminateInvocation())
+      .shaderZeroInitializeWorkgroupMemory(
+        outFeatures.shaderZeroInitializeWorkgroupMemory())
+      .subgroupSizeControl(
+        outFeatures.subgroupSizeControl())
+      .synchronization2(
+        outFeatures.synchronization2())
+      .textureCompressionASTC_HDR(
+        outFeatures.textureCompressionASTC_HDR());
+  }
+
+
   private static VkDeviceQueueCreateInfo.Buffer createQueueBuffer(
     final MemoryStack stack,
     final List<VulkanLogicalDeviceQueueCreateInfo> infos)
   {
     final var queueCount = infos.size();
     final var vkQueueBuffer =
-      VkDeviceQueueCreateInfo.malloc(queueCount, stack);
+      VkDeviceQueueCreateInfo.calloc(queueCount, stack);
 
     for (var index = 0; index < queueCount; ++index) {
       final var queueInfo =
@@ -464,61 +510,64 @@ public final class VulkanLWJGLPhysicalDevice
     return unpackFlagsFromMask(vk_properties.bufferFeatures());
   }
 
-  private void createPhysicalDeviceFeatures(
+  private static void createPhysicalDeviceFeatures(
     final MemoryStack stack,
     final VkDeviceCreateInfo vkDeviceCreateInfo,
     final VulkanLogicalDeviceCreateInfo info)
   {
-    final var featuresOpt = info.features();
-    if (featuresOpt.isEmpty()) {
-      return;
-    }
-
-    final var requestFeatures = featuresOpt.get();
+    var requestFeatures =
+      info.features()
+        .orElse(VulkanPhysicalDeviceFeaturesFunctions.none());
 
     /*
-     * On Vulkan 1.0, the required features are set directly in the
-     * creation info structure.
+     * jcoronado itself requires the synchronization2 feature to avoid
+     * having multiple code paths for every queue submission and memory
+     * barrier.
      */
 
-    final var version = this.instance.apiVersionUsed();
-    if (version.major() == 1 && version.minor() == 0) {
-      LOG.debug("Enabling features using direct VkPhysicalDeviceFeatures");
+    requestFeatures = requestFeatures.withFeatures13(
+      requestFeatures.features13()
+        .withSynchronization2(true)
+    );
 
-      final var vkFeatures =
-        VkPhysicalDeviceFeatures.malloc(stack);
+    /*
+     * jcoronado itself requires the timelineSemaphore feature as part of
+     * the API.
+     */
 
-      packPhysicalDeviceFeatures10(vkFeatures, requestFeatures.features10());
-      vkDeviceCreateInfo.pEnabledFeatures(vkFeatures);
-      return;
-    }
+    requestFeatures = requestFeatures.withFeatures12(
+      requestFeatures.features12()
+        .withTimelineSemaphore(true)
+    );
 
     /*
      * On Vulkan 1.1+, the required features are specified in a set of
      * structures chained in the "next" pointer.
      */
 
-    LOG.debug("Enabling features using chained VkPhysicalDeviceFeatures2");
-
     final var vkFeatures11 =
-      VkPhysicalDeviceVulkan11Features.malloc(stack);
+      VkPhysicalDeviceVulkan11Features.calloc(stack);
     final var vkFeatures12 =
-      VkPhysicalDeviceVulkan12Features.malloc(stack);
+      VkPhysicalDeviceVulkan12Features.calloc(stack);
+    final var vkFeatures13 =
+      VkPhysicalDeviceVulkan13Features.calloc(stack);
     final var vkFeatures =
-      VkPhysicalDeviceFeatures2.malloc(stack);
+      VkPhysicalDeviceFeatures2.calloc(stack);
 
     vkFeatures.sType(VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FEATURES_2);
     vkFeatures11.sType(VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_1_FEATURES);
     vkFeatures12.sType(VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_2_FEATURES);
+    vkFeatures13.sType(VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_3_FEATURES);
 
+    packPhysicalDeviceFeatures13(vkFeatures13, requestFeatures.features13());
     packPhysicalDeviceFeatures12(vkFeatures12, requestFeatures.features12());
     packPhysicalDeviceFeatures11(vkFeatures11, requestFeatures.features11());
     packPhysicalDeviceFeatures10(
       vkFeatures.features(),
-      requestFeatures.features10()
-    );
+      requestFeatures.features10());
 
-    vkFeatures12.pNext(0L);
+    vkFeatures13.pNext(0L);
+    vkFeatures12.pNext(vkFeatures13.address());
     vkFeatures11.pNext(vkFeatures12.address());
     vkFeatures.pNext(vkFeatures11.address());
     vkDeviceCreateInfo.pNext(vkFeatures.address());
@@ -569,7 +618,7 @@ public final class VulkanLWJGLPhysicalDevice
       }
 
       final var device_extensions =
-        VkExtensionProperties.malloc(size, stack);
+        VkExtensionProperties.calloc(size, stack);
 
       checkReturnCode(
         VK10.vkEnumerateDeviceExtensionProperties(
@@ -615,7 +664,7 @@ public final class VulkanLWJGLPhysicalDevice
       }
 
       final var layers_buffer =
-        VkLayerProperties.malloc(size, stack);
+        VkLayerProperties.calloc(size, stack);
 
       checkReturnCode(
         VK10.vkEnumerateDeviceLayerProperties(
@@ -675,7 +724,7 @@ public final class VulkanLWJGLPhysicalDevice
     this.checkNotClosed();
 
     try (var stack = this.stackInitial.push()) {
-      final var vk_properties = VkFormatProperties.malloc(stack);
+      final var vk_properties = VkFormatProperties.calloc(stack);
       VK10.vkGetPhysicalDeviceFormatProperties(
         this.device,
         format.value(),
@@ -705,7 +754,7 @@ public final class VulkanLWJGLPhysicalDevice
     Objects.requireNonNull(flags, "flags");
 
     try (var stack = this.stackInitial.push()) {
-      final var vk_properties = VkImageFormatProperties.malloc(stack);
+      final var vk_properties = VkImageFormatProperties.calloc(stack);
 
       checkReturnCode(
         VK10.vkGetPhysicalDeviceImageFormatProperties(
@@ -782,7 +831,7 @@ public final class VulkanLWJGLPhysicalDevice
         VulkanStrings.stringsToPointerBuffer(stack, enabledExtensions);
 
       final var vkDeviceCreateInfo =
-        VkDeviceCreateInfo.malloc(stack)
+        VkDeviceCreateInfo.calloc(stack)
           .sType(VK10.VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO)
           .pNext(0L)
           .flags(VulkanEnumMaps.packValues(info.flags()))
@@ -790,7 +839,10 @@ public final class VulkanLWJGLPhysicalDevice
           .ppEnabledLayerNames(vkEnabledLayers)
           .ppEnabledExtensionNames(vkEnabledExtensions);
 
-      this.createPhysicalDeviceFeatures(stack, vkDeviceCreateInfo, info);
+      VulkanLWJGLPhysicalDevice.createPhysicalDeviceFeatures(
+        stack,
+        vkDeviceCreateInfo,
+        info);
 
       final var vkLogicalDevicePtr =
         stack.mallocPointer(1);

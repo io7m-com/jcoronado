@@ -51,7 +51,7 @@ public final class VulkanLWJGLCommandPoolCreateInfos
     Objects.requireNonNull(stack, "stack");
     Objects.requireNonNull(info, "create_info");
 
-    return VkCommandPoolCreateInfo.malloc(stack)
+    return VkCommandPoolCreateInfo.calloc(stack)
       .sType(VK10.VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO)
       .pNext(0L)
       .flags(VulkanEnumMaps.packValues(info.flags()))

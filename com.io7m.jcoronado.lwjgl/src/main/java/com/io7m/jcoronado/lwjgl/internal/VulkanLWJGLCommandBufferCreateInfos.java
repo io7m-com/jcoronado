@@ -53,7 +53,7 @@ public final class VulkanLWJGLCommandBufferCreateInfos
     Objects.requireNonNull(info, "info");
     Objects.requireNonNull(pool, "pool");
 
-    return VkCommandBufferAllocateInfo.malloc(stack)
+    return VkCommandBufferAllocateInfo.calloc(stack)
       .sType(VK10.VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO)
       .pNext(0L)
       .level(info.level().value())

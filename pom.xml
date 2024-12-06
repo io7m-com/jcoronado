@@ -38,14 +38,15 @@
 
   <properties>
     <!-- Configuration. -->
-    <io7m.api.previousVersion>0.0.1</io7m.api.previousVersion>
+    <io7m.api.previousVersion>0.0.2-SNAPSHOT</io7m.api.previousVersion>
     <io7m.java.targetJavaVersion>22</io7m.java.targetJavaVersion>
 
     <!-- Third-party dependencies. -->
     <io7m.org.immutables.value.version>2.10.1</io7m.org.immutables.value.version>
-    <org.lwjgl.version>3.3.5-SNAPSHOT</org.lwjgl.version>
-    <org.junit.version>5.11.3</org.junit.version>
     <mockito.version>5.14.2</mockito.version>
+    <org.jspecify.version>1.0.0</org.jspecify.version>
+    <org.junit.version>5.11.3</org.junit.version>
+    <org.lwjgl.version>3.3.5-SNAPSHOT</org.lwjgl.version>
   </properties>
 
   <licenses>
@@ -221,6 +222,12 @@
       </dependency>
 
       <dependency>
+        <groupId>org.jspecify</groupId>
+        <artifactId>jspecify</artifactId>
+        <version>${org.jspecify.version}</version>
+      </dependency>
+
+      <dependency>
         <groupId>org.junit</groupId>
         <artifactId>junit-bom</artifactId>
         <version>${org.junit.version}</version>
@@ -284,6 +291,11 @@
                 <groupId>org.immutables</groupId>
                 <artifactId>value</artifactId>
                 <version>${io7m.org.immutables.value.version}</version>
+              </dependency>
+              <dependency>
+                <groupId>org.jspecify</groupId>
+                <artifactId>jspecify</artifactId>
+                <version>${org.jspecify.version}</version>
               </dependency>
             </annotationProcessorPaths>
           </configuration>

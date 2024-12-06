@@ -62,7 +62,7 @@ public final class VulkanLWJGLWriteDescriptorSets
     Objects.requireNonNull(stack, "stack");
     Objects.requireNonNull(info, "info");
 
-    return packInto(stack, info, VkWriteDescriptorSet.malloc(stack));
+    return packInto(stack, info, VkWriteDescriptorSet.calloc(stack));
   }
 
   /**
@@ -144,7 +144,7 @@ public final class VulkanLWJGLWriteDescriptorSets
     return VulkanLWJGLArrays.pack(
       infos,
       VulkanLWJGLWriteDescriptorSets::packInto,
-      VkWriteDescriptorSet::malloc,
+      VkWriteDescriptorSet::calloc,
       stack
     );
   }

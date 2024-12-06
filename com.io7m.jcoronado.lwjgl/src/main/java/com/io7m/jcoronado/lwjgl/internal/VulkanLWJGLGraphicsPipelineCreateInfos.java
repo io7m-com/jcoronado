@@ -59,7 +59,7 @@ public final class VulkanLWJGLGraphicsPipelineCreateInfos
     Objects.requireNonNull(pipeline_infos, "pipeline_infos");
 
     final var buffer =
-      VkGraphicsPipelineCreateInfo.malloc(pipeline_infos.size(), stack);
+      VkGraphicsPipelineCreateInfo.calloc(pipeline_infos.size(), stack);
 
     for (var index = 0; index < pipeline_infos.size(); ++index) {
       final var source = pipeline_infos.get(index);

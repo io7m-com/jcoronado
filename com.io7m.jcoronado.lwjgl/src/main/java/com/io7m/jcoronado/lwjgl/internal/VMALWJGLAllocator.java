@@ -54,7 +54,8 @@ public final class VMALWJGLAllocator
   extends VulkanLWJGLHandle
   implements VMAAllocatorType
 {
-  private static final Logger LOG = LoggerFactory.getLogger(VMALWJGLAllocator.class);
+  private static final Logger LOG =
+    LoggerFactory.getLogger(VMALWJGLAllocator.class);
 
   private final VulkanLWJGLLogicalDevice device;
   private final long allocator_address;
@@ -118,7 +119,7 @@ public final class VMALWJGLAllocator
         VulkanLWJGLBufferCreateInfos.packInfo(stack, buffer_create_info);
 
       final var vk_alloc_create_info =
-        VmaAllocationCreateInfo.malloc(stack)
+        VmaAllocationCreateInfo.calloc(stack)
           .flags(VulkanEnumMaps.packValues(alloc_create_info.flags()))
           .memoryTypeBits((int) alloc_create_info.memoryTypeBits())
           .preferredFlags(VulkanEnumMaps.packValues(alloc_create_info.preferredFlags()))
@@ -129,7 +130,7 @@ public final class VMALWJGLAllocator
       final var vk_allocation =
         stack.mallocPointer(1);
       final var vk_allocation_info =
-        VmaAllocationInfo.malloc(stack);
+        VmaAllocationInfo.calloc(stack);
       final var vk_buffer =
         stack.mallocLong(1);
 
@@ -200,7 +201,7 @@ public final class VMALWJGLAllocator
         VulkanLWJGLImageCreateInfos.pack(stack, image_create_info);
 
       final var vk_alloc_create_info =
-        VmaAllocationCreateInfo.malloc(stack)
+        VmaAllocationCreateInfo.calloc(stack)
           .flags(VulkanEnumMaps.packValues(alloc_create_info.flags()))
           .memoryTypeBits((int) alloc_create_info.memoryTypeBits())
           .preferredFlags(VulkanEnumMaps.packValues(alloc_create_info.preferredFlags()))
@@ -211,7 +212,7 @@ public final class VMALWJGLAllocator
       final var vk_allocation =
         stack.mallocPointer(1);
       final var vk_allocation_info =
-        VmaAllocationInfo.malloc(stack);
+        VmaAllocationInfo.calloc(stack);
       final var vk_image =
         stack.mallocLong(1);
 

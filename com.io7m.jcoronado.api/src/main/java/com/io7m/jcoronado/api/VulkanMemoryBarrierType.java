@@ -25,7 +25,7 @@ import java.util.Set;
  * Structure specifying the parameters of a global memory barrier.
  */
 
-@VulkanAPIStructType(vulkanStruct = "VkMemoryBarrier")
+@VulkanAPIStructType(vulkanStruct = "VkMemoryBarrier2")
 @ImmutablesStyleType
 @Value.Immutable
 public interface VulkanMemoryBarrierType
@@ -35,12 +35,12 @@ public interface VulkanMemoryBarrierType
    */
 
   @Value.Parameter
-  Set<VulkanAccessFlag> sourceAccessMask();
+  Set<VulkanAccessFlag> srcAccessMask();
 
   /**
-   * @return The target access mask
+   * @return The destination access mask
    */
 
   @Value.Parameter
-  Set<VulkanAccessFlag> targetAccessMask();
+  Set<VulkanAccessFlag> dstAccessMask();
 }

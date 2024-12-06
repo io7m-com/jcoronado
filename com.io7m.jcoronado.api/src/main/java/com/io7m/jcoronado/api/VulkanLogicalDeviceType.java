@@ -589,9 +589,9 @@ public interface VulkanLogicalDeviceType extends VulkanHandleDispatchableType
   }
 
   /**
-   * Create a semaphore.
+   * Create a binary semaphore.
    *
-   * @param create_info The semaphore creation info
+   * @param info The semaphore creation info
    *
    * @return A semaphore
    *
@@ -599,8 +599,23 @@ public interface VulkanLogicalDeviceType extends VulkanHandleDispatchableType
    */
 
   @VulkanAPIFunctionType(vulkanFunction = "vkCreateSemaphore")
-  VulkanSemaphoreType createSemaphore(
-    VulkanSemaphoreCreateInfo create_info)
+  VulkanSemaphoreBinaryType createBinarySemaphore(
+    VulkanSemaphoreBinaryCreateInfo info)
+    throws VulkanException;
+
+  /**
+   * Create a timeline semaphore.
+   *
+   * @param info The semaphore creation info
+   *
+   * @return A semaphore
+   *
+   * @throws VulkanException On errors
+   */
+
+  @VulkanAPIFunctionType(vulkanFunction = "vkCreateSemaphore")
+  VulkanSemaphoreTimelineType createTimelineSemaphore(
+    VulkanSemaphoreTimelineCreateInfo info)
     throws VulkanException;
 
   /**

@@ -25,8 +25,9 @@ import com.io7m.jcoronado.api.VulkanQueueType;
 import com.io7m.jcoronado.api.VulkanSubmitInfo;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.vulkan.VK10;
+import org.lwjgl.vulkan.VK13;
 import org.lwjgl.vulkan.VkQueue;
-import org.lwjgl.vulkan.VkSubmitInfo;
+import org.lwjgl.vulkan.VkSubmitInfo2;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -123,12 +124,17 @@ public final class VulkanLWJGLQueue
     }
 
     try (var stack = this.stackInitial.push()) {
-      final var size = submissions.size();
-      final var infos = VkSubmitInfo.malloc(size, stack);
+      final var size =
+        submissions.size();
+      final var infos =
+        VkSubmitInfo2.calloc(size, stack);
+
       VulkanLWJGLSubmitInfos.packInfos(stack, submissions, infos);
+
       VulkanChecks.checkReturnCode(
-        VK10.vkQueueSubmit(this.queue, infos, cfence),
-        "vkQueueSubmit");
+        VK13.vkQueueSubmit2(this.queue, infos, cfence),
+        "vkQueueSubmit2"
+      );
     }
   }
 

@@ -57,7 +57,7 @@ public final class VulkanLWJGLRenderPassBeginInfos
     Objects.requireNonNull(framebuffer, "framebuffer");
 
     final var vkInfo =
-      VkRenderPassBeginInfo.malloc(stack);
+      VkRenderPassBeginInfo.calloc(stack);
 
     vkInfo.set(
       VK10.VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO,

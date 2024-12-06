@@ -51,7 +51,7 @@ public final class VulkanLWJGLEventCreateInfos
     Objects.requireNonNull(stack, "stack");
     Objects.requireNonNull(info, "info");
 
-    return VkEventCreateInfo.malloc(stack)
+    return VkEventCreateInfo.calloc(stack)
       .set(
         VK10.VK_STRUCTURE_TYPE_EVENT_CREATE_INFO,
         0L,

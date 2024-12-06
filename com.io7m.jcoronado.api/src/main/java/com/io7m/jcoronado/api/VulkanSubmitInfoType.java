@@ -24,10 +24,10 @@ import java.util.List;
 /**
  * The type of Vulkan submission information.
  *
- * @see "VkSubmitInfo"
+ * @see "VkSubmitInfo2"
  */
 
-@VulkanAPIStructType(vulkanStruct = "VkSubmitInfo")
+@VulkanAPIStructType(vulkanStruct = "VkSubmitInfo2")
 @ImmutablesStyleType
 @Value.Immutable
 public interface VulkanSubmitInfoType
@@ -38,21 +38,14 @@ public interface VulkanSubmitInfoType
    */
 
   @Value.Parameter
-  List<VulkanSemaphoreType> waitSemaphores();
-
-  /**
-   * @return A list of pipeline stages at which each corresponding semaphore wait will occur.
-   */
-
-  @Value.Parameter
-  List<VulkanPipelineStageFlag> waitStageMasks();
+  List<VulkanSemaphoreSubmitInfo> waitSemaphores();
 
   /**
    * @return A list of command buffers to execute in the batch.
    */
 
   @Value.Parameter
-  List<VulkanCommandBufferType> commandBuffers();
+  List<VulkanCommandBufferSubmitInfo> commandBuffers();
 
   /**
    * @return A list of semaphores which will be signaled when the command buffers for this batch
@@ -61,31 +54,5 @@ public interface VulkanSubmitInfoType
    */
 
   @Value.Parameter
-  List<VulkanSemaphoreType> signalSemaphores();
-
-  /**
-   * Check preconditions for the type.
-   */
-
-  @Value.Check
-  default void checkPreconditions()
-  {
-    final var size_0 = this.waitSemaphores().size();
-    final var size_1 = this.waitStageMasks().size();
-    if (size_0 != size_1) {
-      final var separator = System.lineSeparator();
-      throw new IllegalArgumentException(
-        new StringBuilder(64)
-          .append(
-            "Number of wait semaphores must match the number of stage masks.")
-          .append(separator)
-          .append("  Semaphores:  ")
-          .append(size_0)
-          .append(separator)
-          .append("  Stage masks: ")
-          .append(size_1)
-          .append(separator)
-          .toString());
-    }
-  }
+  List<VulkanSemaphoreSubmitInfo> signalSemaphores();
 }

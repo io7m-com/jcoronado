@@ -173,7 +173,7 @@ public final class VulkanLWJGLInstance
       }
 
       final var vkQueueFamilies =
-        VkQueueFamilyProperties.malloc(queueFamilyCount, stack);
+        VkQueueFamilyProperties.calloc(queueFamilyCount, stack);
 
       VK10.vkGetPhysicalDeviceQueueFamilyProperties(
         vkDevice, count, vkQueueFamilies);
@@ -762,50 +762,8 @@ public final class VulkanLWJGLInstance
 
   private static VulkanPhysicalDeviceFeatures parseAllFeatures(
     final MemoryStack stack,
-    final VkPhysicalDevice vkDevice,
-    final VulkanVersion requestedApiVersion)
+    final VkPhysicalDevice vkDevice)
   {
-    /*
-     * For Vulkan 1.0, we need to call the plain vkGetPhysicalDeviceFeatures
-     * function.
-     */
-
-    if (requestedApiVersion.major() == 1 && requestedApiVersion.minor() == 0) {
-      LOG.debug(
-        "Requested API version is {}; physical device features retrieved using vkGetPhysicalDeviceFeatures",
-        requestedApiVersion.toHumanString()
-      );
-
-      final var vkFeatures =
-        VkPhysicalDeviceFeatures.calloc(stack);
-
-      VK10.vkGetPhysicalDeviceFeatures(vkDevice, vkFeatures);
-
-      final var features10 =
-        parsePhysicalDeviceFeatures10(vkFeatures);
-      final var features11 =
-        VulkanPhysicalDeviceFeatures11.builder()
-          .build();
-      final var features12 =
-        VulkanPhysicalDeviceFeatures12.builder()
-          .build();
-      final var features13 =
-        VulkanPhysicalDeviceFeatures13.builder()
-          .build();
-
-      return VulkanPhysicalDeviceFeatures.builder()
-        .setFeatures10(features10)
-        .setFeatures11(features11)
-        .setFeatures12(features12)
-        .setFeatures13(features13)
-        .build();
-    }
-
-    /*
-     * For newer versions of Vulkan, we call vkGetPhysicalDeviceFeatures2
-     * and fetch all the new embedded structures.
-     */
-
     final var vkFeatures13 =
       VkPhysicalDeviceVulkan13Features.calloc(stack);
     vkFeatures13.sType(VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_3_FEATURES);
@@ -825,11 +783,6 @@ public final class VulkanLWJGLInstance
     vkFeatures12.pNext(vkFeatures13.address());
     vkFeatures11.pNext(vkFeatures12.address());
     vkFeatures.pNext(vkFeatures11.address());
-
-    LOG.debug(
-      "Requested API version is {}; physical device features retrieved using vkGetPhysicalDeviceFeatures2",
-      requestedApiVersion.toHumanString()
-    );
 
     VK11.vkGetPhysicalDeviceFeatures2(vkDevice, vkFeatures);
 
@@ -1066,9 +1019,9 @@ public final class VulkanLWJGLInstance
         "vkEnumeratePhysicalDevices");
 
       final var vkProperties =
-        VkPhysicalDeviceProperties.malloc(stack);
+        VkPhysicalDeviceProperties.calloc(stack);
       final var vkMemory =
-        VkPhysicalDeviceMemoryProperties.malloc(stack);
+        VkPhysicalDeviceMemoryProperties.calloc(stack);
 
       devices = new ArrayList<>(deviceCount);
       for (var index = 0; index < deviceCount; ++index) {
@@ -1086,7 +1039,16 @@ public final class VulkanLWJGLInstance
             index,
             vkProperties,
             vkMemory,
-            this.apiVersionUsed);
+            this.apiVersionUsed
+          );
+
+        final var features13 = device.features().features13();
+        if (!features13.synchronization2()) {
+          LOG.warn(
+            "Device {} does not support synchronization2 and so is being ignored.",
+            device
+          );
+        }
 
         devices.add(device);
       }
@@ -1127,8 +1089,7 @@ public final class VulkanLWJGLInstance
     final var features =
       parseAllFeatures(
         stack,
-        vkDevice,
-        apiVersion
+        vkDevice
       );
 
     VK10.vkGetPhysicalDeviceMemoryProperties(vkDevice, vkMemory);
@@ -1160,51 +1121,19 @@ public final class VulkanLWJGLInstance
     final int index,
     final VulkanVersion apiVersion)
   {
-    /*
-     * For Vulkan 1.0, we need to call the plain vkGetPhysicalDeviceProperties
-     * function.
-     */
-
-    if (apiVersion.major() == 1 && apiVersion.minor() == 0) {
-      LOG.debug(
-        "Requested API version is {}; physical device properties retrieved using vkGetPhysicalDeviceProperties",
-        apiVersion.toHumanString()
-      );
-
-      final var vkProperties =
-        VkPhysicalDeviceProperties.malloc(stack);
-
-      VK10.vkGetPhysicalDeviceProperties(vkDevice, vkProperties);
-      return new PropertiesAndExtras(
-        parsePhysicalDeviceProperties(vkProperties, index),
-        Optional.empty(),
-        Optional.empty()
-      );
-    }
-
-    /*
-     * For newer versions of Vulkan, we call vkGetPhysicalDeviceProperties2
-     * and fetch all the new embedded structures.
-     */
-
-    LOG.debug(
-      "Requested API version is {}; physical device properties retrieved using vkGetPhysicalDeviceProperties2",
-      apiVersion.toHumanString()
-    );
-
     final var vkIdProperties =
-      VkPhysicalDeviceIDProperties.malloc(stack);
+      VkPhysicalDeviceIDProperties.calloc(stack);
     vkIdProperties.sType(VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_ID_PROPERTIES);
     vkIdProperties.pNext(0L);
 
     final var vkProperties2 =
-      VkPhysicalDeviceProperties2.malloc(stack);
+      VkPhysicalDeviceProperties2.calloc(stack);
     vkProperties2.sType(VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PROPERTIES_2);
     vkProperties2.pNext(vkIdProperties.address());
 
     VkPhysicalDeviceDriverProperties vkDriverProperties = null;
     if (apiVersion.major() >= 1 && apiVersion.minor() >= 2) {
-      vkDriverProperties = VkPhysicalDeviceDriverProperties.malloc(stack);
+      vkDriverProperties = VkPhysicalDeviceDriverProperties.calloc(stack);
       vkDriverProperties.sType(
         VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DRIVER_PROPERTIES);
       vkDriverProperties.pNext(0L);

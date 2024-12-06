@@ -248,7 +248,7 @@ public final class VulkanLWJGLExtKHRSurface implements VulkanExtKHRSurfaceType
       }
 
       final var formats =
-        VkSurfaceFormatKHR.malloc(format_count, stack);
+        VkSurfaceFormatKHR.calloc(format_count, stack);
 
       VulkanChecks.checkReturnCode(
         KHRSurface.vkGetPhysicalDeviceSurfaceFormatsKHR(
@@ -296,7 +296,7 @@ public final class VulkanLWJGLExtKHRSurface implements VulkanExtKHRSurfaceType
     try (var stack = this.stack_initial.push()) {
 
       final var capabilities =
-        VkSurfaceCapabilitiesKHR.malloc(stack);
+        VkSurfaceCapabilitiesKHR.calloc(stack);
 
       VulkanChecks.checkReturnCode(
         KHRSurface.vkGetPhysicalDeviceSurfaceCapabilitiesKHR(

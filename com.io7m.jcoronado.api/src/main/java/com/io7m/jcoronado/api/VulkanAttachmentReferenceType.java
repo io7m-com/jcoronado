@@ -19,13 +19,15 @@ package com.io7m.jcoronado.api;
 import com.io7m.immutables.styles.ImmutablesStyleType;
 import org.immutables.value.Value;
 
+import java.util.Set;
+
 /**
  * Structure specifying an attachment reference.
  *
- * @see "VkAttachmentReference"
+ * @see "VkAttachmentReference2"
  */
 
-@VulkanAPIStructType(vulkanStruct = "VkAttachmentReference")
+@VulkanAPIStructType(vulkanStruct = "VkAttachmentReference2")
 @ImmutablesStyleType
 @Value.Immutable
 public interface VulkanAttachmentReferenceType
@@ -34,13 +36,18 @@ public interface VulkanAttachmentReferenceType
    * @return The index of the attachment of the render pass
    */
 
-  @Value.Parameter
   int attachment();
 
   /**
    * @return The layout the attachment uses during the subpass.
    */
 
-  @Value.Parameter
   VulkanImageLayout layout();
+
+  /**
+   * @return A mask of which aspect(s) can be accessed within the specified
+   * subpass as an input attachment.
+   */
+
+  Set<VulkanImageAspectFlag> aspectMask();
 }

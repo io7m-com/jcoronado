@@ -28,6 +28,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.vulkan.VkBufferMemoryBarrier;
+import org.lwjgl.vulkan.VkBufferMemoryBarrier2;
 import org.mockito.Mockito;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,10 +47,10 @@ public final class VulkanLWJGLBufferMemoryBarriersTest
   private MemoryStack stack = MemoryStack.create();
 
   private static void checkPacked(
-    final VkBufferMemoryBarrier out)
+    final VkBufferMemoryBarrier2 out)
   {
-    assertEquals(0b1111_1111_1111_1111_1111, out.srcAccessMask());
-    assertEquals(0b1111_1111_1111_1111_1111, out.dstAccessMask());
+    assertEquals(0b11100000000000000011111111111111111L, out.srcAccessMask());
+    assertEquals(0b11100000000000000011111111111111111L, out.dstAccessMask());
     assertEquals(23, out.srcQueueFamilyIndex());
     assertEquals(25, out.dstQueueFamilyIndex());
     assertEquals(100L, out.offset());
@@ -78,15 +79,15 @@ public final class VulkanLWJGLBufferMemoryBarriersTest
       Mockito.mock(VulkanLWJGLBuffer.class);
 
     final var source =
-      VulkanBufferMemoryBarrier.of(
-        EnumSet.allOf(VulkanAccessFlag.class),
-        EnumSet.allOf(VulkanAccessFlag.class),
-        new VulkanQueueFamilyIndex(23),
-        new VulkanQueueFamilyIndex(25),
-        buffer,
-        100L,
-        200L
-      );
+      VulkanBufferMemoryBarrier.builder()
+        .setBuffer(buffer)
+        .setSrcAccessMask(EnumSet.allOf(VulkanAccessFlag.class))
+        .setDstAccessMask(EnumSet.allOf(VulkanAccessFlag.class))
+        .setSrcQueueFamilyIndex(new VulkanQueueFamilyIndex(23))
+        .setDstQueueFamilyIndex(new VulkanQueueFamilyIndex(25))
+        .setOffset(100L)
+        .setSize(200L)
+        .build();
 
     final var out =
       VulkanLWJGLBufferMemoryBarriers.pack(this.stack, source);
@@ -102,15 +103,15 @@ public final class VulkanLWJGLBufferMemoryBarriersTest
       Mockito.mock(VulkanLWJGLBuffer.class);
 
     final var source =
-      VulkanBufferMemoryBarrier.of(
-        EnumSet.allOf(VulkanAccessFlag.class),
-        EnumSet.allOf(VulkanAccessFlag.class),
-        new VulkanQueueFamilyIndex(23),
-        new VulkanQueueFamilyIndex(25),
-        buffer,
-        100L,
-        200L
-      );
+      VulkanBufferMemoryBarrier.builder()
+        .setBuffer(buffer)
+        .setSrcAccessMask(EnumSet.allOf(VulkanAccessFlag.class))
+        .setDstAccessMask(EnumSet.allOf(VulkanAccessFlag.class))
+        .setSrcQueueFamilyIndex(new VulkanQueueFamilyIndex(23))
+        .setDstQueueFamilyIndex(new VulkanQueueFamilyIndex(25))
+        .setOffset(100L)
+        .setSize(200L)
+        .build();
 
     final var out =
       VulkanLWJGLBufferMemoryBarriers.packList(
@@ -130,15 +131,15 @@ public final class VulkanLWJGLBufferMemoryBarriersTest
       Mockito.mock(VulkanLWJGLBuffer.class);
 
     final var source =
-      VulkanBufferMemoryBarrier.of(
-        EnumSet.allOf(VulkanAccessFlag.class),
-        EnumSet.allOf(VulkanAccessFlag.class),
-        new VulkanQueueFamilyIndex(23),
-        new VulkanQueueFamilyIndex(25),
-        buffer,
-        100L,
-        200L
-      );
+      VulkanBufferMemoryBarrier.builder()
+        .setBuffer(buffer)
+        .setSrcAccessMask(EnumSet.allOf(VulkanAccessFlag.class))
+        .setDstAccessMask(EnumSet.allOf(VulkanAccessFlag.class))
+        .setSrcQueueFamilyIndex(new VulkanQueueFamilyIndex(23))
+        .setDstQueueFamilyIndex(new VulkanQueueFamilyIndex(25))
+        .setOffset(100L)
+        .setSize(200L)
+        .build();
 
     final var packed =
       VulkanLWJGLBufferMemoryBarriers.packListOrNull(

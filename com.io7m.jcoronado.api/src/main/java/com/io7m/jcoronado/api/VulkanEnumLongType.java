@@ -17,33 +17,14 @@
 package com.io7m.jcoronado.api;
 
 /**
- * Flags specified when creating semaphores.
- *
- * Vulkan 1.1 specification: "VkSemaphoreCreateFlags is a bitmask type for setting a mask, but is
- * currently reserved for future use."
- *
- * @see "VkSemaphoreCreateFlags"
+ * The type of enums with long integer values.
  */
 
-@VulkanAPIEnumType(vulkanEnum = "VkSemaphoreCreateFlags")
-public enum VulkanSemaphoreCreateFlag implements VulkanEnumBitmaskType
+public interface VulkanEnumLongType
 {
   /**
-   * No flags set.
+   * @return The long integer value of the constant
    */
 
-  VK_SEMAPHORE_CREATE_FLAG_NONE(0x0);
-
-  private final int value;
-
-  VulkanSemaphoreCreateFlag(final int i)
-  {
-    this.value = i;
-  }
-
-  @Override
-  public int value()
-  {
-    return this.value;
-  }
+  long value();
 }

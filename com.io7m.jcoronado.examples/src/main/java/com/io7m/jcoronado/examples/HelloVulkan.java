@@ -24,6 +24,7 @@ import com.io7m.jcoronado.api.VulkanBufferCreateInfo;
 import com.io7m.jcoronado.api.VulkanClearValueColorFloatingPoint;
 import com.io7m.jcoronado.api.VulkanCommandBufferBeginInfo;
 import com.io7m.jcoronado.api.VulkanCommandBufferCreateInfo;
+import com.io7m.jcoronado.api.VulkanCommandBufferSubmitInfo;
 import com.io7m.jcoronado.api.VulkanCommandBufferType;
 import com.io7m.jcoronado.api.VulkanCommandPoolCreateInfo;
 import com.io7m.jcoronado.api.VulkanComponentMapping;
@@ -65,7 +66,8 @@ import com.io7m.jcoronado.api.VulkanRectangle2D;
 import com.io7m.jcoronado.api.VulkanRenderPassBeginInfo;
 import com.io7m.jcoronado.api.VulkanRenderPassCreateInfo;
 import com.io7m.jcoronado.api.VulkanResourceException;
-import com.io7m.jcoronado.api.VulkanSemaphoreCreateInfo;
+import com.io7m.jcoronado.api.VulkanSemaphoreBinaryCreateInfo;
+import com.io7m.jcoronado.api.VulkanSemaphoreSubmitInfo;
 import com.io7m.jcoronado.api.VulkanSemaphoreType;
 import com.io7m.jcoronado.api.VulkanShaderModuleCreateInfo;
 import com.io7m.jcoronado.api.VulkanShaderModuleType;
@@ -217,10 +219,22 @@ public final class HelloVulkan implements ExampleType
 
     final var submitInfo =
       VulkanSubmitInfo.builder()
-        .addWaitSemaphores(imageAvailable)
-        .addWaitStageMasks(VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT)
-        .addCommandBuffers(graphicsCommandBuffer)
-        .addSignalSemaphores(renderFinished)
+        .addWaitSemaphores(
+          VulkanSemaphoreSubmitInfo.builder()
+            .setStageMask(Set.of(VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT))
+            .setSemaphore(imageAvailable)
+            .build()
+        )
+        .addCommandBuffers(
+          VulkanCommandBufferSubmitInfo.builder()
+            .setCommandBuffer(graphicsCommandBuffer)
+            .build()
+        )
+        .addSignalSemaphores(
+          VulkanSemaphoreSubmitInfo.builder()
+            .setSemaphore(renderFinished)
+            .build()
+        )
         .build();
 
     graphicsQueue.submit(List.of(submitInfo), Optional.empty());
@@ -780,7 +794,7 @@ public final class HelloVulkan implements ExampleType
               VulkanVersions.encode(0, 0, 1),
               "com.io7m.jcoronado.tests",
               VulkanVersions.encode(0, 0, 1),
-              VulkanVersions.encode(1, 0, 0)))
+              VulkanVersions.encode(instances.minimumRequiredVersion())))
           .setEnabledExtensions(enableExtensions)
           .setEnabledLayers(enableLayers)
           .build();
@@ -1302,14 +1316,14 @@ public final class HelloVulkan implements ExampleType
        */
 
       final var renderFinished =
-        resources.add(device.createSemaphore(
-          VulkanSemaphoreCreateInfo.builder()
-            .build()));
+        resources.add(device.createBinarySemaphore(
+          VulkanSemaphoreBinaryCreateInfo.builder().build()
+        ));
 
       final var imageAvailable =
-        resources.add(device.createSemaphore(
-          VulkanSemaphoreCreateInfo.builder()
-            .build()));
+        resources.add(device.createBinarySemaphore(
+          VulkanSemaphoreBinaryCreateInfo.builder().build()
+        ));
 
       /*
        * Start recording commands.
