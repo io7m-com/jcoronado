@@ -58,6 +58,7 @@ public final class VulkanLWJGLEqualsTest
         "ownership",
         "device",
         "closed",
+        "name",
         "host_allocator_proxy")
       .withNonnullFields("handle")
       .verify();
@@ -70,6 +71,7 @@ public final class VulkanLWJGLEqualsTest
       .withIgnoredFields(
         "ownership",
         "closed",
+        "name",
         "host_allocator_proxy")
       .withNonnullFields("handle")
       .verify();
@@ -84,6 +86,7 @@ public final class VulkanLWJGLEqualsTest
         "buffer",
         "ownership",
         "closed",
+        "name",
         "host_allocator_proxy")
       .withNonnullFields("handle")
       .verify();
@@ -97,6 +100,7 @@ public final class VulkanLWJGLEqualsTest
         "ownership",
         "device",
         "closed",
+        "name",
         "host_allocator_proxy")
       .withNonnullFields("handle")
       .verify();
@@ -110,6 +114,7 @@ public final class VulkanLWJGLEqualsTest
         "ownership",
         "device",
         "closed",
+        "name",
         "host_allocator_proxy")
       .withNonnullFields("handle")
       .verify();
@@ -123,6 +128,7 @@ public final class VulkanLWJGLEqualsTest
         "ownership",
         "device",
         "closed",
+        "name",
         "host_allocator_proxy")
       .withNonnullFields("handle")
       .verify();
@@ -136,6 +142,7 @@ public final class VulkanLWJGLEqualsTest
         "ownership",
         "deallocate",
         "closed",
+        "name",
         "host_allocator_proxy")
       .withNonnullFields("handle")
       .verify();
@@ -149,6 +156,7 @@ public final class VulkanLWJGLEqualsTest
         "ownership",
         "deallocate",
         "closed",
+        "name",
         "host_allocator_proxy")
       .withNonnullFields("handle")
       .verify();
@@ -171,6 +179,7 @@ public final class VulkanLWJGLEqualsTest
         "device",
         "image",
         "closed",
+        "name",
         "host_allocator_proxy")
       .withNonnullFields("handle")
       .verify();
@@ -213,6 +222,7 @@ public final class VulkanLWJGLEqualsTest
         "ownership",
         "device",
         "closed",
+        "name",
         "host_allocator_proxy")
       .verify();
   }
@@ -225,6 +235,7 @@ public final class VulkanLWJGLEqualsTest
         "ownership",
         "device",
         "closed",
+        "name",
         "host_allocator_proxy")
       .verify();
   }
@@ -251,6 +262,7 @@ public final class VulkanLWJGLEqualsTest
         "ownership",
         "device",
         "closed",
+        "name",
         "host_allocator_proxy")
       .withNonnullFields("handle")
       .verify();
@@ -264,6 +276,7 @@ public final class VulkanLWJGLEqualsTest
         "ownership",
         "device",
         "closed",
+        "name",
         "host_allocator_proxy")
       .withNonnullFields("handle")
       .verify();
@@ -277,6 +290,7 @@ public final class VulkanLWJGLEqualsTest
         "ownership",
         "device",
         "closed",
+        "name",
         "host_allocator_proxy")
       .withNonnullFields("handle")
       .verify();
@@ -290,6 +304,7 @@ public final class VulkanLWJGLEqualsTest
         "ownership",
         "device",
         "closed",
+        "name",
         "host_allocator_proxy")
       .withNonnullFields("handle")
       .verify();
@@ -303,6 +318,7 @@ public final class VulkanLWJGLEqualsTest
         "ownership",
         "device",
         "closed",
+        "name",
         "host_allocator_proxy")
       .withNonnullFields("handle")
       .verify();
@@ -324,6 +340,7 @@ public final class VulkanLWJGLEqualsTest
         "ownership",
         "device",
         "closed",
+        "name",
         "host_allocator_proxy")
       .withNonnullFields("handle")
       .verify();
@@ -337,6 +354,7 @@ public final class VulkanLWJGLEqualsTest
         "ownership",
         "device",
         "closed",
+        "name",
         "host_allocator_proxy")
       .withNonnullFields("handle")
       .verify();
