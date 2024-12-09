@@ -1103,10 +1103,10 @@ public final class VulkanLWJGLLogicalDevice
 
   @Override
   public VulkanFenceType createFence(
-    final VulkanFenceCreateInfo create_info)
+    final VulkanFenceCreateInfo createInfo)
     throws VulkanException
   {
-    Objects.requireNonNull(create_info, "create_info");
+    Objects.requireNonNull(createInfo, "create_info");
 
     this.checkNotClosed();
 
@@ -1116,7 +1116,7 @@ public final class VulkanLWJGLLogicalDevice
       VulkanChecks.checkReturnCode(
         VK10.vkCreateFence(
           this.device,
-          VulkanLWJGLFenceCreateInfos.pack(stack, create_info),
+          VulkanLWJGLFenceCreateInfos.pack(stack, createInfo),
           proxy.callbackBuffer(),
           fences),
         "vkCreateFence");

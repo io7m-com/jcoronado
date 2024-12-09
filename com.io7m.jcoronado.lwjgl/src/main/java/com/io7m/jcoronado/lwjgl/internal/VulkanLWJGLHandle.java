@@ -21,6 +21,7 @@ import com.io7m.jcoronado.api.VulkanHandleType;
 import org.slf4j.Logger;
 
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicReference;
 
 sealed abstract class VulkanLWJGLHandle
   implements VulkanHandleType
@@ -59,6 +60,7 @@ sealed abstract class VulkanLWJGLHandle
   private final Ownership ownership;
   private final VulkanLWJGLHostAllocatorProxy host_allocator_proxy;
   private final long handle;
+  private final AtomicReference<String> name;
   private boolean closed;
 
   VulkanLWJGLHandle(
@@ -75,6 +77,7 @@ sealed abstract class VulkanLWJGLHandle
         "in_host_allocator_proxy"
       );
     this.handle = inHandle;
+    this.name = new AtomicReference<>("");
   }
 
   /**
@@ -139,9 +142,10 @@ sealed abstract class VulkanLWJGLHandle
   public final String toString()
   {
     return String.format(
-      "[%s 0x%s]",
+      "[%s 0x%s ('%s')]",
       this.getClass().getSimpleName(),
-      Long.toUnsignedString(this.handle, 16)
+      Long.toUnsignedString(this.handle, 16),
+      this.name.get()
     );
   }
 
@@ -166,6 +170,18 @@ sealed abstract class VulkanLWJGLHandle
   }
 
   protected abstract void closeActual();
+
+  /**
+   * Set the object name for debugging.
+   *
+   * @param inName The name
+   */
+
+  public void setName(
+    final String inName)
+  {
+    this.name.set(Objects.requireNonNullElse(inName, ""));
+  }
 
   /**
    * The ownership status of the object.

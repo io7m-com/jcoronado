@@ -367,7 +367,7 @@ public final class VFakeLogicalDevice implements VulkanLogicalDeviceType
 
   @Override
   public VulkanFenceType createFence(
-    final VulkanFenceCreateInfo create_info)
+    final VulkanFenceCreateInfo createInfo)
     throws VulkanException
   {
     throw errorNotImplemented("createFence");

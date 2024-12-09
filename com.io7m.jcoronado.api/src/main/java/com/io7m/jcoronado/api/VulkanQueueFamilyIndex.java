@@ -25,10 +25,40 @@ package com.io7m.jcoronado.api;
 public record VulkanQueueFamilyIndex(int value)
   implements Comparable<VulkanQueueFamilyIndex>
 {
+  private static final VulkanQueueFamilyIndex IGNORED =
+    new VulkanQueueFamilyIndex(-1);
+
+  private static final VulkanQueueFamilyIndex EXTERNAL =
+    new VulkanQueueFamilyIndex(-2);
+
+  /**
+   * @return The special queue family index that indicates that a queue family
+   * parameter or member is ignored.
+   *
+   * @see "VK_QUEUE_FAMILY_IGNORED"
+   */
+
+  public static VulkanQueueFamilyIndex ignored()
+  {
+    return IGNORED;
+  }
+
+  /**
+   * @return The special queue family index that represents any queue external
+   * to the resource's current Vulkan instance.
+   *
+   * @see "VK_QUEUE_FAMILY_EXTERNAL"
+   */
+
+  public static VulkanQueueFamilyIndex external()
+  {
+    return EXTERNAL;
+  }
+
   @Override
   public int compareTo(
     final VulkanQueueFamilyIndex other)
   {
-    return Integer.compareUnsigned(this.value, other.value);
+    return Integer.compare(this.value, other.value);
   }
 }

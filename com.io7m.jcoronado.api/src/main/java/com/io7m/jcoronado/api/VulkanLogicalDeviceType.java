@@ -80,7 +80,7 @@ public interface VulkanLogicalDeviceType extends VulkanHandleDispatchableType
     Objects.requireNonNull(queueFamily, "queueFamily");
 
     final Predicate<VulkanQueueType> queueMatches =
-      (VulkanQueueType queue) -> {
+      (final VulkanQueueType queue) -> {
         final var familyProperties =
           queue.queueFamilyProperties();
         final var familyMatches =
@@ -604,6 +604,24 @@ public interface VulkanLogicalDeviceType extends VulkanHandleDispatchableType
     throws VulkanException;
 
   /**
+   * Create a binary semaphore.
+   *
+   * @return A semaphore
+   *
+   * @throws VulkanException On errors
+   */
+
+  @VulkanAPIFunctionType(vulkanFunction = "vkCreateSemaphore")
+  default VulkanSemaphoreBinaryType createBinarySemaphore()
+    throws VulkanException
+  {
+    return this.createBinarySemaphore(
+      VulkanSemaphoreBinaryCreateInfo.builder()
+        .build()
+    );
+  }
+
+  /**
    * Create a timeline semaphore.
    *
    * @param info The semaphore creation info
@@ -619,9 +637,31 @@ public interface VulkanLogicalDeviceType extends VulkanHandleDispatchableType
     throws VulkanException;
 
   /**
+   * Create a timeline semaphore.
+   *
+   * @param initialValue The semaphore initial value
+   *
+   * @return A semaphore
+   *
+   * @throws VulkanException On errors
+   */
+
+  @VulkanAPIFunctionType(vulkanFunction = "vkCreateSemaphore")
+  default VulkanSemaphoreTimelineType createTimelineSemaphore(
+    final long initialValue)
+    throws VulkanException
+  {
+    return this.createTimelineSemaphore(
+      VulkanSemaphoreTimelineCreateInfo.builder()
+        .setInitialValue(initialValue)
+        .build()
+    );
+  }
+
+  /**
    * Create a fence.
    *
-   * @param create_info The fence creation info
+   * @param createInfo The fence creation info
    *
    * @return A fence
    *
@@ -630,8 +670,26 @@ public interface VulkanLogicalDeviceType extends VulkanHandleDispatchableType
 
   @VulkanAPIFunctionType(vulkanFunction = "vkCreateFence")
   VulkanFenceType createFence(
-    VulkanFenceCreateInfo create_info)
+    VulkanFenceCreateInfo createInfo)
     throws VulkanException;
+
+  /**
+   * Create a fence.
+   *
+   * @return A fence
+   *
+   * @throws VulkanException On errors
+   */
+
+  @VulkanAPIFunctionType(vulkanFunction = "vkCreateFence")
+  default VulkanFenceType createFence()
+    throws VulkanException
+  {
+    return this.createFence(
+      VulkanFenceCreateInfo.builder()
+        .build()
+    );
+  }
 
   /**
    * Create an event.

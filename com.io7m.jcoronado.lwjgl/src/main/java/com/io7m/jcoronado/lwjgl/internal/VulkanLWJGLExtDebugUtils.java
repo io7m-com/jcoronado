@@ -262,6 +262,8 @@ public final class VulkanLWJGLExtDebugUtils
       checkInstanceOf(device, VulkanLWJGLLogicalDevice.class);
 
     if (info.objectHandle() instanceof final VulkanLWJGLHandle handle) {
+      handle.setName(info.objectName());
+
       final var handleTypeOpt =
         objectTypeOfHandleInt(handle);
 
