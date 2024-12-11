@@ -92,6 +92,7 @@ import com.io7m.jcoronado.api.VulkanResourceException;
 import com.io7m.jcoronado.api.VulkanSamplerCreateInfo;
 import com.io7m.jcoronado.api.VulkanSamplerType;
 import com.io7m.jcoronado.api.VulkanSemaphoreBinaryCreateInfo;
+import com.io7m.jcoronado.api.VulkanSemaphoreBinaryType;
 import com.io7m.jcoronado.api.VulkanSemaphoreSubmitInfo;
 import com.io7m.jcoronado.api.VulkanSemaphoreType;
 import com.io7m.jcoronado.api.VulkanShaderModuleCreateInfo;
@@ -121,6 +122,11 @@ import com.io7m.jcoronado.extensions.khr_swapchain.api.VulkanExtKHRSwapChainType
 import com.io7m.jcoronado.extensions.khr_swapchain.api.VulkanPresentInfoKHR;
 import com.io7m.jcoronado.extensions.khr_swapchain.api.VulkanPresentModeKHR;
 import com.io7m.jcoronado.extensions.khr_swapchain.api.VulkanSwapChainCreateInfo;
+import com.io7m.jcoronado.extensions.khr_swapchain.api.VulkanSwapChainNotReady;
+import com.io7m.jcoronado.extensions.khr_swapchain.api.VulkanSwapChainOK;
+import com.io7m.jcoronado.extensions.khr_swapchain.api.VulkanSwapChainOutOfDate;
+import com.io7m.jcoronado.extensions.khr_swapchain.api.VulkanSwapChainSubOptimal;
+import com.io7m.jcoronado.extensions.khr_swapchain.api.VulkanSwapChainTimedOut;
 import com.io7m.jcoronado.lwjgl.VMALWJGLAllocatorProvider;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLHostAllocatorJeMalloc;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLInstanceProvider;
@@ -628,7 +634,8 @@ public final class HelloVulkanWithVMA implements ExampleType
     LOG.trace(
       "swap chain has {} images, allocating {} descriptor sets",
       imageCount,
-      imageCount);
+      imageCount
+    );
 
     final var descriptorPoolUniformBuffer =
       VulkanDescriptorPoolSize.of(
@@ -1126,8 +1133,8 @@ public final class HelloVulkanWithVMA implements ExampleType
   private static void drawFrame(
     final VulkanExtKHRSwapChainType khr_swapchain_ext,
     final VulkanKHRSwapChainType swap_chain,
-    final VulkanSemaphoreType imageAvailable,
-    final VulkanSemaphoreType renderFinished,
+    final VulkanSemaphoreBinaryType imageAvailable,
+    final VulkanSemaphoreBinaryType renderFinished,
     final List<VulkanCommandBufferType> graphics_command_buffers,
     final VulkanQueueType graphics_queue,
     final VulkanQueueType queue_presentation)
@@ -1144,16 +1151,31 @@ public final class HelloVulkanWithVMA implements ExampleType
         0xffff_ffff_ffff_ffffL,
         imageAvailable);
 
-    final var image_index_option = acquisition.imageIndex();
-    if (!image_index_option.isPresent()) {
-      LOG.error("could not acquire image");
-      return;
+    final int imageIndex;
+    switch (acquisition) {
+      case final VulkanSwapChainOK r -> {
+        imageIndex = r.imageIndex();
+      }
+      case final VulkanSwapChainNotReady r -> {
+        LOG.error("Could not acquire image ({})", r);
+        return;
+      }
+      case final VulkanSwapChainOutOfDate r -> {
+        LOG.error("Could not acquire image ({})", r);
+        return;
+      }
+      case final VulkanSwapChainSubOptimal r -> {
+        LOG.error("Could not acquire image ({})", r);
+        return;
+      }
+      case final VulkanSwapChainTimedOut r -> {
+        LOG.error("Could not acquire image ({})", r);
+        return;
+      }
     }
 
-    final var image_index =
-      image_index_option.getAsInt();
     final var graphicsCommandBuffer =
-      graphics_command_buffers.get(image_index);
+      graphics_command_buffers.get(imageIndex);
 
     /*
      * Wait until the image is available (via the image available semaphore) before writing
@@ -1189,7 +1211,7 @@ public final class HelloVulkanWithVMA implements ExampleType
 
     final var presentation_info =
       VulkanPresentInfoKHR.builder()
-        .addImageIndices(image_index)
+        .addImageIndices(imageIndex)
         .addSwapChains(swap_chain)
         .addWaitSemaphores(renderFinished)
         .build();

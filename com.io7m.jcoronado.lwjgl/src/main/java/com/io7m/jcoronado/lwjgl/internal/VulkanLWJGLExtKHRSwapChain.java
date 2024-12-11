@@ -33,8 +33,13 @@ import com.io7m.jcoronado.api.VulkanSemaphoreType;
 import com.io7m.jcoronado.api.VulkanUncheckedException;
 import com.io7m.jcoronado.extensions.khr_swapchain.api.VulkanExtKHRSwapChainType;
 import com.io7m.jcoronado.extensions.khr_swapchain.api.VulkanPresentInfoKHR;
+import com.io7m.jcoronado.extensions.khr_swapchain.api.VulkanSwapChainAcquisitionResultType;
 import com.io7m.jcoronado.extensions.khr_swapchain.api.VulkanSwapChainCreateInfo;
-import com.io7m.jcoronado.extensions.khr_swapchain.api.VulkanSwapChainImageAcquisition;
+import com.io7m.jcoronado.extensions.khr_swapchain.api.VulkanSwapChainNotReady;
+import com.io7m.jcoronado.extensions.khr_swapchain.api.VulkanSwapChainOK;
+import com.io7m.jcoronado.extensions.khr_swapchain.api.VulkanSwapChainOutOfDate;
+import com.io7m.jcoronado.extensions.khr_swapchain.api.VulkanSwapChainSubOptimal;
+import com.io7m.jcoronado.extensions.khr_swapchain.api.VulkanSwapChainTimedOut;
 import com.io7m.junreachable.UnreachableCodeException;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.vulkan.KHRSwapchain;
@@ -207,14 +212,14 @@ public final class VulkanLWJGLExtKHRSwapChain implements
       .collect(Collectors.toList());
   }
 
-  private VulkanSwapChainImageAcquisition acquireImage(
+  private VulkanSwapChainAcquisitionResultType acquireImage(
     final VulkanLWJGLKHRSwapChain chain,
     final long timeout,
-    final VulkanSemaphoreType semaphore,
+    final VulkanSemaphoreBinaryType semaphore,
     final VulkanFenceType fence)
     throws VulkanIncompatibleClassException, VulkanCallFailedException
   {
-    final long semaphore_handle =
+    final long semaphoreHandle =
       switch (semaphore) {
         case null -> {
           yield VK10.VK_NULL_HANDLE;
@@ -223,81 +228,63 @@ public final class VulkanLWJGLExtKHRSwapChain implements
           yield checkInstanceOf(b, VulkanLWJGLSemaphoreBinary.class)
             .handle();
         }
-        case final VulkanSemaphoreTimelineType t -> {
-          yield checkInstanceOf(t, VulkanLWJGLSemaphoreTimeline.class)
-            .handle();
-        }
       };
 
-    final long fence_handle;
+    final long fenceHandle;
     if (fence != null) {
-      fence_handle = checkInstanceOf(fence, VulkanLWJGLFence.class)
-        .handle();
+      fenceHandle = checkInstanceOf(fence, VulkanLWJGLFence.class).handle();
     } else {
-      fence_handle = VK10.VK_NULL_HANDLE;
+      fenceHandle = VK10.VK_NULL_HANDLE;
     }
 
-    final var image_handles = new int[1];
+    final var imageHandles = new int[1];
     final var result =
       KHRSwapchain.vkAcquireNextImageKHR(
         chain.device.device(),
         chain.chain,
         timeout,
-        semaphore_handle,
-        fence_handle,
-        image_handles);
+        semaphoreHandle,
+        fenceHandle,
+        imageHandles
+      );
 
-    final var image_handle = image_handles[0];
-    switch (result) {
-      case VK10.VK_TIMEOUT:
-        return VulkanSwapChainImageAcquisition.builder()
-          .setSubOptimal(false)
-          .setTimedOut(true)
-          .build();
-      case VK10.VK_NOT_READY:
-        return VulkanSwapChainImageAcquisition.builder()
-          .setSubOptimal(false)
-          .setTimedOut(false)
-          .build();
-      case VK10.VK_SUCCESS:
-        return VulkanSwapChainImageAcquisition.builder()
-          .setSubOptimal(false)
-          .setTimedOut(false)
-          .setImageIndex(image_handle)
-          .build();
-      case KHRSwapchain.VK_SUBOPTIMAL_KHR:
-        return VulkanSwapChainImageAcquisition.builder()
-          .setSubOptimal(true)
-          .setTimedOut(false)
-          .setImageIndex(image_handle)
-          .build();
-      default:
+    final var imageHandle = imageHandles[0];
+    return switch (result) {
+      case VK10.VK_SUCCESS -> {
+        yield new VulkanSwapChainOK(imageHandle);
+      }
+      case VK10.VK_TIMEOUT -> {
+        yield new VulkanSwapChainTimedOut();
+      }
+      case VK10.VK_NOT_READY -> {
+        yield new VulkanSwapChainNotReady();
+      }
+      case KHRSwapchain.VK_SUBOPTIMAL_KHR -> {
+        yield new VulkanSwapChainSubOptimal();
+      }
+      case KHRSwapchain.VK_ERROR_OUT_OF_DATE_KHR -> {
+        yield new VulkanSwapChainOutOfDate();
+      }
+      default -> {
         VulkanChecks.checkReturnCode(result, "vkAcquireNextImageKHR");
-    }
-
-    throw new UnreachableCodeException();
+        throw new UnreachableCodeException();
+      }
+    };
   }
 
   @Override
   public VulkanKHRSwapChainType swapChainCreate(
-    final VulkanLogicalDeviceType in_device,
+    final VulkanLogicalDeviceType inDevice,
     final VulkanSwapChainCreateInfo info)
     throws VulkanException
   {
-    Objects.requireNonNull(in_device, "in_device");
+    Objects.requireNonNull(inDevice, "inDevice");
     Objects.requireNonNull(info, "info");
 
     final var device =
-      checkInstanceOf(
-        in_device,
-        VulkanLWJGLLogicalDevice.class);
-
-    Objects.requireNonNull(info, "info");
-
+      checkInstanceOf(inDevice, VulkanLWJGLLogicalDevice.class);
     final var surface =
-      checkInstanceOf(
-        info.surface(),
-        VulkanLWJGLExtKHRSurfaceValue.class);
+      checkInstanceOf(info.surface(), VulkanLWJGLExtKHRSurfaceValue.class);
 
     try (var stack = this.stack_initial.push()) {
       final var vk_info =
@@ -343,26 +330,26 @@ public final class VulkanLWJGLExtKHRSwapChain implements
 
   @Override
   public void queuePresent(
-    final VulkanQueueType in_queue,
-    final VulkanPresentInfoKHR present_info)
+    final VulkanQueueType inQueue,
+    final VulkanPresentInfoKHR presentInfo)
     throws VulkanException
   {
     final var queue =
-      checkInstanceOf(in_queue, VulkanLWJGLQueue.class);
+      checkInstanceOf(inQueue, VulkanLWJGLQueue.class);
 
-    Objects.requireNonNull(present_info, "present_info");
+    Objects.requireNonNull(presentInfo, "presentInfo");
 
     try (var stack = this.stack_initial.push()) {
       final var buffer_indices =
-        packImageIndices(stack, present_info.imageIndices());
+        packImageIndices(stack, presentInfo.imageIndices());
 
-      final var swap_chains = present_info.swapChains();
+      final var swap_chains = presentInfo.swapChains();
       final var swap_chain_count = swap_chains.size();
       final var buffer_swapchains =
         packSwapChains(stack, swap_chains);
 
       final var buffer_semaphores =
-        packSemaphoresX(stack, present_info.waitSemaphores());
+        packSemaphoresX(stack, presentInfo.waitSemaphores());
 
       final var vk_info =
         VkPresentInfoKHR.calloc(stack)
@@ -436,9 +423,9 @@ public final class VulkanLWJGLExtKHRSwapChain implements
     }
 
     @Override
-    public VulkanSwapChainImageAcquisition acquireImageWithSemaphore(
+    public VulkanSwapChainAcquisitionResultType acquireImageWithSemaphore(
       final long timeout,
-      final VulkanSemaphoreType semaphore)
+      final VulkanSemaphoreBinaryType semaphore)
       throws VulkanException
     {
       Objects.requireNonNull(semaphore, "semaphore");
@@ -446,7 +433,7 @@ public final class VulkanLWJGLExtKHRSwapChain implements
     }
 
     @Override
-    public VulkanSwapChainImageAcquisition acquireImageWithFence(
+    public VulkanSwapChainAcquisitionResultType acquireImageWithFence(
       final long timeout,
       final VulkanFenceType fence)
       throws VulkanException
@@ -456,9 +443,9 @@ public final class VulkanLWJGLExtKHRSwapChain implements
     }
 
     @Override
-    public VulkanSwapChainImageAcquisition acquireImageWithSemaphoreAndFence(
+    public VulkanSwapChainAcquisitionResultType acquireImageWithSemaphoreAndFence(
       final long timeout,
-      final VulkanSemaphoreType semaphore,
+      final VulkanSemaphoreBinaryType semaphore,
       final VulkanFenceType fence)
       throws VulkanException
     {

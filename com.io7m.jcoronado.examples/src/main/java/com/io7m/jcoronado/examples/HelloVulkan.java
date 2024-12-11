@@ -67,8 +67,8 @@ import com.io7m.jcoronado.api.VulkanRenderPassBeginInfo;
 import com.io7m.jcoronado.api.VulkanRenderPassCreateInfo;
 import com.io7m.jcoronado.api.VulkanResourceException;
 import com.io7m.jcoronado.api.VulkanSemaphoreBinaryCreateInfo;
+import com.io7m.jcoronado.api.VulkanSemaphoreBinaryType;
 import com.io7m.jcoronado.api.VulkanSemaphoreSubmitInfo;
-import com.io7m.jcoronado.api.VulkanSemaphoreType;
 import com.io7m.jcoronado.api.VulkanShaderModuleCreateInfo;
 import com.io7m.jcoronado.api.VulkanShaderModuleType;
 import com.io7m.jcoronado.api.VulkanSharingMode;
@@ -95,6 +95,11 @@ import com.io7m.jcoronado.extensions.khr_swapchain.api.VulkanExtKHRSwapChainType
 import com.io7m.jcoronado.extensions.khr_swapchain.api.VulkanPresentInfoKHR;
 import com.io7m.jcoronado.extensions.khr_swapchain.api.VulkanPresentModeKHR;
 import com.io7m.jcoronado.extensions.khr_swapchain.api.VulkanSwapChainCreateInfo;
+import com.io7m.jcoronado.extensions.khr_swapchain.api.VulkanSwapChainNotReady;
+import com.io7m.jcoronado.extensions.khr_swapchain.api.VulkanSwapChainOK;
+import com.io7m.jcoronado.extensions.khr_swapchain.api.VulkanSwapChainOutOfDate;
+import com.io7m.jcoronado.extensions.khr_swapchain.api.VulkanSwapChainSubOptimal;
+import com.io7m.jcoronado.extensions.khr_swapchain.api.VulkanSwapChainTimedOut;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLHostAllocatorJeMalloc;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLInstanceProvider;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLTemporaryAllocator;
@@ -182,8 +187,8 @@ public final class HelloVulkan implements ExampleType
   private static void drawFrame(
     final VulkanExtKHRSwapChainType khrSwapchainExt,
     final VulkanKHRSwapChainType swapChain,
-    final VulkanSemaphoreType imageAvailable,
-    final VulkanSemaphoreType renderFinished,
+    final VulkanSemaphoreBinaryType imageAvailable,
+    final VulkanSemaphoreBinaryType renderFinished,
     final List<VulkanCommandBufferType> graphicsCommandBuffers,
     final VulkanQueueType graphicsQueue,
     final VulkanQueueType queuePresentation)
@@ -200,14 +205,29 @@ public final class HelloVulkan implements ExampleType
         0xffff_ffff_ffff_ffffL,
         imageAvailable);
 
-    final var imageIndexOption = acquisition.imageIndex();
-    if (!imageIndexOption.isPresent()) {
-      LOG.error("could not acquire image");
-      return;
+    final int imageIndex;
+    switch (acquisition) {
+      case final VulkanSwapChainOK r -> {
+        imageIndex = r.imageIndex();
+      }
+      case final VulkanSwapChainNotReady r -> {
+        LOG.error("Could not acquire image ({})", r);
+        return;
+      }
+      case final VulkanSwapChainOutOfDate r -> {
+        LOG.error("Could not acquire image ({})", r);
+        return;
+      }
+      case final VulkanSwapChainSubOptimal r -> {
+        LOG.error("Could not acquire image ({})", r);
+        return;
+      }
+      case final VulkanSwapChainTimedOut r -> {
+        LOG.error("Could not acquire image ({})", r);
+        return;
+      }
     }
 
-    final var imageIndex =
-      imageIndexOption.getAsInt();
     final var graphicsCommandBuffer =
       graphicsCommandBuffers.get(imageIndex);
 
@@ -516,7 +536,7 @@ public final class HelloVulkan implements ExampleType
 
     for (final var format : formats) {
       if (format.format() == VK_FORMAT_B8G8R8A8_UNORM
-        && format.colorSpace() == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR) {
+          && format.colorSpace() == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR) {
         return format;
       }
     }
@@ -950,11 +970,15 @@ public final class HelloVulkan implements ExampleType
        */
 
       final var graphicsQueue =
-        device.queue(graphicsQueueProps.queueFamilyIndex(), new VulkanQueueIndex(0))
+        device.queue(
+            graphicsQueueProps.queueFamilyIndex(),
+            new VulkanQueueIndex(0))
           .orElseThrow(() -> new IllegalStateException(
             "Could not find graphics queue"));
       final var presentationQueue =
-        device.queue(presentationQueueProps.queueFamilyIndex(), new VulkanQueueIndex(0))
+        device.queue(
+            presentationQueueProps.queueFamilyIndex(),
+            new VulkanQueueIndex(0))
           .orElseThrow(() -> new IllegalStateException(
             "Could not find presentation queue"));
 

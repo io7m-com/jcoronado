@@ -76,6 +76,7 @@ import com.io7m.jcoronado.api.VulkanSemaphoreBinaryCreateInfo;
 import com.io7m.jcoronado.api.VulkanSemaphoreBinaryType;
 import com.io7m.jcoronado.api.VulkanSemaphoreTimelineCreateInfo;
 import com.io7m.jcoronado.api.VulkanSemaphoreTimelineType;
+import com.io7m.jcoronado.api.VulkanSemaphoreTimelineWait;
 import com.io7m.jcoronado.api.VulkanShaderModuleCreateInfo;
 import com.io7m.jcoronado.api.VulkanShaderModuleType;
 import com.io7m.jcoronado.api.VulkanSubresourceLayout;
@@ -521,6 +522,14 @@ public final class VFakeLogicalDevice implements VulkanLogicalDeviceType
   }
 
   @Override
+  public long getSemaphoreCounterValue(
+    final VulkanSemaphoreTimelineType semaphore)
+    throws VulkanException
+  {
+    throw errorNotImplemented("getSemaphoreCounterValue");
+  }
+
+  @Override
   public VulkanFenceStatus getFenceStatus(
     final VulkanFenceType fence)
     throws VulkanException
@@ -554,5 +563,24 @@ public final class VFakeLogicalDevice implements VulkanLogicalDeviceType
     throws VulkanException
   {
     throw errorNotImplemented("createComputePipelines");
+  }
+
+  @Override
+  public VulkanWaitStatus waitForTimelineSemaphores(
+    final List<VulkanSemaphoreTimelineWait> semaphores,
+    final boolean waitAll,
+    final long timeoutNanos)
+    throws VulkanException
+  {
+    throw errorNotImplemented("waitForSemaphores");
+  }
+
+  @Override
+  public void signalTimelineSemaphore(
+    final VulkanSemaphoreTimelineType semaphore,
+    final long value)
+    throws VulkanException
+  {
+    throw errorNotImplemented("signalTimelineSemaphore");
   }
 }

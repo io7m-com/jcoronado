@@ -1017,6 +1017,21 @@ public interface VulkanLogicalDeviceType extends VulkanHandleDispatchableType
     throws VulkanException;
 
   /**
+   * Retrieve the current value of a semaphore object.
+   *
+   * @param semaphore The semaphore
+   *
+   * @return The semaphore value
+   *
+   * @throws VulkanException On errors
+   */
+
+  @VulkanAPIFunctionType(vulkanFunction = "vkGetSemaphoreCounterValue")
+  long getSemaphoreCounterValue(
+    VulkanSemaphoreTimelineType semaphore)
+    throws VulkanException;
+
+  /**
    * Retrieve the status of a fence object.
    *
    * @param fence The fence
@@ -1168,6 +1183,65 @@ public interface VulkanLogicalDeviceType extends VulkanHandleDispatchableType
   {
     return this.createComputePipelines(Optional.empty(), pipeline_infos);
   }
+
+  /**
+   * Wait for one or more semaphores to become signaled.
+   *
+   * @param semaphores   The semaphores upon which to wait
+   * @param waitAll      {@code true} if all semaphores must become signalled to
+   *                     stop waiting, {@code false} if any semaphore can become
+   *                     signalled
+   * @param timeoutNanos The timeout period in units of nanoseconds.
+   *
+   * @return A value indicating whether waiting succeeded or timed out
+   *
+   * @throws VulkanException On errors
+   */
+
+  @VulkanAPIFunctionType(vulkanFunction = "vkWaitSemaphores")
+  VulkanWaitStatus waitForTimelineSemaphores(
+    List<VulkanSemaphoreTimelineWait> semaphores,
+    boolean waitAll,
+    long timeoutNanos)
+    throws VulkanException;
+
+  /**
+   * Wait for a semaphore to become signaled.
+   *
+   * @param semaphore    The semaphores upon which to wait
+   * @param timeoutNanos The timeout period in units of nanoseconds.
+   *
+   * @return A value indicating whether waiting succeeded or timed out
+   *
+   * @throws VulkanException On errors
+   */
+
+  @VulkanAPIFunctionType(vulkanFunction = "vkWaitSemaphores")
+  default VulkanWaitStatus waitForTimelineSemaphore(
+    final VulkanSemaphoreTimelineWait semaphore,
+    final long timeoutNanos)
+    throws VulkanException
+  {
+    return this.waitForTimelineSemaphores(
+      List.of(semaphore),
+      true,
+      timeoutNanos);
+  }
+
+  /**
+   * Signal a timeline semaphore.
+   *
+   * @param semaphore The semaphore
+   * @param value     The value
+   *
+   * @throws VulkanException On errors
+   */
+
+  @VulkanAPIFunctionType(vulkanFunction = "vkSignalSemaphore")
+  void signalTimelineSemaphore(
+    VulkanSemaphoreTimelineType semaphore,
+    long value)
+    throws VulkanException;
 
   /**
    * The result of fetching data for a pipeline cache.

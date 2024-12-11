@@ -80,6 +80,7 @@ import com.io7m.jcoronado.api.VulkanSemaphoreBinaryCreateInfo;
 import com.io7m.jcoronado.api.VulkanSemaphoreBinaryType;
 import com.io7m.jcoronado.api.VulkanSemaphoreTimelineCreateInfo;
 import com.io7m.jcoronado.api.VulkanSemaphoreTimelineType;
+import com.io7m.jcoronado.api.VulkanSemaphoreTimelineWait;
 import com.io7m.jcoronado.api.VulkanShaderModuleCreateInfo;
 import com.io7m.jcoronado.api.VulkanShaderModuleType;
 import com.io7m.jcoronado.api.VulkanSubresourceLayout;
@@ -95,7 +96,9 @@ import org.lwjgl.vulkan.VkDevice;
 import org.lwjgl.vulkan.VkMemoryRequirements;
 import org.lwjgl.vulkan.VkQueue;
 import org.lwjgl.vulkan.VkSemaphoreCreateInfo;
+import org.lwjgl.vulkan.VkSemaphoreSignalInfo;
 import org.lwjgl.vulkan.VkSemaphoreTypeCreateInfo;
+import org.lwjgl.vulkan.VkSemaphoreWaitInfo;
 import org.lwjgl.vulkan.VkSubresourceLayout;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -1597,6 +1600,37 @@ public final class VulkanLWJGLLogicalDevice
   }
 
   @Override
+  public long getSemaphoreCounterValue(
+    final VulkanSemaphoreTimelineType semaphore)
+    throws VulkanException
+  {
+    Objects.requireNonNull(semaphore, "semaphore");
+
+    this.checkNotClosed();
+
+    final var vkSemaphore =
+      checkInstanceOf(semaphore, VulkanLWJGLSemaphoreTimeline.class);
+
+    try (var stack = this.stack_initial.push()) {
+      final var data =
+        stack.callocLong(1);
+
+      final var result =
+        VK13.vkGetSemaphoreCounterValue(
+          this.device,
+          vkSemaphore.handle(),
+          data
+        );
+
+      if (result == VK_SUCCESS) {
+        return data.get(0);
+      }
+
+      throw VulkanChecks.failed(result, "vkGetSemaphoreCounterValue");
+    }
+  }
+
+  @Override
   public @VulkanExternallySynchronizedType VulkanFenceStatus getFenceStatus(
     final VulkanFenceType fence)
     throws VulkanException
@@ -1689,6 +1723,81 @@ public final class VulkanLWJGLLogicalDevice
       }
 
       return castPipelines(result_pipelines);
+    }
+  }
+
+  @Override
+  public VulkanWaitStatus waitForTimelineSemaphores(
+    final List<VulkanSemaphoreTimelineWait> semaphores,
+    final boolean waitAll,
+    final long timeoutNanos)
+    throws VulkanException
+  {
+    Objects.requireNonNull(semaphores, "semaphores");
+
+    this.checkNotClosed();
+
+    try (var stack = this.stack_initial.push()) {
+      final var info =
+        VkSemaphoreWaitInfo.calloc(stack);
+
+      info.sType(VK13.VK_STRUCTURE_TYPE_SEMAPHORE_WAIT_INFO);
+      if (!waitAll) {
+        info.flags(VK13.VK_SEMAPHORE_WAIT_ANY_BIT);
+      }
+      info.semaphoreCount(semaphores.size());
+      info.pValues(
+        packLongs(stack, semaphores, VulkanSemaphoreTimelineWait::value)
+      );
+      info.pSemaphores(
+        packLongs(
+          stack,
+          semaphores,
+          value -> {
+            return checkInstanceOf(
+              value.semaphore(),
+              VulkanLWJGLSemaphoreTimeline.class
+            ).handle();
+          })
+      );
+
+      final var r =
+        VK13.vkWaitSemaphores(this.device, info, timeoutNanos);
+
+      if (r == VK_SUCCESS) {
+        return VK_WAIT_SUCCEEDED;
+      }
+      if (r == VK_TIMEOUT) {
+        return VK_WAIT_TIMED_OUT;
+      }
+      throw VulkanChecks.failed(r, "vkWaitSemaphores");
+    }
+  }
+
+  @Override
+  public void signalTimelineSemaphore(
+    final VulkanSemaphoreTimelineType semaphore,
+    final long value)
+    throws VulkanException
+  {
+    Objects.requireNonNull(semaphore, "semaphore");
+
+    this.checkNotClosed();
+
+    try (var stack = this.stack_initial.push()) {
+      final var info =
+        VkSemaphoreSignalInfo.calloc(stack);
+      info.sType(VK13.VK_STRUCTURE_TYPE_SEMAPHORE_SIGNAL_INFO);
+      info.semaphore(
+        checkInstanceOf(semaphore, VulkanLWJGLSemaphoreTimeline.class)
+          .handle()
+      );
+      info.value(value);
+
+      VulkanChecks.checkReturnCode(
+        VK13.vkSignalSemaphore(this.device, info),
+        "vkSignalSemaphore"
+      );
     }
   }
 

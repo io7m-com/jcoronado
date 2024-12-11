@@ -23,7 +23,7 @@ import com.io7m.jcoronado.api.VulkanHandleType;
 import com.io7m.jcoronado.api.VulkanImageType;
 import com.io7m.jcoronado.api.VulkanLogicalDeviceType;
 import com.io7m.jcoronado.api.VulkanQueueType;
-import com.io7m.jcoronado.api.VulkanSemaphoreType;
+import com.io7m.jcoronado.api.VulkanSemaphoreBinaryType;
 
 import java.util.List;
 
@@ -99,9 +99,9 @@ public interface VulkanExtKHRSwapChainType extends VulkanExtensionType
      * @throws VulkanException On errors
      */
 
-    VulkanSwapChainImageAcquisition acquireImageWithSemaphore(
+    VulkanSwapChainAcquisitionResultType acquireImageWithSemaphore(
       long timeout,
-      VulkanSemaphoreType semaphore)
+      VulkanSemaphoreBinaryType semaphore)
       throws VulkanException;
 
     /**
@@ -117,7 +117,7 @@ public interface VulkanExtKHRSwapChainType extends VulkanExtensionType
      * @throws VulkanException On errors
      */
 
-    VulkanSwapChainImageAcquisition acquireImageWithFence(
+    VulkanSwapChainAcquisitionResultType acquireImageWithFence(
       long timeout,
       VulkanFenceType fence)
       throws VulkanException;
@@ -136,9 +136,9 @@ public interface VulkanExtKHRSwapChainType extends VulkanExtensionType
      * @throws VulkanException On errors
      */
 
-    VulkanSwapChainImageAcquisition acquireImageWithSemaphoreAndFence(
+    VulkanSwapChainAcquisitionResultType acquireImageWithSemaphoreAndFence(
       long timeout,
-      VulkanSemaphoreType semaphore,
+      VulkanSemaphoreBinaryType semaphore,
       VulkanFenceType fence)
       throws VulkanException;
   }

@@ -22,15 +22,15 @@ import com.io7m.jcoronado.api.VulkanFenceType;
 import com.io7m.jcoronado.api.VulkanImageType;
 import com.io7m.jcoronado.api.VulkanLogicalDeviceType;
 import com.io7m.jcoronado.api.VulkanQueueType;
-import com.io7m.jcoronado.api.VulkanSemaphoreType;
+import com.io7m.jcoronado.api.VulkanSemaphoreBinaryType;
 import com.io7m.jcoronado.extensions.khr_swapchain.api.VulkanExtKHRSwapChainType;
 import com.io7m.jcoronado.extensions.khr_swapchain.api.VulkanPresentInfoKHR;
+import com.io7m.jcoronado.extensions.khr_swapchain.api.VulkanSwapChainAcquisitionResultType;
 import com.io7m.jcoronado.extensions.khr_swapchain.api.VulkanSwapChainCreateInfo;
-import com.io7m.jcoronado.extensions.khr_swapchain.api.VulkanSwapChainImageAcquisition;
+import com.io7m.jcoronado.extensions.khr_swapchain.api.VulkanSwapChainTimedOut;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.OptionalInt;
 
 /**
  * The surface extension.
@@ -117,40 +117,28 @@ public final class VFakeExtKHRSwapChain implements VulkanExtKHRSwapChainType
     }
 
     @Override
-    public VulkanSwapChainImageAcquisition acquireImageWithSemaphore(
+    public VulkanSwapChainAcquisitionResultType acquireImageWithSemaphore(
       final long timeout,
-      final VulkanSemaphoreType semaphore)
+      final VulkanSemaphoreBinaryType semaphore)
     {
-      return VulkanSwapChainImageAcquisition.of(
-        OptionalInt.empty(),
-        false,
-        true
-      );
+      return new VulkanSwapChainTimedOut();
     }
 
     @Override
-    public VulkanSwapChainImageAcquisition acquireImageWithFence(
+    public VulkanSwapChainAcquisitionResultType acquireImageWithFence(
       final long timeout,
       final VulkanFenceType fence)
     {
-      return VulkanSwapChainImageAcquisition.of(
-        OptionalInt.empty(),
-        false,
-        true
-      );
+      return new VulkanSwapChainTimedOut();
     }
 
     @Override
-    public VulkanSwapChainImageAcquisition acquireImageWithSemaphoreAndFence(
+    public VulkanSwapChainAcquisitionResultType acquireImageWithSemaphoreAndFence(
       final long timeout,
-      final VulkanSemaphoreType semaphore,
+      final VulkanSemaphoreBinaryType semaphore,
       final VulkanFenceType fence)
     {
-      return VulkanSwapChainImageAcquisition.of(
-        OptionalInt.empty(),
-        false,
-        true
-      );
+      return new VulkanSwapChainTimedOut();
     }
   }
 }
