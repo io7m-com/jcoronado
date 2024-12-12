@@ -81,6 +81,16 @@ If this step fails, it's a bug. Please report it!
 
 ## Utilities
 
+### com.io7m.jcoronado.utility.allocation_tracker
+
+The `com.io7m.jcoronado.utility.allocation_tracker` module provides a simple
+implementation of the `VulkanHostAllocatorType` interface that simply delegates
+an existing allocator (such as `jemalloc`) but also tracks the current amount
+of memory allocated for every allocation type.
+
+Simply instantiate a `VulkanHostAllocatorTracker` instance and use it anywhere
+the API accepts a `VulkanHostAllocatorType`.
+
 ### com.io7m.jcoronado.utility.swapchain
 
 The `com.io7m.jcoronado.utility.swapchain` module provides a utility for
@@ -169,4 +179,7 @@ By avoiding rendering during window resizes, we effectively avoid creating
 and destroying swapchains for the intermediate window sizes. When the window
 eventually stops resizing, we'll automatically create a suitable swapchain
 for the final size.
+
+See the [HelloSwapChain](com.io7m.jcoronado.examples/src/main/java/com/io7m/jcoronado/examples/HelloSwapChain.java)
+example.
 

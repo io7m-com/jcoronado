@@ -163,3 +163,6 @@ By avoiding rendering during window resizes, we effectively avoid creating
 and destroying swapchains for the intermediate window sizes. When the window
 eventually stops resizing, we'll automatically create a suitable swapchain
 for the final size.
+
+See the [HelloSwapChain](com.io7m.jcoronado.examples/src/main/java/com/io7m/jcoronado/examples/HelloSwapChain.java)
+example.

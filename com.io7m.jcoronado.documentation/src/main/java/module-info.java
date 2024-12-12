@@ -25,10 +25,14 @@ module com.io7m.jcoronado.documentation
   requires static com.io7m.immutables.style;
   requires static org.immutables.value;
 
-  requires com.io7m.jcoronado.vma;
   requires com.io7m.jcoronado.api;
+  requires com.io7m.jcoronado.extensions.ext_debug_utils.api;
+  requires com.io7m.jcoronado.extensions.ext_layer_settings.api;
   requires com.io7m.jcoronado.extensions.khr.surface.api;
+  requires com.io7m.jcoronado.layers.khronos_validation.api;
+  requires com.io7m.jcoronado.layers.lunarg_api_dump.api;
+  requires com.io7m.jcoronado.lwjgl;
   requires com.io7m.jcoronado.utility.allocation_tracker;
   requires com.io7m.jcoronado.utility.swapchain;
-  requires com.io7m.jcoronado.lwjgl;
+  requires com.io7m.jcoronado.vma;
 }
