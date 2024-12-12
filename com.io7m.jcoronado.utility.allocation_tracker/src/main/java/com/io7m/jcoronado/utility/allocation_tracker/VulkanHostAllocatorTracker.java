@@ -14,7 +14,7 @@
  * IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-package com.io7m.jcoronado.allocation_tracker;
+package com.io7m.jcoronado.utility.allocation_tracker;
 
 import com.io7m.jcoronado.api.VulkanHostAllocatorCallbacks;
 import com.io7m.jcoronado.api.VulkanHostAllocatorType;

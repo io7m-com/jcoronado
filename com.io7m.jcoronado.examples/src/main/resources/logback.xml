@@ -15,7 +15,7 @@
   </root>
 
   <logger
-    name="com.io7m.jcoronado.allocation_tracker.VulkanHostAllocatorTracker"
+    name="com.io7m.jcoronado.utility.allocation_tracker.VulkanHostAllocatorTracker"
     level="INFO"/>
 
 </configuration>

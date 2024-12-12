@@ -12,10 +12,10 @@
     <version>0.0.2-SNAPSHOT</version>
   </parent>
 
-  <artifactId>com.io7m.jcoronado.allocation_tracker</artifactId>
+  <artifactId>com.io7m.jcoronado.utility.allocation_tracker</artifactId>
 
   <packaging>jar</packaging>
-  <name>com.io7m.jcoronado.allocation_tracker</name>
+  <name>com.io7m.jcoronado.utility.allocation_tracker</name>
   <description>Type-safe Vulkan frontend (Allocation tracker)</description>
   <url>https://www.io7m.com/software/jcoronado</url>
 

@@ -57,7 +57,7 @@
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
-      <artifactId>com.io7m.jcoronado.allocation_tracker</artifactId>
+      <artifactId>com.io7m.jcoronado.utility.allocation_tracker</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>

@@ -16,7 +16,7 @@
 
 package com.io7m.jcoronado.examples;
 
-import com.io7m.jcoronado.allocation_tracker.VulkanHostAllocatorTracker;
+import com.io7m.jcoronado.utility.allocation_tracker.VulkanHostAllocatorTracker;
 import com.io7m.jcoronado.api.VulkanApplicationInfo;
 import com.io7m.jcoronado.api.VulkanAttachmentDescription;
 import com.io7m.jcoronado.api.VulkanAttachmentReference;
@@ -94,7 +94,6 @@ import com.io7m.jcoronado.api.VulkanSamplerType;
 import com.io7m.jcoronado.api.VulkanSemaphoreBinaryCreateInfo;
 import com.io7m.jcoronado.api.VulkanSemaphoreBinaryType;
 import com.io7m.jcoronado.api.VulkanSemaphoreSubmitInfo;
-import com.io7m.jcoronado.api.VulkanSemaphoreType;
 import com.io7m.jcoronado.api.VulkanShaderModuleCreateInfo;
 import com.io7m.jcoronado.api.VulkanShaderModuleType;
 import com.io7m.jcoronado.api.VulkanSharingMode;

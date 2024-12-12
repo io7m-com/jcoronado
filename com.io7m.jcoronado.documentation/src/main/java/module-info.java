@@ -28,6 +28,7 @@ module com.io7m.jcoronado.documentation
   requires com.io7m.jcoronado.vma;
   requires com.io7m.jcoronado.api;
   requires com.io7m.jcoronado.extensions.khr.surface.api;
-  requires com.io7m.jcoronado.allocation.tracker;
+  requires com.io7m.jcoronado.utility.allocation_tracker;
+  requires com.io7m.jcoronado.utility.swapchain;
   requires com.io7m.jcoronado.lwjgl;
 }

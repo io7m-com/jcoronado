@@ -22,7 +22,6 @@
   <url>https://www.io7m.com/software/jcoronado</url>
 
   <modules>
-    <module>com.io7m.jcoronado.allocation_tracker</module>
     <module>com.io7m.jcoronado.api</module>
     <module>com.io7m.jcoronado.documentation</module>
     <module>com.io7m.jcoronado.examples</module>
@@ -34,6 +33,7 @@
     <module>com.io7m.jcoronado.layers.lunarg_api_dump.api</module>
     <module>com.io7m.jcoronado.lwjgl</module>
     <module>com.io7m.jcoronado.tests</module>
+    <module>com.io7m.jcoronado.utility.allocation_tracker</module>
     <module>com.io7m.jcoronado.utility.swapchain</module>
     <module>com.io7m.jcoronado.vma</module>
   </modules>
