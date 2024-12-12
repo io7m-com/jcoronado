@@ -21,10 +21,11 @@ import java.util.Objects;
 import java.util.Optional;
 
 /**
- * An exception raised by a failing Vulkan call.
+ * An exception raised by a problem with the Vulkan implementation (such as
+ * violating the Vulkan specification).
  */
 
-public final class VulkanCallFailedException
+public final class VulkanImplementationException
   extends VulkanException
 {
   /**
@@ -35,7 +36,7 @@ public final class VulkanCallFailedException
    * @param attributes The error attributes
    */
 
-  public VulkanCallFailedException(
+  public VulkanImplementationException(
     final String message,
     final Throwable cause,
     final Map<String, String> attributes)
@@ -56,14 +57,14 @@ public final class VulkanCallFailedException
    * @param attributes The error attributes
    */
 
-  public VulkanCallFailedException(
+  public VulkanImplementationException(
     final String message,
     final Map<String, String> attributes)
   {
     super(
       Objects.requireNonNull(message, "message"),
       Map.copyOf(attributes),
-      "error-vulkan-call",
+      "error-vulkan-implementation-incorrect",
       Optional.empty()
     );
   }

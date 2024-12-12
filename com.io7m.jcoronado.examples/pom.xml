@@ -37,6 +37,16 @@
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
+      <artifactId>com.io7m.jcoronado.extensions.ext_layer_settings.api</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>com.io7m.jcoronado.layers.khronos_validation.api</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
       <artifactId>com.io7m.jcoronado.vma</artifactId>
       <version>${project.version}</version>
     </dependency>
@@ -48,6 +58,11 @@
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>com.io7m.jcoronado.allocation_tracker</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>com.io7m.jcoronado.utility.swapchain</artifactId>
       <version>${project.version}</version>
     </dependency>
 

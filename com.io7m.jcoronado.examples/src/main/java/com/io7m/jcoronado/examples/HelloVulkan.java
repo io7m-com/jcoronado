@@ -87,6 +87,7 @@ import com.io7m.jcoronado.extensions.ext_debug_utils.api.VulkanDebugUtilsMessage
 import com.io7m.jcoronado.extensions.ext_debug_utils.api.VulkanDebugUtilsMessengerCreateInfoEXT;
 import com.io7m.jcoronado.extensions.ext_debug_utils.api.VulkanDebugUtilsSLF4J;
 import com.io7m.jcoronado.extensions.ext_debug_utils.api.VulkanDebugUtilsType;
+import com.io7m.jcoronado.extensions.ext_layer_settings.api.VulkanLayerSettingsCreateInfo;
 import com.io7m.jcoronado.extensions.khr_surface.api.VulkanExtKHRSurfaceType;
 import com.io7m.jcoronado.extensions.khr_surface.api.VulkanSurfaceCapabilitiesKHR;
 import com.io7m.jcoronado.extensions.khr_surface.api.VulkanSurfaceFormatKHR;
@@ -100,10 +101,12 @@ import com.io7m.jcoronado.extensions.khr_swapchain.api.VulkanSwapChainOK;
 import com.io7m.jcoronado.extensions.khr_swapchain.api.VulkanSwapChainOutOfDate;
 import com.io7m.jcoronado.extensions.khr_swapchain.api.VulkanSwapChainSubOptimal;
 import com.io7m.jcoronado.extensions.khr_swapchain.api.VulkanSwapChainTimedOut;
+import com.io7m.jcoronado.layers.khronos_validation.api.VulkanValidationValidateSync;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLHostAllocatorJeMalloc;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLInstanceProvider;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLTemporaryAllocator;
 import com.io7m.jmulticlose.core.CloseableCollection;
+import com.io7m.junreachable.UnimplementedCodeException;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWVulkan;
@@ -120,7 +123,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 import static com.io7m.jcoronado.api.VulkanAccessFlag.VK_ACCESS_COLOR_ATTACHMENT_READ_BIT;
 import static com.io7m.jcoronado.api.VulkanAccessFlag.VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
@@ -175,6 +177,8 @@ public final class HelloVulkan implements ExampleType
   private static final int VERTEX_COLOR_SIZE = 3 * 4;
   private static final int VERTEX_SIZE = VERTEX_POSITION_SIZE + VERTEX_COLOR_SIZE;
 
+  private static final int FRAME_LIMIT = 100;
+
   public HelloVulkan()
   {
 
@@ -194,39 +198,8 @@ public final class HelloVulkan implements ExampleType
     final VulkanQueueType queuePresentation)
     throws VulkanException
   {
-    /*
-     * Try to acquire an image from the swap chain, waiting indefinitely until one is available.
-     * There isn't really anything sensible that we can do if an image can't be acquired in this
-     * example code, so all that will happen is that the code will immediately try again.
-     */
-
-    final var acquisition =
-      swapChain.acquireImageWithSemaphore(
-        0xffff_ffff_ffff_ffffL,
-        imageAvailable);
-
-    final int imageIndex;
-    switch (acquisition) {
-      case final VulkanSwapChainOK r -> {
-        imageIndex = r.imageIndex();
-      }
-      case final VulkanSwapChainNotReady r -> {
-        LOG.error("Could not acquire image ({})", r);
-        return;
-      }
-      case final VulkanSwapChainOutOfDate r -> {
-        LOG.error("Could not acquire image ({})", r);
-        return;
-      }
-      case final VulkanSwapChainSubOptimal r -> {
-        LOG.error("Could not acquire image ({})", r);
-        return;
-      }
-      case final VulkanSwapChainTimedOut r -> {
-        LOG.error("Could not acquire image ({})", r);
-        return;
-      }
-    }
+    final var imageIndex =
+      acquireSwapChainImage(swapChain, imageAvailable);
 
     final var graphicsCommandBuffer =
       graphicsCommandBuffers.get(imageIndex);
@@ -252,6 +225,7 @@ public final class HelloVulkan implements ExampleType
         )
         .addSignalSemaphores(
           VulkanSemaphoreSubmitInfo.builder()
+            .addStageMask(VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT)
             .setSemaphore(renderFinished)
             .build()
         )
@@ -282,6 +256,47 @@ public final class HelloVulkan implements ExampleType
      */
 
     queuePresentation.waitIdle();
+  }
+
+  /**
+   * Try to acquire an image from the swap chain, waiting indefinitely until one is available.
+   * There isn't really anything sensible that we can do if an image can't be acquired in this
+   * example code, so all that will happen is that the code will immediately try again.
+   */
+
+  private static int acquireSwapChainImage(
+    final VulkanKHRSwapChainType swapChain,
+    final VulkanSemaphoreBinaryType imageAvailable)
+    throws VulkanException
+  {
+    final var acquisition =
+      swapChain.acquireImageWithSemaphore(
+        0xffff_ffff_ffff_ffffL,
+        imageAvailable
+      );
+
+    final int imageIndex;
+    return switch (acquisition) {
+      case final VulkanSwapChainOK r -> {
+        yield r.imageIndex();
+      }
+      case final VulkanSwapChainNotReady r -> {
+        LOG.error("Could not acquire image ({})", r);
+        throw new UnimplementedCodeException();
+      }
+      case final VulkanSwapChainOutOfDate r -> {
+        LOG.error("Could not acquire image ({})", r);
+        throw new UnimplementedCodeException();
+      }
+      case final VulkanSwapChainSubOptimal r -> {
+        LOG.error("Could not acquire image ({})", r);
+        throw new UnimplementedCodeException();
+      }
+      case final VulkanSwapChainTimedOut r -> {
+        LOG.error("Could not acquire image ({})", r);
+        throw new UnimplementedCodeException();
+      }
+    };
   }
 
   private static VulkanShaderModuleType createShaderModule(
@@ -585,10 +600,14 @@ public final class HelloVulkan implements ExampleType
 
     try {
       LOG.debug(
-        "checking device \"{}\" for VK_KHR_swapchain support",
+        "Checking device \"{}\" for VK_KHR_swapchain support",
         device.properties().name());
 
-      return device.extensions(Optional.empty()).containsKey("VK_KHR_swapchain");
+      final var extensions =
+        device.extensions(Optional.empty());
+
+      return extensions.containsKey("VK_KHR_swapchain")
+             && extensions.containsKey("VK_EXT_swapchain_maintenance1");
     } catch (final VulkanException e) {
       throw new VulkanUncheckedException(e);
     }
@@ -606,7 +625,7 @@ public final class HelloVulkan implements ExampleType
 
     try {
       LOG.debug(
-        "checking device \"{}\" for presentation support",
+        "Checking device \"{}\" for presentation support",
         device.properties().name());
 
       final var queues_presentable =
@@ -817,6 +836,12 @@ public final class HelloVulkan implements ExampleType
               VulkanVersions.encode(instances.minimumRequiredVersion())))
           .setEnabledExtensions(enableExtensions)
           .setEnabledLayers(enableLayers)
+          .addExtensionInfo(new VulkanLayerSettingsCreateInfo(
+            List.of(
+              new VulkanValidationValidateSync(true)
+                .toSetting()
+            )
+          ))
           .build();
 
       final var instance =
@@ -959,6 +984,7 @@ public final class HelloVulkan implements ExampleType
           physicalDevice.createLogicalDevice(
             logicalDeviceInfoBuilder
               .addEnabledExtensions("VK_KHR_swapchain")
+              .addEnabledExtensions("VK_EXT_swapchain_maintenance1")
               .addEnabledExtensions("VK_KHR_get_memory_requirements2")
               .build())
         );
@@ -1010,7 +1036,7 @@ public final class HelloVulkan implements ExampleType
         swapChainImages.stream()
           .map(image -> createImageViewForImage(surfaceFormat, device, image))
           .map(resources::add)
-          .collect(Collectors.toList());
+          .toList();
 
       /*
        * Load a shader module.
@@ -1428,6 +1454,11 @@ public final class HelloVulkan implements ExampleType
             "allocated instance scoped memory: {} octets",
             Long.valueOf(hostAllocatorTracker.allocatedInstanceScopeOctets()));
         }
+
+        if (frame == FRAME_LIMIT) {
+          break;
+        }
+
         ++frame;
       }
 

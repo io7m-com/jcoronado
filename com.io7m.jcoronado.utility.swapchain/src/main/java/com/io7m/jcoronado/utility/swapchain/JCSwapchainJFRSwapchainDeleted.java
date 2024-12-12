@@ -1,5 +1,5 @@
 /*
- * Copyright © 2018 Mark Raynsford <code@io7m.com> http://io7m.com
+ * Copyright © 2024 Mark Raynsford <code@io7m.com> https://www.io7m.com
  *
  * Permission to use, copy, modify, and/or distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -14,28 +14,35 @@
  * IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-package com.io7m.jcoronado.api;
 
-import java.util.List;
+package com.io7m.jcoronado.utility.swapchain;
+
+import jdk.jfr.Category;
+import jdk.jfr.Description;
+import jdk.jfr.Event;
+import jdk.jfr.Label;
+import jdk.jfr.StackTrace;
 
 /**
- * An extension.
+ * A swapchain was deleted.
  */
 
-public interface VulkanExtensionType
+@Label("SwapchainDeleted")
+@Category("JCoronado.Swapchain")
+@Description("A swapchain was deleted.")
+@StackTrace(value = false)
+public final class JCSwapchainJFRSwapchainDeleted
+  extends Event
+  implements JCSwapchainJFREventType
 {
-  /**
-   * @return The name of the extension (such as "VK_KHR_Surface")
-   */
+  // CHECKSTYLE:OFF
 
-  String name();
+  @Label("ID")
+  @Description("The swapchain ID.")
+  public String id;
 
-  /**
-   * @return The extra extension names that are also required (such as "VK_EXT_swapchain_maintenance1")
-   */
-
-  default List<String> extraNames()
+  public JCSwapchainJFRSwapchainDeleted()
   {
-    return List.of();
+
   }
 }

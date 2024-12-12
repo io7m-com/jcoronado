@@ -37,4 +37,11 @@
   <suppress files="VulkanLWJGLExtDebugUtils.java"
             checks="CyclomaticComplexity"/>
 
+  <suppress files=".*\.java"
+            checks="RedundantModifier"/>
+
+  <!-- Tracking different failures in submissions. -->
+  <suppress files="JCSwapchainManager\.java"
+            checks="ThrowsCount"/>
+
 </suppressions>

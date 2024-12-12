@@ -62,3 +62,94 @@ $ mvn clean package
 ```
 
 If this step fails, it's a bug. Please report it!
+
+## Utilities
+
+### com.io7m.jcoronado.utility.swapchain
+
+The `com.io7m.jcoronado.utility.swapchain` module provides a utility for
+managing the [swapchain](https://registry.khronos.org/vulkan/specs/latest/man/html/VK_KHR_swapchain.html)
+correctly.
+
+Swapchain management is notoriously difficult, with many pitfalls and sharp
+edges. The `JCSwapchainManager` class provides a class for correctly creating
+swapchains, automatically recreating them if they become suboptimal or
+out-of-date, and acquiring and presenting images.
+
+The class requires the use of the
+[VK_EXT_swapchain_maintenance1](https://registry.khronos.org/vulkan/specs/latest/man/html/VK_EXT_swapchain_maintenance1.html)
+extension to fix serious design flaws in the original `VK_KHR_swapchain` API.
+
+Briefly, create a swapchain:
+
+```
+final var swapChainManager =
+  resources.add(
+    JCSwapchainManager.create(
+      JCSwapchainConfiguration.builder()
+        .setDevice(device)
+        .setGraphicsQueue(graphicsQueue)
+        .setPresentationQueue(presentationQueue)
+        .setSurface(surface)
+        .setSurfaceExtension(khrSurfaceExt)
+        .setSwapChainExtension(khrSwapchainExt)
+        .addSurfaceAlphaFlags(VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR)
+        .addImageUsageFlags(VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT)
+        .addImageUsageFlags(VK_IMAGE_USAGE_TRANSFER_DST_BIT)
+        .addPreferredModes(VK_PRESENT_MODE_MAILBOX_KHR)
+        .addPreferredModes(VK_PRESENT_MODE_FIFO_KHR)
+        .addPreferredModes(VK_PRESENT_MODE_IMMEDIATE_KHR)
+        .build()
+    )
+  );
+```
+
+Acquire images in the rendering loop:
+
+```
+while (rendering) {
+  try (var image = swapChainManager.acquire()) {
+    render(image);
+    image.present();
+  }
+}
+```
+
+When an image is acquired or presented, the current swapchain may be detected
+as being suboptimal or out-of-date. When this happens, a new swapchain is
+created internally and the old one is (eventually) deleted.
+
+On many operating systems, dragging a window's resize box can result in
+a flurry of updates that will result in hundreds of swapchain instances being
+created and deleted. For best results, disable rendering during window resize
+events. As an example, when using [GLFW](https://www.glfw.org/):
+
+```
+AtomicBoolean windowIsResizing;
+
+GLFW.glfwSetWindowSizeCallback(
+  window,
+  GLFWWindowSizeCallback.create((_, _, _) -> {
+    windowIsResizing.set(true);
+  })
+);
+
+while (rendering) {
+  this.windowIsResizing.set(false);
+  GLFW.glfwPollEvents();
+
+  if (!windowIsResizing.get()) {
+    try (var image = swapChainManager.acquire()) {
+      render(image);
+      image.present();
+    }
+  } else {
+    pauseOneFrame();
+  }
+}
+```
+
+By avoiding rendering during window resizes, we effectively avoid creating
+and destroying swapchains for the intermediate window sizes. When the window
+eventually stops resizing, we'll automatically create a suitable swapchain
+for the final size.

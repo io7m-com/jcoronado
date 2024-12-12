@@ -39,6 +39,14 @@ public interface VulkanExtKHRSwapChainType extends VulkanExtensionType
     return "VK_KHR_swapchain";
   }
 
+  @Override
+  default List<String> extraNames()
+  {
+    return List.of(
+      "VK_EXT_swapchain_maintenance1"
+    );
+  }
+
   /**
    * Create a new swap chain.
    *
@@ -59,17 +67,38 @@ public interface VulkanExtKHRSwapChainType extends VulkanExtensionType
   /**
    * Queue images for presentation.
    *
-   * @param queue        The presentation queue
-   * @param present_info The presentation info
+   * @param queue       The presentation queue
+   * @param presentInfo The presentation info
+   *
+   * @return The present result
    *
    * @throws VulkanException On errors
    * @see "vkQueuePresentKHR"
    */
 
-  void queuePresent(
+  QueuePresentResult queuePresent(
     VulkanQueueType queue,
-    VulkanPresentInfoKHR present_info)
+    VulkanPresentInfoKHR presentInfo)
     throws VulkanException;
+
+  /**
+   * The result of presenting an image.
+   */
+
+  enum QueuePresentResult
+  {
+    /**
+     * Presenting succeeded.
+     */
+
+    SUCCESS,
+
+    /**
+     * Presenting succeeded but the swapchain is suboptimal.
+     */
+
+    SUBOPTIMAL
+  }
 
   /**
    * A created swap chain.

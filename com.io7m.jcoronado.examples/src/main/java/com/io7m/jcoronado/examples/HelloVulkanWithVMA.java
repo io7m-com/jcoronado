@@ -1527,10 +1527,14 @@ public final class HelloVulkanWithVMA implements ExampleType
 
     try {
       LOG.debug(
-        "checking device \"{}\" for VK_KHR_swapchain support",
+        "Checking device \"{}\" for VK_KHR_swapchain support",
         device.properties().name());
 
-      return device.extensions(Optional.empty()).containsKey("VK_KHR_swapchain");
+      final var extensions =
+        device.extensions(Optional.empty());
+
+      return extensions.containsKey("VK_KHR_swapchain")
+             && extensions.containsKey("VK_EXT_swapchain_maintenance1");
     } catch (final VulkanException e) {
       throw new VulkanUncheckedException(e);
     }
@@ -1548,7 +1552,7 @@ public final class HelloVulkanWithVMA implements ExampleType
 
     try {
       LOG.debug(
-        "checking device \"{}\" for presentation support",
+        "Checking device \"{}\" for presentation support",
         device.properties().name());
 
       final var queues_presentable =
@@ -1564,7 +1568,7 @@ public final class HelloVulkanWithVMA implements ExampleType
   {
     try {
       LOG.debug(
-        "checking device \"{}\" for graphics queue support",
+        "Checking device \"{}\" for graphics queue support",
         device.properties().name());
 
       return device.queueFamilyFindWithFlags(VK_QUEUE_GRAPHICS_BIT).isPresent();
@@ -1917,6 +1921,7 @@ public final class HelloVulkanWithVMA implements ExampleType
         physicalDevice.createLogicalDevice(
           logicalDeviceInfoBuilder
             .addEnabledExtensions("VK_KHR_swapchain")
+            .addEnabledExtensions("VK_EXT_swapchain_maintenance1")
             .addEnabledExtensions("VK_KHR_get_memory_requirements2")
             .build()));
 

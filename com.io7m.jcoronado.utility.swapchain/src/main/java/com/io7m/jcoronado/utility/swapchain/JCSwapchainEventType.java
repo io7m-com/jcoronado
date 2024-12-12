@@ -1,5 +1,5 @@
 /*
- * Copyright © 2018 Mark Raynsford <code@io7m.com> http://io7m.com
+ * Copyright © 2024 Mark Raynsford <code@io7m.com> https://www.io7m.com
  *
  * Permission to use, copy, modify, and/or distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -14,28 +14,15 @@
  * IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-package com.io7m.jcoronado.api;
 
-import java.util.List;
+package com.io7m.jcoronado.utility.swapchain;
 
 /**
- * An extension.
+ * The type of events published by the swapchain manager that may require
+ * the application to act.
  */
 
-public interface VulkanExtensionType
+public interface JCSwapchainEventType
 {
-  /**
-   * @return The name of the extension (such as "VK_KHR_Surface")
-   */
 
-  String name();
-
-  /**
-   * @return The extra extension names that are also required (such as "VK_EXT_swapchain_maintenance1")
-   */
-
-  default List<String> extraNames()
-  {
-    return List.of();
-  }
 }

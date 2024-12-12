@@ -1,5 +1,5 @@
 /*
- * Copyright © 2018 Mark Raynsford <code@io7m.com> http://io7m.com
+ * Copyright © 2024 Mark Raynsford <code@io7m.com> https://www.io7m.com
  *
  * Permission to use, copy, modify, and/or distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -14,28 +14,13 @@
  * IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-package com.io7m.jcoronado.api;
-
-import java.util.List;
-
 /**
- * An extension.
+ * Type-safe Vulkan frontend (Swapchain utility)
  */
 
-public interface VulkanExtensionType
-{
-  /**
-   * @return The name of the extension (such as "VK_KHR_Surface")
-   */
+@Export
+@Version("1.0.0")
+package com.io7m.jcoronado.utility.swapchain;
 
-  String name();
-
-  /**
-   * @return The extra extension names that are also required (such as "VK_EXT_swapchain_maintenance1")
-   */
-
-  default List<String> extraNames()
-  {
-    return List.of();
-  }
-}
+import org.osgi.annotation.bundle.Export;
+import org.osgi.annotation.versioning.Version;

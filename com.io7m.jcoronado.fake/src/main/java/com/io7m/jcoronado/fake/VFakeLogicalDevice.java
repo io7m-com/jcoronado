@@ -540,10 +540,15 @@ public final class VFakeLogicalDevice implements VulkanLogicalDeviceType
   private static VulkanCallFailedException errorNotImplemented(
     final String function)
   {
+    final var map =
+      Map.ofEntries(
+        Map.entry("ErrorCode", "0x7fff_ffff"),
+        Map.entry("Function", function)
+      );
+
     return new VulkanCallFailedException(
-      0x7fff_ffff,
-      function,
-      "Not implemented (%s)".formatted(function)
+      "Not implemented (%s)".formatted(function),
+      map
     );
   }
 

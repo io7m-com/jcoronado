@@ -21,6 +21,7 @@ import com.io7m.jcoronado.api.VulkanException;
 import com.io7m.jcoronado.api.VulkanExtent2D;
 import com.io7m.jcoronado.api.VulkanFormat;
 import com.io7m.jcoronado.api.VulkanImageUsageFlag;
+import com.io7m.jcoronado.api.VulkanImplementationException;
 import com.io7m.jcoronado.api.VulkanInstanceType;
 import com.io7m.jcoronado.api.VulkanPhysicalDeviceType;
 import com.io7m.jcoronado.api.VulkanQueueFamilyProperties;
@@ -43,6 +44,7 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -240,15 +242,16 @@ public final class VulkanLWJGLExtKHRSurface implements VulkanExtKHRSurfaceType
           surface.handle(),
           count,
           null),
-        "vkGetPhysicalDeviceSurfaceFormatsKHR");
+        "vkGetPhysicalDeviceSurfaceFormatsKHR"
+      );
 
-      final var format_count = count[0];
-      if (format_count == 0) {
-        return List.of();
+      final var formatCount = count[0];
+      if (formatCount == 0) {
+        throw errorTooFewSupportedFormats();
       }
 
       final var formats =
-        VkSurfaceFormatKHR.calloc(format_count, stack);
+        VkSurfaceFormatKHR.calloc(formatCount, stack);
 
       VulkanChecks.checkReturnCode(
         KHRSurface.vkGetPhysicalDeviceSurfaceFormatsKHR(
@@ -258,8 +261,8 @@ public final class VulkanLWJGLExtKHRSurface implements VulkanExtKHRSurfaceType
           formats),
         "vkGetPhysicalDeviceSurfaceFormatsKHR");
 
-      results = new ArrayList<>(format_count);
-      for (var index = 0; index < format_count; ++index) {
+      results = new ArrayList<>(formatCount);
+      for (var index = 0; index < formatCount; ++index) {
         formats.position(index);
 
         final var format =
@@ -274,6 +277,27 @@ public final class VulkanLWJGLExtKHRSurface implements VulkanExtKHRSurfaceType
     }
 
     return results;
+  }
+
+  private static VulkanImplementationException errorTooFewSupportedFormats()
+  {
+    return new VulkanImplementationException(
+      "The Vulkan implementation returned an invalid value. This is a Vulkan bug!",
+      Map.ofEntries(
+        Map.entry(
+          "Function",
+          "vkGetPhysicalDeviceSurfaceFormatsKHR"
+        ),
+        Map.entry(
+          "Problem",
+          "The number of format pairs supported must be greater than or equal to 1."
+        ),
+        Map.entry(
+          "Specification",
+          "https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetPhysicalDeviceSurfaceFormatsKHR.html"
+        )
+      )
+    );
   }
 
   @Override

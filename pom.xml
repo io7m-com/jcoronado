@@ -34,6 +34,7 @@
     <module>com.io7m.jcoronado.layers.lunarg_api_dump.api</module>
     <module>com.io7m.jcoronado.lwjgl</module>
     <module>com.io7m.jcoronado.tests</module>
+    <module>com.io7m.jcoronado.utility.swapchain</module>
     <module>com.io7m.jcoronado.vma</module>
   </modules>
 
@@ -141,6 +142,11 @@
         <groupId>com.io7m.immutables-style</groupId>
         <artifactId>com.io7m.immutables-style</artifactId>
         <version>${com.io7m.immutables-style.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.io7m.jaffirm</groupId>
+        <artifactId>com.io7m.jaffirm.core</artifactId>
+        <version>4.0.1</version>
       </dependency>
       <dependency>
         <groupId>org.osgi</groupId>

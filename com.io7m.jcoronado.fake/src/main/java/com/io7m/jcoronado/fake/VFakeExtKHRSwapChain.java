@@ -84,11 +84,11 @@ public final class VFakeExtKHRSwapChain implements VulkanExtKHRSwapChainType
   }
 
   @Override
-  public void queuePresent(
+  public QueuePresentResult queuePresent(
     final VulkanQueueType queue,
-    final VulkanPresentInfoKHR present_info)
+    final VulkanPresentInfoKHR presentInfo)
   {
-
+    return QueuePresentResult.SUCCESS;
   }
 
   private static final class SwapChain implements VulkanKHRSwapChainType

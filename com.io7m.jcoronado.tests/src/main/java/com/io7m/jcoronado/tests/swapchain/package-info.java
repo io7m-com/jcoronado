@@ -14,28 +14,8 @@
  * IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-package com.io7m.jcoronado.api;
-
-import java.util.List;
-
 /**
- * An extension.
+ * Type-safe Vulkan frontend (Swapchain tests)
  */
 
-public interface VulkanExtensionType
-{
-  /**
-   * @return The name of the extension (such as "VK_KHR_Surface")
-   */
-
-  String name();
-
-  /**
-   * @return The extra extension names that are also required (such as "VK_EXT_swapchain_maintenance1")
-   */
-
-  default List<String> extraNames()
-  {
-    return List.of();
-  }
-}
+package com.io7m.jcoronado.tests.swapchain;

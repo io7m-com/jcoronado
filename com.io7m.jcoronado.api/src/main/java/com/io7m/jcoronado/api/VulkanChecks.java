@@ -16,6 +16,7 @@
 
 package com.io7m.jcoronado.api;
 
+import java.util.HashMap;
 import java.util.Objects;
 
 /**
@@ -63,20 +64,18 @@ public final class VulkanChecks
     final int code,
     final String function)
   {
-    return new VulkanCallFailedException(
-      code,
-      function,
-      new StringBuilder(64)
-        .append("Function ")
-        .append(function)
-        .append(" returned 0x")
-        .append(Integer.toUnsignedString(code, 16))
-        .append(" (")
-        .append(code)
-        .append(") (")
-        .append(VulkanErrorCodes.errorName(code).orElse(
-          "Unrecognized error code"))
-        .append(')')
-        .toString());
+    final var errorCode =
+      "0x" + Integer.toUnsignedString(code, 16);
+
+    final var errorName =
+      VulkanErrorCodes.errorName(code)
+        .orElse("Unrecognized error code");
+
+    final var attributes = new HashMap<String, String>(3);
+    attributes.put("Function", function);
+    attributes.put("ErrorCode", errorCode);
+    attributes.put("ErrorName", errorName);
+
+    return new VulkanCallFailedException("Vulkan call failed.", attributes);
   }
 }

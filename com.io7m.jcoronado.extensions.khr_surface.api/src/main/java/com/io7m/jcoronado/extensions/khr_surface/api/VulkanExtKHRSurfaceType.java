@@ -58,6 +58,14 @@ public interface VulkanExtKHRSurfaceType extends VulkanExtensionType
     return "VK_KHR_surface";
   }
 
+  @Override
+  default List<String> extraNames()
+  {
+    return List.of(
+      "VK_EXT_surface_maintenance1"
+    );
+  }
+
   /**
    * Determine which queue families, if any, support presenting to {@code surface}.
    *
@@ -77,7 +85,8 @@ public interface VulkanExtKHRSurfaceType extends VulkanExtensionType
     throws VulkanException;
 
   /**
-   * Determine the preferred formats for {@code surface}.
+   * Determine the preferred formats for {@code surface}. The returned list
+   * is guaranteed to be non-empty.
    *
    * @param device  The physical device
    * @param surface The surface

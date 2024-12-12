@@ -73,20 +73,37 @@ public final class VulkanLWJGLExtensionsRegistry
   {
     final var name = ext.name();
     if (this.extensions.containsKey(name)) {
-      final var separator = System.lineSeparator();
       throw new IllegalStateException(
-        new StringBuilder(128)
-          .append("Multiple extensions with the same name.")
-          .append(separator)
-          .append("  Existing: ")
-          .append(this.extensions.get(name))
-          .append(separator)
-          .append("  Incoming: ")
-          .append(ext)
-          .append(separator)
-          .toString());
+        this.errorName(ext, System.lineSeparator(), name)
+      );
     }
     this.extensions.put(name, ext);
+
+    for (final var extraName : ext.extraNames()) {
+      if (this.extensions.containsKey(extraName)) {
+        throw new IllegalStateException(
+          this.errorName(ext, System.lineSeparator(), extraName)
+        );
+      }
+      this.extensions.put(extraName, ext);
+    }
+  }
+
+  private String errorName(
+    final VulkanExtensionType ext,
+    final String separator,
+    final String name)
+  {
+    return new StringBuilder(128)
+      .append("Multiple extensions with the same name.")
+      .append(separator)
+      .append("  Existing: ")
+      .append(this.extensions.get(name))
+      .append(separator)
+      .append("  Incoming: ")
+      .append(ext)
+      .append(separator)
+      .toString();
   }
 
   /**
