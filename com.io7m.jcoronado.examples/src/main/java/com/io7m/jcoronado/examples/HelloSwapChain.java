@@ -722,7 +722,7 @@ public final class HelloSwapChain implements ExampleType
               .setImage(image.image())
               .setSrcQueueFamilyIndex(VulkanQueueFamilyIndex.ignored())
               .addSrcStageMask(VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT)
-              .addSrcAccessMask()
+              .addSrcAccessMask(VK_ACCESS_MEMORY_WRITE_BIT)
               .setDstQueueFamilyIndex(VulkanQueueFamilyIndex.ignored())
               .addDstStageMask(VK_PIPELINE_STAGE_CLEAR_BIT)
               .addDstAccessMask(VK_ACCESS_TRANSFER_WRITE_BIT)
