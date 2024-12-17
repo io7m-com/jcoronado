@@ -38,6 +38,7 @@ import com.io7m.jcoronado.api.VulkanSharingMode;
 import com.io7m.jcoronado.extensions.khr_surface.api.VulkanExtKHRSurfaceType;
 import com.io7m.jcoronado.extensions.khr_surface.api.VulkanSurfaceCapabilitiesKHR;
 import com.io7m.jcoronado.extensions.khr_surface.api.VulkanSurfaceFormatKHR;
+import com.io7m.jcoronado.extensions.khr_swapchain.api.VulkanColorSpaceKHR;
 import com.io7m.jcoronado.extensions.khr_swapchain.api.VulkanExtKHRSwapChainType;
 import com.io7m.jcoronado.extensions.khr_swapchain.api.VulkanPresentInfoKHR;
 import com.io7m.jcoronado.extensions.khr_swapchain.api.VulkanPresentModeKHR;
@@ -657,8 +658,18 @@ public final class JCSwapchainManager
 
     /*
      * None of our preferred formats were supported (or we didn't claim to
-     * prefer any). Use the first supported format.
+     * prefer any). The spec says that at least one format must be returned,
+     * but implementations have been seen in the wild that return an empty
+     * list. For those implementations, the assumption is that any RGBA
+     * format mandated by the spec as renderable can be used.
      */
+
+    if (availableList.isEmpty()) {
+      return VulkanSurfaceFormatKHR.of(
+        VulkanFormat.VK_FORMAT_B8G8R8A8_UNORM,
+        VulkanColorSpaceKHR.VK_COLOR_SPACE_SRGB_NONLINEAR_KHR
+      );
+    }
 
     return availableList.get(0);
   }

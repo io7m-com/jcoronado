@@ -207,7 +207,7 @@ public final class VulkanLWJGLExtKHRSwapChain
       .collect(Collectors.toList());
   }
 
-  private VulkanSwapChainAcquisitionResultType acquireImage(
+  private static VulkanSwapChainAcquisitionResultType acquireImage(
     final VulkanLWJGLKHRSwapChain chain,
     final long timeout,
     final VulkanSemaphoreBinaryType semaphore,
@@ -467,7 +467,7 @@ public final class VulkanLWJGLExtKHRSwapChain
       throws VulkanException
     {
       Objects.requireNonNull(semaphore, "semaphore");
-      return this.extension.acquireImage(this, timeout, semaphore, null);
+      return acquireImage(this, timeout, semaphore, null);
     }
 
     @Override
@@ -477,7 +477,7 @@ public final class VulkanLWJGLExtKHRSwapChain
       throws VulkanException
     {
       Objects.requireNonNull(fence, "fence");
-      return this.extension.acquireImage(this, timeout, null, fence);
+      return acquireImage(this, timeout, null, fence);
     }
 
     @Override
@@ -489,7 +489,7 @@ public final class VulkanLWJGLExtKHRSwapChain
     {
       Objects.requireNonNull(semaphore, "semaphore");
       Objects.requireNonNull(fence, "fence");
-      return this.extension.acquireImage(this, timeout, semaphore, fence);
+      return acquireImage(this, timeout, semaphore, fence);
     }
   }
 }
