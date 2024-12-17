@@ -447,7 +447,8 @@ public final class JCSwapchainManager
         renderDoneSemaphores,
         renderDoneFences,
         presentDoneFences,
-        resources
+        resources,
+        extent
       );
     } catch (final Exception e) {
       eventCreationFailed.errorMessage = e.getMessage();
@@ -708,6 +709,7 @@ public final class JCSwapchainManager
     private final VulkanFenceType presentDoneFence;
     private final VulkanExtKHRSwapChainType.VulkanKHRSwapChainType swapchain;
     private final VulkanFenceType renderFinishedFence;
+    private final VulkanExtent2D size;
 
     SwapchainImage(
       final SwapchainHolder inHolder,
@@ -717,7 +719,8 @@ public final class JCSwapchainManager
       final VulkanSemaphoreBinaryType inRenderFinishedSemaphore,
       final VulkanFenceType inPresentDoneFence,
       final VulkanExtKHRSwapChainType.VulkanKHRSwapChainType inSwapchain,
-      final VulkanFenceType inRenderFinishedFence)
+      final VulkanFenceType inRenderFinishedFence,
+      final VulkanExtent2D inSize)
     {
       this.holder =
         Objects.requireNonNull(inHolder, "inHolder");
@@ -736,12 +739,20 @@ public final class JCSwapchainManager
         Objects.requireNonNull(inSwapchain, "swapchain");
       this.renderFinishedFence =
         Objects.requireNonNull(inRenderFinishedFence, "renderFinishedFence");
+      this.size =
+        Objects.requireNonNull(inSize, "size");
     }
 
     @Override
     public String toString()
     {
       return "[SwapchainImage %s]".formatted(this.index);
+    }
+
+    @Override
+    public VulkanExtent2D size()
+    {
+      return this.size;
     }
 
     @Override
@@ -826,6 +837,7 @@ public final class JCSwapchainManager
     private final Map<JCSwapchainFrameIndex, VulkanFenceType> renderDoneFences;
     private final Map<JCSwapchainFrameIndex, VulkanFenceType> presentDoneFences;
     private final CloseableCollectionType<VulkanResourceException> resources;
+    private final VulkanExtent2D extent;
     private final JCSwapchainManager manager;
     private final VulkanExtKHRSwapChainType.VulkanKHRSwapChainType swapchain;
     private final Map<JCSwapchainImageIndex, VulkanImageViewType> swapChainImages;
@@ -841,7 +853,8 @@ public final class JCSwapchainManager
       final Map<JCSwapchainFrameIndex, VulkanSemaphoreBinaryType> inRenderDoneSemaphores,
       final Map<JCSwapchainFrameIndex, VulkanFenceType> inRenderDoneFences,
       final Map<JCSwapchainFrameIndex, VulkanFenceType> inPresentDoneFences,
-      final CloseableCollectionType<VulkanResourceException> inResources)
+      final CloseableCollectionType<VulkanResourceException> inResources,
+      final VulkanExtent2D inExtent)
     {
       this.manager =
         Objects.requireNonNull(inManager, "manager");
@@ -859,6 +872,8 @@ public final class JCSwapchainManager
         Map.copyOf(inPresentDoneFences);
       this.resources =
         Objects.requireNonNull(inResources, "resources");
+      this.extent =
+        Objects.requireNonNull(inExtent, "inExtent");
       this.frameIndex =
         new JCSwapchainFrameIndex(0);
       this.id =
@@ -933,11 +948,11 @@ public final class JCSwapchainManager
 
     public JCSwapchainImageType acquire(
       final VulkanLogicalDeviceType device)
-      throws
-      VulkanException,
+      throws VulkanException,
       SwapchainOutOfDate,
       SwapchainNotReady,
-      SwapchainRenderingDoneFenceTimedOut, SwapchainAcquireTimedOut
+      SwapchainRenderingDoneFenceTimedOut,
+      SwapchainAcquireTimedOut
     {
       Objects.requireNonNull(device, "device");
 
@@ -1011,7 +1026,8 @@ public final class JCSwapchainManager
             renderDoneSemaphore,
             presentDoneFence,
             this.swapchain,
-            renderDoneFence
+            renderDoneFence,
+            this.extent
           );
 
         this.frameIndex = this.nextFrameIndex();

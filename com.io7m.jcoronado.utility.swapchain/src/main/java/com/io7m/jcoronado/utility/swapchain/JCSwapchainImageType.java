@@ -18,6 +18,7 @@
 package com.io7m.jcoronado.utility.swapchain;
 
 import com.io7m.jcoronado.api.VulkanException;
+import com.io7m.jcoronado.api.VulkanExtent2D;
 import com.io7m.jcoronado.api.VulkanFenceType;
 import com.io7m.jcoronado.api.VulkanImageType;
 import com.io7m.jcoronado.api.VulkanImageViewType;
@@ -31,6 +32,12 @@ import com.io7m.jcoronado.extensions.khr_swapchain.api.VulkanExtKHRSwapChainType
 public interface JCSwapchainImageType
   extends AutoCloseable
 {
+  /**
+   * @return The image size
+   */
+
+  VulkanExtent2D size();
+
   /**
    * @return The index of the image within the swapchain
    */
