@@ -44,4 +44,8 @@
   <suppress files="JCSwapchainManager\.java"
             checks="ThrowsCount"/>
 
+  <!-- Lots of immutable values that need to be passed around. -->
+  <suppress files="JCSwapchainManager\.java"
+            checks="ParameterNumber"/>
+
 </suppressions>

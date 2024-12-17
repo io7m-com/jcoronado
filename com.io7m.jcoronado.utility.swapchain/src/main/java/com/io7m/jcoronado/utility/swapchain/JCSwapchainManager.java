@@ -23,6 +23,7 @@ import com.io7m.jcoronado.api.VulkanException;
 import com.io7m.jcoronado.api.VulkanExtent2D;
 import com.io7m.jcoronado.api.VulkanFenceCreateInfo;
 import com.io7m.jcoronado.api.VulkanFenceType;
+import com.io7m.jcoronado.api.VulkanFormat;
 import com.io7m.jcoronado.api.VulkanImageSubresourceRange;
 import com.io7m.jcoronado.api.VulkanImageType;
 import com.io7m.jcoronado.api.VulkanImageViewCreateFlag;
@@ -448,7 +449,8 @@ public final class JCSwapchainManager
         renderDoneFences,
         presentDoneFences,
         resources,
-        extent
+        extent,
+        format.format()
       );
     } catch (final Exception e) {
       eventCreationFailed.errorMessage = e.getMessage();
@@ -710,6 +712,7 @@ public final class JCSwapchainManager
     private final VulkanExtKHRSwapChainType.VulkanKHRSwapChainType swapchain;
     private final VulkanFenceType renderFinishedFence;
     private final VulkanExtent2D size;
+    private final VulkanFormat format;
 
     SwapchainImage(
       final SwapchainHolder inHolder,
@@ -720,6 +723,7 @@ public final class JCSwapchainManager
       final VulkanFenceType inPresentDoneFence,
       final VulkanExtKHRSwapChainType.VulkanKHRSwapChainType inSwapchain,
       final VulkanFenceType inRenderFinishedFence,
+      final VulkanFormat inFormat,
       final VulkanExtent2D inSize)
     {
       this.holder =
@@ -739,6 +743,8 @@ public final class JCSwapchainManager
         Objects.requireNonNull(inSwapchain, "swapchain");
       this.renderFinishedFence =
         Objects.requireNonNull(inRenderFinishedFence, "renderFinishedFence");
+      this.format =
+        Objects.requireNonNull(inFormat, "format");
       this.size =
         Objects.requireNonNull(inSize, "size");
     }
@@ -747,6 +753,12 @@ public final class JCSwapchainManager
     public String toString()
     {
       return "[SwapchainImage %s]".formatted(this.index);
+    }
+
+    @Override
+    public VulkanFormat format()
+    {
+      return this.format;
     }
 
     @Override
@@ -832,16 +844,17 @@ public final class JCSwapchainManager
   private static final class SwapchainHolder
     implements AutoCloseable
   {
+    private final CloseableCollectionType<VulkanResourceException> resources;
+    private final JCSwapchainManager manager;
+    private final Map<JCSwapchainFrameIndex, VulkanFenceType> presentDoneFences;
+    private final Map<JCSwapchainFrameIndex, VulkanFenceType> renderDoneFences;
     private final Map<JCSwapchainFrameIndex, VulkanSemaphoreBinaryType> imageReadySemaphores;
     private final Map<JCSwapchainFrameIndex, VulkanSemaphoreBinaryType> renderDoneSemaphores;
-    private final Map<JCSwapchainFrameIndex, VulkanFenceType> renderDoneFences;
-    private final Map<JCSwapchainFrameIndex, VulkanFenceType> presentDoneFences;
-    private final CloseableCollectionType<VulkanResourceException> resources;
-    private final VulkanExtent2D extent;
-    private final JCSwapchainManager manager;
-    private final VulkanExtKHRSwapChainType.VulkanKHRSwapChainType swapchain;
     private final Map<JCSwapchainImageIndex, VulkanImageViewType> swapChainImages;
     private final UUID id;
+    private final VulkanExtKHRSwapChainType.VulkanKHRSwapChainType swapchain;
+    private final VulkanExtent2D extent;
+    private final VulkanFormat format;
     private JCSwapchainFrameIndex frameIndex;
 
     SwapchainHolder(
@@ -854,7 +867,8 @@ public final class JCSwapchainManager
       final Map<JCSwapchainFrameIndex, VulkanFenceType> inRenderDoneFences,
       final Map<JCSwapchainFrameIndex, VulkanFenceType> inPresentDoneFences,
       final CloseableCollectionType<VulkanResourceException> inResources,
-      final VulkanExtent2D inExtent)
+      final VulkanExtent2D inExtent,
+      final VulkanFormat inFormat)
     {
       this.manager =
         Objects.requireNonNull(inManager, "manager");
@@ -874,6 +888,8 @@ public final class JCSwapchainManager
         Objects.requireNonNull(inResources, "resources");
       this.extent =
         Objects.requireNonNull(inExtent, "inExtent");
+      this.format =
+        Objects.requireNonNull(inFormat, "format");
       this.frameIndex =
         new JCSwapchainFrameIndex(0);
       this.id =
@@ -1027,6 +1043,7 @@ public final class JCSwapchainManager
             presentDoneFence,
             this.swapchain,
             renderDoneFence,
+            this.format,
             this.extent
           );
 
