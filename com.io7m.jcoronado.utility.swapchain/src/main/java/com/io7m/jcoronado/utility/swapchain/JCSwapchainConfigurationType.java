@@ -43,6 +43,16 @@ import static com.io7m.jcoronado.extensions.khr_swapchain.api.VulkanCompositeAlp
 public interface JCSwapchainConfigurationType
 {
   /**
+   * @return The requested minimum number of swapchain images
+   */
+
+  @Value.Default
+  default int requestedMinimumImages()
+  {
+    return 2;
+  }
+
+  /**
    * @return The logical device.
    */
 

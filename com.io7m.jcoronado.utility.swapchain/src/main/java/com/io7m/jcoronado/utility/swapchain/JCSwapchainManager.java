@@ -183,23 +183,28 @@ public final class JCSwapchainManager
    * Select the minimum number of images required.
    */
 
-  private static int pickImageCount(
+  private int pickImageCount(
     final VulkanSurfaceCapabilitiesKHR surfaceCaps)
   {
+    final var minPossible =
+      surfaceCaps.minImageCount();
+    var maxPossible =
+      surfaceCaps.maxImageCount();
+
     /*
-     * Oddly, many implementations will return a minimum image count of N,
-     * but then return an error unless N+1 is used.
+     * Implementations can state that they have no maximum number of images.
+     * For implementations that do this, we enforce our own maximum that's
+     * likely to be larger than any reasonable application could need.
      */
 
-    final var minPlus = surfaceCaps.minImageCount() + 1;
-    if (surfaceCaps.maxImageCount() == 0) {
-      return minPlus;
+    if (maxPossible == 0) {
+      maxPossible = 100;
     }
 
     return Math.clamp(
-      minPlus,
-      surfaceCaps.minImageCount(),
-      surfaceCaps.maxImageCount()
+      (long) this.configuration.requestedMinimumImages(),
+      minPossible,
+      maxPossible
     );
   }
 
@@ -359,7 +364,7 @@ public final class JCSwapchainManager
       eventCreationFailed.width = eventCreated.width;
       eventCreationFailed.height = eventCreated.height;
 
-      final var minImageCount = pickImageCount(caps);
+      final var minImageCount = this.pickImageCount(caps);
       eventCreated.minimumImageCount = minImageCount;
       eventCreationFailed.minimumImageCount = eventCreated.minimumImageCount;
 
