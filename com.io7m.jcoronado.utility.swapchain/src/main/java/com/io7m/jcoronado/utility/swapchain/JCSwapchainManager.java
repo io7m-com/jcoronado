@@ -272,9 +272,18 @@ public final class JCSwapchainManager
       }
     }
 
+    final var remedy = new StringBuilder(128);
+    remedy.append("Ensure the application is presenting acquired images.");
+    remedy.append(System.lineSeparator());
+    remedy.append("Ensure the application is signalling render-done fences.");
+    remedy.append(System.lineSeparator());
+    remedy.append(
+      "Check for Vulkan implementation bugs; presentation code is OS-specific!");
+
     throw new VulkanCallFailedException(
-      "Swapchain timeout reached. This may be a Vulkan implementation bug!",
-      Map.of()
+      "Acquisition failed. This should never happen in practice.",
+      Map.of(),
+      Optional.of(remedy.toString())
     );
   }
 

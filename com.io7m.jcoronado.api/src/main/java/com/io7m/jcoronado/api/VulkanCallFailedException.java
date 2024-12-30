@@ -52,6 +52,27 @@ public final class VulkanCallFailedException
   /**
    * Construct an exception.
    *
+   * @param message           The message
+   * @param attributes        The error attributes
+   * @param remediatingAction The remediating action
+   */
+
+  public VulkanCallFailedException(
+    final String message,
+    final Map<String, String> attributes,
+    final Optional<String> remediatingAction)
+  {
+    super(
+      message,
+      Map.copyOf(attributes),
+      "error-vulkan-call",
+      remediatingAction
+    );
+  }
+
+  /**
+   * Construct an exception.
+   *
    * @param message    The message
    * @param attributes The error attributes
    */
