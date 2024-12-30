@@ -17,6 +17,7 @@
 
 package com.io7m.jcoronado.utility.swapchain;
 
+import com.io7m.jcoronado.api.VulkanCallFailedException;
 import com.io7m.jcoronado.api.VulkanComponentMapping;
 import com.io7m.jcoronado.api.VulkanDebuggingType;
 import com.io7m.jcoronado.api.VulkanException;
@@ -54,6 +55,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -252,21 +254,34 @@ public final class JCSwapchainManager
       LOG.trace("Acquiring swapchain image.");
     }
 
-    while (true) {
+    final var timeEnd =
+      Instant.now()
+        .plusSeconds(5L);
+
+    while (!timedOut(timeEnd)) {
       try {
         return this.current.acquire(this.device);
       } catch (final SwapchainOutOfDate _) {
         this.recreate();
-      } catch (final SwapchainNotReady _) {
-        // Nothing
-      } catch (final SwapchainRenderingDoneFenceTimedOut _) {
-        // Nothing
-      } catch (final SwapchainAcquireTimedOut _) {
+      } catch (final SwapchainNotReady
+                     | SwapchainRenderingDoneFenceTimedOut
+                     | SwapchainAcquireTimedOut _) {
         // Nothing
       } finally {
         this.cleanUp();
       }
     }
+
+    throw new VulkanCallFailedException(
+      "Swapchain timeout reached. This may be a Vulkan implementation bug!",
+      Map.of()
+    );
+  }
+
+  private static boolean timedOut(
+    final Instant timeEnd)
+  {
+    return Instant.now().isAfter(timeEnd);
   }
 
   @Override
