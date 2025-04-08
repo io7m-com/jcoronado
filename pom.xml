@@ -50,7 +50,7 @@
     <com.io7m.seltzer.version>1.1.0</com.io7m.seltzer.version>
 
     <!-- Third-party dependencies. -->
-    <mockito.version>5.15.2</mockito.version>
+    <mockito.version>5.17.0</mockito.version>
     <org.immutables.value.version>2.10.1</org.immutables.value.version>
     <org.jspecify.version>1.0.0</org.jspecify.version>
     <org.junit.version>5.11.3</org.junit.version>
