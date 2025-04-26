@@ -358,7 +358,9 @@ public final class VMALWJGLAllocator
 
   private enum AllocatedItemKind
   {
+    /** Allocated object is a buffer. */
     BUFFER,
+    /** Allocated object is an image. */
     IMAGE
   }
 
