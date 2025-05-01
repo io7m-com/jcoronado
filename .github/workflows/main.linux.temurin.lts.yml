@@ -34,7 +34,7 @@ jobs:
         run: java .github/workflows/Tools.java ShowProjectIsSnapshot pom.xml >> "$GITHUB_OUTPUT"
 
       - name: Configure Vulkan
-        uses: NcStudios/VulkanCI@v1.1
+        uses: NcStudios/VulkanCI@v1.2
         with:
           sdkVersion: 1.3.283.0
 
