@@ -81,7 +81,7 @@ If this step fails, it's a bug. Please report it!
 
 ## Utilities
 
-### com.io7m.jcoronado.utility.allocation_tracker
+### Allocation Tracker
 
 The `com.io7m.jcoronado.utility.allocation_tracker` module provides a simple
 implementation of the `VulkanHostAllocatorType` interface that simply delegates
@@ -91,7 +91,7 @@ of memory allocated for every allocation type.
 Simply instantiate a `VulkanHostAllocatorTracker` instance and use it anywhere
 the API accepts a `VulkanHostAllocatorType`.
 
-### com.io7m.jcoronado.utility.swapchain
+### Swap Chain
 
 The `com.io7m.jcoronado.utility.swapchain` module provides a utility for
 managing the [swapchain](https://registry.khronos.org/vulkan/specs/latest/man/html/VK_KHR_swapchain.html)
