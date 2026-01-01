@@ -19,12 +19,12 @@ jobs:
     name: Build
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8
+      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8
         with:
           submodules: true
 
       - name: JDK
-        uses: actions/setup-java@dded0888837ed1f317902acf8a20df0ad188d165
+        uses: actions/setup-java@f2beeb24e141e01a676f977032f5a29d81c9e27e
         with:
           java-version: 25
           distribution: 'temurin'
@@ -37,10 +37,14 @@ jobs:
         id: project_is_snapshot
         run: java .github/workflows/Tools.java ShowProjectIsSnapshot pom.xml >> "$GITHUB_OUTPUT"
 
-      - name: Configure Vulkan
-        uses: NcStudios/VulkanCI@v1.1
+      - name: Install Vulkan SDK
+        uses: humbletim/install-vulkan-sdk@30ba978f977e81b72d091fc8888feb1fb26f9aff
         with:
-          sdkVersion: 1.3.283.0
+          version: 1.4.328.1
+          cache: true
+
+      - name: Install RenderDoc
+        run: .\.github\workflows\renderdoc.ps1
 
       - name: Build
         env:
@@ -48,7 +52,7 @@ jobs:
         run: mvn --batch-mode --strict-checksums --errors clean verify site
 
       - name: Upload test logs
-        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f
         if: always()
         with:
           name: test-logs
