@@ -53,7 +53,7 @@
     <mockito.version>5.20.0</mockito.version>
     <org.immutables.value.version>2.11.6</org.immutables.value.version>
     <org.jspecify.version>1.0.0</org.jspecify.version>
-    <org.junit.version>5.14.1</org.junit.version>
+    <org.junit.version>5.14.2</org.junit.version>
     <org.lwjgl.version>3.3.6</org.lwjgl.version>
   </properties>
 
