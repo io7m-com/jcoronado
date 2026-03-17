@@ -40,7 +40,7 @@ jobs:
       - name: Download Vulkan SDK
         run: curl -L -o VulkanSDK.exe https://sdk.lunarg.com/sdk/download/latest/windows/vulkan-sdk.exe
       - name: Install Vulkan SDK
-        run: VulkanSDK.exe /S
+        run: .\VulkanSDK.exe /S
       - name: Set up Vulkan (1)
         run: setx VULKAN_SDK "C:\VulkanSDK\<version>"
       - name: Set up Vulkan (2)
