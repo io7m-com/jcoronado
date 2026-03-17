@@ -38,15 +38,17 @@ jobs:
         run: java .github/workflows/Tools.java ShowProjectIsSnapshot pom.xml >> "$GITHUB_OUTPUT"
 
       - name: Download Vulkan SDK
-        run: curl -L -o VulkanSDK.exe https://sdk.lunarg.com/sdk/download/latest/windows/vulkan-sdk.exe
+        run: curl -L -o VulkanSDK.zip https://sdk.lunarg.com/sdk/download/latest/windows/vulkan-sdk.zip
       - name: Install Vulkan SDK
-        run: Start-Process -FilePath ".\VulkanSDK.exe" -ArgumentList "/S","/CURRENTUSER" -Wait -PassThru
-      - name: Set up Vulkan (1)
-        run: setx VULKAN_SDK "C:\VulkanSDK\<version>"
-      - name: Set up Vulkan (2)
-        run: setx PATH "%PATH%;C:\VulkanSDK\<version>\Bin"
-      - name: Verify Vulkan
-        run: vulkaninfo
+        run: Expand-Archive VulkanSDK.zip -DestinationPath "$env:USERPROFILE\VulkanSDK"
+      - name: Set Vulkan environment variables
+        run: |
+          $version = Get-ChildItem "$env:USERPROFILE\VulkanSDK" | Sort-Object Name -Descending | Select-Object -First 1
+          echo "VULKAN_SDK=$env:USERPROFILE\VulkanSDK\$($version.Name)" >> $env:GITHUB_ENV
+          echo "PATH=$env:USERPROFILE\VulkanSDK\$($version.Name)\Bin;$env:PATH" >> $env:GITHUB_ENV
+      - name: Verify Vulkan SDK installation
+        run: |
+          vulkaninfo | Select-String "VK_LAYER_KHRONOS_validation"
       - name: Install RenderDoc
         run: .\.github\workflows\renderdoc.ps1
 
