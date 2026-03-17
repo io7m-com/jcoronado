@@ -37,18 +37,8 @@ jobs:
         id: project_is_snapshot
         run: java .github/workflows/Tools.java ShowProjectIsSnapshot pom.xml >> "$GITHUB_OUTPUT"
 
-      - name: Download Vulkan SDK
-        run: curl -L -o VulkanSDK.zip https://sdk.lunarg.com/sdk/download/latest/windows/vulkan-sdk.zip
       - name: Install Vulkan SDK
-        run: Expand-Archive VulkanSDK.zip -DestinationPath "$env:USERPROFILE\VulkanSDK"
-      - name: Set Vulkan environment variables
-        run: |
-          $version = Get-ChildItem "$env:USERPROFILE\VulkanSDK" | Sort-Object Name -Descending | Select-Object -First 1
-          echo "VULKAN_SDK=$env:USERPROFILE\VulkanSDK\$($version.Name)" >> $env:GITHUB_ENV
-          echo "PATH=$env:USERPROFILE\VulkanSDK\$($version.Name)\Bin;$env:PATH" >> $env:GITHUB_ENV
-      - name: Verify Vulkan SDK installation
-        run: |
-          vulkaninfo | Select-String "VK_LAYER_KHRONOS_validation"
+        run: .\.github\workflows\vulkan.ps1
       - name: Install RenderDoc
         run: .\.github\workflows\renderdoc.ps1
 
