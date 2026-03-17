@@ -14,6 +14,9 @@ on:
 permissions:
   contents: read
 
+env:
+  NO_VULKAN_DEVICE_TESTS: true
+
 jobs:
   build:
     name: Build
@@ -37,10 +40,6 @@ jobs:
         id: project_is_snapshot
         run: java .github/workflows/Tools.java ShowProjectIsSnapshot pom.xml >> "$GITHUB_OUTPUT"
 
-      - name: Install Vulkan SDK
-        run: choco install vulkan-sdk
-      - name: Install RenderDoc
-        run: choco install renderdoc
 
       - name: Build
         env:
