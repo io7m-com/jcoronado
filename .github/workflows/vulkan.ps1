@@ -22,4 +22,4 @@ $oldPath = [Environment]::GetEnvironmentVariable("PATH", "User")
 
 # Verify installation
 Write-Host "VULKAN_SDK = $env:VULKAN_SDK"
-vulkaninfo | Select-String "VK_LAYER_KHRONOS_validation"
+& "$env:VULKAN_SDK\vulkaninfo.exe" | Select-String "VK_LAYER_KHRONOS_validation"
