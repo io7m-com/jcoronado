@@ -48,13 +48,13 @@
     <com.io7m.immutables-style.version>1.0.0</com.io7m.immutables-style.version>
     <com.io7m.jmulticlose.version>1.1.3</com.io7m.jmulticlose.version>
     <com.io7m.junreachable.version>4.0.2</com.io7m.junreachable.version>
-    <com.io7m.seltzer.version>1.2.0</com.io7m.seltzer.version>
+    <com.io7m.seltzer.version>1.3.0</com.io7m.seltzer.version>
 
     <!-- Third-party dependencies. -->
     <mockito.version>5.21.0</mockito.version>
     <org.immutables.value.version>2.12.1</org.immutables.value.version>
     <org.jspecify.version>1.0.0</org.jspecify.version>
-    <org.junit.version>5.14.1</org.junit.version>
+    <org.junit.version>6.0.3</org.junit.version>
     <org.lwjgl.version>3.4.1</org.lwjgl.version>
   </properties>
 
