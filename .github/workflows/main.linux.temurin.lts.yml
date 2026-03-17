@@ -38,9 +38,9 @@ jobs:
         run: java .github/workflows/Tools.java ShowProjectIsSnapshot pom.xml >> "$GITHUB_OUTPUT"
 
       - name: Install Vulkan SDK
-        uses: humbletim/install-vulkan-sdk@30ba978f977e81b72d091fc8888feb1fb26f9aff
+        uses: humbletim/install-vulkan-sdk@e7d6e7b937bde4503c7ba5c9584c9dc68f44c4b8
         with:
-          version: 1.4.328.1
+          version: 1.4.341.1
           cache: true
 
       - name: Download RenderDoc
