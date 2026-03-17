@@ -38,9 +38,9 @@ jobs:
         run: java .github/workflows/Tools.java ShowProjectIsSnapshot pom.xml >> "$GITHUB_OUTPUT"
 
       - name: Install Vulkan SDK
-        run: .\.github\workflows\vulkan.ps1
+        run: choco install vulkan-sdk
       - name: Install RenderDoc
-        run: .\.github\workflows\renderdoc.ps1
+        run: choco install renderdoc
 
       - name: Build
         env:
