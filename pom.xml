@@ -41,7 +41,7 @@
 
     <!-- Configuration. -->
     <io7m.api.previousVersion>0.0.2-SNAPSHOT</io7m.api.previousVersion>
-    <io7m.java.targetJavaVersion>22</io7m.java.targetJavaVersion>
+    <io7m.java.targetJavaVersion>25</io7m.java.targetJavaVersion>
 
     <!-- io7m dependencies. -->
     <com.io7m.immutables-style.version>1.0.0</com.io7m.immutables-style.version>
