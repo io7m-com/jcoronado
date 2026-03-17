@@ -55,7 +55,7 @@
     <org.immutables.value.version>2.12.1</org.immutables.value.version>
     <org.jspecify.version>1.0.0</org.jspecify.version>
     <org.junit.version>5.14.1</org.junit.version>
-    <org.lwjgl.version>3.3.6</org.lwjgl.version>
+    <org.lwjgl.version>3.4.1</org.lwjgl.version>
   </properties>
 
   <licenses>
