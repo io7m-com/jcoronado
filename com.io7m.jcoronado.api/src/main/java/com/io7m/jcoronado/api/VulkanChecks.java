@@ -76,6 +76,10 @@ public final class VulkanChecks
     attributes.put("ErrorCode", errorCode);
     attributes.put("ErrorName", errorName);
 
-    return new VulkanCallFailedException("Vulkan call failed.", attributes);
+    return new VulkanCallFailedException(
+      "Vulkan call failed (%s: %s %s)."
+        .formatted(function, errorCode, errorName),
+      attributes
+    );
   }
 }
