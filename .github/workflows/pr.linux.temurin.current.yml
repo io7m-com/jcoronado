@@ -38,7 +38,7 @@ jobs:
         run: java .github/workflows/Tools.java ShowProjectIsSnapshot pom.xml >> "$GITHUB_OUTPUT"
 
       - name: Install Vulkan packages
-        run: sudo apt install vulkan-tools vulkan-validationlayers
+        run: sudo apt install mesa-vulkan-drivers vulkan-tools vulkan-validationlayers
       - name: Verify Vulkan
         run: vulkaninfo
       - name: Download RenderDoc
