@@ -21,6 +21,7 @@
 
   <modules>
     <module>com.io7m.jcoronado.api</module>
+    <module>com.io7m.jcoronado.bom</module>
     <module>com.io7m.jcoronado.documentation</module>
     <module>com.io7m.jcoronado.examples</module>
     <module>com.io7m.jcoronado.extensions.ext_debug_utils.api</module>
