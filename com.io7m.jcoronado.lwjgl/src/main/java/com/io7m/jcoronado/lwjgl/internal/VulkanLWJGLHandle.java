@@ -21,6 +21,7 @@ import com.io7m.jcoronado.api.VulkanHandleType;
 import org.slf4j.Logger;
 
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 sealed abstract class VulkanLWJGLHandle
@@ -61,14 +62,14 @@ sealed abstract class VulkanLWJGLHandle
   private final VulkanLWJGLHostAllocatorProxy host_allocator_proxy;
   private final long handle;
   private final AtomicReference<String> name;
-  private boolean closed;
+  private final AtomicBoolean closed;
 
   VulkanLWJGLHandle(
     final Ownership in_ownership,
     final VulkanLWJGLHostAllocatorProxy in_host_allocator_proxy,
     final long inHandle)
   {
-    this.closed = false;
+    this.closed = new AtomicBoolean(false);
     this.ownership =
       Objects.requireNonNull(in_ownership, "ownership");
     this.host_allocator_proxy =
@@ -92,7 +93,7 @@ sealed abstract class VulkanLWJGLHandle
   @Override
   public final boolean isClosed()
   {
-    return this.closed;
+    return this.closed.get();
   }
 
   protected abstract Logger logger();
@@ -100,21 +101,15 @@ sealed abstract class VulkanLWJGLHandle
   @Override
   public final void close()
   {
-    if (!this.closed) {
-      try {
-        switch (this.ownership) {
-          case USER_OWNED:
-            this.closeActual();
-            break;
-          case VULKAN_OWNED:
-            // XXX: Vulkan will free the object itself, but should the user be told that
-            //      they did something wrong by trying to close it themselves?
-            break;
-        }
-
-
-      } finally {
-        this.closed = true;
+    if (this.closed.compareAndSet(false, true)) {
+      switch (this.ownership) {
+        case USER_OWNED:
+          this.closeActual();
+          break;
+        case VULKAN_OWNED:
+          // XXX: Vulkan will free the object itself, but should the user be told that
+          //      they did something wrong by trying to close it themselves?
+          break;
       }
     }
   }
@@ -161,7 +156,7 @@ sealed abstract class VulkanLWJGLHandle
   protected final void checkNotClosed()
     throws VulkanDestroyedException
   {
-    if (this.closed) {
+    if (this.closed.get()) {
       throw new VulkanDestroyedException(
         "Object has been closed/destroyed.",
         this.getClass()
