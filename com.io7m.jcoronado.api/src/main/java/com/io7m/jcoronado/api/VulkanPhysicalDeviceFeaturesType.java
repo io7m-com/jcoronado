@@ -61,4 +61,12 @@ public interface VulkanPhysicalDeviceFeaturesType
    */
 
   VulkanPhysicalDeviceFeatures13 features13();
+
+  /**
+   * @return The features supported by a physical Vulkan 1.4 device.
+   *
+   * @see "VkPhysicalDeviceVulkan14Features"
+   */
+
+  VulkanPhysicalDeviceFeatures14 features14();
 }

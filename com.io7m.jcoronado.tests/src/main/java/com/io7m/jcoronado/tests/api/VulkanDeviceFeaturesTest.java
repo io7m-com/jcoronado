@@ -22,6 +22,7 @@ import com.io7m.jcoronado.api.VulkanPhysicalDeviceFeatures10;
 import com.io7m.jcoronado.api.VulkanPhysicalDeviceFeatures11;
 import com.io7m.jcoronado.api.VulkanPhysicalDeviceFeatures12;
 import com.io7m.jcoronado.api.VulkanPhysicalDeviceFeatures13;
+import com.io7m.jcoronado.api.VulkanPhysicalDeviceFeatures14;
 import com.io7m.jcoronado.api.VulkanPhysicalDeviceFeaturesFunctions;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -127,6 +128,7 @@ public final class VulkanDeviceFeaturesTest
         .setFeatures11(VulkanPhysicalDeviceFeatures11.builder().build())
         .setFeatures12(VulkanPhysicalDeviceFeatures12.builder().build())
         .setFeatures13(VulkanPhysicalDeviceFeatures13.builder().build())
+        .setFeatures14(VulkanPhysicalDeviceFeatures14.builder().build())
         .build();
 
     assertNotEquals(
@@ -152,9 +154,11 @@ public final class VulkanDeviceFeaturesTest
       VulkanPhysicalDeviceFeaturesFunctions.mapOf12(f.features12());
     final var f13 =
       VulkanPhysicalDeviceFeaturesFunctions.mapOf13(f.features13());
+    final var f14 =
+      VulkanPhysicalDeviceFeaturesFunctions.mapOf14(f.features14());
 
     assertEquals(
-      f10.size() + f11.size() + f12.size() + f13.size(),
+      f10.size() + f11.size() + f12.size() + f13.size() + f14.size(),
       m.size()
     );
 

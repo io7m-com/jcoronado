@@ -40,6 +40,7 @@ import com.io7m.jcoronado.api.VulkanPhysicalDeviceFeatures10;
 import com.io7m.jcoronado.api.VulkanPhysicalDeviceFeatures11;
 import com.io7m.jcoronado.api.VulkanPhysicalDeviceFeatures12;
 import com.io7m.jcoronado.api.VulkanPhysicalDeviceFeatures13;
+import com.io7m.jcoronado.api.VulkanPhysicalDeviceFeatures14;
 import com.io7m.jcoronado.api.VulkanPhysicalDeviceFeaturesFunctions;
 import com.io7m.jcoronado.api.VulkanPhysicalDeviceIDProperties;
 import com.io7m.jcoronado.api.VulkanPhysicalDeviceLimits;
@@ -63,6 +64,7 @@ import org.lwjgl.vulkan.VkPhysicalDeviceFeatures2;
 import org.lwjgl.vulkan.VkPhysicalDeviceVulkan11Features;
 import org.lwjgl.vulkan.VkPhysicalDeviceVulkan12Features;
 import org.lwjgl.vulkan.VkPhysicalDeviceVulkan13Features;
+import org.lwjgl.vulkan.VkPhysicalDeviceVulkan14Features;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -81,6 +83,7 @@ import static org.lwjgl.vulkan.VK11.VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FEATURES_2
 import static org.lwjgl.vulkan.VK12.VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_1_FEATURES;
 import static org.lwjgl.vulkan.VK12.VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_2_FEATURES;
 import static org.lwjgl.vulkan.VK13.VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_3_FEATURES;
+import static org.lwjgl.vulkan.VK14.VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_4_FEATURES;
 
 /**
  * LWJGL {@link VkPhysicalDevice}
@@ -264,10 +267,6 @@ public final class VulkanLWJGLPhysicalDevice
         outFeatures.wideLines());
   }
 
-  /**
-   * This method was not hand-written. See: GenerateFeatures11ToVkFeatures
-   */
-
   private static void packPhysicalDeviceFeatures11(
     final VkPhysicalDeviceVulkan11Features vkFeatures,
     final VulkanPhysicalDeviceFeatures11 outFeatures)
@@ -298,10 +297,6 @@ public final class VulkanLWJGLPhysicalDevice
       .variablePointersStorageBuffer(
         outFeatures.variablePointersStorageBuffer());
   }
-
-  /**
-   * This method was not hand-written. See: GenerateFeatures12ToVkFeatures
-   */
 
   private static void packPhysicalDeviceFeatures12(
     final VkPhysicalDeviceVulkan12Features vkFeatures,
@@ -404,10 +399,6 @@ public final class VulkanLWJGLPhysicalDevice
         outFeatures.vulkanMemoryModelDeviceScope());
   }
 
-  /**
-   * This method was not hand-written. See: GenerateFeatures13ToVkFeatures
-   */
-
   private static void packPhysicalDeviceFeatures13(
     final VkPhysicalDeviceVulkan13Features vkFeatures,
     final VulkanPhysicalDeviceFeatures13 outFeatures)
@@ -443,6 +434,51 @@ public final class VulkanLWJGLPhysicalDevice
         outFeatures.synchronization2())
       .textureCompressionASTC_HDR(
         outFeatures.textureCompressionASTC_HDR());
+  }
+
+  private static void packPhysicalDeviceFeatures14(
+    final VkPhysicalDeviceVulkan14Features vkFeatures,
+    final VulkanPhysicalDeviceFeatures14 outFeatures)
+  {
+    vkFeatures
+      .bresenhamLines(
+        outFeatures.bresenhamLines())
+      .dynamicRenderingLocalRead(
+        outFeatures.dynamicRenderingLocalRead())
+      .globalPriorityQuery(
+        outFeatures.globalPriorityQuery())
+      .hostImageCopy(
+        outFeatures.hostImageCopy())
+      .indexTypeUint8(
+        outFeatures.indexTypeUint8())
+      .maintenance5(
+        outFeatures.maintenance5())
+      .maintenance6(
+        outFeatures.maintenance6())
+      .pipelineRobustness(
+        outFeatures.pipelineRobustness())
+      .pushDescriptor(
+        outFeatures.pushDescriptor())
+      .rectangularLines(
+        outFeatures.rectangularLines())
+      .shaderExpectAssume(
+        outFeatures.shaderExpectAssume())
+      .shaderFloatControls2(
+        outFeatures.shaderFloatControls2())
+      .shaderSubgroupRotate(
+        outFeatures.shaderSubgroupRotate())
+      .shaderSubgroupRotateClustered(
+        outFeatures.shaderSubgroupRotateClustered())
+      .smoothLines(
+        outFeatures.smoothLines())
+      .stippledRectangularLines(
+        outFeatures.stippledRectangularLines())
+      .stippledSmoothLines(
+        outFeatures.stippledSmoothLines())
+      .vertexAttributeInstanceRateDivisor(
+        outFeatures.vertexAttributeInstanceRateDivisor())
+      .vertexAttributeInstanceRateZeroDivisor(
+        outFeatures.vertexAttributeInstanceRateZeroDivisor());
   }
 
 
@@ -551,6 +587,8 @@ public final class VulkanLWJGLPhysicalDevice
       VkPhysicalDeviceVulkan12Features.calloc(stack);
     final var vkFeatures13 =
       VkPhysicalDeviceVulkan13Features.calloc(stack);
+    final var vkFeatures14 =
+      VkPhysicalDeviceVulkan14Features.calloc(stack);
     final var vkFeatures =
       VkPhysicalDeviceFeatures2.calloc(stack);
 
@@ -558,7 +596,9 @@ public final class VulkanLWJGLPhysicalDevice
     vkFeatures11.sType(VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_1_FEATURES);
     vkFeatures12.sType(VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_2_FEATURES);
     vkFeatures13.sType(VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_3_FEATURES);
+    vkFeatures14.sType(VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_4_FEATURES);
 
+    packPhysicalDeviceFeatures14(vkFeatures14, requestFeatures.features14());
     packPhysicalDeviceFeatures13(vkFeatures13, requestFeatures.features13());
     packPhysicalDeviceFeatures12(vkFeatures12, requestFeatures.features12());
     packPhysicalDeviceFeatures11(vkFeatures11, requestFeatures.features11());
@@ -566,7 +606,8 @@ public final class VulkanLWJGLPhysicalDevice
       vkFeatures.features(),
       requestFeatures.features10());
 
-    vkFeatures13.pNext(0L);
+    vkFeatures14.pNext(0L);
+    vkFeatures13.pNext(vkFeatures14.address());
     vkFeatures12.pNext(vkFeatures13.address());
     vkFeatures11.pNext(vkFeatures12.address());
     vkFeatures.pNext(vkFeatures11.address());

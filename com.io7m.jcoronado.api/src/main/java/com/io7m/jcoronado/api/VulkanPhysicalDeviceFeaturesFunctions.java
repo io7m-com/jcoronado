@@ -45,6 +45,7 @@ public final class VulkanPhysicalDeviceFeaturesFunctions
       .setFeatures11(VulkanPhysicalDeviceFeatures11.builder().build())
       .setFeatures12(VulkanPhysicalDeviceFeatures12.builder().build())
       .setFeatures13(VulkanPhysicalDeviceFeatures13.builder().build())
+      .setFeatures14(VulkanPhysicalDeviceFeatures14.builder().build())
       .build();
 
   /**
@@ -67,6 +68,7 @@ public final class VulkanPhysicalDeviceFeaturesFunctions
       .setFeatures11(random11())
       .setFeatures12(random12())
       .setFeatures13(random13())
+      .setFeatures14(random14())
       .build();
   }
 
@@ -91,6 +93,7 @@ public final class VulkanPhysicalDeviceFeaturesFunctions
       .setFeatures11(or(a.features11(), b.features11()))
       .setFeatures12(or(a.features12(), b.features12()))
       .setFeatures13(or(a.features13(), b.features13()))
+      .setFeatures14(or(a.features14(), b.features14()))
       .build();
   }
 
@@ -636,6 +639,35 @@ public final class VulkanPhysicalDeviceFeaturesFunctions
   }
 
   /**
+   * @return A random feature selection
+   */
+
+  public static VulkanPhysicalDeviceFeatures14 random14()
+  {
+    return VulkanPhysicalDeviceFeatures14.builder()
+      .setBresenhamLines(randomBoolean())
+      .setDynamicRenderingLocalRead(randomBoolean())
+      .setGlobalPriorityQuery(randomBoolean())
+      .setHostImageCopy(randomBoolean())
+      .setIndexTypeUint8(randomBoolean())
+      .setMaintenance5(randomBoolean())
+      .setMaintenance6(randomBoolean())
+      .setPipelineRobustness(randomBoolean())
+      .setPushDescriptor(randomBoolean())
+      .setRectangularLines(randomBoolean())
+      .setShaderExpectAssume(randomBoolean())
+      .setShaderFloatControls2(randomBoolean())
+      .setShaderSubgroupRotate(randomBoolean())
+      .setShaderSubgroupRotateClustered(randomBoolean())
+      .setSmoothLines(randomBoolean())
+      .setStippledRectangularLines(randomBoolean())
+      .setStippledSmoothLines(randomBoolean())
+      .setVertexAttributeInstanceRateDivisor(randomBoolean())
+      .setVertexAttributeInstanceRateZeroDivisor(randomBoolean())
+      .build();
+  }
+
+  /**
    * Apply a bitwise OR to all fields.
    *
    * @param a The left features
@@ -683,6 +715,64 @@ public final class VulkanPhysicalDeviceFeaturesFunctions
         a.synchronization2() || b.synchronization2())
       .setTextureCompressionASTC_HDR(
         a.textureCompressionASTC_HDR() || b.textureCompressionASTC_HDR())
+      .build();
+  }
+
+  /**
+   * Apply a bitwise OR to all fields.
+   *
+   * @param a The left features
+   * @param b The right features
+   *
+   * @return The OR of all features
+   */
+
+  public static VulkanPhysicalDeviceFeatures14 or(
+    final VulkanPhysicalDeviceFeatures14 a,
+    final VulkanPhysicalDeviceFeatures14 b)
+  {
+    Objects.requireNonNull(a, "a");
+    Objects.requireNonNull(b, "b");
+
+    return VulkanPhysicalDeviceFeatures14.builder()
+      .setBresenhamLines(
+        a.bresenhamLines() || b.bresenhamLines())
+      .setDynamicRenderingLocalRead(
+        a.dynamicRenderingLocalRead() || b.dynamicRenderingLocalRead())
+      .setGlobalPriorityQuery(
+        a.globalPriorityQuery() || b.globalPriorityQuery())
+      .setHostImageCopy(
+        a.hostImageCopy() || b.hostImageCopy())
+      .setIndexTypeUint8(
+        a.indexTypeUint8() || b.indexTypeUint8())
+      .setMaintenance5(
+        a.maintenance5() || b.maintenance5())
+      .setMaintenance6(
+        a.maintenance6() || b.maintenance6())
+      .setPipelineRobustness(
+        a.pipelineRobustness() || b.pipelineRobustness())
+      .setPushDescriptor(
+        a.pushDescriptor() || b.pushDescriptor())
+      .setRectangularLines(
+        a.rectangularLines() || b.rectangularLines())
+      .setShaderExpectAssume(
+        a.shaderExpectAssume() || b.shaderExpectAssume())
+      .setShaderFloatControls2(
+        a.shaderFloatControls2() || b.shaderFloatControls2())
+      .setShaderSubgroupRotate(
+        a.shaderSubgroupRotate() || b.shaderSubgroupRotate())
+      .setShaderSubgroupRotateClustered(
+        a.shaderSubgroupRotateClustered() || b.shaderSubgroupRotateClustered())
+      .setSmoothLines(
+        a.smoothLines() || b.smoothLines())
+      .setStippledRectangularLines(
+        a.stippledRectangularLines() || b.stippledRectangularLines())
+      .setStippledSmoothLines(
+        a.stippledSmoothLines() || b.stippledSmoothLines())
+      .setVertexAttributeInstanceRateDivisor(
+        a.vertexAttributeInstanceRateDivisor() || b.vertexAttributeInstanceRateDivisor())
+      .setVertexAttributeInstanceRateZeroDivisor(
+        a.vertexAttributeInstanceRateZeroDivisor() || b.vertexAttributeInstanceRateZeroDivisor())
       .build();
   }
 
@@ -855,6 +945,38 @@ public final class VulkanPhysicalDeviceFeaturesFunctions
    * @return The features as a boolean map
    */
 
+  public static Map<String, Boolean> mapOf14(
+    final VulkanPhysicalDeviceFeatures14 f)
+  {
+    final var m = new TreeMap<String, Boolean>();
+    m.put("BresenhamLines", f.bresenhamLines());
+    m.put("DynamicRenderingLocalRead", f.dynamicRenderingLocalRead());
+    m.put("GlobalPriorityQuery", f.globalPriorityQuery());
+    m.put("HostImageCopy", f.hostImageCopy());
+    m.put("IndexTypeUint8", f.indexTypeUint8());
+    m.put("Maintenance5", f.maintenance5());
+    m.put("Maintenance6", f.maintenance6());
+    m.put("PipelineRobustness", f.pipelineRobustness());
+    m.put("PushDescriptor", f.pushDescriptor());
+    m.put("RectangularLines", f.rectangularLines());
+    m.put("ShaderExpectAssume", f.shaderExpectAssume());
+    m.put("ShaderFloatControls2", f.shaderFloatControls2());
+    m.put("ShaderSubgroupRotate", f.shaderSubgroupRotate());
+    m.put("ShaderSubgroupRotateClustered", f.shaderSubgroupRotateClustered());
+    m.put("SmoothLines", f.smoothLines());
+    m.put("StippledRectangularLines", f.stippledRectangularLines());
+    m.put("StippledSmoothLines", f.stippledSmoothLines());
+    m.put("VertexAttributeInstanceRateDivisor", f.vertexAttributeInstanceRateDivisor());
+    m.put("VertexAttributeInstanceRateZeroDivisor", f.vertexAttributeInstanceRateZeroDivisor());
+    return m;
+  }
+
+  /**
+   * @param f The features
+   *
+   * @return The features as a boolean map
+   */
+
   public static Map<String, Boolean> mapOf(
     final VulkanPhysicalDeviceFeatures f)
   {
@@ -863,6 +985,7 @@ public final class VulkanPhysicalDeviceFeaturesFunctions
     m.putAll(mapOf11(f.features11()));
     m.putAll(mapOf12(f.features12()));
     m.putAll(mapOf13(f.features13()));
+    m.putAll(mapOf14(f.features14()));
     return m;
   }
 
@@ -1013,6 +1136,40 @@ public final class VulkanPhysicalDeviceFeaturesFunctions
    * @return The features that were not available
    */
 
+  public static Set<String> isSupported14(
+    final VulkanPhysicalDeviceFeatures14 supported,
+    final VulkanPhysicalDeviceFeatures14 requested)
+  {
+    final var supportedMap =
+      mapOf14(supported);
+    final var requiredMap =
+      mapOf14(requested);
+    final var failedSet =
+      new TreeSet<String>();
+
+    for (final var entry : requiredMap.entrySet()) {
+      final var requestedValue = entry.getValue();
+      final var supportedValue = supportedMap.get(entry.getKey());
+      if (requestedValue.booleanValue()) {
+        if (!supportedValue.booleanValue()) {
+          failedSet.add(entry.getKey());
+        }
+      }
+    }
+    return failedSet;
+  }
+
+  /**
+   * Determine if the given set of features in {@code supported} satisfies
+   * those in {@code requested}. An empty set is returned if everything is
+   * supported.
+   *
+   * @param supported The supported features
+   * @param requested The requested features
+   *
+   * @return The features that were not available
+   */
+
   public static Set<String> isSupported(
     final VulkanPhysicalDeviceFeatures supported,
     final VulkanPhysicalDeviceFeatures requested)
@@ -1026,6 +1183,8 @@ public final class VulkanPhysicalDeviceFeaturesFunctions
       isSupported12(supported.features12(), requested.features12()));
     failedSet.addAll(
       isSupported13(supported.features13(), requested.features13()));
+    failedSet.addAll(
+      isSupported14(supported.features14(), requested.features14()));
     return failedSet;
   }
 }

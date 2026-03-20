@@ -40,6 +40,7 @@ import com.io7m.jcoronado.api.VulkanPhysicalDeviceFeatures10;
 import com.io7m.jcoronado.api.VulkanPhysicalDeviceFeatures11;
 import com.io7m.jcoronado.api.VulkanPhysicalDeviceFeatures12;
 import com.io7m.jcoronado.api.VulkanPhysicalDeviceFeatures13;
+import com.io7m.jcoronado.api.VulkanPhysicalDeviceFeatures14;
 import com.io7m.jcoronado.api.VulkanPhysicalDeviceIDProperties;
 import com.io7m.jcoronado.api.VulkanPhysicalDeviceLimits;
 import com.io7m.jcoronado.api.VulkanPhysicalDeviceMemoryProperties;
@@ -73,6 +74,7 @@ import org.lwjgl.vulkan.VkPhysicalDeviceProperties2;
 import org.lwjgl.vulkan.VkPhysicalDeviceVulkan11Features;
 import org.lwjgl.vulkan.VkPhysicalDeviceVulkan12Features;
 import org.lwjgl.vulkan.VkPhysicalDeviceVulkan13Features;
+import org.lwjgl.vulkan.VkPhysicalDeviceVulkan14Features;
 import org.lwjgl.vulkan.VkQueueFamilyProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -100,6 +102,7 @@ import static org.lwjgl.vulkan.VK12.VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DRIVER_PRO
 import static org.lwjgl.vulkan.VK12.VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_1_FEATURES;
 import static org.lwjgl.vulkan.VK12.VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_2_FEATURES;
 import static org.lwjgl.vulkan.VK13.VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_3_FEATURES;
+import static org.lwjgl.vulkan.VK14.VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_4_FEATURES;
 
 /**
  * LWJGL {@link VkInstance}
@@ -764,6 +767,10 @@ public final class VulkanLWJGLInstance
     final MemoryStack stack,
     final VkPhysicalDevice vkDevice)
   {
+    final var vkFeatures14 =
+      VkPhysicalDeviceVulkan14Features.calloc(stack);
+    vkFeatures14.sType(VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_4_FEATURES);
+
     final var vkFeatures13 =
       VkPhysicalDeviceVulkan13Features.calloc(stack);
     vkFeatures13.sType(VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_3_FEATURES);
@@ -780,6 +787,7 @@ public final class VulkanLWJGLInstance
       VkPhysicalDeviceFeatures2.calloc(stack);
     vkFeatures.sType(VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FEATURES_2);
 
+    vkFeatures13.pNext(vkFeatures14.address());
     vkFeatures12.pNext(vkFeatures13.address());
     vkFeatures11.pNext(vkFeatures12.address());
     vkFeatures.pNext(vkFeatures11.address());
@@ -794,12 +802,15 @@ public final class VulkanLWJGLInstance
       parsePhysicalDeviceFeatures12(vkFeatures12);
     final var features13 =
       parsePhysicalDeviceFeatures13(vkFeatures13);
+    final var features14 =
+      parsePhysicalDeviceFeatures14(vkFeatures14);
 
     return VulkanPhysicalDeviceFeatures.builder()
       .setFeatures10(features10)
       .setFeatures11(features11)
       .setFeatures12(features12)
       .setFeatures13(features13)
+      .setFeatures14(features14)
       .build();
   }
 
@@ -967,6 +978,51 @@ public final class VulkanLWJGLInstance
         features13.synchronization2())
       .setTextureCompressionASTC_HDR(
         features13.textureCompressionASTC_HDR())
+      .build();
+  }
+
+  private static VulkanPhysicalDeviceFeatures14 parsePhysicalDeviceFeatures14(
+    final VkPhysicalDeviceVulkan14Features features14)
+  {
+    return VulkanPhysicalDeviceFeatures14.builder()
+      .setBresenhamLines(
+        features14.bresenhamLines())
+      .setDynamicRenderingLocalRead(
+        features14.dynamicRenderingLocalRead())
+      .setGlobalPriorityQuery(
+        features14.globalPriorityQuery())
+      .setHostImageCopy(
+        features14.hostImageCopy())
+      .setIndexTypeUint8(
+        features14.indexTypeUint8())
+      .setMaintenance5(
+        features14.maintenance5())
+      .setMaintenance6(
+        features14.maintenance6())
+      .setPipelineRobustness(
+        features14.pipelineRobustness())
+      .setPushDescriptor(
+        features14.pushDescriptor())
+      .setRectangularLines(
+        features14.rectangularLines())
+      .setShaderExpectAssume(
+        features14.shaderExpectAssume())
+      .setShaderFloatControls2(
+        features14.shaderFloatControls2())
+      .setShaderSubgroupRotate(
+        features14.shaderSubgroupRotate())
+      .setShaderSubgroupRotateClustered(
+        features14.shaderSubgroupRotateClustered())
+      .setSmoothLines(
+        features14.smoothLines())
+      .setStippledRectangularLines(
+        features14.stippledRectangularLines())
+      .setStippledSmoothLines(
+        features14.stippledSmoothLines())
+      .setVertexAttributeInstanceRateDivisor(
+        features14.vertexAttributeInstanceRateDivisor())
+      .setVertexAttributeInstanceRateZeroDivisor(
+        features14.vertexAttributeInstanceRateZeroDivisor())
       .build();
   }
 

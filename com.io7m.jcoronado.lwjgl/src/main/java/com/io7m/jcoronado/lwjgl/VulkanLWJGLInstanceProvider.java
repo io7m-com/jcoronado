@@ -62,8 +62,8 @@ public final class VulkanLWJGLInstanceProvider
   private static final Logger LOG =
     LoggerFactory.getLogger(VulkanLWJGLInstanceProvider.class);
 
-  private static final VulkanVersion VULKAN_13 =
-    VulkanVersion.of(1, 3, 0);
+  private static final VulkanVersion VULKAN_14 =
+    VulkanVersion.of(1, 4, 0);
 
   private final MemoryStack initialStack;
   private final VulkanLWJGLExtensionsRegistry extensions;
@@ -102,7 +102,7 @@ public final class VulkanLWJGLInstanceProvider
   @Override
   public VulkanVersion minimumRequiredVersion()
   {
-    return VULKAN_13;
+    return VULKAN_14;
   }
 
   @Override
@@ -237,27 +237,27 @@ public final class VulkanLWJGLInstanceProvider
       LOG.debug("Requested Vulkan version: {}",
                 requestedVersion.toHumanString());
       LOG.debug("Required Vulkan version:  {}",
-                VULKAN_13.toHumanString());
+                VULKAN_14.toHumanString());
       LOG.debug("Supported Vulkan version: {}",
                 supportedVersion.toHumanString());
     }
 
     /*
-     * We require Vulkan 1.3+ as various extensions such as
+     * We require Vulkan 1.4+ as various extensions such as
      * VK_KHR_synchronization2 were moved to core.
      */
 
-    if (requestedVersion.compareTo(VULKAN_13) < 0) {
+    if (requestedVersion.compareTo(VULKAN_14) < 0) {
       throw new VulkanMissingRequiredVersionException(
         requestedVersion,
-        VULKAN_13,
+        VULKAN_14,
         supportedVersion
       );
     }
     if (supportedVersion.compareTo(requestedVersion) < 0) {
       throw new VulkanMissingRequiredVersionException(
         requestedVersion,
-        VULKAN_13,
+        VULKAN_14,
         supportedVersion
       );
     }

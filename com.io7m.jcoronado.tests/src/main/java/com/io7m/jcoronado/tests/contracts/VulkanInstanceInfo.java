@@ -34,7 +34,7 @@ public final class VulkanInstanceInfo
     final var applicationInfo =
       VulkanApplicationInfo.builder()
         .setVulkanAPIVersion(
-          VulkanVersions.encode(1, 3, 0))
+          VulkanVersions.encode(1, 4, 0))
         .setApplicationVersion(
           VulkanVersions.encode(0, 0, 1))
         .setEngineVersion(
