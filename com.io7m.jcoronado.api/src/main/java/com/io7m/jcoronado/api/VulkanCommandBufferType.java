@@ -939,5 +939,29 @@ public interface VulkanCommandBufferType extends VulkanHandleDispatchableType
   @VulkanExternallySynchronizedType
   void reset(Set<VulkanCommandBufferResetFlag> flags)
     throws VulkanException;
+
+  /**
+   * Begin dynamic rendering.
+   *
+   * @param renderingInfo The rendering info
+   *
+   * @throws VulkanException On errors
+   */
+
+  @VulkanAPIFunctionType(vulkanFunction = "vkCmdBeginRendering")
+  @VulkanExternallySynchronizedType
+  void beginRendering(VulkanRenderingInfo renderingInfo)
+    throws VulkanException;
+
+  /**
+   * End dynamic rendering.
+   *
+   * @throws VulkanException On errors
+   */
+
+  @VulkanAPIFunctionType(vulkanFunction = "vkCmdEndRendering")
+  @VulkanExternallySynchronizedType
+  void endRendering()
+    throws VulkanException;
 }
 

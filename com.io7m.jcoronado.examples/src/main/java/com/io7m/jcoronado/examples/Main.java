@@ -29,13 +29,14 @@ public final class Main
 
   private static final Map<String, ExampleType> EXAMPLES =
     Map.ofEntries(
-      Map.entry("hello-swapchain", new HelloSwapChain()),
-      Map.entry("hello", new HelloVulkan()),
-      Map.entry("hello-vma", new HelloVulkanWithVMA()),
-      Map.entry("framebuffer", new Framebuffer()),
-      Map.entry("versioning", new Versioning()),
       Map.entry("buffer-copy", new BufferCopy()),
-      Map.entry("memory-requirements", new MemoryRequirements())
+      Map.entry("framebuffer", new Framebuffer()),
+      Map.entry("hello", new HelloVulkan()),
+      Map.entry("hello-dynamic-rendering", new HelloVulkanDynamic()),
+      Map.entry("hello-swapchain", new HelloSwapChain()),
+      Map.entry("hello-vma", new HelloVulkanWithVMA()),
+      Map.entry("memory-requirements", new MemoryRequirements()),
+      Map.entry("versioning", new Versioning())
     );
 
   private Main()

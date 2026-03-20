@@ -49,12 +49,14 @@ import com.io7m.jcoronado.api.VulkanQueryControlFlag;
 import com.io7m.jcoronado.api.VulkanQueryPoolType;
 import com.io7m.jcoronado.api.VulkanRectangle2D;
 import com.io7m.jcoronado.api.VulkanRenderPassBeginInfo;
+import com.io7m.jcoronado.api.VulkanRenderingInfo;
 import com.io7m.jcoronado.api.VulkanStencilFaceFlag;
 import com.io7m.jcoronado.api.VulkanSubpassContents;
 import com.io7m.jcoronado.api.VulkanViewport;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.vulkan.VK10;
 import org.lwjgl.vulkan.VK13;
+import org.lwjgl.vulkan.VK14;
 import org.lwjgl.vulkan.VkCommandBuffer;
 import org.lwjgl.vulkan.VkDependencyInfo;
 import org.slf4j.Logger;
@@ -972,12 +974,36 @@ public final class VulkanLWJGLCommandBuffer
     throws VulkanException
   {
     Objects.requireNonNull(flags, "flags");
-
     this.checkNotClosed();
 
     VK10.vkResetCommandBuffer(
       this.buffer,
       VulkanEnumMaps.packValues(flags)
     );
+  }
+
+  @Override
+  public void beginRendering(
+    final VulkanRenderingInfo renderingInfo)
+    throws VulkanException
+  {
+    Objects.requireNonNull(renderingInfo, "renderingInfo");
+    this.checkNotClosed();
+
+    try (var stack = this.stackInitial.push()) {
+      VK14.vkCmdBeginRendering(
+        this.buffer,
+        VulkanLWJGLRenderingInfos.pack(stack, renderingInfo)
+      );
+    }
+  }
+
+  @Override
+  public void endRendering()
+    throws VulkanException
+  {
+    this.checkNotClosed();
+
+    VK14.vkCmdEndRendering(this.buffer);
   }
 }

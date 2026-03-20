@@ -301,7 +301,7 @@ public final class VulkanLWJGLGraphicsPipelineCreateInfosTest
         color_opt,
         dyn_opt,
         layout,
-        render_pass,
+        Optional.of(render_pass),
         0,
         pipe_opt,
         base_opt);

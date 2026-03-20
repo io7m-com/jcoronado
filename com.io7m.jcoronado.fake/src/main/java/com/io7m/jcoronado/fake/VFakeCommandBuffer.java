@@ -46,6 +46,7 @@ import com.io7m.jcoronado.api.VulkanQueryControlFlag;
 import com.io7m.jcoronado.api.VulkanQueryPoolType;
 import com.io7m.jcoronado.api.VulkanRectangle2D;
 import com.io7m.jcoronado.api.VulkanRenderPassBeginInfo;
+import com.io7m.jcoronado.api.VulkanRenderingInfo;
 import com.io7m.jcoronado.api.VulkanStencilFaceFlag;
 import com.io7m.jcoronado.api.VulkanSubpassContents;
 import com.io7m.jcoronado.api.VulkanViewport;
@@ -427,6 +428,19 @@ public final class VFakeCommandBuffer implements VulkanCommandBufferType
   @Override
   public void reset(
     final Set<VulkanCommandBufferResetFlag> flags)
+  {
+
+  }
+
+  @Override
+  public void beginRendering(
+    final VulkanRenderingInfo renderingInfo)
+  {
+
+  }
+
+  @Override
+  public void endRendering()
   {
 
   }

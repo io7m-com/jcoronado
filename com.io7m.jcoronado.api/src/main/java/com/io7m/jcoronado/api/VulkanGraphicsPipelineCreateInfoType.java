@@ -127,7 +127,7 @@ public interface VulkanGraphicsPipelineCreateInfoType
    */
 
   @Value.Parameter
-  VulkanRenderPassType renderPass();
+  Optional<VulkanRenderPassType> renderPass();
 
   /**
    * @return The index of the subpass in the render pass where this pipeline will be used.
@@ -149,4 +149,10 @@ public interface VulkanGraphicsPipelineCreateInfoType
 
   @Value.Parameter
   OptionalInt basePipelineIndex();
+
+  /**
+   * @return The rendering info used for dynamic rendering
+   */
+
+  Optional<VulkanPipelineRenderingCreateInfo> renderingCreateInfo();
 }
