@@ -81,9 +81,11 @@ public final class VFakeQueue implements VulkanQueueType
   public void submit(
     final List<VulkanSubmitInfo> submissions,
     final Optional<VulkanFenceType> fence)
-    throws VulkanException
   {
-    throw errorNotImplemented("submit");
+    if (fence.isPresent()) {
+      final var fakeFence = (VFakeFence) fence.get();
+      fakeFence.signal();
+    }
   }
 
   @Override

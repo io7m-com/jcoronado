@@ -43,6 +43,7 @@ import com.io7m.jcoronado.api.VulkanEventType;
 import com.io7m.jcoronado.api.VulkanException;
 import com.io7m.jcoronado.api.VulkanExtensionType;
 import com.io7m.jcoronado.api.VulkanExternallySynchronizedType;
+import com.io7m.jcoronado.api.VulkanFenceCreateFlag;
 import com.io7m.jcoronado.api.VulkanFenceCreateInfo;
 import com.io7m.jcoronado.api.VulkanFenceType;
 import com.io7m.jcoronado.api.VulkanFramebufferCreateInfo;
@@ -88,7 +89,10 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicBoolean;
+
+import static java.util.concurrent.TimeUnit.NANOSECONDS;
 
 /**
  * A logical device.
@@ -345,9 +349,10 @@ public final class VFakeLogicalDevice implements VulkanLogicalDeviceType
   @Override
   public List<VulkanCommandBufferType> createCommandBuffers(
     final VulkanCommandBufferCreateInfo create_info)
-    throws VulkanCallFailedException
   {
-    throw errorNotImplemented("createCommandBuffers");
+    return List.of(
+      new VFakeCommandBuffer()
+    );
   }
 
   @Override
@@ -371,7 +376,10 @@ public final class VFakeLogicalDevice implements VulkanLogicalDeviceType
     final VulkanFenceCreateInfo createInfo)
     throws VulkanException
   {
-    throw errorNotImplemented("createFence");
+    return new VFakeFence(
+      createInfo.flags()
+        .contains(VulkanFenceCreateFlag.VK_FENCE_CREATE_SIGNALED_BIT)
+    );
   }
 
   @Override
@@ -422,7 +430,35 @@ public final class VFakeLogicalDevice implements VulkanLogicalDeviceType
     final long timeout_nanos)
     throws VulkanException
   {
-    throw errorNotImplemented("waitForFences");
+    final var fakeFences =
+      fences.stream()
+        .map(f -> (VFakeFence) f)
+        .toList();
+
+    if (wait_all) {
+      try {
+        VFakeFence.awaitAll(
+          fakeFences,
+          timeout_nanos,
+          NANOSECONDS
+        );
+        return VulkanWaitStatus.VK_WAIT_SUCCEEDED;
+      } catch (final InterruptedException e) {
+        throw new VulkanCallFailedException(
+          "waitForFences interrupted.",
+          e,
+          Map.of()
+        );
+      } catch (final TimeoutException e) {
+        return VulkanWaitStatus.VK_WAIT_TIMED_OUT;
+      }
+    }
+
+    final var ok = VFakeFence.awaitAny(fakeFences, timeout_nanos, NANOSECONDS);
+    if (ok) {
+      return VulkanWaitStatus.VK_WAIT_SUCCEEDED;
+    }
+    return VulkanWaitStatus.VK_WAIT_TIMED_OUT;
   }
 
   @Override
