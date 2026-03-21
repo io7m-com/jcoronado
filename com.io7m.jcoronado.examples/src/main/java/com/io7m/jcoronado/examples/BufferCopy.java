@@ -16,7 +16,6 @@
 
 package com.io7m.jcoronado.examples;
 
-import com.io7m.jcoronado.utility.allocation_tracker.VulkanHostAllocatorTracker;
 import com.io7m.jcoronado.api.VulkanApplicationInfo;
 import com.io7m.jcoronado.api.VulkanBufferCopy;
 import com.io7m.jcoronado.api.VulkanBufferCreateInfo;
@@ -47,6 +46,7 @@ import com.io7m.jcoronado.extensions.ext_debug_utils.api.VulkanDebugUtilsSLF4J;
 import com.io7m.jcoronado.extensions.ext_debug_utils.api.VulkanDebugUtilsType;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLHostAllocatorJeMalloc;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLInstanceProvider;
+import com.io7m.jcoronado.utility.allocation_tracker.VulkanHostAllocatorTracker;
 import com.io7m.jmulticlose.core.CloseableCollection;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWErrorCallback;
@@ -291,15 +291,18 @@ public final class BufferCopy implements ExampleType
        * Create a new instance.
        */
 
+      final var appInfo =
+        VulkanApplicationInfo.builder()
+          .setApplicationName("com.io7m.jcoronado.tests.Demo")
+          .setApplicationVersion(VulkanVersions.encode(0, 0, 1))
+          .setEngineName("com.io7m.jcoronado.tests")
+          .setEngineVersion(VulkanVersions.encode(0, 0, 1))
+          .setVulkanAPIVersion(VulkanVersions.encode(instances.minimumRequiredVersion()))
+          .build();
+
       final var createInfo =
         VulkanInstanceCreateInfo.builder()
-          .setApplicationInfo(
-            VulkanApplicationInfo.of(
-              "com.io7m.jcoronado.tests.Demo",
-              VulkanVersions.encode(0, 0, 1),
-              "com.io7m.jcoronado.tests",
-              VulkanVersions.encode(0, 0, 1),
-              VulkanVersions.encode(instances.minimumRequiredVersion())))
+          .setApplicationInfo(appInfo)
           .setEnabledExtensions(enableExtensions)
           .setEnabledLayers(enableLayers)
           .build();
@@ -544,15 +547,16 @@ public final class BufferCopy implements ExampleType
       );
       commandBuffer.endCommandBuffer();
 
-      queue.submit(List.of(
-        VulkanSubmitInfo.builder()
-          .addCommandBuffers(
-            VulkanCommandBufferSubmitInfo.builder()
-              .setCommandBuffer(commandBuffer)
-              .build()
-          )
-          .build()
-      ), Optional.of(fence));
+      queue.submit(
+        List.of(
+          VulkanSubmitInfo.builder()
+            .addCommandBuffers(
+              VulkanCommandBufferSubmitInfo.builder()
+                .setCommandBuffer(commandBuffer)
+                .build()
+            )
+            .build()
+        ), Optional.of(fence));
 
       LOG.debug("waiting for fence");
       device.waitForFence(fence, 1_000_000_000L);

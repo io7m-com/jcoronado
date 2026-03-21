@@ -55,19 +55,22 @@ public abstract class VulkanInstanceContract extends VulkanOnDeviceContract
     final var info =
       VulkanInstanceCreateInfo.builder()
         .setApplicationInfo(
-          VulkanApplicationInfo.of(
-            "com.io7m.jcoronado.tests.Test",
-            VulkanVersions.encode(0, 0, 1),
-            "com.io7m.jcoronado.tests",
-            VulkanVersions.encode(0, 0, 1),
-            VulkanVersions.encode(1, 0, 0)))
+          VulkanApplicationInfo.builder()
+            .setApplicationName("com.io7m.jcoronado.tests.Test")
+            .setApplicationVersion(VulkanVersions.encode(0, 0, 1))
+            .setEngineName("com.io7m.jcoronado.tests")
+            .setEngineVersion(VulkanVersions.encode(0, 0, 1))
+            .setVulkanAPIVersion(VulkanVersions.encode(1, 0, 0))
+            .build()
+        )
         .setEnabledExtensions(List.of())
         .setEnabledLayers(List.of("VK_LAYER_KHRONOS_validation"))
         .build();
 
-    assertThrows(VulkanMissingRequiredVersionException.class, () -> {
-      provider.createInstance(info, Optional.empty());
-    });
+    assertThrows(
+      VulkanMissingRequiredVersionException.class, () -> {
+        provider.createInstance(info, Optional.empty());
+      });
   }
 
   @Test
@@ -82,15 +85,18 @@ public abstract class VulkanInstanceContract extends VulkanOnDeviceContract
     final var supported =
       provider.findSupportedInstanceVersion();
 
+    final var appInfo =
+      VulkanApplicationInfo.builder()
+        .setApplicationName("com.io7m.jcoronado.tests.Test")
+        .setApplicationVersion(VulkanVersions.encode(0, 0, 1))
+        .setEngineName("com.io7m.jcoronado.tests")
+        .setEngineVersion(VulkanVersions.encode(0, 0, 1))
+        .setVulkanAPIVersion(VulkanVersions.encode(supported))
+        .build();
+
     final var info =
       VulkanInstanceCreateInfo.builder()
-        .setApplicationInfo(
-          VulkanApplicationInfo.of(
-            "com.io7m.jcoronado.tests.Test",
-            VulkanVersions.encode(0, 0, 1),
-            "com.io7m.jcoronado.tests",
-            VulkanVersions.encode(0, 0, 1),
-            VulkanVersions.encode(supported)))
+        .setApplicationInfo(appInfo)
         .setEnabledExtensions(List.of())
         .setEnabledLayers(List.of("VK_LAYER_KHRONOS_validation"))
         .build();
@@ -108,15 +114,18 @@ public abstract class VulkanInstanceContract extends VulkanOnDeviceContract
   {
     Assumptions.assumeTrue(this.shouldRun(), "Test should run");
 
+    final var appInfo =
+      VulkanApplicationInfo.builder()
+        .setApplicationName("com.io7m.jcoronado.tests.Test")
+        .setApplicationVersion(VulkanVersions.encode(0, 0, 1))
+        .setEngineName("com.io7m.jcoronado.tests")
+        .setEngineVersion(VulkanVersions.encode(0, 0, 1))
+        .setVulkanAPIVersion(VulkanVersions.encode(this.instanceProvider().minimumRequiredVersion()))
+        .build();
+
     final var info =
       VulkanInstanceCreateInfo.builder()
-        .setApplicationInfo(
-          VulkanApplicationInfo.of(
-            "com.io7m.jcoronado.tests.Test",
-            VulkanVersions.encode(0, 0, 1),
-            "com.io7m.jcoronado.tests",
-            VulkanVersions.encode(0, 0, 1),
-            VulkanVersions.encode(this.instanceProvider().minimumRequiredVersion())))
+        .setApplicationInfo(appInfo)
         .setEnabledExtensions(List.of())
         .setEnabledLayers(List.of("VK_LAYER_KHRONOS_validation"))
         .build();
@@ -147,15 +156,18 @@ public abstract class VulkanInstanceContract extends VulkanOnDeviceContract
     final var supported =
       provider.findSupportedInstanceVersion();
 
+    final var appInfo =
+      VulkanApplicationInfo.builder()
+        .setApplicationName("com.io7m.jcoronado.tests.Test")
+        .setApplicationVersion(VulkanVersions.encode(0, 0, 1))
+        .setEngineName("com.io7m.jcoronado.tests")
+        .setEngineVersion(VulkanVersions.encode(0, 0, 1))
+        .setVulkanAPIVersion(VulkanVersions.encode(supported))
+        .build();
+
     final var info =
       VulkanInstanceCreateInfo.builder()
-        .setApplicationInfo(
-          VulkanApplicationInfo.of(
-            "com.io7m.jcoronado.tests.Test",
-            VulkanVersions.encode(0, 0, 1),
-            "com.io7m.jcoronado.tests",
-            VulkanVersions.encode(0, 0, 1),
-            VulkanVersions.encode(supported)))
+        .setApplicationInfo(appInfo)
         .setEnabledExtensions(List.of())
         .setEnabledLayers(List.of("VK_LAYER_KHRONOS_validation"))
         .build();
@@ -180,15 +192,18 @@ public abstract class VulkanInstanceContract extends VulkanOnDeviceContract
   {
     Assumptions.assumeTrue(this.shouldRun(), "Test should run");
 
+    final var appInfo =
+      VulkanApplicationInfo.builder()
+        .setApplicationName("com.io7m.jcoronado.tests.Test")
+        .setApplicationVersion(VulkanVersions.encode(0, 0, 1))
+        .setEngineName("com.io7m.jcoronado.tests")
+        .setEngineVersion(VulkanVersions.encode(0, 0, 1))
+        .setVulkanAPIVersion(VulkanVersions.encode(this.instanceProvider().minimumRequiredVersion()))
+        .build();
+
     final var info =
       VulkanInstanceCreateInfo.builder()
-        .setApplicationInfo(
-          VulkanApplicationInfo.of(
-            "com.io7m.jcoronado.tests.Test",
-            VulkanVersions.encode(0, 0, 1),
-            "com.io7m.jcoronado.tests",
-            VulkanVersions.encode(0, 0, 1),
-            VulkanVersions.encode(this.instanceProvider().minimumRequiredVersion())))
+        .setApplicationInfo(appInfo)
         .setEnabledExtensions(List.of())
         .setEnabledLayers(List.of("VK_LAYER_KHRONOS_validation"))
         .addExtensionInfo(
@@ -229,15 +244,18 @@ public abstract class VulkanInstanceContract extends VulkanOnDeviceContract
   {
     Assumptions.assumeTrue(this.shouldRun(), "Test should run");
 
+    final var appInfo =
+      VulkanApplicationInfo.builder()
+        .setApplicationName("com.io7m.jcoronado.tests.Test")
+        .setApplicationVersion(VulkanVersions.encode(0, 0, 1))
+        .setEngineName("com.io7m.jcoronado.tests")
+        .setEngineVersion(VulkanVersions.encode(0, 0, 1))
+        .setVulkanAPIVersion(VulkanVersions.encode(this.instanceProvider().minimumRequiredVersion()))
+        .build();
+
     final var info =
       VulkanInstanceCreateInfo.builder()
-        .setApplicationInfo(
-          VulkanApplicationInfo.of(
-            "com.io7m.jcoronado.tests.Test",
-            VulkanVersions.encode(0, 0, 1),
-            "com.io7m.jcoronado.tests",
-            VulkanVersions.encode(0, 0, 1),
-            VulkanVersions.encode(this.instanceProvider().minimumRequiredVersion())))
+        .setApplicationInfo(appInfo)
         .setEnabledExtensions(List.of())
         .setEnabledLayers(List.of("VK_LAYER_KHRONOS_validation"))
         .addExtensionInfo(
@@ -278,15 +296,18 @@ public abstract class VulkanInstanceContract extends VulkanOnDeviceContract
   {
     Assumptions.assumeTrue(this.shouldRun(), "Test should run");
 
+    final var appInfo =
+      VulkanApplicationInfo.builder()
+        .setApplicationName("com.io7m.jcoronado.tests.Test")
+        .setApplicationVersion(VulkanVersions.encode(0, 0, 1))
+        .setEngineName("com.io7m.jcoronado.tests")
+        .setEngineVersion(VulkanVersions.encode(0, 0, 1))
+        .setVulkanAPIVersion(VulkanVersions.encode(this.instanceProvider().minimumRequiredVersion()))
+        .build();
+
     final var info =
       VulkanInstanceCreateInfo.builder()
-        .setApplicationInfo(
-          VulkanApplicationInfo.of(
-            "com.io7m.jcoronado.tests.Test",
-            VulkanVersions.encode(0, 0, 1),
-            "com.io7m.jcoronado.tests",
-            VulkanVersions.encode(0, 0, 1),
-            VulkanVersions.encode(this.instanceProvider().minimumRequiredVersion())))
+        .setApplicationInfo(appInfo)
         .setEnabledExtensions(List.of())
         .setEnabledLayers(List.of("VK_LAYER_KHRONOS_validation"))
         .addExtensionInfo(
@@ -327,15 +348,18 @@ public abstract class VulkanInstanceContract extends VulkanOnDeviceContract
   {
     Assumptions.assumeTrue(this.shouldRun(), "Test should run");
 
+    final var appInfo =
+      VulkanApplicationInfo.builder()
+        .setApplicationName("com.io7m.jcoronado.tests.Test")
+        .setApplicationVersion(VulkanVersions.encode(0, 0, 1))
+        .setEngineName("com.io7m.jcoronado.tests")
+        .setEngineVersion(VulkanVersions.encode(0, 0, 1))
+        .setVulkanAPIVersion(VulkanVersions.encode(this.instanceProvider().minimumRequiredVersion()))
+        .build();
+
     final var info =
       VulkanInstanceCreateInfo.builder()
-        .setApplicationInfo(
-          VulkanApplicationInfo.of(
-            "com.io7m.jcoronado.tests.Test",
-            VulkanVersions.encode(0, 0, 1),
-            "com.io7m.jcoronado.tests",
-            VulkanVersions.encode(0, 0, 1),
-            VulkanVersions.encode(this.instanceProvider().minimumRequiredVersion())))
+        .setApplicationInfo(appInfo)
         .setEnabledExtensions(List.of())
         .setEnabledLayers(List.of("VK_LAYER_KHRONOS_validation"))
         .addExtensionInfo(

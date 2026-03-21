@@ -57,15 +57,18 @@ public final class VulkanLWJGLLogicalDeviceTest
     final VulkanInstanceProviderType currentProvider)
   {
     try {
+      final var appInfo =
+        VulkanApplicationInfo.builder()
+          .setApplicationName("com.io7m.jcoronado.tests.Test")
+          .setApplicationVersion(VulkanVersions.encode(0, 0, 1))
+          .setEngineName("com.io7m.jcoronado.tests")
+          .setEngineVersion(VulkanVersions.encode(0, 0, 1))
+          .setVulkanAPIVersion(VulkanVersions.encode(1, 4, 0))
+          .build();
+
       final var info =
         VulkanInstanceCreateInfo.builder()
-          .setApplicationInfo(
-            VulkanApplicationInfo.of(
-              "com.io7m.jcoronado.tests.Test",
-              VulkanVersions.encode(0, 0, 1),
-              "com.io7m.jcoronado.tests",
-              VulkanVersions.encode(0, 0, 1),
-              VulkanVersions.encode(1, 4, 0)))
+          .setApplicationInfo(appInfo)
           .setEnabledLayers(List.of("VK_LAYER_KHRONOS_validation"))
           .build();
 
@@ -144,15 +147,18 @@ public final class VulkanLWJGLLogicalDeviceTest
     final var requestedVersion =
       VulkanVersions.encode(1, 4, 0);
 
+    final var appInfo =
+      VulkanApplicationInfo.builder()
+        .setApplicationName("com.io7m.jcoronado.tests.Test")
+        .setApplicationVersion(VulkanVersions.encode(0, 0, 1))
+        .setEngineName("com.io7m.jcoronado.tests")
+        .setEngineVersion(VulkanVersions.encode(0, 0, 1))
+        .setVulkanAPIVersion(requestedVersion)
+        .build();
+
     final var instanceInfo =
       VulkanInstanceCreateInfo.builder()
-        .setApplicationInfo(
-          VulkanApplicationInfo.of(
-            "com.io7m.jcoronado.tests.Test",
-            VulkanVersions.encode(0, 0, 1),
-            "com.io7m.jcoronado.tests",
-            VulkanVersions.encode(0, 0, 1),
-            requestedVersion))
+        .setApplicationInfo(appInfo)
         .setEnabledLayers(List.of("VK_LAYER_KHRONOS_validation"))
         .build();
 
@@ -216,15 +222,18 @@ public final class VulkanLWJGLLogicalDeviceTest
     final var requestedVersion =
       VulkanVersions.encode(instances.findSupportedInstanceVersion());
 
+    final var appInfo =
+      VulkanApplicationInfo.builder()
+        .setApplicationName("com.io7m.jcoronado.tests.Test")
+        .setApplicationVersion(VulkanVersions.encode(0, 0, 1))
+        .setEngineName("com.io7m.jcoronado.tests")
+        .setEngineVersion(VulkanVersions.encode(0, 0, 1))
+        .setVulkanAPIVersion(requestedVersion)
+        .build();
+
     final var instanceInfo =
       VulkanInstanceCreateInfo.builder()
-        .setApplicationInfo(
-          VulkanApplicationInfo.of(
-            "com.io7m.jcoronado.tests.Test",
-            VulkanVersions.encode(0, 0, 1),
-            "com.io7m.jcoronado.tests",
-            VulkanVersions.encode(0, 0, 1),
-            requestedVersion))
+        .setApplicationInfo(appInfo)
         .setEnabledLayers(List.of("VK_LAYER_KHRONOS_validation"))
         .build();
 
@@ -289,15 +298,18 @@ public final class VulkanLWJGLLogicalDeviceTest
     final var requestedVersion =
       VulkanVersions.encode(1, 4, 0);
 
+    final var appInfo =
+      VulkanApplicationInfo.builder()
+        .setApplicationName("com.io7m.jcoronado.tests.Test")
+        .setApplicationVersion(VulkanVersions.encode(0, 0, 1))
+        .setEngineName("com.io7m.jcoronado.tests")
+        .setEngineVersion(VulkanVersions.encode(0, 0, 1))
+        .setVulkanAPIVersion(requestedVersion)
+        .build();
+
     final var instanceInfo =
       VulkanInstanceCreateInfo.builder()
-        .setApplicationInfo(
-          VulkanApplicationInfo.of(
-            "com.io7m.jcoronado.tests.Test",
-            VulkanVersions.encode(0, 0, 1),
-            "com.io7m.jcoronado.tests",
-            VulkanVersions.encode(0, 0, 1),
-            requestedVersion))
+        .setApplicationInfo(appInfo)
         .setEnabledLayers(List.of("VK_LAYER_KHRONOS_validation"))
         .build();
 
