@@ -1447,7 +1447,7 @@ public final class HelloVulkanDynamic implements ExampleType
       device.waitIdle();
 
     } catch (final Exception e) {
-      LOG.error("error: ", e);
+      LOG.error("", e);
       throw e;
     } finally {
       GLFW_ERROR_CALLBACK.close();

@@ -225,8 +225,6 @@ public final class JCSwapchainManagerTest
         mock(VulkanSemaphoreBinaryType.class);
       final var presentDoneFence =
         mock(VulkanFenceType.class);
-      final var renderDoneFence =
-        mock(VulkanFenceType.class);
 
       this.images.add(image0);
 
@@ -238,8 +236,6 @@ public final class JCSwapchainManagerTest
         .thenThrow(new IllegalStateException());
       when(this.device.createFence())
         .thenReturn(presentDoneFence);
-      when(this.device.createFence(any()))
-        .thenReturn(renderDoneFence);
       when(this.device.getFenceStatus(presentDoneFence))
         .thenReturn(VK_FENCE_SIGNALLED);
 
@@ -264,8 +260,6 @@ public final class JCSwapchainManagerTest
        * Verify that resources were deleted.
        */
 
-      verify(renderDoneFence, new Times(1))
-        .close();
       verify(presentDoneFence, new Times(1))
         .close();
       verify(imageReadySemaphore, new Times(1))
@@ -862,11 +856,7 @@ public final class JCSwapchainManagerTest
         mock(VulkanSemaphoreBinaryType.class);
       final var presentDoneFence0 =
         mock(VulkanFenceType.class);
-      final var renderDoneFence0 =
-        mock(VulkanFenceType.class);
       final var presentDoneFence1 =
-        mock(VulkanFenceType.class);
-      final var renderDoneFence1 =
         mock(VulkanFenceType.class);
 
       this.images.add(image0);
@@ -882,10 +872,6 @@ public final class JCSwapchainManagerTest
       when(this.device.createFence())
         .thenReturn(presentDoneFence0)
         .thenReturn(presentDoneFence1)
-        .thenThrow(new IllegalStateException());
-      when(this.device.createFence(any()))
-        .thenReturn(renderDoneFence0)
-        .thenReturn(renderDoneFence1)
         .thenThrow(new IllegalStateException());
       when(this.device.getFenceStatus(presentDoneFence0))
         .thenReturn(VK_FENCE_SIGNALLED);
@@ -904,11 +890,6 @@ public final class JCSwapchainManagerTest
           Set.of()
         ));
 
-      when(this.device.waitForFence(eq(renderDoneFence0), anyLong()))
-        .thenReturn(VK_WAIT_SUCCEEDED);
-      when(this.device.waitForFence(eq(renderDoneFence1), anyLong()))
-        .thenReturn(VK_WAIT_SUCCEEDED);
-
       when(this.swapchain.acquireImageWithSemaphore(anyLong(), any()))
         .thenReturn(new VulkanSwapChainOutOfDate())
         .thenReturn(new VulkanSwapChainOK(0));
@@ -921,8 +902,6 @@ public final class JCSwapchainManagerTest
        * Verify that resources were deleted.
        */
 
-      verify(renderDoneFence0, new Times(1))
-        .close();
       verify(presentDoneFence0, new Times(1))
         .close();
       verify(imageReadySemaphore0, new Times(1))
@@ -930,8 +909,6 @@ public final class JCSwapchainManagerTest
       verify(renderDoneSemaphore0, new Times(1))
         .close();
 
-      verify(renderDoneFence1, new Times(1))
-        .close();
       verify(presentDoneFence1, new Times(1))
         .close();
       verify(imageReadySemaphore1, new Times(1))
@@ -1141,7 +1118,6 @@ public final class JCSwapchainManagerTest
       assertEquals(image0, r.image());
       assertEquals(imageView0, r.imageView());
       assertEquals(new JCSwapchainImageIndex(0), r.index());
-      assertEquals(renderDoneFence, r.renderFinishedFence());
       assertEquals(imageReadySemaphore, r.imageReadySemaphore());
       assertEquals(renderDoneSemaphore, r.renderFinishedSemaphore());
       assertEquals(this.swapchain, r.swapchain());
@@ -1160,99 +1136,6 @@ public final class JCSwapchainManagerTest
     {
       final var e = this.events.poll();
       checkEventType(e, JCSwapchainJFRSwapchainImageAcquireFailed.class);
-    }
-
-    {
-      final var e = this.events.poll();
-      checkEventType(e, JCSwapchainJFRSwapchainImageAcquireFailed.class);
-    }
-
-    {
-      final var e = this.events.poll();
-      checkEventType(e, JCSwapchainJFRSwapchainImageAcquireFailed.class);
-    }
-
-    {
-      final var e = this.events.poll();
-      checkEventType(e, JCSwapchainJFRSwapchainImageAcquireFailed.class);
-    }
-
-    {
-      final var e = this.events.poll();
-      checkEventType(e, JCSwapchainJFRSwapchainImageAcquired.class);
-    }
-
-    {
-      final var e = this.events.poll();
-      checkEventType(e, JCSwapchainJFRSwapchainDeleted.class);
-    }
-  }
-
-  @Test
-  public void testAcquireEventuallyRenderDoneFence()
-    throws Exception
-  {
-    final var flush = new FlushEvent();
-
-    try {
-      final var image0 =
-        mock(VulkanImageType.class);
-      final var imageView0 =
-        mock(VulkanImageViewType.class);
-      final var sem0 =
-        mock(VulkanSemaphoreBinaryType.class);
-      final var presentDoneFence =
-        mock(VulkanFenceType.class);
-      final var renderDoneFence =
-        mock(VulkanFenceType.class);
-
-      this.images.add(image0);
-
-      when(this.device.createImageView(any()))
-        .thenReturn(imageView0);
-      when(this.device.createBinarySemaphore())
-        .thenReturn(sem0);
-      when(this.device.createFence())
-        .thenReturn(presentDoneFence);
-      when(this.device.createFence(any()))
-        .thenReturn(renderDoneFence);
-      when(this.device.getFenceStatus(presentDoneFence))
-        .thenReturn(VK_FENCE_SIGNALLED);
-
-      when(this.surfaceExtension.surfaceCapabilities(any(), any()))
-        .thenReturn(VulkanSurfaceCapabilitiesKHR.of(
-          1,
-          1,
-          VulkanExtent2D.of(640, 480),
-          VulkanExtent2D.of(640, 480),
-          VulkanExtent2D.of(640, 480),
-          1,
-          Set.of(),
-          Set.of(),
-          Set.of(),
-          Set.of()
-        ));
-
-      when(this.device.waitForFence(eq(renderDoneFence), anyLong()))
-        .thenReturn(VK_WAIT_TIMED_OUT)
-        .thenReturn(VK_WAIT_TIMED_OUT)
-        .thenReturn(VK_WAIT_TIMED_OUT)
-        .thenReturn(VK_WAIT_SUCCEEDED);
-
-      when(this.swapchain.acquireImageWithSemaphore(anyLong(), any()))
-        .thenReturn(new VulkanSwapChainOK(0));
-
-      this.manager = JCSwapchainManager.create(this.configuration);
-      this.manager.acquire();
-      this.manager.close();
-    } finally {
-      flush.commit();
-      this.jfrStream.awaitTermination();
-    }
-
-    {
-      final var e = this.events.poll();
-      checkEventType(e, JCSwapchainJFRSwapchainCreated.class);
     }
 
     {

@@ -94,7 +94,7 @@ out-of-date, and acquiring and presenting images.
 
 The class requires the use of the
 [VK_EXT_swapchain_maintenance1](https://registry.khronos.org/vulkan/specs/latest/man/html/VK_EXT_swapchain_maintenance1.html)
-extension to fix serious design flaws in the original `VK_KHR_swapchain` API.
+device extension to fix serious design flaws in the original `VK_KHR_swapchain` API.
 
 Briefly, create a swapchain:
 

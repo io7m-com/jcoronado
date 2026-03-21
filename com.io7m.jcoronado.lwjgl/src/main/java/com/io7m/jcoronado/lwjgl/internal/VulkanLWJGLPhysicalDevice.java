@@ -61,6 +61,7 @@ import org.lwjgl.vulkan.VkLayerProperties;
 import org.lwjgl.vulkan.VkPhysicalDevice;
 import org.lwjgl.vulkan.VkPhysicalDeviceFeatures;
 import org.lwjgl.vulkan.VkPhysicalDeviceFeatures2;
+import org.lwjgl.vulkan.VkPhysicalDeviceSwapchainMaintenance1FeaturesEXT;
 import org.lwjgl.vulkan.VkPhysicalDeviceVulkan11Features;
 import org.lwjgl.vulkan.VkPhysicalDeviceVulkan12Features;
 import org.lwjgl.vulkan.VkPhysicalDeviceVulkan13Features;
@@ -79,6 +80,7 @@ import java.util.Set;
 import java.util.SortedMap;
 
 import static com.io7m.jcoronado.api.VulkanChecks.checkReturnCode;
+import static org.lwjgl.vulkan.EXTSwapchainMaintenance1.VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SWAPCHAIN_MAINTENANCE_1_FEATURES_EXT;
 import static org.lwjgl.vulkan.VK11.VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FEATURES_2;
 import static org.lwjgl.vulkan.VK12.VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_1_FEATURES;
 import static org.lwjgl.vulkan.VK12.VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_2_FEATURES;
@@ -577,6 +579,16 @@ public final class VulkanLWJGLPhysicalDevice
     );
 
     /*
+     * We also require the swapchain maintenance feature to be enabled.
+     */
+
+    final var swapchainFeatures =
+      VkPhysicalDeviceSwapchainMaintenance1FeaturesEXT.calloc(stack);
+    swapchainFeatures.sType(
+      VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SWAPCHAIN_MAINTENANCE_1_FEATURES_EXT);
+    swapchainFeatures.swapchainMaintenance1(true);
+
+    /*
      * On Vulkan 1.1+, the required features are specified in a set of
      * structures chained in the "next" pointer.
      */
@@ -606,7 +618,8 @@ public final class VulkanLWJGLPhysicalDevice
       vkFeatures.features(),
       requestFeatures.features10());
 
-    vkFeatures14.pNext(0L);
+    swapchainFeatures.pNext(0L);
+    vkFeatures14.pNext(swapchainFeatures.address());
     vkFeatures13.pNext(vkFeatures14.address());
     vkFeatures12.pNext(vkFeatures13.address());
     vkFeatures11.pNext(vkFeatures12.address());
@@ -669,8 +682,8 @@ public final class VulkanLWJGLPhysicalDevice
           device_extensions),
         "vkEnumerateDeviceExtensionProperties");
 
-      final HashMap<String, VulkanExtensionProperties> extensions =
-        new HashMap<>(size);
+      final var extensions =
+        new HashMap<String, VulkanExtensionProperties>(size);
 
       for (var index = 0; index < size; ++index) {
         device_extensions.position(index);
@@ -714,7 +727,7 @@ public final class VulkanLWJGLPhysicalDevice
           layers_buffer),
         "vkEnumerateDeviceLayerProperties");
 
-      final HashMap<String, VulkanLayerProperties> layers = new HashMap<>(size);
+      final var layers = new HashMap<String, VulkanLayerProperties>(size);
       for (var index = 0; index < size; ++index) {
         layers_buffer.position(index);
 

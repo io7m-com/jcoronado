@@ -22,7 +22,6 @@ import com.io7m.jcoronado.api.VulkanComponentMapping;
 import com.io7m.jcoronado.api.VulkanDebuggingType;
 import com.io7m.jcoronado.api.VulkanException;
 import com.io7m.jcoronado.api.VulkanExtent2D;
-import com.io7m.jcoronado.api.VulkanFenceCreateInfo;
 import com.io7m.jcoronado.api.VulkanFenceType;
 import com.io7m.jcoronado.api.VulkanFormat;
 import com.io7m.jcoronado.api.VulkanImageSubresourceRange;
@@ -70,7 +69,6 @@ import java.util.concurrent.SubmissionPublisher;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static com.io7m.jcoronado.api.VulkanComponentSwizzle.VK_COMPONENT_SWIZZLE_IDENTITY;
-import static com.io7m.jcoronado.api.VulkanFenceCreateFlag.VK_FENCE_CREATE_SIGNALED_BIT;
 import static com.io7m.jcoronado.api.VulkanImageAspectFlag.VK_IMAGE_ASPECT_COLOR_BIT;
 import static com.io7m.jcoronado.api.VulkanImageViewKind.VK_IMAGE_VIEW_TYPE_2D;
 import static com.io7m.jcoronado.api.VulkanSharingMode.VK_SHARING_MODE_CONCURRENT;
@@ -445,8 +443,6 @@ public final class JCSwapchainManager
         new HashMap<JCSwapchainFrameIndex, VulkanSemaphoreBinaryType>(imageCount);
       final var renderDoneSemaphores =
         new HashMap<JCSwapchainFrameIndex, VulkanSemaphoreBinaryType>(imageCount);
-      final var renderDoneFences =
-        new HashMap<JCSwapchainFrameIndex, VulkanFenceType>(imageCount);
       final var presentDoneFences =
         new HashMap<JCSwapchainFrameIndex, VulkanFenceType>(imageCount);
 
@@ -459,7 +455,6 @@ public final class JCSwapchainManager
           debugging,
           imageReadySemaphores,
           renderDoneSemaphores,
-          renderDoneFences,
           presentDoneFences,
           swapchainImageViews
         );
@@ -476,7 +471,6 @@ public final class JCSwapchainManager
         swapchainImageViews,
         imageReadySemaphores,
         renderDoneSemaphores,
-        renderDoneFences,
         presentDoneFences,
         resources,
         extent,
@@ -499,7 +493,6 @@ public final class JCSwapchainManager
     final VulkanDebuggingType debugging,
     final Map<JCSwapchainFrameIndex, VulkanSemaphoreBinaryType> imageReadySemaphores,
     final Map<JCSwapchainFrameIndex, VulkanSemaphoreBinaryType> renderDoneSemaphores,
-    final Map<JCSwapchainFrameIndex, VulkanFenceType> renderDoneFences,
     final Map<JCSwapchainFrameIndex, VulkanFenceType> presentDoneFences,
     final Map<JCSwapchainImageIndex, VulkanImageViewType> swapchainImageViews)
     throws VulkanException
@@ -550,31 +543,10 @@ public final class JCSwapchainManager
       "SwapchainFence[PresentDone][%d]".formatted(Integer.valueOf(index))
     );
 
-    /*
-     * The "render done" fence is created in the already-signalled state.
-     * This is because there may not be a previous frame that has been
-     * rendered, and we don't want to wait for rendering that is not
-     * taking place!
-     */
-
-    final var renderDoneFence =
-      resources.add(this.device.createFence(
-        VulkanFenceCreateInfo.builder()
-          .addFlags(VK_FENCE_CREATE_SIGNALED_BIT)
-          .build()
-      ));
-
-    debugging.setObjectName(
-      renderDoneFence,
-      "SwapchainFence[RenderDone][%d]".formatted(Integer.valueOf(index))
-    );
-
     imageReadySemaphores.put(
       frameIndex, imageReadySemaphore);
     renderDoneSemaphores.put(
       frameIndex, renderDoneSemaphore);
-    renderDoneFences.put(
-      frameIndex, renderDoneFence);
     presentDoneFences.put(
       frameIndex, presentDoneFence);
     swapchainImageViews.put(
@@ -750,7 +722,6 @@ public final class JCSwapchainManager
     private final VulkanSemaphoreBinaryType renderFinishedSemaphore;
     private final VulkanFenceType presentDoneFence;
     private final VulkanExtKHRSwapChainType.VulkanKHRSwapChainType swapchain;
-    private final VulkanFenceType renderFinishedFence;
     private final VulkanExtent2D size;
     private final VulkanFormat format;
 
@@ -762,7 +733,6 @@ public final class JCSwapchainManager
       final VulkanSemaphoreBinaryType inRenderFinishedSemaphore,
       final VulkanFenceType inPresentDoneFence,
       final VulkanExtKHRSwapChainType.VulkanKHRSwapChainType inSwapchain,
-      final VulkanFenceType inRenderFinishedFence,
       final VulkanFormat inFormat,
       final VulkanExtent2D inSize)
     {
@@ -781,8 +751,6 @@ public final class JCSwapchainManager
         Objects.requireNonNull(inPresentDoneFence, "inPresentDoneFence");
       this.swapchain =
         Objects.requireNonNull(inSwapchain, "swapchain");
-      this.renderFinishedFence =
-        Objects.requireNonNull(inRenderFinishedFence, "renderFinishedFence");
       this.format =
         Objects.requireNonNull(inFormat, "format");
       this.size =
@@ -873,12 +841,6 @@ public final class JCSwapchainManager
     {
       return this.swapchain;
     }
-
-    @Override
-    public VulkanFenceType renderFinishedFence()
-    {
-      return this.renderFinishedFence;
-    }
   }
 
   private static final class SwapchainHolder
@@ -887,7 +849,6 @@ public final class JCSwapchainManager
     private final CloseableCollectionType<VulkanResourceException> resources;
     private final JCSwapchainManager manager;
     private final Map<JCSwapchainFrameIndex, VulkanFenceType> presentDoneFences;
-    private final Map<JCSwapchainFrameIndex, VulkanFenceType> renderDoneFences;
     private final Map<JCSwapchainFrameIndex, VulkanSemaphoreBinaryType> imageReadySemaphores;
     private final Map<JCSwapchainFrameIndex, VulkanSemaphoreBinaryType> renderDoneSemaphores;
     private final Map<JCSwapchainImageIndex, VulkanImageViewType> swapChainImages;
@@ -904,7 +865,6 @@ public final class JCSwapchainManager
       final Map<JCSwapchainImageIndex, VulkanImageViewType> inSwapchainImages,
       final Map<JCSwapchainFrameIndex, VulkanSemaphoreBinaryType> inImageReadySemaphores,
       final Map<JCSwapchainFrameIndex, VulkanSemaphoreBinaryType> inRenderDoneSemaphores,
-      final Map<JCSwapchainFrameIndex, VulkanFenceType> inRenderDoneFences,
       final Map<JCSwapchainFrameIndex, VulkanFenceType> inPresentDoneFences,
       final CloseableCollectionType<VulkanResourceException> inResources,
       final VulkanExtent2D inExtent,
@@ -920,8 +880,6 @@ public final class JCSwapchainManager
         Map.copyOf(inImageReadySemaphores);
       this.renderDoneSemaphores =
         Map.copyOf(inRenderDoneSemaphores);
-      this.renderDoneFences =
-        Map.copyOf(inRenderDoneFences);
       this.presentDoneFences =
         Map.copyOf(inPresentDoneFences);
       this.resources =
@@ -1016,14 +974,11 @@ public final class JCSwapchainManager
         this.imageReadySemaphores.get(this.frameIndex);
       final var renderDoneSemaphore =
         this.renderDoneSemaphores.get(this.frameIndex);
-      final var renderDoneFence =
-        this.renderDoneFences.get(this.frameIndex);
       final var presentDoneFence =
         this.presentDoneFences.get(this.frameIndex);
 
       Objects.requireNonNull(readySemaphore, "readySemaphore");
       Objects.requireNonNull(renderDoneSemaphore, "renderDoneSemaphore");
-      Objects.requireNonNull(renderDoneFence, "renderDoneFence");
       Objects.requireNonNull(presentDoneFence, "presentDoneFence");
 
       final var eventAcquire =
@@ -1039,8 +994,6 @@ public final class JCSwapchainManager
       eventAcquireFailed.begin();
 
       try {
-        waitForRenderDoneFence(device, renderDoneFence);
-
         traceWaitingForImage(readySemaphore);
 
         final var acquisition =
@@ -1067,7 +1020,7 @@ public final class JCSwapchainManager
 
         {
           final var fences =
-            List.of(renderDoneFence, presentDoneFence);
+            List.of(presentDoneFence);
 
           traceResettingFences(fences);
           device.resetFences(fences);
@@ -1082,7 +1035,6 @@ public final class JCSwapchainManager
             renderDoneSemaphore,
             presentDoneFence,
             this.swapchain,
-            renderDoneFence,
             this.format,
             this.extent
           );

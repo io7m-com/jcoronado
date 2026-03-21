@@ -16,7 +16,6 @@
 
 package com.io7m.jcoronado.examples;
 
-import com.io7m.jcoronado.utility.allocation_tracker.VulkanHostAllocatorTracker;
 import com.io7m.jcoronado.api.VulkanApplicationInfo;
 import com.io7m.jcoronado.api.VulkanClearValueColorFloatingPoint;
 import com.io7m.jcoronado.api.VulkanCommandBufferSubmitInfo;
@@ -56,6 +55,7 @@ import com.io7m.jcoronado.extensions.khr_swapchain.api.VulkanExtKHRSwapChainType
 import com.io7m.jcoronado.layers.khronos_validation.api.VulkanValidationValidateSync;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLHostAllocatorJeMalloc;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLInstanceProvider;
+import com.io7m.jcoronado.utility.allocation_tracker.VulkanHostAllocatorTracker;
 import com.io7m.jcoronado.utility.swapchain.JCSwapchainConfiguration;
 import com.io7m.jcoronado.utility.swapchain.JCSwapchainImageIndex;
 import com.io7m.jcoronado.utility.swapchain.JCSwapchainImageType;
@@ -112,7 +112,7 @@ public final class HelloSwapChain implements ExampleType
   private static final Duration ONE_FRAME =
     Duration.of(16L, ChronoUnit.MILLIS);
 
-  private static final int FRAME_LIMIT = 1000;
+  private static final int FRAME_LIMIT = 20;
 
   private static final VulkanClearValueColorFloatingPoint RED =
     VulkanClearValueColorFloatingPoint.of(1.0f, 0.0f, 0.0f, 1.0f);
@@ -168,7 +168,7 @@ public final class HelloSwapChain implements ExampleType
         device.extensions(Optional.empty());
 
       return extensions.containsKey("VK_KHR_swapchain")
-             && extensions.containsKey("VK_EXT_swapchain_maintenance1");
+        && extensions.containsKey("VK_EXT_swapchain_maintenance1");
     } catch (final VulkanException e) {
       throw new VulkanUncheckedException(e);
     }
@@ -681,8 +681,8 @@ public final class HelloSwapChain implements ExampleType
       LOG.debug("Waiting for device to idle");
       device.waitIdle();
 
-    } catch (final VulkanException e) {
-      LOG.error("vulkan error: ", e);
+    } catch (final Exception e) {
+      LOG.error("", e);
       throw e;
     } finally {
       GLFW_ERROR_CALLBACK.close();
@@ -704,18 +704,18 @@ public final class HelloSwapChain implements ExampleType
              commandPool,
              VK_COMMAND_BUFFER_LEVEL_PRIMARY)) {
 
+      final var wholeImage =
+        VulkanImageSubresourceRange.builder()
+          .setBaseArrayLayer(0)
+          .setBaseMipLevel(0)
+          .setLayerCount(1)
+          .setLevelCount(1)
+          .addAspectMask(VulkanImageAspectFlag.VK_IMAGE_ASPECT_COLOR_BIT)
+          .build();
+
+      cmds.beginCommandBuffer(VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT);
+
       try (var _ = debugging.begin(cmds, "Clear")) {
-        final var wholeImage =
-          VulkanImageSubresourceRange.builder()
-            .setBaseArrayLayer(0)
-            .setBaseMipLevel(0)
-            .setLayerCount(1)
-            .setLevelCount(1)
-            .addAspectMask(VulkanImageAspectFlag.VK_IMAGE_ASPECT_COLOR_BIT)
-            .build();
-
-        cmds.beginCommandBuffer(VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT);
-
         {
           final var preClearBarrier =
             VulkanImageMemoryBarrier.builder()
@@ -766,6 +766,7 @@ public final class HelloSwapChain implements ExampleType
               .build()
           );
         }
+      } finally {
         cmds.endCommandBuffer();
       }
 
@@ -793,12 +794,7 @@ public final class HelloSwapChain implements ExampleType
           .addSignalSemaphores(signalSemaphore)
           .build();
 
-      LOG.trace("Submit: signal {}", image.renderFinishedFence());
-
-      graphicsQueue.submit(
-        List.of(submitInfo),
-        Optional.of(image.renderFinishedFence())
-      );
+      graphicsQueue.submit(List.of(submitInfo));
       image.present();
       presentationQueue.waitIdle();
     }

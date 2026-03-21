@@ -19,7 +19,6 @@ package com.io7m.jcoronado.utility.swapchain;
 
 import com.io7m.jcoronado.api.VulkanException;
 import com.io7m.jcoronado.api.VulkanExtent2D;
-import com.io7m.jcoronado.api.VulkanFenceType;
 import com.io7m.jcoronado.api.VulkanFormat;
 import com.io7m.jcoronado.api.VulkanImageType;
 import com.io7m.jcoronado.api.VulkanImageViewType;
@@ -93,10 +92,4 @@ public interface JCSwapchainImageType
    */
 
   VulkanKHRSwapChainType swapchain();
-
-  /**
-   * @return A fence to be signalled when rendering to the image is done
-   */
-
-  VulkanFenceType renderFinishedFence();
 }

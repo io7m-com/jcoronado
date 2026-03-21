@@ -1469,8 +1469,8 @@ public final class HelloVulkan implements ExampleType
       LOG.debug("waiting for device to idle");
       device.waitIdle();
 
-    } catch (final VulkanException e) {
-      LOG.error("vulkan error: ", e);
+    } catch (final Exception e) {
+      LOG.error("", e);
       throw e;
     } finally {
       GLFW_ERROR_CALLBACK.close();
