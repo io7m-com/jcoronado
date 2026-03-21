@@ -68,6 +68,20 @@ public final class VulkanLWJGLClearAttachmentsTest
     this.stack.pop();
   }
 
+  private static VulkanClearValueColorFloatingPoint floating(
+    final float r,
+    final float g,
+    final float b,
+    final float a)
+  {
+    return VulkanClearValueColorFloatingPoint.builder()
+      .setRed(r)
+      .setGreen(g)
+      .setBlue(b)
+      .setAlpha(a)
+      .build();
+  }
+
   @Test
   public void testClearAttachmentsPackInfo()
   {
@@ -76,7 +90,7 @@ public final class VulkanLWJGLClearAttachmentsTest
 
     final var source =
       VulkanClearAttachment.builder()
-        .setClearValue(VulkanClearValueColorFloatingPoint.of(
+        .setClearValue(floating(
           0.5f,
           0.6f,
           0.7f,
@@ -95,11 +109,7 @@ public final class VulkanLWJGLClearAttachmentsTest
   {
     final var source =
       VulkanClearAttachment.builder()
-        .setClearValue(VulkanClearValueColorFloatingPoint.of(
-          0.5f,
-          0.6f,
-          0.7f,
-          0.8f))
+        .setClearValue(floating(0.5f, 0.6f, 0.7f, 0.8f))
         .setAspectMask(Set.of(VulkanImageAspectFlag.VK_IMAGE_ASPECT_COLOR_BIT))
         .setColorAttachment(23)
         .build();
@@ -116,11 +126,7 @@ public final class VulkanLWJGLClearAttachmentsTest
   {
     final var source =
       VulkanClearAttachment.builder()
-        .setClearValue(VulkanClearValueColorFloatingPoint.of(
-          0.5f,
-          0.6f,
-          0.7f,
-          0.8f))
+        .setClearValue(floating(0.5f, 0.6f, 0.7f, 0.8f))
         .setAspectMask(Set.of(VulkanImageAspectFlag.VK_IMAGE_ASPECT_COLOR_BIT))
         .setColorAttachment(23)
         .build();
@@ -141,11 +147,7 @@ public final class VulkanLWJGLClearAttachmentsTest
   {
     final var source =
       VulkanClearAttachment.builder()
-        .setClearValue(VulkanClearValueColorFloatingPoint.of(
-          0.5f,
-          0.6f,
-          0.7f,
-          0.8f))
+        .setClearValue(floating(0.5f, 0.6f, 0.7f, 0.8f))
         .setAspectMask(Set.of(VulkanImageAspectFlag.VK_IMAGE_ASPECT_COLOR_BIT))
         .setColorAttachment(23)
         .build();

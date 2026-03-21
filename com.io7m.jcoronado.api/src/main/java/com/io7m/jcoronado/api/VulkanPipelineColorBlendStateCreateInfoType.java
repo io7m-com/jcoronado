@@ -59,6 +59,6 @@ public interface VulkanPipelineColorBlendStateCreateInfoType
   @Value.Default
   default VulkanBlendConstants blendConstants()
   {
-    return VulkanBlendConstants.of(0.0f, 0.0f, 0.0f, 0.0f);
+    return VulkanBlendConstants.ZERO;
   }
 }

@@ -190,9 +190,15 @@ public final class VulkanLWJGLPipelineViewportStateCreateInfosTest
         .build();
 
     final var scissor_0 =
-      VulkanRectangle2D.of(offset_0, extent_0);
+      VulkanRectangle2D.builder()
+        .setOffset(offset_0)
+        .setExtent(extent_0)
+        .build();
     final var scissor_1 =
-      VulkanRectangle2D.of(offset_1, extent_1);
+      VulkanRectangle2D.builder()
+        .setOffset(offset_1)
+        .setExtent(extent_1)
+        .build();
 
     final var info =
       VulkanPipelineViewportStateCreateInfo.builder()

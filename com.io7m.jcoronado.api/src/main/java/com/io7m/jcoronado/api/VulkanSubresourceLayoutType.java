@@ -35,35 +35,50 @@ public interface VulkanSubresourceLayoutType
    * begins.
    */
 
-  @Value.Parameter
-  long offset();
+  @Value.Default
+  default long offset()
+  {
+    return 0L;
+  }
 
   /**
    * @return The size in bytes of the image subresource. size includes any extra memory that is
    * required based on rowPitch.
    */
 
-  @Value.Parameter
-  long size();
+  @Value.Default
+  default long size()
+  {
+    return 0L;
+  }
 
   /**
    * @return The number of bytes between each row of texels in an image.
    */
 
-  @Value.Parameter
-  long rowPitch();
+  @Value.Default
+  default long rowPitch()
+  {
+    return 0L;
+  }
 
   /**
    * @return The number of bytes between each array layer of an image.
    */
 
-  @Value.Parameter
-  long arrayPitch();
+  @Value.Default
+  default long arrayPitch()
+  {
+    return 0L;
+  }
 
   /**
    * @return The number of bytes between each slice of 3D image.
    */
 
-  @Value.Parameter
-  long depthPitch();
+  @Value.Default
+  default long depthPitch()
+  {
+    return 0L;
+  }
 }

@@ -32,6 +32,17 @@ import org.immutables.value.Value;
 public interface VulkanExtent3DType
 {
   /**
+   * The zero extent.
+   */
+
+  VulkanExtent3D ZERO =
+    VulkanExtent3D.builder()
+      .setWidth(0)
+      .setHeight(0)
+      .setDepth(0)
+      .build();
+
+  /**
    * @return The width of the extent
    */
 

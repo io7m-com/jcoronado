@@ -32,20 +32,29 @@ public interface VulkanSpecializationMapEntryType
    * @return The ID of the specialization constant in SPIR-V.
    */
 
-  @Value.Parameter
-  int constantID();
+  @Value.Default
+  default int constantID()
+  {
+    return 0;
+  }
 
   /**
    * @return The byte offset of the specialization constant value within the supplied data buffer.
    */
 
-  @Value.Parameter
-  long offset();
+  @Value.Default
+  default long offset()
+  {
+    return 0L;
+  }
 
   /**
    * @return The byte size of the specialization constant value within the supplied data buffer.
    */
 
-  @Value.Parameter
-  long size();
+  @Value.Default
+  default long size()
+  {
+    return 0L;
+  }
 }

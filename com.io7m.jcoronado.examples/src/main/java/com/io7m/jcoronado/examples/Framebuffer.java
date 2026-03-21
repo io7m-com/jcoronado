@@ -16,6 +16,7 @@
 
 package com.io7m.jcoronado.examples;
 
+import com.io7m.jcoronado.api.VulkanComponentMapping;
 import com.io7m.jcoronado.utility.allocation_tracker.VulkanHostAllocatorTracker;
 import com.io7m.jcoronado.api.VulkanApplicationInfo;
 import com.io7m.jcoronado.api.VulkanAttachmentDescription;
@@ -511,7 +512,7 @@ public final class Framebuffer implements ExampleType
           .setImage(imageAllocation0.result())
           .setViewType(VK_IMAGE_VIEW_TYPE_2D)
           .setFormat(VK_FORMAT_R8G8B8A8_UNORM)
-          .setComponents(VulkanComponentMappingType.identity())
+          .setComponents(VulkanComponentMapping.IDENTITY)
           .setSubresourceRange(imageViewRange0)
           .build();
 

@@ -35,20 +35,17 @@ public interface VulkanPipelineLayoutCreateInfoType
    * @return Creation flags
    */
 
-  @Value.Parameter
   Set<VulkanPipelineLayoutCreateFlag> flags();
 
   /**
    * @return A list of descriptor set layouts
    */
 
-  @Value.Parameter
   List<VulkanDescriptorSetLayoutType> setLayouts();
 
   /**
    * @return A list of push constant ranges
    */
 
-  @Value.Parameter
   List<VulkanPushConstantRange> pushConstantRanges();
 }

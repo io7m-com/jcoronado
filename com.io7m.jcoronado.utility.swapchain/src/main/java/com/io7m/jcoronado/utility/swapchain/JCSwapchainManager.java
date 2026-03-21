@@ -68,7 +68,6 @@ import java.util.concurrent.Flow;
 import java.util.concurrent.SubmissionPublisher;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import static com.io7m.jcoronado.api.VulkanComponentSwizzle.VK_COMPONENT_SWIZZLE_IDENTITY;
 import static com.io7m.jcoronado.api.VulkanImageAspectFlag.VK_IMAGE_ASPECT_COLOR_BIT;
 import static com.io7m.jcoronado.api.VulkanImageViewKind.VK_IMAGE_VIEW_TYPE_2D;
 import static com.io7m.jcoronado.api.VulkanSharingMode.VK_SHARING_MODE_CONCURRENT;
@@ -86,14 +85,6 @@ public final class JCSwapchainManager
 
   private static final Duration RENDER_FENCE_TIMEOUT =
     Duration.ofSeconds(1L);
-
-  private static final VulkanComponentMapping IDENTITY_SWIZZLE =
-    VulkanComponentMapping.of(
-      VK_COMPONENT_SWIZZLE_IDENTITY,
-      VK_COMPONENT_SWIZZLE_IDENTITY,
-      VK_COMPONENT_SWIZZLE_IDENTITY,
-      VK_COMPONENT_SWIZZLE_IDENTITY
-    );
 
   private final JCSwapchainConfiguration configuration;
   private final VulkanLogicalDeviceType device;
@@ -575,7 +566,7 @@ public final class JCSwapchainManager
       VulkanImageViewCreateInfo.builder()
         .addAllFlags(flags)
         .setImage(image)
-        .setComponents(IDENTITY_SWIZZLE)
+        .setComponents(VulkanComponentMapping.IDENTITY)
         .setSubresourceRange(range)
         .setViewType(VK_IMAGE_VIEW_TYPE_2D)
         .setFormat(surfaceFormat.format())

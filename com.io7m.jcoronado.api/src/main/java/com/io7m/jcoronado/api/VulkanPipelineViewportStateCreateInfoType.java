@@ -35,20 +35,17 @@ public interface VulkanPipelineViewportStateCreateInfoType
    * @return Flags reserved for future use
    */
 
-  @Value.Parameter
   Set<VulkanPipelineViewportStateCreateFlag> flags();
 
   /**
    * @return The viewport transforms.
    */
 
-  @Value.Parameter
   List<VulkanViewport> viewports();
 
   /**
    * @return The scissor for the corresponding viewports.
    */
 
-  @Value.Parameter
   List<VulkanRectangle2D> scissors();
 }

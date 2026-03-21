@@ -174,24 +174,24 @@ public final class JCSwapchainManagerTest
 
     when(this.graphicsQueue.queueFamilyProperties())
       .thenReturn(
-        VulkanQueueFamilyProperties.of(
-          new VulkanQueueFamilyIndex(1),
-          1,
-          Set.of(VK_QUEUE_GRAPHICS_BIT),
-          32,
-          extent
-        )
+        VulkanQueueFamilyProperties.builder()
+          .setQueueFamilyIndex(new VulkanQueueFamilyIndex(1))
+          .setQueueCount(1)
+          .setQueueFlags(Set.of(VK_QUEUE_GRAPHICS_BIT))
+          .setTimestampValidBits(32)
+          .setMinImageTransferGranularity(extent)
+          .build()
       );
 
     when(this.presentationQueue.queueFamilyProperties())
       .thenReturn(
-        VulkanQueueFamilyProperties.of(
-          new VulkanQueueFamilyIndex(1),
-          1,
-          Set.of(),
-          32,
-          extent
-        )
+        VulkanQueueFamilyProperties.builder()
+          .setQueueFamilyIndex(new VulkanQueueFamilyIndex(1))
+          .setQueueCount(1)
+          .setQueueFlags(Set.of())
+          .setTimestampValidBits(32)
+          .setMinImageTransferGranularity(extent)
+          .build()
       );
 
     when(this.surfaceExtension.surfaceFormats(any(), any()))

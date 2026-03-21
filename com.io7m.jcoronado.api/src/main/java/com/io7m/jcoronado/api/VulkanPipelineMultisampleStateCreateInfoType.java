@@ -35,36 +35,43 @@ public interface VulkanPipelineMultisampleStateCreateInfoType
    * @return Flags reserved for future use
    */
 
-  @Value.Parameter
   Set<VulkanPipelineMultisampleStateCreateFlag> flags();
 
   /**
    * @return The number of samples per pixel used in rasterization.
    */
 
-  @Value.Parameter
-  VulkanSampleCountFlag rasterizationSamples();
+  @Value.Default
+  default VulkanSampleCountFlag rasterizationSamples()
+  {
+    return VulkanSampleCountFlag.VK_SAMPLE_COUNT_1_BIT;
+  }
 
   /**
    * @return {@code true} if sample shading should be enabled
    */
 
-  @Value.Parameter
-  boolean sampleShadingEnable();
+  @Value.Default
+  default boolean sampleShadingEnable()
+  {
+    return false;
+  }
 
   /**
    * @return minimum fraction of sample shading if {@link #sampleShadingEnable()} is {@code true}
    */
 
-  @Value.Parameter
-  float minSampleShading();
+  @Value.Default
+  default float minSampleShading()
+  {
+    return 0.0f;
+  }
 
   /**
    * @return static coverage information that is ANDed with the coverage information generated
    * during rasterization.
    */
 
-  @Value.Parameter
   Optional<int[]> sampleMask();
 
   /**
@@ -72,14 +79,20 @@ public interface VulkanPipelineMultisampleStateCreateInfoType
    * the fragment’s first color output
    */
 
-  @Value.Parameter
-  boolean alphaToCoverageEnable();
+  @Value.Default
+  default boolean alphaToCoverageEnable()
+  {
+    return false;
+  }
 
   /**
    * @return {@code true} if the alpha component of the fragment’s first color output is replaced
    * with one as described in "Multisample Coverage".
    */
 
-  @Value.Parameter
-  boolean alphaToOneEnable();
+  @Value.Default
+  default boolean alphaToOneEnable()
+  {
+    return false;
+  }
 }

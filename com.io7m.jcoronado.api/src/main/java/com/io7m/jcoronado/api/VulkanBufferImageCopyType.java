@@ -35,8 +35,11 @@ public interface VulkanBufferImageCopyType
    * from or to.
    */
 
-  @Value.Parameter
-  long bufferOffset();
+  @Value.Default
+  default long bufferOffset()
+  {
+    return 0L;
+  }
 
   /**
    * The bufferRowLength and bufferImageHeight specify in texels a subregion of a larger two- or
@@ -47,22 +50,27 @@ public interface VulkanBufferImageCopyType
    * @return The buffer row length
    */
 
-  @Value.Parameter
-  int bufferRowLength();
+  @Value.Default
+  default int bufferRowLength()
+  {
+    return 0;
+  }
 
   /**
    * @return The buffer image height
    */
 
-  @Value.Parameter
-  int bufferImageHeight();
+  @Value.Default
+  default int bufferImageHeight()
+  {
+    return 0;
+  }
 
   /**
    * @return An image specifying the specific image subresources of the image used for the source or
    * destination image data.
    */
 
-  @Value.Parameter
   VulkanImageSubresourceLayers imageSubresource();
 
   /**
@@ -70,13 +78,19 @@ public interface VulkanBufferImageCopyType
    * image data.
    */
 
-  @Value.Parameter
-  VulkanOffset3D imageOffset();
+  @Value.Default
+  default VulkanOffset3D imageOffset()
+  {
+    return VulkanOffset3D.ZERO;
+  }
 
   /**
    * @return The size in texels of the image to copy in width, height and depth.
    */
 
-  @Value.Parameter
-  VulkanExtent3D imageExtent();
+  @Value.Default
+  default VulkanExtent3D imageExtent()
+  {
+    return VulkanExtent3D.ZERO;
+  }
 }

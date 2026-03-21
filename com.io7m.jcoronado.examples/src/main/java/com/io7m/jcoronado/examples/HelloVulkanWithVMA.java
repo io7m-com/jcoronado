@@ -29,7 +29,7 @@ import com.io7m.jcoronado.api.VulkanCommandBufferSubmitInfo;
 import com.io7m.jcoronado.api.VulkanCommandBufferType;
 import com.io7m.jcoronado.api.VulkanCommandPoolCreateInfo;
 import com.io7m.jcoronado.api.VulkanCommandPoolType;
-import com.io7m.jcoronado.api.VulkanComponentMappingType;
+import com.io7m.jcoronado.api.VulkanComponentMapping;
 import com.io7m.jcoronado.api.VulkanDependencyInfo;
 import com.io7m.jcoronado.api.VulkanDescriptorBufferInfo;
 import com.io7m.jcoronado.api.VulkanDescriptorImageInfo;
@@ -66,7 +66,7 @@ import com.io7m.jcoronado.api.VulkanLogicalDeviceCreateInfo;
 import com.io7m.jcoronado.api.VulkanLogicalDeviceQueueCreateInfo;
 import com.io7m.jcoronado.api.VulkanLogicalDeviceType;
 import com.io7m.jcoronado.api.VulkanMissingRequiredExtensionsException;
-import com.io7m.jcoronado.api.VulkanOffset2D;
+import com.io7m.jcoronado.api.VulkanOffset2DType;
 import com.io7m.jcoronado.api.VulkanOffset3D;
 import com.io7m.jcoronado.api.VulkanPhysicalDeviceType;
 import com.io7m.jcoronado.api.VulkanPipelineColorBlendAttachmentState;
@@ -243,6 +243,14 @@ public final class HelloVulkanWithVMA implements ExampleType
       new Vertex(0.5, 0.5, 0.0, 1.0, 0.0, 1.0, 0.0),
       new Vertex(-0.5, 0.5, 0.0, 0.0, 1.0, 1.0, 1.0));
 
+  private static final VulkanClearValueColorFloatingPoint CLEAR_BLACK =
+    VulkanClearValueColorFloatingPoint.builder()
+      .setRed(0.0f)
+      .setGreen(0.0f)
+      .setBlue(0.0f)
+      .setAlpha(1.0f)
+      .build();
+
   public HelloVulkanWithVMA()
   {
 
@@ -340,7 +348,7 @@ public final class HelloVulkanWithVMA implements ExampleType
     final var image_view =
       device.createImageView(
         VulkanImageViewCreateInfo.builder()
-          .setComponents(VulkanComponentMappingType.identity())
+          .setComponents(VulkanComponentMapping.IDENTITY)
           .setFormat(texture_format)
           .setImage(gpu_image)
           .setViewType(VK_IMAGE_VIEW_TYPE_2D)
@@ -658,13 +666,16 @@ public final class HelloVulkanWithVMA implements ExampleType
     );
 
     final var descriptorPoolUniformBuffer =
-      VulkanDescriptorPoolSize.of(
-        VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
-        imageCount);
+      VulkanDescriptorPoolSize.builder()
+        .setType(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER)
+        .setDescriptorCount(imageCount)
+        .build();
+
     final var descriptorPoolSampler =
-      VulkanDescriptorPoolSize.of(
-        VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
-        imageCount);
+      VulkanDescriptorPoolSize.builder()
+        .setType(VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER)
+        .setDescriptorCount(imageCount)
+        .build();
 
     final var descriptorPoolCreateInfo =
       VulkanDescriptorPoolCreateInfo.builder()
@@ -915,9 +926,15 @@ public final class HelloVulkanWithVMA implements ExampleType
         .setMaxDepth(1.0f)
         .build();
 
+    final var scissorArea =
+      VulkanRectangle2D.builder()
+        .setOffset(VulkanOffset2DType.ZERO)
+        .setExtent(surface_extent)
+        .build();
+
     final var viewport_state_info =
       VulkanPipelineViewportStateCreateInfo.builder()
-        .addScissors(VulkanRectangle2D.of(VulkanOffset2D.ZERO, surface_extent))
+        .addScissors(scissorArea)
         .addViewports(viewport)
         .build();
 
@@ -1261,11 +1278,15 @@ public final class HelloVulkanWithVMA implements ExampleType
     return allocator.withAllocationBufferInitialized(
       data,
       4L,
-      buffer -> device.createShaderModule(
-        VulkanShaderModuleCreateInfo.of(
-          Set.of(),
-          buffer,
-          buffer.capacity())));
+      buffer -> {
+        final var moduleInfo =
+          VulkanShaderModuleCreateInfo.builder()
+            .setData(buffer)
+            .setSize(buffer.capacity())
+            .build();
+
+        return device.createShaderModule(moduleInfo);
+      });
   }
 
   private static byte[] readShaderModule(
@@ -1299,7 +1320,7 @@ public final class HelloVulkanWithVMA implements ExampleType
           .addAllFlags(flags)
           .setImage(image)
           .setFormat(surface_format.format())
-          .setComponents(VulkanComponentMappingType.identity())
+          .setComponents(VulkanComponentMapping.IDENTITY)
           .setViewType(VK_IMAGE_VIEW_TYPE_2D)
           .setSubresourceRange(range)
           .build();
@@ -2197,18 +2218,18 @@ public final class HelloVulkanWithVMA implements ExampleType
             .addFlags(VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT)
             .build();
 
+        final var renderArea =
+          VulkanRectangle2D.builder()
+            .setOffset(VulkanOffset2DType.ZERO)
+            .setExtent(surfaceExtent)
+            .build();
+
         final var renderInfo =
           VulkanRenderPassBeginInfo.builder()
             .setFramebuffer(framebuffer)
-            .setRenderArea(VulkanRectangle2D.of(
-              VulkanOffset2D.ZERO,
-              surfaceExtent))
+            .setRenderArea(renderArea)
             .setRenderPass(renderPass)
-            .addClearValues(VulkanClearValueColorFloatingPoint.of(
-              0.0f,
-              0.0f,
-              0.0f,
-              1.0f))
+            .addClearValues(CLEAR_BLACK)
             .build();
 
         graphicsCommandBuffer.beginCommandBuffer(beginInfo);

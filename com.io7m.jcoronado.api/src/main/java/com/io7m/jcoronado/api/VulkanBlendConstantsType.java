@@ -31,30 +31,54 @@ import org.immutables.value.Value;
 public interface VulkanBlendConstantsType
 {
   /**
+   * The zero constants.
+   */
+
+  VulkanBlendConstants ZERO =
+    VulkanBlendConstants.builder()
+      .setR(0.0f)
+      .setG(0.0f)
+      .setB(0.0f)
+      .setA(0.0f)
+      .build();
+
+  /**
    * @return The red component
    */
 
-  @Value.Parameter
-  float r();
+  @Value.Default
+  default float r()
+  {
+    return 0.0f;
+  }
 
   /**
    * @return The green component
    */
 
-  @Value.Parameter
-  float g();
+  @Value.Default
+  default float g()
+  {
+    return 0.0f;
+  }
 
   /**
    * @return The blue component
    */
 
-  @Value.Parameter
-  float b();
+  @Value.Default
+  default float b()
+  {
+    return 0.0f;
+  }
 
   /**
    * @return The alpha component
    */
 
-  @Value.Parameter
-  float a();
+  @Value.Default
+  default float a()
+  {
+    return 1.0f;
+  }
 }

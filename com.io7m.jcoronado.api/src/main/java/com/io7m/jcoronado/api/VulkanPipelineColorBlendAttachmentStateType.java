@@ -38,7 +38,11 @@ public interface VulkanPipelineColorBlendAttachmentStateType
    * is not enabled, the source fragment’s color for that attachment is passed through unmodified.
    */
 
-  boolean enable();
+  @Value.Default
+  default boolean enable()
+  {
+    return false;
+  }
 
   /**
    * @return the blend factor used to determine the source factors  (Sr,Sg,Sb).

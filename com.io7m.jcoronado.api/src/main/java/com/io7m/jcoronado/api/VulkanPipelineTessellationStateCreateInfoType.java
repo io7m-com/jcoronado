@@ -36,13 +36,15 @@ public interface VulkanPipelineTessellationStateCreateInfoType
    * @return Creation flags
    */
 
-  @Value.Parameter
   Set<VulkanPipelineTessellationStageCreateFlag> flags();
 
   /**
    * @return The number of control points per patch.
    */
 
-  @Value.Parameter
-  int patchControlPoints();
+  @Value.Default
+  default int patchControlPoints()
+  {
+    return 0;
+  }
 }

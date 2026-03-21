@@ -36,27 +36,27 @@ public interface VulkanRenderPassBeginInfoType
    * @return The render pass
    */
 
-  @Value.Parameter
   VulkanRenderPassType renderPass();
 
   /**
    * @return The render pass framebuffer
    */
 
-  @Value.Parameter
   VulkanFramebufferType framebuffer();
 
   /**
    * @return The area to which rendering will occur
    */
 
-  @Value.Parameter
-  VulkanRectangle2D renderArea();
+  @Value.Default
+  default VulkanRectangle2D renderArea()
+  {
+    return VulkanRectangle2D.ZERO;
+  }
 
   /**
    * @return The clear values for each attachment
    */
 
-  @Value.Parameter
   List<VulkanClearValueType> clearValues();
 }

@@ -35,14 +35,12 @@ public interface VulkanSpecializationMapType
    * @return A list of entries mapping constants to offsets in {@code data}
    */
 
-  @Value.Parameter
   List<VulkanSpecializationMapEntry> entries();
 
   /**
    * @return The constant data
    */
 
-  @Value.Parameter
   ByteBuffer data();
 
   /**

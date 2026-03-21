@@ -33,44 +33,54 @@ import static com.io7m.jcoronado.api.VulkanComponentSwizzle.VK_COMPONENT_SWIZZLE
 public interface VulkanComponentMappingType
 {
   /**
-   * @return A mapping with all fields set to {@link VulkanComponentSwizzle#VK_COMPONENT_SWIZZLE_IDENTITY}
+   * The identity mapping.
    */
 
-  static VulkanComponentMapping identity()
-  {
-    return VulkanComponentMapping.builder()
+  VulkanComponentMapping IDENTITY =
+    VulkanComponentMapping.builder()
       .setA(VK_COMPONENT_SWIZZLE_IDENTITY)
       .setR(VK_COMPONENT_SWIZZLE_IDENTITY)
       .setG(VK_COMPONENT_SWIZZLE_IDENTITY)
       .setB(VK_COMPONENT_SWIZZLE_IDENTITY)
       .build();
-  }
 
   /**
    * @return The component value placed in the R component of the output vector.
    */
 
-  @Value.Parameter
-  VulkanComponentSwizzle r();
+  @Value.Default
+  default VulkanComponentSwizzle r()
+  {
+    return VK_COMPONENT_SWIZZLE_IDENTITY;
+  }
 
   /**
    * @return The component value placed in the G component of the output vector.
    */
 
-  @Value.Parameter
-  VulkanComponentSwizzle g();
+  @Value.Default
+  default VulkanComponentSwizzle g()
+  {
+    return VK_COMPONENT_SWIZZLE_IDENTITY;
+  }
 
   /**
    * @return The component value placed in the G component of the output vector.
    */
 
-  @Value.Parameter
-  VulkanComponentSwizzle b();
+  @Value.Default
+  default VulkanComponentSwizzle b()
+  {
+    return VK_COMPONENT_SWIZZLE_IDENTITY;
+  }
 
   /**
    * @return The component value placed in the A component of the output vector.
    */
 
-  @Value.Parameter
-  VulkanComponentSwizzle a();
+  @Value.Default
+  default VulkanComponentSwizzle a()
+  {
+    return VK_COMPONENT_SWIZZLE_IDENTITY;
+  }
 }

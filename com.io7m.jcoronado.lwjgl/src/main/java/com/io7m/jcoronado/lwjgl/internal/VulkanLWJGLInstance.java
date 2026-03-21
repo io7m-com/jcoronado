@@ -186,17 +186,17 @@ public final class VulkanLWJGLInstance
         vkQueueFamilies.position(index);
 
         final var properties =
-          VulkanQueueFamilyProperties.of(
-            new VulkanQueueFamilyIndex(index),
-            vkQueueFamilies.queueCount(),
-            parseQueueFlags(vkQueueFamilies.queueFlags()),
-            vkQueueFamilies.timestampValidBits(),
-            parseExtent3D(vkQueueFamilies.minImageTransferGranularity()));
+          VulkanQueueFamilyProperties.builder()
+            .setQueueFamilyIndex(new VulkanQueueFamilyIndex(index))
+            .setQueueCount(vkQueueFamilies.queueCount())
+            .setQueueFlags(parseQueueFlags(vkQueueFamilies.queueFlags()))
+            .setTimestampValidBits(vkQueueFamilies.timestampValidBits())
+            .setMinImageTransferGranularity(
+              parseExtent3D(vkQueueFamilies.minImageTransferGranularity())
+            )
+            .build();
 
-        families.put(
-          new VulkanQueueFamilyIndex(index),
-          properties
-        );
+        families.put(new VulkanQueueFamilyIndex(index), properties);
       }
     }
 
@@ -727,9 +727,10 @@ public final class VulkanLWJGLInstance
   private static VulkanPointSizeRange parsePointSizeRange(
     final FloatBuffer buffer)
   {
-    return VulkanPointSizeRange.of(
-      buffer.get(0),
-      buffer.get(1));
+    return VulkanPointSizeRange.builder()
+      .setMinimum(buffer.get(0))
+      .setMaximum(buffer.get(1))
+      .build();
   }
 
   private static VulkanViewportDimensions parseViewportDimensions(
@@ -744,19 +745,21 @@ public final class VulkanLWJGLInstance
   private static VulkanComputeWorkGroupSize parseComputeWorkGroupSize(
     final IntBuffer buffer)
   {
-    return VulkanComputeWorkGroupSize.of(
-      buffer.get(0),
-      buffer.get(1),
-      buffer.get(2));
+    return VulkanComputeWorkGroupSize.builder()
+      .setMaximumX(buffer.get(0))
+      .setMaximumY(buffer.get(1))
+      .setMaximumZ(buffer.get(2))
+      .build();
   }
 
   private static VulkanComputeWorkGroupCount parseComputeWorkGroupCount(
     final IntBuffer buffer)
   {
-    return VulkanComputeWorkGroupCount.of(
-      buffer.get(0),
-      buffer.get(1),
-      buffer.get(2));
+    return VulkanComputeWorkGroupCount.builder()
+      .setMaximumX(buffer.get(0))
+      .setMaximumY(buffer.get(1))
+      .setMaximumZ(buffer.get(2))
+      .build();
   }
 
   private static VulkanLineWidthRange parseLineWidthRange(

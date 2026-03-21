@@ -596,12 +596,7 @@ public abstract class VulkanLogicalDeviceContract extends VulkanOnDeviceContract
           VulkanImageViewCreateInfo.builder()
             .setFormat(VK_FORMAT_R8G8B8A8_UNORM)
             .setImage(image)
-            .setComponents(VulkanComponentMapping.of(
-              VK_COMPONENT_SWIZZLE_IDENTITY,
-              VK_COMPONENT_SWIZZLE_IDENTITY,
-              VK_COMPONENT_SWIZZLE_IDENTITY,
-              VK_COMPONENT_SWIZZLE_IDENTITY
-            ))
+            .setComponents(VulkanComponentMapping.IDENTITY)
             .setViewType(VulkanImageViewKind.VK_IMAGE_VIEW_TYPE_2D)
             .setSubresourceRange(subresourceRange)
             .build()
@@ -677,12 +672,7 @@ public abstract class VulkanLogicalDeviceContract extends VulkanOnDeviceContract
                  VulkanImageViewCreateInfo.builder()
                    .setFormat(VK_FORMAT_R5G6B5_UNORM_PACK16)
                    .setImage(image)
-                   .setComponents(VulkanComponentMapping.of(
-                     VK_COMPONENT_SWIZZLE_IDENTITY,
-                     VK_COMPONENT_SWIZZLE_IDENTITY,
-                     VK_COMPONENT_SWIZZLE_IDENTITY,
-                     VK_COMPONENT_SWIZZLE_IDENTITY
-                   ))
+                   .setComponents(VulkanComponentMapping.IDENTITY)
                    .setViewType(VulkanImageViewKind.VK_IMAGE_VIEW_TYPE_2D)
                    .setSubresourceRange(subresourceRange)
                    .build()
@@ -797,12 +787,7 @@ public abstract class VulkanLogicalDeviceContract extends VulkanOnDeviceContract
                  VulkanImageViewCreateInfo.builder()
                    .setFormat(VK_FORMAT_R5G6B5_UNORM_PACK16)
                    .setImage(image)
-                   .setComponents(VulkanComponentMapping.of(
-                     VK_COMPONENT_SWIZZLE_IDENTITY,
-                     VK_COMPONENT_SWIZZLE_IDENTITY,
-                     VK_COMPONENT_SWIZZLE_IDENTITY,
-                     VK_COMPONENT_SWIZZLE_IDENTITY
-                   ))
+                   .setComponents(VulkanComponentMapping.IDENTITY)
                    .setViewType(VulkanImageViewKind.VK_IMAGE_VIEW_TYPE_2D)
                    .setSubresourceRange(subresourceRange)
                    .build()

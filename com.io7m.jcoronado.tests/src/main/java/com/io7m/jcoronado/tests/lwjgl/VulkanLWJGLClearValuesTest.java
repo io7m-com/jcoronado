@@ -45,15 +45,67 @@ public final class VulkanLWJGLClearValuesTest
     this.stack = this.stack.push();
   }
 
+  private static VulkanClearValueDepthStencil depthStencil(
+    final int d,
+    final int s)
+  {
+    return VulkanClearValueDepthStencil.builder()
+      .setDepth(d)
+      .setStencil(s)
+      .build();
+  }
+
+  private static VulkanClearValueColorIntegerSigned signed(
+    final int r,
+    final int g,
+    final int b,
+    final int a)
+  {
+    return VulkanClearValueColorIntegerSigned.builder()
+      .setRed(r)
+      .setGreen(g)
+      .setBlue(b)
+      .setAlpha(a)
+      .build();
+  }
+
+  private static VulkanClearValueColorIntegerUnsigned unsigned(
+    final int r,
+    final int g,
+    final int b,
+    final int a)
+  {
+    return VulkanClearValueColorIntegerUnsigned.builder()
+      .setRed(r)
+      .setGreen(g)
+      .setBlue(b)
+      .setAlpha(a)
+      .build();
+  }
+
+  private static VulkanClearValueColorFloatingPoint floating(
+    final float r,
+    final float g,
+    final float b,
+    final float a)
+  {
+    return VulkanClearValueColorFloatingPoint.builder()
+      .setRed(r)
+      .setGreen(g)
+      .setBlue(b)
+      .setAlpha(a)
+      .build();
+  }
+
   @Test
   public void testClearColorValueCreateInfoSigned()
   {
     final List<VulkanClearValueType> values =
       List.of(
-        VulkanClearValueColorIntegerSigned.of(0, 0, 0, 0),
-        VulkanClearValueColorIntegerSigned.of(1, 1, 1, 1),
-        VulkanClearValueColorIntegerSigned.of(2, 2, 2, 2),
-        VulkanClearValueColorIntegerSigned.of(3, 3, 3, 3));
+        signed(0, 0, 0, 0),
+        signed(1, 1, 1, 1),
+        signed(2, 2, 2, 2),
+        signed(3, 3, 3, 3));
 
     final var packed_structures =
       VulkanLWJGLClearValues.packAll(this.stack, values);
@@ -95,10 +147,10 @@ public final class VulkanLWJGLClearValuesTest
   {
     final List<VulkanClearValueType> values =
       List.of(
-        VulkanClearValueColorIntegerUnsigned.of(0, 0, 0, 0),
-        VulkanClearValueColorIntegerUnsigned.of(1, 1, 1, 1),
-        VulkanClearValueColorIntegerUnsigned.of(2, 2, 2, 2),
-        VulkanClearValueColorIntegerUnsigned.of(3, 3, 3, 3));
+        unsigned(0, 0, 0, 0),
+        unsigned(1, 1, 1, 1),
+        unsigned(2, 2, 2, 2),
+        unsigned(3, 3, 3, 3));
 
     final var packed_structures =
       VulkanLWJGLClearValues.packAll(this.stack, values);
@@ -140,10 +192,10 @@ public final class VulkanLWJGLClearValuesTest
   {
     final List<VulkanClearValueType> values =
       List.of(
-        VulkanClearValueColorFloatingPoint.of(0, 0, 0, 0),
-        VulkanClearValueColorFloatingPoint.of(1, 1, 1, 1),
-        VulkanClearValueColorFloatingPoint.of(2, 2, 2, 2),
-        VulkanClearValueColorFloatingPoint.of(3, 3, 3, 3));
+        floating(0, 0, 0, 0),
+        floating(1, 1, 1, 1),
+        floating(2, 2, 2, 2),
+        floating(3, 3, 3, 3));
 
     final var packed_structures =
       VulkanLWJGLClearValues.packAll(this.stack, values);
@@ -173,10 +225,10 @@ public final class VulkanLWJGLClearValuesTest
   {
     final List<VulkanClearValueType> values =
       List.of(
-        VulkanClearValueDepthStencil.of(0, 0),
-        VulkanClearValueDepthStencil.of(1, 1),
-        VulkanClearValueDepthStencil.of(2, 2),
-        VulkanClearValueDepthStencil.of(3, 3));
+        depthStencil(0, 0),
+        depthStencil(1, 1),
+        depthStencil(2, 2),
+        depthStencil(3, 3));
 
     final var packed_structures =
       VulkanLWJGLClearValues.packAll(this.stack, values);

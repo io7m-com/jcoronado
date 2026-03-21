@@ -37,20 +37,29 @@ public interface VulkanComputeWorkGroupCountType
    * @return The limit on the X dimension
    */
 
-  @Value.Parameter
-  int maximumX();
+  @Value.Default
+  default int maximumX()
+  {
+    return 1;
+  }
 
   /**
    * @return The limit on the Y dimension
    */
 
-  @Value.Parameter
-  int maximumY();
+  @Value.Default
+  default int maximumY()
+  {
+    return 1;
+  }
 
   /**
    * @return The limit on the Z dimension
    */
 
-  @Value.Parameter
-  int maximumZ();
+  @Value.Default
+  default int maximumZ()
+  {
+    return 1;
+  }
 }

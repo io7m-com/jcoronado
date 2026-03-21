@@ -35,7 +35,6 @@ public interface VulkanPipelineRasterizationStateCreateInfoType
    * @return State creation flags
    */
 
-  @Value.Parameter
   Set<VulkanPipelineRasterizationStateCreateFlag> flags();
 
   /**
@@ -43,21 +42,26 @@ public interface VulkanPipelineRasterizationStateCreateInfoType
    * the z planes of the frustum.
    */
 
-  @Value.Parameter
-  boolean depthClampEnable();
+  @Value.Default
+  default boolean depthClampEnable()
+  {
+    return false;
+  }
 
   /**
    * @return controls whether primitives are discarded immediately before the rasterization stage.
    */
 
-  @Value.Parameter
-  boolean rasterizerDiscardEnable();
+  @Value.Default
+  default boolean rasterizerDiscardEnable()
+  {
+    return false;
+  }
 
   /**
    * @return the triangle rendering mode.
    */
 
-  @Value.Parameter
   @Value.Default
   default VulkanPolygonMode polygonMode()
   {
@@ -68,7 +72,6 @@ public interface VulkanPipelineRasterizationStateCreateInfoType
    * @return the triangle facing direction used for primitive culling.
    */
 
-  @Value.Parameter
   @Value.Default
   default Set<VulkanCullModeFlag> cullMode()
   {
@@ -79,7 +82,6 @@ public interface VulkanPipelineRasterizationStateCreateInfoType
    * @return the front-facing triangle orientation to be used for culling.
    */
 
-  @Value.Parameter
   @Value.Default
   default VulkanFrontFace frontFace()
   {
@@ -90,14 +92,16 @@ public interface VulkanPipelineRasterizationStateCreateInfoType
    * @return controls whether to bias fragment depth values.
    */
 
-  @Value.Parameter
-  boolean depthBiasEnable();
+  @Value.Default
+  default boolean depthBiasEnable()
+  {
+    return false;
+  }
 
   /**
    * @return a scalar factor controlling the constant depth value added to each fragment.
    */
 
-  @Value.Parameter
   @Value.Default
   default float depthBiasConstantFactor()
   {
@@ -108,7 +112,6 @@ public interface VulkanPipelineRasterizationStateCreateInfoType
    * @return the maximum (or minimum) depth bias of a fragment.
    */
 
-  @Value.Parameter
   @Value.Default
   default float depthBiasClamp()
   {
@@ -119,7 +122,6 @@ public interface VulkanPipelineRasterizationStateCreateInfoType
    * @return a scalar factor applied to a fragment’s slope in depth bias calculations.
    */
 
-  @Value.Parameter
   @Value.Default
   default float depthBiasSlopeFactor()
   {
@@ -130,7 +132,6 @@ public interface VulkanPipelineRasterizationStateCreateInfoType
    * @return the width of rasterized line segments.
    */
 
-  @Value.Parameter
   @Value.Default
   default float lineWidth()
   {

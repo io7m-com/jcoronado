@@ -37,22 +37,23 @@ public interface VulkanShaderModuleCreateInfoType
    * @return The module creation flags
    */
 
-  @Value.Parameter
   Set<VulkanShaderModuleCreateFlag> flags();
 
   /**
    * @return The shader module bytecode
    */
 
-  @Value.Parameter
   ByteBuffer data();
 
   /**
    * @return The shader code size
    */
 
-  @Value.Parameter
-  long size();
+  @Value.Default
+  default long size()
+  {
+    return 0L;
+  }
 
   /**
    * Check preconditions for the type.

@@ -34,21 +34,30 @@ public interface VulkanVertexInputBindingDescriptionType
    * @return The binding number that this structure describes.
    */
 
-  @Value.Parameter
-  int binding();
+  @Value.Default
+  default int binding()
+  {
+    return 0;
+  }
 
   /**
    * @return The distance in bytes between two consecutive elements within the buffer.
    */
 
-  @Value.Parameter
-  int stride();
+  @Value.Default
+  default int stride()
+  {
+    return 0;
+  }
 
   /**
    * @return Specifies whether vertex attribute addressing is a function of the vertex index or of
    * the instance index.
    */
 
-  @Value.Parameter
-  VulkanVertexInputRate inputRate();
+  @Value.Default
+  default VulkanVertexInputRate inputRate()
+  {
+    return VulkanVertexInputRate.VK_VERTEX_INPUT_RATE_VERTEX;
+  }
 }

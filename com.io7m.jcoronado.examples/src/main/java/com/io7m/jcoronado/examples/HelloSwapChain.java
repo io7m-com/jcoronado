@@ -115,7 +115,12 @@ public final class HelloSwapChain implements ExampleType
   private static final int FRAME_LIMIT = 20;
 
   private static final VulkanClearValueColorFloatingPoint RED =
-    VulkanClearValueColorFloatingPoint.of(1.0f, 0.0f, 0.0f, 1.0f);
+    VulkanClearValueColorFloatingPoint.builder()
+      .setRed(1.0f)
+      .setBlue(0.0f)
+      .setGreen(0.0f)
+      .setAlpha(1.0f)
+      .build();
 
   private final AtomicBoolean windowIsResizing;
 

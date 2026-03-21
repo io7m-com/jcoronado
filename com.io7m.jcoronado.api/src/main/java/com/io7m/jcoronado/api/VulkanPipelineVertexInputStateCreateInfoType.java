@@ -35,20 +35,17 @@ public interface VulkanPipelineVertexInputStateCreateInfoType
    * @return Flags reserved for future use
    */
 
-  @Value.Parameter
   Set<VulkanPipelineVertexInputStateCreateFlag> flags();
 
   /**
    * @return The binding descriptions
    */
 
-  @Value.Parameter
   List<VulkanVertexInputBindingDescription> vertexBindingDescriptions();
 
   /**
    * @return The attribute descriptions
    */
 
-  @Value.Parameter
   List<VulkanVertexInputAttributeDescription> vertexAttributeDescriptions();
 }

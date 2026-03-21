@@ -125,32 +125,42 @@ public final class VulkanLWJGLGraphicsPipelineCreateInfosTest
         .setSrcColorBlendFactor(VK_BLEND_FACTOR_CONSTANT_COLOR)
         .build();
 
+    final var blendConstants =
+      VulkanBlendConstants.builder()
+        .setR(1.0f)
+        .setG(2.0f)
+        .setB(3.0f)
+        .setA(4.0f)
+        .build();
+
     final var color_info =
       VulkanPipelineColorBlendStateCreateInfo.builder()
         .setLogicOp(VulkanLogicOp.VK_LOGIC_OP_AND_INVERTED)
-        .setBlendConstants(VulkanBlendConstants.of(1.0f, 2.0f, 3.0f, 4.0f))
+        .setBlendConstants(blendConstants)
         .addAttachments(state)
         .build();
 
     final var front =
-      VulkanStencilOpState.of(
-        VK_STENCIL_OP_KEEP,
-        VK_STENCIL_OP_DECREMENT_AND_CLAMP,
-        VK_STENCIL_OP_INCREMENT_AND_CLAMP,
-        VK_COMPARE_OP_ALWAYS,
-        23,
-        24,
-        25);
+      VulkanStencilOpState.builder()
+        .setPassOp(VK_STENCIL_OP_DECREMENT_AND_CLAMP)
+        .setCompareOp(VK_COMPARE_OP_ALWAYS)
+        .setDepthFailOp(VK_STENCIL_OP_INCREMENT_AND_CLAMP)
+        .setFailOp(VK_STENCIL_OP_KEEP)
+        .setCompareMask(23)
+        .setReference(25)
+        .setWriteMask(24)
+        .build();
 
     final var back =
-      VulkanStencilOpState.of(
-        VK_STENCIL_OP_INVERT,
-        VK_STENCIL_OP_REPLACE,
-        VK_STENCIL_OP_ZERO,
-        VK_COMPARE_OP_NEVER,
-        33,
-        34,
-        35);
+      VulkanStencilOpState.builder()
+        .setPassOp(VK_STENCIL_OP_REPLACE)
+        .setCompareOp(VK_COMPARE_OP_NEVER)
+        .setDepthFailOp(VK_STENCIL_OP_ZERO)
+        .setFailOp(VK_STENCIL_OP_INVERT)
+        .setCompareMask(33)
+        .setReference(35)
+        .setWriteMask(34)
+        .build();
 
     final var depth_info =
       VulkanPipelineDepthStencilStateCreateInfo.builder()
@@ -220,23 +230,34 @@ public final class VulkanLWJGLGraphicsPipelineCreateInfosTest
         .build();
 
     final var desc_0 =
-      VulkanVertexInputAttributeDescription.of(
-        0,
-        1,
-        VK_FORMAT_B8G8R8A8_UNORM,
-        23);
+      VulkanVertexInputAttributeDescription.builder()
+        .setBinding(1)
+        .setLocation(0)
+        .setFormat(VK_FORMAT_B8G8R8A8_UNORM)
+        .setOffset(23)
+        .build();
+
     final var desc_1 =
-      VulkanVertexInputAttributeDescription.of(2, 3, VK_FORMAT_D16_UNORM, 26);
+      VulkanVertexInputAttributeDescription.builder()
+        .setBinding(3)
+        .setLocation(2)
+        .setFormat(VK_FORMAT_D16_UNORM)
+        .setOffset(26)
+        .build();
+
     final var bind_0 =
-      VulkanVertexInputBindingDescription.of(
-        3,
-        56,
-        VK_VERTEX_INPUT_RATE_VERTEX);
+      VulkanVertexInputBindingDescription.builder()
+        .setBinding(3)
+        .setStride(56)
+        .setInputRate(VK_VERTEX_INPUT_RATE_VERTEX)
+        .build();
+
     final var bind_1 =
-      VulkanVertexInputBindingDescription.of(
-        5,
-        57,
-        VK_VERTEX_INPUT_RATE_INSTANCE);
+      VulkanVertexInputBindingDescription.builder()
+        .setBinding(5)
+        .setStride(57)
+        .setInputRate(VK_VERTEX_INPUT_RATE_INSTANCE)
+        .build();
 
     final var vertex_info =
       VulkanPipelineVertexInputStateCreateInfo.builder()
@@ -291,9 +312,15 @@ public final class VulkanLWJGLGraphicsPipelineCreateInfosTest
         .build();
 
     final var scissor_0 =
-      VulkanRectangle2D.of(offset_0, extent_0);
+      VulkanRectangle2D.builder()
+        .setOffset(offset_0)
+        .setExtent(extent_0)
+        .build();
     final var scissor_1 =
-      VulkanRectangle2D.of(offset_1, extent_1);
+      VulkanRectangle2D.builder()
+        .setOffset(offset_1)
+        .setExtent(extent_1)
+        .build();
 
     final var viewport_info =
       VulkanPipelineViewportStateCreateInfo.builder()

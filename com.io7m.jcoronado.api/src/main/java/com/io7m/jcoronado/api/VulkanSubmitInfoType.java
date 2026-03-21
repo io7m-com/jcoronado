@@ -37,14 +37,12 @@ public interface VulkanSubmitInfoType
    * execution. If semaphores to wait on are provided, they define a semaphore wait operation.
    */
 
-  @Value.Parameter
   List<VulkanSemaphoreSubmitInfo> waitSemaphores();
 
   /**
    * @return A list of command buffers to execute in the batch.
    */
 
-  @Value.Parameter
   List<VulkanCommandBufferSubmitInfo> commandBuffers();
 
   /**
@@ -53,6 +51,5 @@ public interface VulkanSubmitInfoType
    * signal operation.
    */
 
-  @Value.Parameter
   List<VulkanSemaphoreSubmitInfo> signalSemaphores();
 }

@@ -18,7 +18,7 @@ package com.io7m.jcoronado.tests.lwjgl;
 
 import com.io7m.jcoronado.api.VulkanException;
 import com.io7m.jcoronado.api.VulkanExtent2D;
-import com.io7m.jcoronado.api.VulkanOffset2D;
+import com.io7m.jcoronado.api.VulkanOffset2DType;
 import com.io7m.jcoronado.api.VulkanRectangle2D;
 import com.io7m.jcoronado.lwjgl.internal.VulkanLWJGLRect2Ds;
 import org.junit.jupiter.api.AfterEach;
@@ -74,9 +74,10 @@ public final class VulkanLWJGLVulkanRectangle2DTest
         .build();
 
     final var source =
-      VulkanRectangle2D.of(
-        VulkanOffset2D.ZERO,
-        extent);
+      VulkanRectangle2D.builder()
+        .setOffset(VulkanOffset2DType.ZERO)
+        .setExtent(extent)
+        .build();
 
     final var out =
       VulkanLWJGLRect2Ds.pack(this.stack, source);
@@ -95,9 +96,10 @@ public final class VulkanLWJGLVulkanRectangle2DTest
         .build();
 
     final var source =
-      VulkanRectangle2D.of(
-        VulkanOffset2D.ZERO,
-        extent);
+      VulkanRectangle2D.builder()
+        .setOffset(VulkanOffset2DType.ZERO)
+        .setExtent(extent)
+        .build();
 
     final var out =
       VulkanLWJGLRect2Ds.packList(
@@ -120,10 +122,10 @@ public final class VulkanLWJGLVulkanRectangle2DTest
         .build();
 
     final var source =
-      VulkanRectangle2D.of(
-        VulkanOffset2D.ZERO,
-        extent
-      );
+      VulkanRectangle2D.builder()
+        .setOffset(VulkanOffset2DType.ZERO)
+        .setExtent(extent)
+        .build();
 
     final var packed =
       VulkanLWJGLRect2Ds.packListOrNull(

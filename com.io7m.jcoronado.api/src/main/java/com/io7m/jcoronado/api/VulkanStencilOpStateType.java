@@ -32,49 +32,70 @@ public interface VulkanStencilOpStateType
    * @return The action performed on samples that fail the stencil test.
    */
 
-  @Value.Parameter
-  VulkanStencilOp failOp();
+  @Value.Default
+  default VulkanStencilOp failOp()
+  {
+    return VulkanStencilOp.VK_STENCIL_OP_KEEP;
+  }
 
   /**
    * @return The action performed on samples that pass both the depth and stencil tests.
    */
 
-  @Value.Parameter
-  VulkanStencilOp passOp();
+  @Value.Default
+  default VulkanStencilOp passOp()
+  {
+    return VulkanStencilOp.VK_STENCIL_OP_KEEP;
+  }
 
   /**
    * @return The action performed on samples that pass the stencil test and fail the depth test.
    */
 
-  @Value.Parameter
-  VulkanStencilOp depthFailOp();
+  @Value.Default
+  default VulkanStencilOp depthFailOp()
+  {
+    return VulkanStencilOp.VK_STENCIL_OP_KEEP;
+  }
 
   /**
    * @return The comparison operator used in the stencil test.
    */
 
-  @Value.Parameter
-  VulkanCompareOp compareOp();
+  @Value.Default
+  default VulkanCompareOp compareOp()
+  {
+    return VulkanCompareOp.VK_COMPARE_OP_NEVER;
+  }
 
   /**
    * @return The bits of the unsigned integer stencil values participating in the stencil test.
    */
 
-  @Value.Parameter
-  int compareMask();
+  @Value.Default
+  default int compareMask()
+  {
+    return 0;
+  }
 
   /**
    * @return The bits of the unsigned integer stencil values updated by the stencil test in the
    * stencil framebuffer attachment.
    */
 
-  @Value.Parameter
-  int writeMask();
+  @Value.Default
+  default int writeMask()
+  {
+    return 0;
+  }
 
   /**
    * @return An integer reference value that is used in the unsigned stencil comparison.
    */
 
-  @Value.Parameter
-  int reference();
+  @Value.Default
+  default int reference()
+  {
+    return 0;
+  }
 }

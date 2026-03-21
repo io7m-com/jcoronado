@@ -78,15 +78,21 @@ public interface VulkanClearValueType
      * @return The depth value
      */
 
-    @Value.Parameter
-    float depth();
+    @Value.Default
+    default float depth()
+    {
+      return 0.0f;
+    }
 
     /**
      * @return The stencil value
      */
 
-    @Value.Parameter
-    int stencil();
+    @Value.Default
+    default int stencil()
+    {
+      return 0;
+    }
   }
 
   /**
@@ -154,29 +160,41 @@ public interface VulkanClearValueType
      * @return The red channel
      */
 
-    @Value.Parameter
-    int red();
+    @Value.Default
+    default int red()
+    {
+      return 0;
+    }
 
     /**
      * @return The green channel
      */
 
-    @Value.Parameter
-    int green();
+    @Value.Default
+    default int green()
+    {
+      return 0;
+    }
 
     /**
      * @return The blue channel
      */
 
-    @Value.Parameter
-    int blue();
+    @Value.Default
+    default int blue()
+    {
+      return 0;
+    }
 
     /**
      * @return The alpha channel
      */
 
-    @Value.Parameter
-    int alpha();
+    @Value.Default
+    default int alpha()
+    {
+      return 0;
+    }
   }
 
   /**
@@ -199,29 +217,41 @@ public interface VulkanClearValueType
      * @return The red channel
      */
 
-    @Value.Parameter
-    int red();
+    @Value.Default
+    default int red()
+    {
+      return 0;
+    }
 
     /**
      * @return The green channel
      */
 
-    @Value.Parameter
-    int green();
+    @Value.Default
+    default int green()
+    {
+      return 0;
+    }
 
     /**
      * @return The blue channel
      */
 
-    @Value.Parameter
-    int blue();
+    @Value.Default
+    default int blue()
+    {
+      return 0;
+    }
 
     /**
      * @return The alpha channel
      */
 
-    @Value.Parameter
-    int alpha();
+    @Value.Default
+    default int alpha()
+    {
+      return 0;
+    }
   }
 
   /**
@@ -244,28 +274,40 @@ public interface VulkanClearValueType
      * @return The red channel
      */
 
-    @Value.Parameter
-    float red();
+    @Value.Default
+    default float red()
+    {
+      return 0.0f;
+    }
 
     /**
      * @return The green channel
      */
 
-    @Value.Parameter
-    float green();
+    @Value.Default
+    default float green()
+    {
+      return 0.0f;
+    }
 
     /**
      * @return The blue channel
      */
 
-    @Value.Parameter
-    float blue();
+    @Value.Default
+    default float blue()
+    {
+      return 0.0f;
+    }
 
     /**
      * @return The alpha channel
      */
 
-    @Value.Parameter
-    float alpha();
+    @Value.Default
+    default float alpha()
+    {
+      return 0.0f;
+    }
   }
 }

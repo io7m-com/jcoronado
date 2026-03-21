@@ -25,6 +25,7 @@ import com.io7m.jcoronado.api.VulkanCommandBufferBeginInfo;
 import com.io7m.jcoronado.api.VulkanCommandBufferCreateInfo;
 import com.io7m.jcoronado.api.VulkanCommandBufferSubmitInfo;
 import com.io7m.jcoronado.api.VulkanCommandPoolCreateInfo;
+import com.io7m.jcoronado.api.VulkanComponentMapping;
 import com.io7m.jcoronado.api.VulkanComponentMappingType;
 import com.io7m.jcoronado.api.VulkanDependencyInfo;
 import com.io7m.jcoronado.api.VulkanException;
@@ -48,6 +49,7 @@ import com.io7m.jcoronado.api.VulkanLogicalDeviceType;
 import com.io7m.jcoronado.api.VulkanMemoryAllocateInfo;
 import com.io7m.jcoronado.api.VulkanMissingRequiredExtensionsException;
 import com.io7m.jcoronado.api.VulkanOffset2D;
+import com.io7m.jcoronado.api.VulkanOffset2DType;
 import com.io7m.jcoronado.api.VulkanPhysicalDeviceFeatures;
 import com.io7m.jcoronado.api.VulkanPhysicalDeviceFeatures10;
 import com.io7m.jcoronado.api.VulkanPhysicalDeviceFeatures11;
@@ -174,6 +176,14 @@ public final class HelloVulkanDynamic implements ExampleType
 
   private static final int FRAME_LIMIT = 100;
 
+  private static final VulkanClearValueColorFloatingPoint CLEAR_BLACK =
+    VulkanClearValueColorFloatingPoint.builder()
+      .setRed(0.0f)
+      .setGreen(0.0f)
+      .setBlue(0.0f)
+      .setAlpha(1.0f)
+      .build();
+
   public HelloVulkanDynamic()
   {
 
@@ -229,11 +239,15 @@ public final class HelloVulkanDynamic implements ExampleType
     return allocator.withAllocationBufferInitialized(
       data,
       4L,
-      buffer -> device.createShaderModule(
-        VulkanShaderModuleCreateInfo.of(
-          Set.of(),
-          buffer,
-          buffer.capacity())));
+      buffer -> {
+        final var moduleInfo =
+          VulkanShaderModuleCreateInfo.builder()
+            .setData(buffer)
+            .setSize(buffer.capacity())
+            .build();
+
+        return device.createShaderModule(moduleInfo);
+      });
   }
 
   private static byte[] readShaderModule(
@@ -267,7 +281,7 @@ public final class HelloVulkanDynamic implements ExampleType
           .addAllFlags(flags)
           .setImage(image)
           .setFormat(surfaceFormat.format())
-          .setComponents(VulkanComponentMappingType.identity())
+          .setComponents(VulkanComponentMapping.IDENTITY)
           .setViewType(VK_IMAGE_VIEW_TYPE_2D)
           .setSubresourceRange(range)
           .build();
@@ -1059,9 +1073,15 @@ public final class HelloVulkanDynamic implements ExampleType
           .setMaxDepth(1.0f)
           .build();
 
+      final var scissorArea =
+        VulkanRectangle2D.builder()
+          .setOffset(VulkanOffset2DType.ZERO)
+          .setExtent(surfaceExtent)
+          .build();
+
       final var viewportStateInfo =
         VulkanPipelineViewportStateCreateInfo.builder()
-          .addScissors(VulkanRectangle2D.of(VulkanOffset2D.ZERO, surfaceExtent))
+          .addScissors(scissorArea)
           .addViewports(viewport)
           .build();
 
@@ -1282,28 +1302,26 @@ public final class HelloVulkanDynamic implements ExampleType
             .addFlags(VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT)
             .build();
 
-        final var clearValue =
-          VulkanClearValueColorFloatingPoint.of(0.0f, 0.0f, 0.0f, 1.0f);
-
         final VulkanRenderingAttachmentInfo colorAttachment =
           VulkanRenderingAttachmentInfo.builder()
             .setImageView(swapChainView)
             .setImageLayout(VulkanImageLayout.VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL)
             .setLoadOp(VulkanAttachmentLoadOp.VK_ATTACHMENT_LOAD_OP_CLEAR)
             .setStoreOp(VulkanAttachmentStoreOp.VK_ATTACHMENT_STORE_OP_STORE)
-            .setClearValue(clearValue)
+            .setClearValue(CLEAR_BLACK)
+            .build();
+
+        final var renderArea =
+          VulkanRectangle2D.builder()
+            .setOffset(VulkanOffset2DType.ZERO)
+            .setExtent(surfaceExtent)
             .build();
 
         final var renderInfo =
           VulkanRenderingInfo.builder()
             .setLayerCount(1L)
             .addColorAttachments(colorAttachment)
-            .setRenderArea(
-              VulkanRectangle2D.of(
-                VulkanOffset2D.ZERO,
-                surfaceExtent
-              )
-            )
+            .setRenderArea(renderArea)
             .build();
 
         /*

@@ -71,7 +71,7 @@ public interface VulkanImageViewCreateInfoType
   @Value.Default
   default VulkanComponentMapping components()
   {
-    return VulkanComponentMappingType.identity();
+    return VulkanComponentMappingType.IDENTITY;
   }
 
   /**

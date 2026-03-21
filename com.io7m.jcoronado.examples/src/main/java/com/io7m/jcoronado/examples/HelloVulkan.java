@@ -26,7 +26,7 @@ import com.io7m.jcoronado.api.VulkanCommandBufferCreateInfo;
 import com.io7m.jcoronado.api.VulkanCommandBufferSubmitInfo;
 import com.io7m.jcoronado.api.VulkanCommandBufferType;
 import com.io7m.jcoronado.api.VulkanCommandPoolCreateInfo;
-import com.io7m.jcoronado.api.VulkanComponentMappingType;
+import com.io7m.jcoronado.api.VulkanComponentMapping;
 import com.io7m.jcoronado.api.VulkanException;
 import com.io7m.jcoronado.api.VulkanExtensionProperties;
 import com.io7m.jcoronado.api.VulkanExtensions;
@@ -47,7 +47,7 @@ import com.io7m.jcoronado.api.VulkanLogicalDeviceQueueCreateInfo;
 import com.io7m.jcoronado.api.VulkanLogicalDeviceType;
 import com.io7m.jcoronado.api.VulkanMemoryAllocateInfo;
 import com.io7m.jcoronado.api.VulkanMissingRequiredExtensionsException;
-import com.io7m.jcoronado.api.VulkanOffset2D;
+import com.io7m.jcoronado.api.VulkanOffset2DType;
 import com.io7m.jcoronado.api.VulkanPhysicalDeviceType;
 import com.io7m.jcoronado.api.VulkanPipelineColorBlendAttachmentState;
 import com.io7m.jcoronado.api.VulkanPipelineColorBlendStateCreateInfo;
@@ -178,6 +178,14 @@ public final class HelloVulkan implements ExampleType
 
   private static final int FRAME_LIMIT = 100;
 
+  private static final VulkanClearValueColorFloatingPoint CLEAR_BLACK =
+    VulkanClearValueColorFloatingPoint.builder()
+      .setRed(0.0f)
+      .setGreen(0.0f)
+      .setBlue(0.0f)
+      .setAlpha(1.0f)
+      .build();
+
   public HelloVulkan()
   {
 
@@ -307,11 +315,15 @@ public final class HelloVulkan implements ExampleType
     return allocator.withAllocationBufferInitialized(
       data,
       4L,
-      buffer -> device.createShaderModule(
-        VulkanShaderModuleCreateInfo.of(
-          Set.of(),
-          buffer,
-          buffer.capacity())));
+      buffer -> {
+        final var moduleInfo =
+          VulkanShaderModuleCreateInfo.builder()
+            .setData(buffer)
+            .setSize(buffer.capacity())
+            .build();
+
+        return device.createShaderModule(moduleInfo);
+      });
   }
 
   private static byte[] readShaderModule(
@@ -345,7 +357,7 @@ public final class HelloVulkan implements ExampleType
           .addAllFlags(flags)
           .setImage(image)
           .setFormat(surfaceFormat.format())
-          .setComponents(VulkanComponentMappingType.identity())
+          .setComponents(VulkanComponentMapping.IDENTITY)
           .setViewType(VK_IMAGE_VIEW_TYPE_2D)
           .setSubresourceRange(range)
           .build();
@@ -412,7 +424,9 @@ public final class HelloVulkan implements ExampleType
     throws VulkanException
   {
     return pickPhysicalDevice(khrSurfaceExt, surface, physicalDevices)
-      .orElseThrow(() -> new IllegalStateException("No suitable device found"));
+      .orElseThrow(() -> {
+        return new IllegalStateException("No suitable device found");
+      });
   }
 
   private static VulkanExtKHRSwapChainType getSwapChainExtension(
@@ -422,8 +436,10 @@ public final class HelloVulkan implements ExampleType
     return device.findEnabledExtension(
         "VK_KHR_swapchain",
         VulkanExtKHRSwapChainType.class)
-      .orElseThrow(() -> new IllegalStateException(
-        "Missing VK_KHR_swapchain extension"));
+      .orElseThrow(() -> {
+        return new IllegalStateException(
+          "Missing VK_KHR_swapchain extension");
+      });
   }
 
   private static VulkanSharingMode pickImageSharingMode(
@@ -589,10 +605,12 @@ public final class HelloVulkan implements ExampleType
       return devices.stream()
         .filter(HelloVulkan::physicalDeviceHasSwapChainExtension)
         .filter(HelloVulkan::physicalDeviceHasGraphicsQueue)
-        .filter(device -> physicalDeviceHasPresentationQueue(
-          khrSurfaceExt,
-          surface,
-          device))
+        .filter(device -> {
+          return physicalDeviceHasPresentationQueue(
+            khrSurfaceExt,
+            surface,
+            device);
+        })
         .findFirst();
     } catch (final VulkanUncheckedException e) {
       throw e.getCause();
@@ -763,7 +781,10 @@ public final class HelloVulkan implements ExampleType
     final var alloc =
       VulkanLWJGLTemporaryAllocator.create();
     final Supplier<VulkanException> exceptionSupplier =
-      () -> new VulkanResourceException("Could not close one or more resources.");
+      () -> {
+        return new VulkanResourceException(
+          "Could not close one or more resources.");
+      };
 
     try (var resources =
            CloseableCollection.create(exceptionSupplier)) {
@@ -893,8 +914,10 @@ public final class HelloVulkan implements ExampleType
         instance.findEnabledExtension(
             "VK_KHR_surface",
             VulkanExtKHRSurfaceType.class)
-          .orElseThrow(() -> new IllegalStateException(
-            "Missing VK_KHR_surface extension"));
+          .orElseThrow(() -> {
+            return new IllegalStateException(
+              "Missing VK_KHR_surface extension");
+          });
 
       final var surface =
         resources.add(khrSurfaceExt.surfaceFromWindow(instance, window));
@@ -952,15 +975,19 @@ public final class HelloVulkan implements ExampleType
 
       final var graphicsQueueProps =
         physicalDevice.queueFamilyFindWithFlags(VK_QUEUE_GRAPHICS_BIT)
-          .orElseThrow(() -> new IllegalStateException(
-            "Could not find graphics queue"));
+          .orElseThrow(() -> {
+            return new IllegalStateException(
+              "Could not find graphics queue");
+          });
 
       final var presentationQueueProps =
         khrSurfaceExt.surfaceSupport(physicalDevice, surface)
           .stream()
           .findFirst()
-          .orElseThrow(() -> new IllegalStateException(
-            "Could not find presentation queue"));
+          .orElseThrow(() -> {
+            return new IllegalStateException(
+              "Could not find presentation queue");
+          });
 
       /*
        * Put together the information needed to create a logical device. In this case,
@@ -1010,14 +1037,18 @@ public final class HelloVulkan implements ExampleType
         device.queue(
             graphicsQueueProps.queueFamilyIndex(),
             new VulkanQueueIndex(0))
-          .orElseThrow(() -> new IllegalStateException(
-            "Could not find graphics queue"));
+          .orElseThrow(() -> {
+            return new IllegalStateException(
+              "Could not find graphics queue");
+          });
       final var presentationQueue =
         device.queue(
             presentationQueueProps.queueFamilyIndex(),
             new VulkanQueueIndex(0))
-          .orElseThrow(() -> new IllegalStateException(
-            "Could not find presentation queue"));
+          .orElseThrow(() -> {
+            return new IllegalStateException(
+              "Could not find presentation queue");
+          });
 
       LOG.debug("graphics queue: {}", graphicsQueue);
       LOG.debug("presentation queue: {}", presentationQueue);
@@ -1045,7 +1076,9 @@ public final class HelloVulkan implements ExampleType
         swapChain.images();
       final var swapChainViews =
         swapChainImages.stream()
-          .map(image -> createImageViewForImage(surfaceFormat, device, image))
+          .map(image -> {
+            return createImageViewForImage(surfaceFormat, device, image);
+          })
           .map(resources::add)
           .toList();
 
@@ -1185,9 +1218,15 @@ public final class HelloVulkan implements ExampleType
           .setMaxDepth(1.0f)
           .build();
 
+      final var scissor =
+        VulkanRectangle2D.builder()
+          .setOffset(VulkanOffset2DType.ZERO)
+          .setExtent(surfaceExtent)
+          .build();
+
       final var viewportStateInfo =
         VulkanPipelineViewportStateCreateInfo.builder()
-          .addScissors(VulkanRectangle2D.of(VulkanOffset2D.ZERO, surfaceExtent))
+          .addScissors(scissor)
           .addViewports(viewport)
           .build();
 
@@ -1403,18 +1442,18 @@ public final class HelloVulkan implements ExampleType
             .addFlags(VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT)
             .build();
 
+        final var scissorArea =
+          VulkanRectangle2D.builder()
+            .setOffset(VulkanOffset2DType.ZERO)
+            .setExtent(surfaceExtent)
+            .build();
+
         final var renderInfo =
           VulkanRenderPassBeginInfo.builder()
             .setFramebuffer(framebuffer)
-            .setRenderArea(VulkanRectangle2D.of(
-              VulkanOffset2D.ZERO,
-              surfaceExtent))
+            .setRenderArea(scissorArea)
             .setRenderPass(renderPass)
-            .addClearValues(VulkanClearValueColorFloatingPoint.of(
-              0.0f,
-              0.0f,
-              0.0f,
-              1.0f))
+            .addClearValues(CLEAR_BLACK)
             .build();
 
         graphicsCommandBuffer.beginCommandBuffer(beginInfo);

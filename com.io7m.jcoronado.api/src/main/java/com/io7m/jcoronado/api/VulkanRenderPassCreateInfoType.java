@@ -37,27 +37,23 @@ public interface VulkanRenderPassCreateInfoType
    * @return The module creation flags
    */
 
-  @Value.Parameter
   Set<VulkanRenderPassCreateFlag> flags();
 
   /**
    * @return The render pass attachments
    */
 
-  @Value.Parameter
   List<VulkanAttachmentDescription> attachments();
 
   /**
    * @return The subpasses
    */
 
-  @Value.Parameter
   List<VulkanSubpassDescription> subpasses();
 
   /**
    * @return The subpass dependencies
    */
 
-  @Value.Parameter
   List<VulkanSubpassDependency> dependencies();
 }

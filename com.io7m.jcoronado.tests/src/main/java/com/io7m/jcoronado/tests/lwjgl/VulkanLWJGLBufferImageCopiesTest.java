@@ -107,14 +107,14 @@ public final class VulkanLWJGLBufferImageCopiesTest
         .build();
 
     final var source =
-      VulkanBufferImageCopy.of(
-        0L,
-        200,
-        300,
-        layers,
-        offset,
-        extent
-      );
+      VulkanBufferImageCopy.builder()
+        .setBufferOffset(0L)
+        .setBufferImageHeight(300)
+        .setBufferRowLength(200)
+        .setImageSubresource(layers)
+        .setImageOffset(offset)
+        .setImageExtent(extent)
+        .build();
 
     final var out =
       VulkanLWJGLBufferImageCopy.pack(this.stack, source);
@@ -149,14 +149,14 @@ public final class VulkanLWJGLBufferImageCopiesTest
         .build();
 
     final var source =
-      VulkanBufferImageCopy.of(
-        0L,
-        200,
-        300,
-        layers,
-        offset,
-        extent
-      );
+      VulkanBufferImageCopy.builder()
+        .setBufferOffset(0L)
+        .setBufferImageHeight(300)
+        .setBufferRowLength(200)
+        .setImageSubresource(layers)
+        .setImageOffset(offset)
+        .setImageExtent(extent)
+        .build();
 
     final var out =
       VulkanLWJGLBufferImageCopy.packList(
@@ -195,14 +195,14 @@ public final class VulkanLWJGLBufferImageCopiesTest
         .build();
 
     final var source =
-      VulkanBufferImageCopy.of(
-        0L,
-        200,
-        300,
-        layers,
-        offset,
-        extent
-      );
+      VulkanBufferImageCopy.builder()
+        .setBufferOffset(0L)
+        .setBufferImageHeight(300)
+        .setBufferRowLength(200)
+        .setImageSubresource(layers)
+        .setImageOffset(offset)
+        .setImageExtent(extent)
+        .build();
 
     final var packed =
       VulkanLWJGLBufferImageCopy.packListOrNull(

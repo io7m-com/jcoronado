@@ -42,48 +42,49 @@ public interface VulkanSubpassDependencyType
    * @return The subpass index of the first subpass in the dependency, or VK_SUBPASS_EXTERNAL.
    */
 
-  @Value.Parameter
-  int srcSubpass();
+  @Value.Default
+  default int srcSubpass()
+  {
+    return 0;
+  }
 
   /**
    * @return The subpass index of the second subpass in the dependency, or VK_SUBPASS_EXTERNAL.
    */
 
-  @Value.Parameter
-  int dstSubpass();
+  @Value.Default
+  default int dstSubpass()
+  {
+    return 0;
+  }
 
   /**
    * @return The source stage mask
    */
 
-  @Value.Parameter
   Set<VulkanPipelineStageFlag> srcStageMask();
 
   /**
    * @return The destination stage mask
    */
 
-  @Value.Parameter
   Set<VulkanPipelineStageFlag> dstStageMask();
 
   /**
    * @return The source access mask
    */
 
-  @Value.Parameter
   Set<VulkanAccessFlag> srcAccessMask();
 
   /**
    * @return The destination access mask
    */
 
-  @Value.Parameter
   Set<VulkanAccessFlag> dstAccessMask();
 
   /**
    * @return The dependency flags for the subpass
    */
 
-  @Value.Parameter
   Set<VulkanDependencyFlag> dependencyFlags();
 }

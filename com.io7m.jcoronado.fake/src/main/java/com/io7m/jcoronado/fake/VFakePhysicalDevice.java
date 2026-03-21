@@ -92,19 +92,23 @@ public final class VFakePhysicalDevice
     this.queueFamilies =
       new TreeMap<>();
 
+    final var queueFamilyProperties =
+      VulkanQueueFamilyProperties.builder()
+        .setQueueFamilyIndex(new VulkanQueueFamilyIndex(0))
+        .setQueueCount(1)
+        .setQueueFlags(Set.of(VulkanQueueFamilyPropertyFlag.values()))
+        .setTimestampValidBits(32)
+        .setMinImageTransferGranularity(
+          VulkanExtent3D.builder()
+            .setDepth(1)
+            .setHeight(1)
+            .setWidth(1)
+            .build()
+        ).build();
+
     this.queueFamilies.put(
       new VulkanQueueFamilyIndex(0),
-      VulkanQueueFamilyProperties.of(
-        new VulkanQueueFamilyIndex(0),
-        1,
-        Set.of(VulkanQueueFamilyPropertyFlag.values()),
-        32,
-        VulkanExtent3D.builder()
-          .setDepth(1)
-          .setHeight(1)
-          .setWidth(1)
-          .build()
-      )
+      queueFamilyProperties
     );
 
     final var v1 =
@@ -142,6 +146,26 @@ public final class VFakePhysicalDevice
         .setMaximum(8191.0f)
         .build();
 
+    final var workgroupCount =
+      VulkanComputeWorkGroupCount.builder()
+        .setMaximumX(65535)
+        .setMaximumY(65535)
+        .setMaximumZ(65535)
+        .build();
+
+    final var workgroupSize =
+      VulkanComputeWorkGroupSize.builder()
+        .setMaximumX(128)
+        .setMaximumY(128)
+        .setMaximumZ(64)
+        .build();
+
+    final var pointSizeRange =
+      VulkanPointSizeRange.builder()
+        .setMinimum(1.0f)
+        .setMaximum(1.0f)
+        .build();
+
     this.limits =
       VulkanPhysicalDeviceLimits.builder()
         .setBufferImageGranularity(131072)
@@ -157,10 +181,9 @@ public final class VFakePhysicalDevice
         .setMaxColorAttachments(4)
         .setMaxCombinedClipAndCullDistances(8)
         .setMaxComputeSharedMemorySize(16384)
-        .setMaxComputeWorkGroupCount(
-          VulkanComputeWorkGroupCount.of(65535, 65535, 65535))
+        .setMaxComputeWorkGroupCount(workgroupCount)
         .setMaxComputeWorkGroupInvocations(128)
-        .setMaxComputeWorkGroupSize(VulkanComputeWorkGroupSize.of(128, 128, 64))
+        .setMaxComputeWorkGroupSize(workgroupSize)
         .setMaxCullDistances(8)
         .setMaxDescriptorSetInputAttachments(4)
         .setMaxDescriptorSetSampledImages(96)
@@ -235,7 +258,7 @@ public final class VFakePhysicalDevice
         .setOptimalBufferCopyOffsetAlignment(1024)
         .setOptimalBufferCopyRowPitchAlignment(1024)
         .setPointSizeGranularity(1.0f)
-        .setPointSizeRange(VulkanPointSizeRange.of(1.0f, 1.0f))
+        .setPointSizeRange(pointSizeRange)
         .setSampledImageColorSampleCounts(1)
         .setSampledImageDepthSampleCounts(1)
         .setSampledImageIntegerSampleCounts(0)
