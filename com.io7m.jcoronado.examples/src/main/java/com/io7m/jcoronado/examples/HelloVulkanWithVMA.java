@@ -16,7 +16,6 @@
 
 package com.io7m.jcoronado.examples;
 
-import com.io7m.jcoronado.utility.allocation_tracker.VulkanHostAllocatorTracker;
 import com.io7m.jcoronado.api.VulkanApplicationInfo;
 import com.io7m.jcoronado.api.VulkanAttachmentDescription;
 import com.io7m.jcoronado.api.VulkanAttachmentReference;
@@ -130,6 +129,7 @@ import com.io7m.jcoronado.lwjgl.VMALWJGLAllocatorProvider;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLHostAllocatorJeMalloc;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLInstanceProvider;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLTemporaryAllocator;
+import com.io7m.jcoronado.utility.allocation_tracker.VulkanHostAllocatorTracker;
 import com.io7m.jcoronado.vma.VMAAllocationCreateInfo;
 import com.io7m.jcoronado.vma.VMAAllocationResult;
 import com.io7m.jcoronado.vma.VMAAllocatorCreateInfo;
@@ -390,13 +390,27 @@ public final class HelloVulkanWithVMA implements ExampleType
       VK_COMMAND_BUFFER_LEVEL_PRIMARY)) {
       commands.beginCommandBuffer(VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT);
 
+      final var extent =
+        VulkanExtent3D.builder()
+          .setWidth(texture_width)
+          .setHeight(texture_height)
+          .setDepth(1)
+          .build();
+
+      final var zero =
+        VulkanOffset3D.builder()
+          .setX(0)
+          .setY(0)
+          .setZ(0)
+          .build();
+
       final var copyOp =
         VulkanBufferImageCopy.builder()
           .setBufferImageHeight(0)
           .setBufferOffset(0L)
           .setBufferRowLength(0)
-          .setImageExtent(VulkanExtent3D.of(texture_width, texture_height, 1))
-          .setImageOffset(VulkanOffset3D.of(0, 0, 0))
+          .setImageExtent(extent)
+          .setImageOffset(zero)
           .setImageSubresource(
             VulkanImageSubresourceLayers.builder()
               .addAspectMask(VK_IMAGE_ASPECT_COLOR_BIT)
@@ -458,7 +472,7 @@ public final class HelloVulkanWithVMA implements ExampleType
         .setNewLayout(new_layout);
 
     if (old_layout == VK_IMAGE_LAYOUT_UNDEFINED
-        && new_layout == VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL) {
+      && new_layout == VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL) {
       barrierBuilder.setSrcAccessMask(
         Set.of());
       barrierBuilder.setDstAccessMask(
@@ -468,7 +482,7 @@ public final class HelloVulkanWithVMA implements ExampleType
       barrierBuilder.setDstStageMask(
         Set.of(VK_PIPELINE_STAGE_TRANSFER_BIT));
     } else if (old_layout == VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL
-               && new_layout == VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL) {
+      && new_layout == VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL) {
       barrierBuilder.setSrcAccessMask(
         Set.of(VK_ACCESS_TRANSFER_WRITE_BIT));
       barrierBuilder.setDstAccessMask(
@@ -531,10 +545,17 @@ public final class HelloVulkanWithVMA implements ExampleType
       Integer.valueOf(texture_width),
       Integer.valueOf(texture_height));
 
+    final var extent =
+      VulkanExtent3D.builder()
+        .setWidth(texture_width)
+        .setHeight(texture_height)
+        .setDepth(1)
+        .build();
+
     final var texture_buffer_create_info =
       VulkanImageCreateInfo.builder()
         .setArrayLayers(1)
-        .setExtent(VulkanExtent3D.of(texture_width, texture_height, 1))
+        .setExtent(extent)
         .setFormat(format)
         .setImageType(VulkanImageKind.VK_IMAGE_TYPE_2D)
         .setInitialLayout(VK_IMAGE_LAYOUT_UNDEFINED)
@@ -884,18 +905,20 @@ public final class HelloVulkanWithVMA implements ExampleType
         .setPrimitiveRestartEnable(false)
         .build();
 
+    final var viewport =
+      VulkanViewport.builder()
+        .setX(0.0f)
+        .setY(0.0f)
+        .setWidth((float) surface_extent.width())
+        .setHeight((float) surface_extent.height())
+        .setMinDepth(0.0f)
+        .setMaxDepth(1.0f)
+        .build();
+
     final var viewport_state_info =
       VulkanPipelineViewportStateCreateInfo.builder()
-        .addScissors(VulkanRectangle2D.of(
-          VulkanOffset2D.of(0, 0),
-          surface_extent))
-        .addViewports(VulkanViewport.of(
-          0.0f,
-          0.0f,
-          (float) surface_extent.width(),
-          (float) surface_extent.height(),
-          0.0f,
-          1.0f))
+        .addScissors(VulkanRectangle2D.of(VulkanOffset2D.ZERO, surface_extent))
+        .addViewports(viewport)
         .build();
 
     final var rasterizer =
@@ -1261,21 +1284,27 @@ public final class HelloVulkanWithVMA implements ExampleType
   {
     try {
       final var range =
-        VulkanImageSubresourceRange.of(
-          Set.of(VK_IMAGE_ASPECT_COLOR_BIT),
-          0,
-          1,
-          0,
-          1);
+        VulkanImageSubresourceRange.builder()
+          .addAspectMask(VK_IMAGE_ASPECT_COLOR_BIT)
+          .setLevelCount(1)
+          .setLayerCount(1)
+          .setBaseMipLevel(0)
+          .setBaseArrayLayer(0)
+          .build();
 
       final Set<VulkanImageViewCreateFlag> flags = Set.of();
-      return device.createImageView(VulkanImageViewCreateInfo.of(
-        flags,
-        image,
-        VK_IMAGE_VIEW_TYPE_2D,
-        surface_format.format(),
-        VulkanComponentMappingType.identity(),
-        range));
+
+      final var viewCreateInfo =
+        VulkanImageViewCreateInfo.builder()
+          .addAllFlags(flags)
+          .setImage(image)
+          .setFormat(surface_format.format())
+          .setComponents(VulkanComponentMappingType.identity())
+          .setViewType(VK_IMAGE_VIEW_TYPE_2D)
+          .setSubresourceRange(range)
+          .build();
+
+      return device.createImageView(viewCreateInfo);
     } catch (final VulkanException e) {
       throw new VulkanUncheckedException(e);
     }
@@ -1403,14 +1432,22 @@ public final class HelloVulkanWithVMA implements ExampleType
       return surface_caps.currentExtent();
     }
 
-    return VulkanExtent2D.of(
+    final var width =
       Math.max(
         surface_caps.minImageExtent().width(),
-        Math.min(surface_caps.maxImageExtent().width(), 640)),
+        Math.min(surface_caps.maxImageExtent().width(), 640)
+      );
+
+    final var height =
       Math.max(
         surface_caps.minImageExtent().height(),
-        Math.min(surface_caps.maxImageExtent().height(), 480))
-    );
+        Math.min(surface_caps.maxImageExtent().height(), 480)
+      );
+
+    return VulkanExtent2D.builder()
+      .setWidth(width)
+      .setHeight(height)
+      .build();
   }
 
   private static VulkanPresentModeKHR pickPresentationMode(
@@ -1477,7 +1514,7 @@ public final class HelloVulkanWithVMA implements ExampleType
 
     for (final var format : formats) {
       if (format.format() == VK_FORMAT_B8G8R8A8_UNORM
-          && format.colorSpace() == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR) {
+        && format.colorSpace() == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR) {
         return format;
       }
     }
@@ -1533,7 +1570,7 @@ public final class HelloVulkanWithVMA implements ExampleType
         device.extensions(Optional.empty());
 
       return extensions.containsKey("VK_KHR_swapchain")
-             && extensions.containsKey("VK_EXT_swapchain_maintenance1");
+        && extensions.containsKey("VK_EXT_swapchain_maintenance1");
     } catch (final VulkanException e) {
       throw new VulkanUncheckedException(e);
     }
@@ -2164,7 +2201,7 @@ public final class HelloVulkanWithVMA implements ExampleType
           VulkanRenderPassBeginInfo.builder()
             .setFramebuffer(framebuffer)
             .setRenderArea(VulkanRectangle2D.of(
-              VulkanOffset2D.of(0, 0),
+              VulkanOffset2D.ZERO,
               surfaceExtent))
             .setRenderPass(renderPass)
             .addClearValues(VulkanClearValueColorFloatingPoint.of(

@@ -43,11 +43,23 @@ public final class VulkanVersionsTest
     }
   }
 
+  private static VulkanVersion of(
+    final int major,
+    final int minor,
+    final int patch)
+  {
+    return VulkanVersion.builder()
+      .setMajor(major)
+      .setMinor(minor)
+      .setPatch(patch)
+      .build();
+  }
+
   @Test
   public void testCompare0()
   {
-    final var v0 = VulkanVersion.of(1, 0, 0);
-    final var v1 = VulkanVersion.of(2, 0, 0);
+    final var v0 = of(1, 0, 0);
+    final var v1 = of(2, 0, 0);
     Assertions.assertTrue(v0.compareTo(v1) < 0);
     Assertions.assertTrue(v1.compareTo(v0) > 0);
     Assertions.assertTrue(v0.compareTo(v0) == 0);
@@ -56,8 +68,8 @@ public final class VulkanVersionsTest
   @Test
   public void testCompare1()
   {
-    final var v0 = VulkanVersion.of(1, 0, 0);
-    final var v1 = VulkanVersion.of(1, 1, 0);
+    final var v0 = of(1, 0, 0);
+    final var v1 = of(1, 1, 0);
     Assertions.assertTrue(v0.compareTo(v1) < 0);
     Assertions.assertTrue(v1.compareTo(v0) > 0);
   }
@@ -65,8 +77,8 @@ public final class VulkanVersionsTest
   @Test
   public void testCompare2()
   {
-    final var v0 = VulkanVersion.of(1, 0, 0);
-    final var v1 = VulkanVersion.of(1, 0, 1);
+    final var v0 = of(1, 0, 0);
+    final var v1 = of(1, 0, 1);
     Assertions.assertTrue(v0.compareTo(v1) < 0);
     Assertions.assertTrue(v1.compareTo(v0) > 0);
   }
@@ -74,12 +86,12 @@ public final class VulkanVersionsTest
   @Test
   public void testToHumanString()
   {
-    final var v0 = VulkanVersion.of(1, 0, 0);
-    final var v1 = VulkanVersion.of(1, 1, 0);
-    final var v2 = VulkanVersion.of(1, 1, 1);
-    final var v3 = VulkanVersion.of(1, 0, 0);
-    final var v4 = VulkanVersion.of(1, 1, 0);
-    final var v5 = VulkanVersion.of(1, 1, 1);
+    final var v0 = of(1, 0, 0);
+    final var v1 = of(1, 1, 0);
+    final var v2 = of(1, 1, 1);
+    final var v3 = of(1, 0, 0);
+    final var v4 = of(1, 1, 0);
+    final var v5 = of(1, 1, 1);
 
     final HashSet<String> ss = new HashSet<>();
     ss.add(v0.toHumanString());

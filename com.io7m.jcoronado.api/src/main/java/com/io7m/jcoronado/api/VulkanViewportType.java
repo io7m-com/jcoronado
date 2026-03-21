@@ -34,41 +34,41 @@ public interface VulkanViewportType
    * @return the viewport’s upper left corner
    */
 
-  @Value.Parameter
-  float x();
+  @Value.Default
+  default float x() { return 0.0f; }
 
   /**
    * @return the viewport’s upper left corner
    */
 
-  @Value.Parameter
-  float y();
+  @Value.Default
+  default float y() { return 0.0f; }
 
   /**
    * @return the viewport’s width
    */
 
-  @Value.Parameter
-  float width();
+  @Value.Default
+  default float width() { return 0.0f; }
 
   /**
    * @return the viewport’s height
    */
 
-  @Value.Parameter
-  float height();
+  @Value.Default
+  default float height() { return 0.0f; }
 
   /**
    * @return the viewport’s depth range (minimum)
    */
 
-  @Value.Parameter
-  float minDepth();
+  @Value.Default
+  default float minDepth() { return 0.0f; }
 
   /**
    * @return the viewport’s depth range (maximum)
    */
 
-  @Value.Parameter
-  float maxDepth();
+  @Value.Default
+  default float maxDepth() { return 0.0f; }
 }

@@ -34,22 +34,31 @@ public interface VulkanVersionType extends Comparable<VulkanVersionType>
    * @return The major version
    */
 
-  @Value.Parameter
-  int major();
+  @Value.Default
+  default int major()
+  {
+    return 0;
+  }
 
   /**
    * @return The minor version
    */
 
-  @Value.Parameter
-  int minor();
+  @Value.Default
+  default int minor()
+  {
+    return 0;
+  }
 
   /**
    * @return The patch version
    */
 
-  @Value.Parameter
-  int patch();
+  @Value.Default
+  default int patch()
+  {
+    return 0;
+  }
 
   /**
    * @return The current version as a humanly-readable string

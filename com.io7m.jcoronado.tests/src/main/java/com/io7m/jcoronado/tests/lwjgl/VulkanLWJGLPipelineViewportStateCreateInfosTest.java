@@ -146,14 +146,53 @@ public final class VulkanLWJGLPipelineViewportStateCreateInfosTest
   public void testPipelineViewportStateCreateInfo()
   {
     final var viewport_0 =
-      VulkanViewport.of(101.0f, 102.0f, 103.0f, 104.0f, 0.0f, 1.0f);
+      VulkanViewport.builder()
+        .setX(101.0f)
+        .setY(102.0f)
+        .setWidth(103.0f)
+        .setHeight(104.0f)
+        .setMinDepth(0.0f)
+        .setMaxDepth(1.0f)
+        .build();
+
     final var viewport_1 =
-      VulkanViewport.of(105.0f, 106.0f, 107.0f, 108.0f, 0.0f, 1.0f);
+      VulkanViewport.builder()
+        .setX(105.0f)
+        .setY(106.0f)
+        .setWidth(107.0f)
+        .setHeight(108.0f)
+        .setMinDepth(0.0f)
+        .setMaxDepth(1.0f)
+        .build();
+
+    final var extent_0 =
+      VulkanExtent2D.builder()
+        .setWidth(23)
+        .setHeight(34)
+        .build();
+
+    final var extent_1 =
+      VulkanExtent2D.builder()
+        .setWidth(25)
+        .setHeight(37)
+        .build();
+
+    final var offset_0 =
+      VulkanOffset2D.builder()
+        .setX(5)
+        .setY(17)
+        .build();
+
+    final var offset_1 =
+      VulkanOffset2D.builder()
+        .setX(6)
+        .setY(18)
+        .build();
 
     final var scissor_0 =
-      VulkanRectangle2D.of(VulkanOffset2D.of(5, 17), VulkanExtent2D.of(23, 34));
+      VulkanRectangle2D.of(offset_0, extent_0);
     final var scissor_1 =
-      VulkanRectangle2D.of(VulkanOffset2D.of(6, 18), VulkanExtent2D.of(25, 37));
+      VulkanRectangle2D.of(offset_1, extent_1);
 
     final var info =
       VulkanPipelineViewportStateCreateInfo.builder()

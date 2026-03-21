@@ -235,7 +235,10 @@ public final class JCSwapchainManager
       maxExtent.height()
     );
 
-    return VulkanExtent2D.of(x, y);
+    return VulkanExtent2D.builder()
+      .setWidth(x)
+      .setHeight(y)
+      .build();
   }
 
   @Override
@@ -559,24 +562,24 @@ public final class JCSwapchainManager
     throws VulkanException
   {
     final var range =
-      VulkanImageSubresourceRange.of(
-        Set.of(VK_IMAGE_ASPECT_COLOR_BIT),
-        0,
-        1,
-        0,
-        1
-      );
+      VulkanImageSubresourceRange.builder()
+        .addAspectMask(VK_IMAGE_ASPECT_COLOR_BIT)
+        .setBaseArrayLayer(0)
+        .setLayerCount(1)
+        .setBaseMipLevel(0)
+        .setLevelCount(1)
+        .build();
 
     final Set<VulkanImageViewCreateFlag> flags = Set.of();
     return this.device.createImageView(
-      VulkanImageViewCreateInfo.of(
-        flags,
-        image,
-        VK_IMAGE_VIEW_TYPE_2D,
-        surfaceFormat.format(),
-        IDENTITY_SWIZZLE,
-        range
-      )
+      VulkanImageViewCreateInfo.builder()
+        .addAllFlags(flags)
+        .setImage(image)
+        .setComponents(IDENTITY_SWIZZLE)
+        .setSubresourceRange(range)
+        .setViewType(VK_IMAGE_VIEW_TYPE_2D)
+        .setFormat(surfaceFormat.format())
+        .build()
     );
   }
 

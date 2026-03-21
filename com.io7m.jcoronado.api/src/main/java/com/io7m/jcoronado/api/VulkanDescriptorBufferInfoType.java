@@ -32,7 +32,6 @@ public interface VulkanDescriptorBufferInfoType
    * @return The buffer resource
    */
 
-  @Value.Parameter
   VulkanBufferType buffer();
 
   /**
@@ -40,14 +39,20 @@ public interface VulkanDescriptorBufferInfoType
    * descriptor uses addressing that is relative to this starting offset.
    */
 
-  @Value.Parameter
-  long offset();
+  @Value.Default
+  default long offset()
+  {
+    return 0L;
+  }
 
   /**
    * @return The size in bytes that is used for this descriptor update, or VK_WHOLE_SIZE to use the
    * range from offset to the end of the buffer.
    */
 
-  @Value.Parameter
-  long range();
+  @Value.Default
+  default long range()
+  {
+    return 0L;
+  }
 }

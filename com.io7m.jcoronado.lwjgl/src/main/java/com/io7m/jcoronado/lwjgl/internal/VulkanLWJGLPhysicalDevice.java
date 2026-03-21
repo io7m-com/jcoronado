@@ -688,9 +688,11 @@ public final class VulkanLWJGLPhysicalDevice
       for (var index = 0; index < size; ++index) {
         device_extensions.position(index);
         final var extension =
-          VulkanExtensionProperties.of(
-            device_extensions.extensionNameString(),
-            device_extensions.specVersion());
+          VulkanExtensionProperties.builder()
+            .setName(device_extensions.extensionNameString())
+            .setVersion(device_extensions.specVersion())
+            .build();
+
         extensions.put(extension.name(), extension);
       }
 
@@ -732,11 +734,12 @@ public final class VulkanLWJGLPhysicalDevice
         layers_buffer.position(index);
 
         final var layer =
-          VulkanLayerProperties.of(
-            layers_buffer.layerNameString(),
-            layers_buffer.descriptionString(),
-            layers_buffer.specVersion(),
-            layers_buffer.implementationVersion());
+          VulkanLayerProperties.builder()
+            .setName(layers_buffer.layerNameString())
+            .setDescription(layers_buffer.descriptionString())
+            .setSpecificationVersion(layers_buffer.specVersion())
+            .setImplementationVersion(layers_buffer.implementationVersion())
+            .build();
 
         layers.put(layer.name(), layer);
       }

@@ -34,20 +34,25 @@ public interface VulkanCommandBufferCreateInfoType
    * @return The command pool
    */
 
-  @Value.Parameter
   VulkanCommandPoolType pool();
 
   /**
    * @return The command buffer level
    */
 
-  @Value.Parameter
-  VulkanCommandBufferLevel level();
+  @Value.Default
+  default VulkanCommandBufferLevel level()
+  {
+    return VulkanCommandBufferLevel.VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+  }
 
   /**
    * @return The number of command buffers to allocate from the pool.
    */
 
-  @Value.Parameter
-  int count();
+  @Value.Default
+  default int count()
+  {
+    return 0;
+  }
 }

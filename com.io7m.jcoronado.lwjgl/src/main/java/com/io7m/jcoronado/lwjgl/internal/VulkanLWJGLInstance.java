@@ -206,10 +206,11 @@ public final class VulkanLWJGLInstance
   private static VulkanExtent3D parseExtent3D(
     final VkExtent3D e)
   {
-    return VulkanExtent3D.of(
-      e.width(),
-      e.height(),
-      e.depth());
+    return VulkanExtent3D.builder()
+      .setWidth(e.width())
+      .setDepth(e.depth())
+      .setHeight(e.height())
+      .build();
   }
 
   private static Set<VulkanQueueFamilyPropertyFlag> parseQueueFlags(
@@ -280,13 +281,14 @@ public final class VulkanLWJGLInstance
         Integer.valueOf(driver_version.patch()));
     }
 
-    return VulkanPhysicalDeviceProperties.of(
-      device_name,
-      device_type,
-      device_id,
-      device_vendor,
-      version,
-      driver_version);
+    return VulkanPhysicalDeviceProperties.builder()
+      .setApiVersion(version)
+      .setDriverVersion(driver_version)
+      .setId(device_id)
+      .setName(device_name)
+      .setType(device_type)
+      .setVendorId(device_vendor)
+      .build();
   }
 
   private static VulkanPhysicalDeviceMemoryProperties
@@ -319,11 +321,11 @@ public final class VulkanLWJGLInstance
     final int typeIndex,
     final VkMemoryType type)
   {
-    return VulkanMemoryType.of(
-      new VulkanMemoryTypeIndex(typeIndex),
-      new VulkanMemoryHeapIndex(type.heapIndex()),
-      parseTypeFlags(type.propertyFlags())
-    );
+    return VulkanMemoryType.builder()
+      .setIndex(new VulkanMemoryTypeIndex(typeIndex))
+      .setHeapIndex(new VulkanMemoryHeapIndex(type.heapIndex()))
+      .setFlags(parseTypeFlags(type.propertyFlags()))
+      .build();
   }
 
   private static Set<VulkanMemoryPropertyFlag> parseTypeFlags(
@@ -346,11 +348,11 @@ public final class VulkanLWJGLInstance
     final int heapIndex,
     final VkMemoryHeap heap)
   {
-    return VulkanMemoryHeap.of(
-      new VulkanMemoryHeapIndex(heapIndex),
-      heap.size(),
-      parseHeapFlags(heap.flags())
-    );
+    return VulkanMemoryHeap.builder()
+      .setIndex(new VulkanMemoryHeapIndex(heapIndex))
+      .setSize(heap.size())
+      .setFlags(parseHeapFlags(heap.flags()))
+      .build();
   }
 
   private static Set<VulkanMemoryHeapFlag> parseHeapFlags(
@@ -716,9 +718,10 @@ public final class VulkanLWJGLInstance
   private static VulkanViewportBoundsRange parseViewportBoundsRange(
     final FloatBuffer buffer)
   {
-    return VulkanViewportBoundsRange.of(
-      buffer.get(0),
-      buffer.get(1));
+    return VulkanViewportBoundsRange.builder()
+      .setMinimum(buffer.get(0))
+      .setMaximum(buffer.get(1))
+      .build();
   }
 
   private static VulkanPointSizeRange parsePointSizeRange(
@@ -732,9 +735,10 @@ public final class VulkanLWJGLInstance
   private static VulkanViewportDimensions parseViewportDimensions(
     final IntBuffer buffer)
   {
-    return VulkanViewportDimensions.of(
-      buffer.get(0),
-      buffer.get(1));
+    return VulkanViewportDimensions.builder()
+      .setMaximumX(buffer.get(0))
+      .setMaximumY(buffer.get(1))
+      .build();
   }
 
   private static VulkanComputeWorkGroupSize parseComputeWorkGroupSize(
@@ -758,9 +762,10 @@ public final class VulkanLWJGLInstance
   private static VulkanLineWidthRange parseLineWidthRange(
     final FloatBuffer buffer)
   {
-    return VulkanLineWidthRange.of(
-      buffer.get(0),
-      buffer.get(1));
+    return VulkanLineWidthRange.builder()
+      .setMinimum(buffer.get(0))
+      .setMaximum(buffer.get(1))
+      .build();
   }
 
   private static VulkanPhysicalDeviceFeatures parseAllFeatures(

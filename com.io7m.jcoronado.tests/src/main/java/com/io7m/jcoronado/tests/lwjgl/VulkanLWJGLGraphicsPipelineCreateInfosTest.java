@@ -62,7 +62,6 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.OptionalInt;
 import java.util.Set;
 
 import static com.io7m.jcoronado.api.VulkanBlendFactor.VK_BLEND_FACTOR_CONSTANT_ALPHA;
@@ -248,14 +247,53 @@ public final class VulkanLWJGLGraphicsPipelineCreateInfosTest
         .build();
 
     final var viewport_0 =
-      VulkanViewport.of(101.0f, 102.0f, 103.0f, 104.0f, 0.0f, 1.0f);
+      VulkanViewport.builder()
+        .setX(101.0f)
+        .setY(102.0f)
+        .setWidth(103.0f)
+        .setHeight(104.0f)
+        .setMinDepth(0.0f)
+        .setMaxDepth(1.0f)
+        .build();
+
     final var viewport_1 =
-      VulkanViewport.of(105.0f, 106.0f, 107.0f, 108.0f, 0.0f, 1.0f);
+      VulkanViewport.builder()
+        .setX(105.0f)
+        .setY(106.0f)
+        .setWidth(107.0f)
+        .setHeight(108.0f)
+        .setMinDepth(0.0f)
+        .setMaxDepth(1.0f)
+        .build();
+
+    final var extent_0 =
+      VulkanExtent2D.builder()
+        .setWidth(23)
+        .setHeight(34)
+        .build();
+
+    final var extent_1 =
+      VulkanExtent2D.builder()
+        .setWidth(25)
+        .setHeight(37)
+        .build();
+
+    final var offset_0 =
+      VulkanOffset2D.builder()
+        .setX(5)
+        .setY(17)
+        .build();
+
+    final var offset_1 =
+      VulkanOffset2D.builder()
+        .setX(6)
+        .setY(18)
+        .build();
 
     final var scissor_0 =
-      VulkanRectangle2D.of(VulkanOffset2D.of(5, 17), VulkanExtent2D.of(23, 34));
+      VulkanRectangle2D.of(offset_0, extent_0);
     final var scissor_1 =
-      VulkanRectangle2D.of(VulkanOffset2D.of(6, 18), VulkanExtent2D.of(25, 37));
+      VulkanRectangle2D.of(offset_1, extent_1);
 
     final var viewport_info =
       VulkanPipelineViewportStateCreateInfo.builder()
@@ -270,41 +308,28 @@ public final class VulkanLWJGLGraphicsPipelineCreateInfosTest
     final var shader_infos =
       List.of(shader_info_0, shader_info_1);
 
-    final var tess_opt =
-      Optional.of(tessellation_info);
-    final var viewport_opt =
-      Optional.of(viewport_info);
-    final var multi_opt =
-      Optional.of(multisample_info);
-    final var depth_opt =
-      Optional.of(depth_info);
-    final var color_opt =
-      Optional.of(color_info);
-    final var dyn_opt =
-      Optional.of(dynamic_info);
     final Optional<VulkanPipelineType> pipe_opt =
       Optional.empty();
-    final var base_opt =
-      OptionalInt.of(23);
 
     final var info =
-      VulkanGraphicsPipelineCreateInfo.of(
-        flags,
-        shader_infos,
-        vertex_info,
-        input_info,
-        tess_opt,
-        viewport_opt,
-        raster_info,
-        multi_opt,
-        depth_opt,
-        color_opt,
-        dyn_opt,
-        layout,
-        Optional.of(render_pass),
-        0,
-        pipe_opt,
-        base_opt);
+      VulkanGraphicsPipelineCreateInfo.builder()
+        .setBasePipeline(pipe_opt)
+        .setBasePipelineIndex(23)
+        .setColorBlendState(color_info)
+        .setDepthStencilState(depth_info)
+        .setDynamicState(dynamic_info)
+        .setFlags(flags)
+        .setInputAssemblyState(input_info)
+        .setLayout(layout)
+        .setMultisampleState(multisample_info)
+        .setRasterizationState(raster_info)
+        .setRenderPass(render_pass)
+        .setStages(shader_infos)
+        .setSubpass(0)
+        .setTessellationState(tessellation_info)
+        .setVertexInputState(vertex_info)
+        .setViewportState(viewport_info)
+        .build();
 
     final var packed_0 =
       VulkanLWJGLGraphicsPipelineCreateInfos.pack(

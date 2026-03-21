@@ -63,7 +63,11 @@ public final class VulkanLWJGLInstanceProvider
     LoggerFactory.getLogger(VulkanLWJGLInstanceProvider.class);
 
   private static final VulkanVersion VULKAN_14 =
-    VulkanVersion.of(1, 4, 0);
+    VulkanVersion.builder()
+      .setMajor(1)
+      .setMinor(4)
+      .setPatch(0)
+      .build();
 
   private final MemoryStack initialStack;
   private final VulkanLWJGLExtensionsRegistry extensions;
@@ -159,10 +163,13 @@ public final class VulkanLWJGLInstanceProvider
 
       for (var index = 0; index < size; ++index) {
         instanceExtensions.position(index);
+
         final var extension =
-          VulkanExtensionProperties.of(
-            instanceExtensions.extensionNameString(),
-            instanceExtensions.specVersion());
+          VulkanExtensionProperties.builder()
+            .setName(instanceExtensions.extensionNameString())
+            .setVersion(instanceExtensions.specVersion())
+            .build();
+
         availableExtensions.put(extension.name(), extension);
       }
 
@@ -202,11 +209,12 @@ public final class VulkanLWJGLInstanceProvider
         layersBuffer.position(index);
 
         final var layer =
-          VulkanLayerProperties.of(
-            layersBuffer.layerNameString(),
-            layersBuffer.descriptionString(),
-            layersBuffer.specVersion(),
-            layersBuffer.implementationVersion());
+          VulkanLayerProperties.builder()
+            .setDescription(layersBuffer.descriptionString())
+            .setImplementationVersion(layersBuffer.implementationVersion())
+            .setName(layersBuffer.layerNameString())
+            .setSpecificationVersion(layersBuffer.specVersion())
+            .build();
 
         layers.put(layer.name(), layer);
       }
@@ -234,12 +242,15 @@ public final class VulkanLWJGLInstanceProvider
       this.findSupportedInstanceVersion();
 
     if (LOG.isDebugEnabled()) {
-      LOG.debug("Requested Vulkan version: {}",
-                requestedVersion.toHumanString());
-      LOG.debug("Required Vulkan version:  {}",
-                VULKAN_14.toHumanString());
-      LOG.debug("Supported Vulkan version: {}",
-                supportedVersion.toHumanString());
+      LOG.debug(
+        "Requested Vulkan version: {}",
+        requestedVersion.toHumanString());
+      LOG.debug(
+        "Required Vulkan version:  {}",
+        VULKAN_14.toHumanString());
+      LOG.debug(
+        "Supported Vulkan version: {}",
+        supportedVersion.toHumanString());
     }
 
     /*
@@ -356,7 +367,8 @@ public final class VulkanLWJGLInstanceProvider
       new ArrayList<Map.Entry<Long, Long>>();
 
     var next = 0L;
-    INFO_LOOP: for (int infoIndex = infos.size() - 1; infoIndex >= 0; --infoIndex) {
+    INFO_LOOP:
+    for (int infoIndex = infos.size() - 1; infoIndex >= 0; --infoIndex) {
       final var info = infos.get(infoIndex);
       for (final var handler : handlers) {
         if (handler.supports(info.getClass())) {

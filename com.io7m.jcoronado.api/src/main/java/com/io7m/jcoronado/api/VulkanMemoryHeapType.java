@@ -36,20 +36,21 @@ public interface VulkanMemoryHeapType
    * @return The heap index
    */
 
-  @Value.Parameter
   VulkanMemoryHeapIndex index();
 
   /**
    * @return The total memory size in bytes in the heap.
    */
 
-  @Value.Parameter
-  long size();
+  @Value.Default
+  default long size()
+  {
+    return 0L;
+  }
 
   /**
    * @return The flags for the heap
    */
 
-  @Value.Parameter
   Set<VulkanMemoryHeapFlag> flags();
 }

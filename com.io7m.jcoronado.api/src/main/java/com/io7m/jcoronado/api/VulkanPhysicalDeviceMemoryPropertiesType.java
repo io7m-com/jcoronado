@@ -38,7 +38,6 @@ public interface VulkanPhysicalDeviceMemoryPropertiesType
    * @return The memory heaps from which memory can be allocated.
    */
 
-  @Value.Parameter
   SortedMap<VulkanMemoryHeapIndex, VulkanMemoryHeap> heaps();
 
   /**
@@ -46,7 +45,6 @@ public interface VulkanPhysicalDeviceMemoryPropertiesType
    * the heaps specified by {@link #heaps()}
    */
 
-  @Value.Parameter
   SortedMap<VulkanMemoryTypeIndex, VulkanMemoryType> types();
 
   /**

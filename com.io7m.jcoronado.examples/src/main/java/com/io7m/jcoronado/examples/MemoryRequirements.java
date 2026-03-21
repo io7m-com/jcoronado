@@ -16,7 +16,6 @@
 
 package com.io7m.jcoronado.examples;
 
-import com.io7m.jcoronado.utility.allocation_tracker.VulkanHostAllocatorTracker;
 import com.io7m.jcoronado.api.VulkanApplicationInfo;
 import com.io7m.jcoronado.api.VulkanBufferCreateInfo;
 import com.io7m.jcoronado.api.VulkanException;
@@ -45,6 +44,7 @@ import com.io7m.jcoronado.extensions.ext_debug_utils.api.VulkanDebugUtilsSLF4J;
 import com.io7m.jcoronado.extensions.ext_debug_utils.api.VulkanDebugUtilsType;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLHostAllocatorJeMalloc;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLInstanceProvider;
+import com.io7m.jcoronado.utility.allocation_tracker.VulkanHostAllocatorTracker;
 import com.io7m.jmulticlose.core.CloseableCollection;
 import com.io7m.jmulticlose.core.CloseableCollectionType;
 import org.lwjgl.glfw.GLFW;
@@ -443,12 +443,19 @@ public final class MemoryRequirements implements ExampleType
           final var w = 1 << x;
           final var h = 1 << y;
 
+          final var extent =
+            VulkanExtent3D.builder()
+              .setWidth(w)
+              .setHeight(h)
+              .setDepth(1)
+              .build();
+
           final var imageCreateInfo =
             VulkanImageCreateInfo.builder()
               .addSamples(VK_SAMPLE_COUNT_1_BIT)
               .addUsage(VK_IMAGE_USAGE_SAMPLED_BIT)
               .setArrayLayers(1)
-              .setExtent(VulkanExtent3D.of(w, h, 1))
+              .setExtent(extent)
               .setFormat(VulkanFormat.VK_FORMAT_R8G8B8A8_UNORM)
               .setImageType(VulkanImageKind.VK_IMAGE_TYPE_2D)
               .setInitialLayout(VulkanImageLayout.VK_IMAGE_LAYOUT_UNDEFINED)
@@ -465,23 +472,30 @@ public final class MemoryRequirements implements ExampleType
 
           out.append(
             String.format(
-            "%d %d %d %d%n",
-            Integer.valueOf(w),
-            Integer.valueOf(h),
-            Long.valueOf(imageRequirements.size()),
-            Long.valueOf(imageRequirements.alignment())
+              "%d %d %d %d%n",
+              Integer.valueOf(w),
+              Integer.valueOf(h),
+              Long.valueOf(imageRequirements.size()),
+              Long.valueOf(imageRequirements.alignment())
             )
           );
         }
       }
 
       {
+        final var extent =
+          VulkanExtent3D.builder()
+            .setWidth(1920)
+            .setHeight(1080)
+            .setDepth(1)
+            .build();
+
         final var imageCreateInfo =
           VulkanImageCreateInfo.builder()
             .addSamples(VK_SAMPLE_COUNT_1_BIT)
             .addUsage(VK_IMAGE_USAGE_SAMPLED_BIT)
             .setArrayLayers(1)
-            .setExtent(VulkanExtent3D.of(1920, 1080, 1))
+            .setExtent(extent)
             .setFormat(VulkanFormat.VK_FORMAT_R8G8B8A8_UNORM)
             .setImageType(VulkanImageKind.VK_IMAGE_TYPE_2D)
             .setInitialLayout(VulkanImageLayout.VK_IMAGE_LAYOUT_UNDEFINED)
@@ -551,7 +565,7 @@ public final class MemoryRequirements implements ExampleType
       final var baseSizes =
         new int[]{1, 2, 4, 8};
       final var baseMult =
-        new int[]{1,10,100,1_000,10_000,100_000,1_000_000,10_000_000,100_000_000};
+        new int[]{1, 10, 100, 1_000, 10_000, 100_000, 1_000_000, 10_000_000, 100_000_000};
 
       for (final var s : baseSizes) {
         for (final var m : baseMult) {

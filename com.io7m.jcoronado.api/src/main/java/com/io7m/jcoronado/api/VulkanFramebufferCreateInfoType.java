@@ -37,7 +37,6 @@ public interface VulkanFramebufferCreateInfoType
    * @return Flags specifying how the framebuffer will be generated.
    */
 
-  @Value.Parameter
   Set<VulkanFramebufferCreateFlag> flags();
 
   /**
@@ -45,7 +44,6 @@ public interface VulkanFramebufferCreateInfoType
    * compatible.
    */
 
-  @Value.Parameter
   VulkanRenderPassType renderPass();
 
   /**
@@ -53,27 +51,35 @@ public interface VulkanFramebufferCreateInfoType
    * attachment in a render pass instance.
    */
 
-  @Value.Parameter
   List<VulkanImageViewType> attachments();
 
   /**
    * @return The width of the framebuffer
    */
 
-  @Value.Parameter
-  int width();
+  @Value.Default
+  default int width()
+  {
+    return 0;
+  }
 
   /**
    * @return The height of the framebuffer
    */
 
-  @Value.Parameter
-  int height();
+  @Value.Default
+  default int height()
+  {
+    return 0;
+  }
 
   /**
    * @return The number of layers in the framebuffer
    */
 
-  @Value.Parameter
-  int layers();
+  @Value.Default
+  default int layers()
+  {
+    return 1;
+  }
 }

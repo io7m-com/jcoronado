@@ -32,15 +32,21 @@ public interface VulkanMemoryRequirementsType
    * @return The size, in bytes, of the memory allocation required for the resource.
    */
 
-  @Value.Parameter
-  long size();
+  @Value.Default
+  default long size()
+  {
+    return 0L;
+  }
 
   /**
    * @return The alignment, in bytes, of the offset within the allocation required for the resource.
    */
 
-  @Value.Parameter
-  long alignment();
+  @Value.Default
+  default long alignment()
+  {
+    return 0L;
+  }
 
   /**
    * @return A bitmask that contains one bit set for every supported memory type for the resource.
@@ -48,6 +54,9 @@ public interface VulkanMemoryRequirementsType
    * for the physical device is supported for the resource.
    */
 
-  @Value.Parameter
-  int memoryTypeBits();
+  @Value.Default
+  default int memoryTypeBits()
+  {
+    return 0;
+  }
 }

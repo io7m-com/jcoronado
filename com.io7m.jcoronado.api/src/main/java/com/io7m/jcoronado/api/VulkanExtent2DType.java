@@ -35,13 +35,19 @@ public interface VulkanExtent2DType
    * @return The width of the extent
    */
 
-  @Value.Parameter
-  int width();
+  @Value.Default
+  default int width()
+  {
+    return 0;
+  }
 
   /**
    * @return The height of the extent
    */
 
-  @Value.Parameter
-  int height();
+  @Value.Default
+  default int height()
+  {
+    return 0;
+  }
 }

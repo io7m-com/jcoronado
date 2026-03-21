@@ -36,27 +36,35 @@ public interface VulkanImageSubresourceLayersType
    * @return a combination of flags selecting the color, depth, and/or stencil aspects to be copied.
    */
 
-  @Value.Parameter
   Set<VulkanImageAspectFlag> aspectMask();
 
   /**
    * @return The mipmap level to copy from.
    */
 
-  @Value.Parameter
-  int mipLevel();
+  @Value.Default
+  default int mipLevel()
+  {
+    return 0;
+  }
 
   /**
    * @return The starting layer to copy.
    */
 
-  @Value.Parameter
-  int baseArrayLayer();
+  @Value.Default
+  default int baseArrayLayer()
+  {
+    return 0;
+  }
 
   /**
    * @return The  number of layers to copy.
    */
 
-  @Value.Parameter
-  int layerCount();
+  @Value.Default
+  default int layerCount()
+  {
+    return 1;
+  }
 }

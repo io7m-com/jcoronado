@@ -261,8 +261,13 @@ public final class VulkanHostAllocatorTracker implements VulkanHostAllocatorType
   @Override
   public VulkanHostAllocatorCallbacks createCallbacks()
   {
-    return VulkanHostAllocatorCallbacks.of(
-      this, this, this, this, this);
+    return VulkanHostAllocatorCallbacks.builder()
+      .setAllocation(this)
+      .setDeallocation(this)
+      .setOnInternalAllocation(this)
+      .setOnInternalDeallocation(this)
+      .setReallocation(this)
+      .build();
   }
 
   /**

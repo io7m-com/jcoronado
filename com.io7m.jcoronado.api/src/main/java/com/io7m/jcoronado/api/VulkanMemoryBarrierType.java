@@ -34,13 +34,11 @@ public interface VulkanMemoryBarrierType
    * @return The source access mask
    */
 
-  @Value.Parameter
   Set<VulkanAccessFlag> srcAccessMask();
 
   /**
    * @return The destination access mask
    */
 
-  @Value.Parameter
   Set<VulkanAccessFlag> dstAccessMask();
 }

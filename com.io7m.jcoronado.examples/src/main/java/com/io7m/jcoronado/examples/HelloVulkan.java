@@ -16,7 +16,6 @@
 
 package com.io7m.jcoronado.examples;
 
-import com.io7m.jcoronado.utility.allocation_tracker.VulkanHostAllocatorTracker;
 import com.io7m.jcoronado.api.VulkanApplicationInfo;
 import com.io7m.jcoronado.api.VulkanAttachmentDescription;
 import com.io7m.jcoronado.api.VulkanAttachmentReference;
@@ -27,7 +26,7 @@ import com.io7m.jcoronado.api.VulkanCommandBufferCreateInfo;
 import com.io7m.jcoronado.api.VulkanCommandBufferSubmitInfo;
 import com.io7m.jcoronado.api.VulkanCommandBufferType;
 import com.io7m.jcoronado.api.VulkanCommandPoolCreateInfo;
-import com.io7m.jcoronado.api.VulkanComponentMapping;
+import com.io7m.jcoronado.api.VulkanComponentMappingType;
 import com.io7m.jcoronado.api.VulkanException;
 import com.io7m.jcoronado.api.VulkanExtensionProperties;
 import com.io7m.jcoronado.api.VulkanExtensions;
@@ -105,6 +104,7 @@ import com.io7m.jcoronado.layers.khronos_validation.api.VulkanValidationValidate
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLHostAllocatorJeMalloc;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLInstanceProvider;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLTemporaryAllocator;
+import com.io7m.jcoronado.utility.allocation_tracker.VulkanHostAllocatorTracker;
 import com.io7m.jmulticlose.core.CloseableCollection;
 import com.io7m.junreachable.UnimplementedCodeException;
 import org.lwjgl.glfw.GLFW;
@@ -133,7 +133,6 @@ import static com.io7m.jcoronado.api.VulkanAttachmentStoreOp.VK_ATTACHMENT_STORE
 import static com.io7m.jcoronado.api.VulkanBufferUsageFlag.VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
 import static com.io7m.jcoronado.api.VulkanCommandBufferLevel.VK_COMMAND_BUFFER_LEVEL_PRIMARY;
 import static com.io7m.jcoronado.api.VulkanCommandBufferUsageFlag.VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT;
-import static com.io7m.jcoronado.api.VulkanComponentSwizzle.VK_COMPONENT_SWIZZLE_IDENTITY;
 import static com.io7m.jcoronado.api.VulkanCullModeFlag.VK_CULL_MODE_BACK_BIT;
 import static com.io7m.jcoronado.api.VulkanFormat.VK_FORMAT_B8G8R8A8_UNORM;
 import static com.io7m.jcoronado.api.VulkanFormat.VK_FORMAT_R32G32B32_SFLOAT;
@@ -331,26 +330,27 @@ public final class HelloVulkan implements ExampleType
   {
     try {
       final var range =
-        VulkanImageSubresourceRange.of(
-          Set.of(VK_IMAGE_ASPECT_COLOR_BIT),
-          0,
-          1,
-          0,
-          1);
+        VulkanImageSubresourceRange.builder()
+          .addAspectMask(VK_IMAGE_ASPECT_COLOR_BIT)
+          .setLevelCount(1)
+          .setLayerCount(1)
+          .setBaseMipLevel(0)
+          .setBaseArrayLayer(0)
+          .build();
 
       final Set<VulkanImageViewCreateFlag> flags = Set.of();
-      return device.createImageView(VulkanImageViewCreateInfo.of(
-        flags,
-        image,
-        VK_IMAGE_VIEW_TYPE_2D,
-        surfaceFormat.format(),
-        VulkanComponentMapping.of(
-          VK_COMPONENT_SWIZZLE_IDENTITY,
-          VK_COMPONENT_SWIZZLE_IDENTITY,
-          VK_COMPONENT_SWIZZLE_IDENTITY,
-          VK_COMPONENT_SWIZZLE_IDENTITY),
-        range)
-      );
+
+      final var viewCreateInfo =
+        VulkanImageViewCreateInfo.builder()
+          .addAllFlags(flags)
+          .setImage(image)
+          .setFormat(surfaceFormat.format())
+          .setComponents(VulkanComponentMappingType.identity())
+          .setViewType(VK_IMAGE_VIEW_TYPE_2D)
+          .setSubresourceRange(range)
+          .build();
+
+      return device.createImageView(viewCreateInfo);
     } catch (final VulkanException e) {
       throw new VulkanUncheckedException(e);
     }
@@ -476,14 +476,22 @@ public final class HelloVulkan implements ExampleType
       return surfaceCaps.currentExtent();
     }
 
-    return VulkanExtent2D.of(
+    final var width =
       Math.max(
         surfaceCaps.minImageExtent().width(),
-        Math.min(surfaceCaps.maxImageExtent().width(), 640)),
+        Math.min(surfaceCaps.maxImageExtent().width(), 640)
+      );
+
+    final var height =
       Math.max(
         surfaceCaps.minImageExtent().height(),
-        Math.min(surfaceCaps.maxImageExtent().height(), 480))
-    );
+        Math.min(surfaceCaps.maxImageExtent().height(), 480)
+      );
+
+    return VulkanExtent2D.builder()
+      .setWidth(width)
+      .setHeight(height)
+      .build();
   }
 
   private static VulkanPresentModeKHR pickPresentationMode(
@@ -551,7 +559,7 @@ public final class HelloVulkan implements ExampleType
 
     for (final var format : formats) {
       if (format.format() == VK_FORMAT_B8G8R8A8_UNORM
-          && format.colorSpace() == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR) {
+        && format.colorSpace() == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR) {
         return format;
       }
     }
@@ -607,7 +615,7 @@ public final class HelloVulkan implements ExampleType
         device.extensions(Optional.empty());
 
       return extensions.containsKey("VK_KHR_swapchain")
-             && extensions.containsKey("VK_EXT_swapchain_maintenance1");
+        && extensions.containsKey("VK_EXT_swapchain_maintenance1");
     } catch (final VulkanException e) {
       throw new VulkanUncheckedException(e);
     }
@@ -726,8 +734,8 @@ public final class HelloVulkan implements ExampleType
     final var glfwRequiredExtensions =
       GLFWVulkan.glfwGetRequiredInstanceExtensions();
 
-    final HashSet<String> required =
-      new HashSet<>(glfwRequiredExtensions.capacity());
+    final var required =
+      new HashSet<String>(glfwRequiredExtensions.capacity());
     for (var index = 0; index < glfwRequiredExtensions.capacity(); ++index) {
       glfwRequiredExtensions.position(index);
       required.add(glfwRequiredExtensions.getStringASCII());
@@ -1167,18 +1175,20 @@ public final class HelloVulkan implements ExampleType
           .setPrimitiveRestartEnable(false)
           .build();
 
+      final var viewport =
+        VulkanViewport.builder()
+          .setX(0.0f)
+          .setY(0.0f)
+          .setWidth((float) surfaceExtent.width())
+          .setHeight((float) surfaceExtent.height())
+          .setMinDepth(0.0f)
+          .setMaxDepth(1.0f)
+          .build();
+
       final var viewportStateInfo =
         VulkanPipelineViewportStateCreateInfo.builder()
-          .addScissors(VulkanRectangle2D.of(
-            VulkanOffset2D.of(0, 0),
-            surfaceExtent))
-          .addViewports(VulkanViewport.of(
-            0.0f,
-            0.0f,
-            (float) surfaceExtent.width(),
-            (float) surfaceExtent.height(),
-            0.0f,
-            1.0f))
+          .addScissors(VulkanRectangle2D.of(VulkanOffset2D.ZERO, surfaceExtent))
+          .addViewports(viewport)
           .build();
 
       final var rasterizer =
@@ -1397,7 +1407,7 @@ public final class HelloVulkan implements ExampleType
           VulkanRenderPassBeginInfo.builder()
             .setFramebuffer(framebuffer)
             .setRenderArea(VulkanRectangle2D.of(
-              VulkanOffset2D.of(0, 0),
+              VulkanOffset2D.ZERO,
               surfaceExtent))
             .setRenderPass(renderPass)
             .addClearValues(VulkanClearValueColorFloatingPoint.of(

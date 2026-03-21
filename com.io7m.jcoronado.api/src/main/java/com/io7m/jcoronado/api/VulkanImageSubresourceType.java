@@ -36,20 +36,25 @@ public interface VulkanImageSubresourceType
    * @return A set of flags selecting the image aspect.
    */
 
-  @Value.Parameter
   Set<VulkanImageAspectFlag> aspectMask();
 
   /**
    * @return The mipmap level.
    */
 
-  @Value.Parameter
-  int mipLevel();
+  @Value.Default
+  default int mipLevel()
+  {
+    return 0;
+  }
 
   /**
    * @return The array layer.
    */
 
-  @Value.Parameter
-  int arrayLayer();
+  @Value.Default
+  default int arrayLayer()
+  {
+    return 0;
+  }
 }

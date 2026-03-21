@@ -34,14 +34,16 @@ public interface VulkanClearRectangleType
    * @return The two-dimensional region to be cleared.
    */
 
-  @Value.Parameter
-  VulkanRectangle2D rectangle();
+  @Value.Default
+  default VulkanRectangle2D rectangle()
+  {
+    return VulkanRectangle2D.builder().build();
+  }
 
   /**
    * @return The first layer to be cleared.
    */
 
-  @Value.Parameter
   @Value.Default
   default int baseArrayLayer()
   {
@@ -52,7 +54,6 @@ public interface VulkanClearRectangleType
    * @return The number of layers to clear.
    */
 
-  @Value.Parameter
   @Value.Default
   default int layerCount()
   {

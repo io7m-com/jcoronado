@@ -23,7 +23,6 @@ import com.io7m.jcoronado.api.VulkanCommandPoolCreateInfo;
 import com.io7m.jcoronado.api.VulkanCommandPoolType;
 import com.io7m.jcoronado.api.VulkanException;
 import com.io7m.jcoronado.api.VulkanExtent3D;
-import com.io7m.jcoronado.api.VulkanFenceType;
 import com.io7m.jcoronado.api.VulkanInstanceCreateInfo;
 import com.io7m.jcoronado.api.VulkanInstanceType;
 import com.io7m.jcoronado.api.VulkanLogicalDeviceCreateInfo;
@@ -100,13 +99,20 @@ public final class VulkanFakeTest
     final VFakeFence fence =
       (VFakeFence) this.device.createFence();
 
+    final var extent =
+      VulkanExtent3D.builder()
+        .setWidth(32)
+        .setHeight(32)
+        .setDepth(32)
+        .build();
+
     final var queue =
       new VFakeQueue(
         this.device,
         VulkanQueueFamilyProperties.builder()
           .setQueueFamilyIndex(new VulkanQueueFamilyIndex(0))
           .setTimestampValidBits(32)
-          .setMinImageTransferGranularity(VulkanExtent3D.of(32, 32, 32))
+          .setMinImageTransferGranularity(extent)
           .setQueueCount(1)
           .build(),
         new VulkanQueueIndex(0)
@@ -157,13 +163,20 @@ public final class VulkanFakeTest
     final VFakeFence fence =
       (VFakeFence) this.device.createFence();
 
+    final var extent =
+      VulkanExtent3D.builder()
+        .setWidth(32)
+        .setHeight(32)
+        .setDepth(32)
+        .build();
+
     final var queue =
       new VFakeQueue(
         this.device,
         VulkanQueueFamilyProperties.builder()
           .setQueueFamilyIndex(new VulkanQueueFamilyIndex(0))
           .setTimestampValidBits(32)
-          .setMinImageTransferGranularity(VulkanExtent3D.of(32, 32, 32))
+          .setMinImageTransferGranularity(extent)
           .setQueueCount(1)
           .build(),
         new VulkanQueueIndex(0)
@@ -214,13 +227,20 @@ public final class VulkanFakeTest
     final VFakeFence fence =
       (VFakeFence) this.device.createFence();
 
+    final var extent =
+      VulkanExtent3D.builder()
+        .setWidth(32)
+        .setHeight(32)
+        .setDepth(32)
+        .build();
+
     final var queue =
       new VFakeQueue(
         this.device,
         VulkanQueueFamilyProperties.builder()
           .setQueueFamilyIndex(new VulkanQueueFamilyIndex(0))
           .setTimestampValidBits(32)
-          .setMinImageTransferGranularity(VulkanExtent3D.of(32, 32, 32))
+          .setMinImageTransferGranularity(extent)
           .setQueueCount(1)
           .build(),
         new VulkanQueueIndex(0)
@@ -246,13 +266,20 @@ public final class VulkanFakeTest
     final VFakeFence fence =
       (VFakeFence) this.device.createFence();
 
+    final var extent =
+      VulkanExtent3D.builder()
+        .setWidth(32)
+        .setHeight(32)
+        .setDepth(32)
+        .build();
+
     final var queue =
       new VFakeQueue(
         this.device,
         VulkanQueueFamilyProperties.builder()
           .setQueueFamilyIndex(new VulkanQueueFamilyIndex(0))
           .setTimestampValidBits(32)
-          .setMinImageTransferGranularity(VulkanExtent3D.of(32, 32, 32))
+          .setMinImageTransferGranularity(extent)
           .setQueueCount(1)
           .build(),
         new VulkanQueueIndex(0)

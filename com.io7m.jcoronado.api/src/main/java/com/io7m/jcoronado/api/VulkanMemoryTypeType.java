@@ -33,20 +33,17 @@ public interface VulkanMemoryTypeType
    * @return The type index
    */
 
-  @Value.Parameter
   VulkanMemoryTypeIndex index();
 
   /**
    * @return The memory heap to which this memory type corresponds
    */
 
-  @Value.Parameter
   VulkanMemoryHeapIndex heapIndex();
 
   /**
    * @return The properties of the heap
    */
 
-  @Value.Parameter
   Set<VulkanMemoryPropertyFlag> flags();
 }

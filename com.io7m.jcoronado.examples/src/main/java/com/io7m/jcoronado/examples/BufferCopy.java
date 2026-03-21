@@ -419,16 +419,20 @@ public final class BufferCopy implements ExampleType
       final var memory0 =
         resources.add(
           device.allocateMemory(
-            VulkanMemoryAllocateInfo.of(
-              buffer0Requirements.size(),
-              bufferMemoryType.index()))
+            VulkanMemoryAllocateInfo.builder()
+              .setMemoryTypeIndex(bufferMemoryType.index())
+              .setSize(buffer0Requirements.size())
+              .build()
+          )
         );
       final var memory1 =
         resources.add(
           device.allocateMemory(
-            VulkanMemoryAllocateInfo.of(
-              buffer1Requirements.size(),
-              bufferMemoryType.index()))
+            VulkanMemoryAllocateInfo.builder()
+              .setMemoryTypeIndex(bufferMemoryType.index())
+              .setSize(buffer1Requirements.size())
+              .build()
+          )
         );
 
       final var map0 =
@@ -465,7 +469,7 @@ public final class BufferCopy implements ExampleType
 
       final var fence =
         resources.add(
-          device.createFence(VulkanFenceCreateInfo.of(Set.of()))
+          device.createFence(VulkanFenceCreateInfo.builder().build())
         );
 
       final var fillBarrier0 =
@@ -537,7 +541,13 @@ public final class BufferCopy implements ExampleType
       commandBuffer.copyBuffer(
         buffer0,
         buffer1,
-        List.of(VulkanBufferCopy.of(0L, 0L, 128L)));
+        List.of(
+          VulkanBufferCopy.builder()
+            .setSize(128L)
+            .setSourceOffset(0L)
+            .setTargetOffset(0L)
+            .build()
+        ));
 
       commandBuffer.pipelineBarrier(
         VulkanDependencyInfo.builder()

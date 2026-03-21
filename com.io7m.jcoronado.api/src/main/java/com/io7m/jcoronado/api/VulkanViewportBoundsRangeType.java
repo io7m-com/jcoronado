@@ -31,13 +31,19 @@ public interface VulkanViewportBoundsRangeType
    * @return The minimum position
    */
 
-  @Value.Parameter
-  float minimum();
+  @Value.Default
+  default float minimum()
+  {
+    return 0.0f;
+  }
 
   /**
    * @return The maximum position
    */
 
-  @Value.Parameter
-  float maximum();
+  @Value.Default
+  default float maximum()
+  {
+    return 0.0f;
+  }
 }

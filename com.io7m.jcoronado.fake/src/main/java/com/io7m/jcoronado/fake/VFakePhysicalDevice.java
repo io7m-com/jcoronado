@@ -99,18 +99,47 @@ public final class VFakePhysicalDevice
         1,
         Set.of(VulkanQueueFamilyPropertyFlag.values()),
         32,
-        VulkanExtent3D.of(1, 1, 1)
+        VulkanExtent3D.builder()
+          .setDepth(1)
+          .setHeight(1)
+          .setWidth(1)
+          .build()
       )
     );
+
+    final var v1 =
+      VulkanVersion.builder()
+        .setMajor(1)
+        .setMinor(0)
+        .setPatch(0)
+        .build();
 
     this.properties =
       VulkanPhysicalDeviceProperties.builder()
         .setType(VulkanPhysicalDevicePropertiesType.Type.VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU)
-        .setApiVersion(VulkanVersion.of(1, 0, 0))
-        .setDriverVersion(VulkanVersion.of(1, 0, 0))
+        .setApiVersion(v1)
+        .setDriverVersion(v1)
         .setId(this.hashCode())
         .setVendorId(0x494F374D)
         .setName("Fake")
+        .build();
+
+    final var lineWidthRange =
+      VulkanLineWidthRange.builder()
+        .setMinimum(0.0f)
+        .setMaximum(1.0f)
+        .build();
+
+    final var viewport =
+      VulkanViewportDimensions.builder()
+        .setMaximumX(4096)
+        .setMaximumY(4096)
+        .build();
+
+    final var viewportBounds =
+      VulkanViewportBoundsRange.builder()
+        .setMinimum(-8192.0f)
+        .setMaximum(8191.0f)
         .build();
 
     this.limits =
@@ -122,7 +151,7 @@ public final class VFakePhysicalDevice
         .setFramebufferNoAttachmentsSampleCounts(1)
         .setFramebufferStencilSampleCounts(1)
         .setLineWidthGranularity(1.0f)
-        .setLineWidthRange(VulkanLineWidthRange.of(1.0f, 8.0f))
+        .setLineWidthRange(lineWidthRange)
         .setMaxBoundDescriptorSets(4)
         .setMaxClipDistances(8)
         .setMaxColorAttachments(4)
@@ -192,7 +221,7 @@ public final class VFakePhysicalDevice
         .setMaxVertexInputBindingStride(2048)
         .setMaxVertexInputBindings(16)
         .setMaxVertexOutputComponents(64)
-        .setMaxViewportDimensions(VulkanViewportDimensions.of(4096, 4096))
+        .setMaxViewportDimensions(viewport)
         .setMaxViewports(16)
         .setMinInterpolationOffset(-0)
         .setMinMemoryMapAlignment(64)
@@ -220,7 +249,7 @@ public final class VFakePhysicalDevice
         .setSubTexelPrecisionBits(4)
         .setTimestampComputeAndGraphics(true)
         .setTimestampPeriod(1.0f)
-        .setViewportBoundsRange(VulkanViewportBoundsRange.of(-8192, 8191))
+        .setViewportBoundsRange(viewportBounds)
         .setViewportSubPixelBits(0)
         .build();
 

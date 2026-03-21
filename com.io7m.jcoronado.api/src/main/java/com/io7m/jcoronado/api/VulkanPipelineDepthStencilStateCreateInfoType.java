@@ -36,7 +36,6 @@ public interface VulkanPipelineDepthStencilStateCreateInfoType
    * @return Creation flags
    */
 
-  @Value.Parameter
   Set<VulkanPipelineDepthStencilStateCreateFlag> flags();
 
   /**

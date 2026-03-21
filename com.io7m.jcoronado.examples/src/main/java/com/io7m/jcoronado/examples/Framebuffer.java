@@ -471,10 +471,17 @@ public final class Framebuffer implements ExampleType
           .setMemoryTypeBits(0L)
           .build();
 
+      final var extent =
+        VulkanExtent3D.builder()
+          .setWidth(480)
+          .setHeight(480)
+          .setDepth(1)
+          .build();
+
       final var imageCreateInfo =
         VulkanImageCreateInfo.builder()
           .setArrayLayers(1)
-          .setExtent(VulkanExtent3D.of(640, 480, 1))
+          .setExtent(extent)
           .setFormat(VK_FORMAT_R8G8B8A8_UNORM)
           .setImageType(VulkanImageKind.VK_IMAGE_TYPE_2D)
           .setInitialLayout(VK_IMAGE_LAYOUT_UNDEFINED)

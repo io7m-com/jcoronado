@@ -42,7 +42,11 @@ public interface VulkanAttachmentReferenceType
    * @return The layout the attachment uses during the subpass.
    */
 
-  VulkanImageLayout layout();
+  @Value.Default
+  default VulkanImageLayout layout()
+  {
+    return VulkanImageLayout.VK_IMAGE_LAYOUT_UNDEFINED;
+  }
 
   /**
    * @return A mask of which aspect(s) can be accessed within the specified

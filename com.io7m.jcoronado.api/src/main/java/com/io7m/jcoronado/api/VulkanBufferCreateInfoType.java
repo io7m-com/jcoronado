@@ -37,21 +37,22 @@ public interface VulkanBufferCreateInfoType
    * @return A bitmask of VkBufferCreateFlagBits specifying additional parameters of the buffer.
    */
 
-  @Value.Parameter
   Set<VulkanBufferCreateFlag> flags();
 
   /**
    * @return The size in bytes of the buffer to be created.
    */
 
-  @Value.Parameter
-  long size();
+  @Value.Default
+  default long size()
+  {
+    return 0L;
+  }
 
   /**
    * @return A bitmask of VkBufferUsageFlagBits specifying allowed usages of the buffer.
    */
 
-  @Value.Parameter
   Set<VulkanBufferUsageFlag> usageFlags();
 
   /**
@@ -59,14 +60,16 @@ public interface VulkanBufferCreateInfoType
    * accessed by multiple queue families.
    */
 
-  @Value.Parameter
-  VulkanSharingMode sharingMode();
+  @Value.Default
+  default VulkanSharingMode sharingMode()
+  {
+    return VulkanSharingMode.VK_SHARING_MODE_EXCLUSIVE;
+  }
 
   /**
    * @return A list of queue families that will access this buffer (ignored if sharingMode is not
    * VK_SHARING_MODE_CONCURRENT).
    */
 
-  @Value.Parameter
   List<VulkanQueueFamilyIndex> queueFamilyIndices();
 }

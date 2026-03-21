@@ -34,35 +34,30 @@ public interface VulkanHostAllocatorCallbacksType
    * @return The allocation function
    */
 
-  @Value.Parameter
   AllocationFunctionType allocation();
 
   /**
    * @return The deallocation function
    */
 
-  @Value.Parameter
   DeallocationFunctionType deallocation();
 
   /**
    * @return The reallocation function
    */
 
-  @Value.Parameter
   ReallocationFunctionType reallocation();
 
   /**
    * @return The internal allocation notification function
    */
 
-  @Value.Parameter
   InternalAllocationNotificationType onInternalAllocation();
 
   /**
    * @return The internal deallocation notification function
    */
 
-  @Value.Parameter
   InternalFreeNotificationType onInternalDeallocation();
 
   /**

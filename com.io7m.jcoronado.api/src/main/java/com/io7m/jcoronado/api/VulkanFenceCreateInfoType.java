@@ -36,6 +36,5 @@ public interface VulkanFenceCreateInfoType
    * @return The fence creation flags
    */
 
-  @Value.Parameter
   Set<VulkanFenceCreateFlag> flags();
 }

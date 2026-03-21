@@ -38,28 +38,24 @@ public interface VulkanPipelineColorBlendStateCreateInfoType
    * @return The logical operation to apply (if any)
    */
 
-  @Value.Parameter
   Optional<VulkanLogicOp> logicOp();
 
   /**
    * @return The creation flags
    */
 
-  @Value.Parameter
   Set<VulkanPipelineColorBlendStateCreateFlag> flags();
 
   /**
    * @return The per-target attachment states.
    */
 
-  @Value.Parameter
   List<VulkanPipelineColorBlendAttachmentState> attachments();
 
   /**
    * @return The constants used for blending
    */
 
-  @Value.Parameter
   @Value.Default
   default VulkanBlendConstants blendConstants()
   {

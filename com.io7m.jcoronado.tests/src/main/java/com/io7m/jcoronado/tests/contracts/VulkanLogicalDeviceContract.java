@@ -178,11 +178,18 @@ public abstract class VulkanLogicalDeviceContract extends VulkanOnDeviceContract
   {
     Assumptions.assumeTrue(this.shouldRun(), "Test should run");
 
+    final var extent =
+      VulkanExtent3D.builder()
+        .setWidth(256)
+        .setHeight(256)
+        .setDepth(1)
+        .build();
+
     try (var image = this.device.createImage(
       VulkanImageCreateInfo.builder()
         .setArrayLayers(1)
         .setSamples(Set.of(VK_SAMPLE_COUNT_1_BIT))
-        .setExtent(VulkanExtent3D.of(256, 256, 1))
+        .setExtent(extent)
         .setFormat(VK_FORMAT_R8_UNORM)
         .setImageType(VK_IMAGE_TYPE_2D)
         .setInitialLayout(VK_IMAGE_LAYOUT_UNDEFINED)
@@ -264,16 +271,20 @@ public abstract class VulkanLogicalDeviceContract extends VulkanOnDeviceContract
       final var memory0 =
         resources.add(
           this.device.allocateMemory(
-            VulkanMemoryAllocateInfo.of(
-              buffer0Requirements.size(),
-              bufferMemoryType.index()))
+            VulkanMemoryAllocateInfo.builder()
+              .setMemoryTypeIndex(bufferMemoryType.index())
+              .setSize(buffer0Requirements.size())
+              .build()
+          )
         );
       final var memory1 =
         resources.add(
           this.device.allocateMemory(
-            VulkanMemoryAllocateInfo.of(
-              buffer1Requirements.size(),
-              bufferMemoryType.index()))
+            VulkanMemoryAllocateInfo.builder()
+              .setMemoryTypeIndex(bufferMemoryType.index())
+              .setSize(buffer1Requirements.size())
+              .build()
+          )
         );
 
       final var map0 =
@@ -313,7 +324,7 @@ public abstract class VulkanLogicalDeviceContract extends VulkanOnDeviceContract
 
       final var fence =
         resources.add(
-          this.device.createFence(VulkanFenceCreateInfo.of(Set.of()))
+          this.device.createFence(VulkanFenceCreateInfo.builder().build())
         );
 
       final var fillBarrier0 =
@@ -381,10 +392,17 @@ public abstract class VulkanLogicalDeviceContract extends VulkanOnDeviceContract
           .build()
       );
 
+      final var bufferCopy =
+        VulkanBufferCopy.builder()
+          .setSize(128L)
+          .setSourceOffset(0L)
+          .setTargetOffset(0L)
+          .build();
+
       commandBuffer.copyBuffer(
         buffer0,
         buffer1,
-        List.of(VulkanBufferCopy.of(0L, 0L, 128L))
+        List.of(bufferCopy)
       );
 
       commandBuffer.pipelineBarrier(
@@ -396,14 +414,15 @@ public abstract class VulkanLogicalDeviceContract extends VulkanOnDeviceContract
 
       commandBuffer.endCommandBuffer();
 
-      queue.submit(List.of(
-        VulkanSubmitInfo.builder()
-          .addCommandBuffers(
-            VulkanCommandBufferSubmitInfo.builder()
-              .setCommandBuffer(commandBuffer)
-              .build()
-          ).build()
-      ), Optional.of(fence));
+      queue.submit(
+        List.of(
+          VulkanSubmitInfo.builder()
+            .addCommandBuffers(
+              VulkanCommandBufferSubmitInfo.builder()
+                .setCommandBuffer(commandBuffer)
+                .build()
+            ).build()
+        ), Optional.of(fence));
 
       this.device.waitForFence(fence, 1_000_000_000L);
 
@@ -522,11 +541,18 @@ public abstract class VulkanLogicalDeviceContract extends VulkanOnDeviceContract
   {
     Assumptions.assumeTrue(this.shouldRun(), "Test should run");
 
+    final var extent =
+      VulkanExtent3D.builder()
+        .setWidth(256)
+        .setHeight(256)
+        .setDepth(1)
+        .build();
+
     try (var image = this.device.createImage(
       VulkanImageCreateInfo.builder()
         .setArrayLayers(1)
         .setSamples(Set.of(VK_SAMPLE_COUNT_1_BIT))
-        .setExtent(VulkanExtent3D.of(256, 256, 1))
+        .setExtent(extent)
         .setFormat(VK_FORMAT_R8G8B8A8_UNORM)
         .setImageType(VK_IMAGE_TYPE_2D)
         .setInitialLayout(VK_IMAGE_LAYOUT_UNDEFINED)
@@ -598,11 +624,18 @@ public abstract class VulkanLogicalDeviceContract extends VulkanOnDeviceContract
   {
     Assumptions.assumeTrue(this.shouldRun(), "Test should run");
 
+    final var extent =
+      VulkanExtent3D.builder()
+        .setWidth(256)
+        .setHeight(256)
+        .setDepth(1)
+        .build();
+
     try (var image = this.device.createImage(
       VulkanImageCreateInfo.builder()
         .setArrayLayers(1)
         .setSamples(Set.of(VK_SAMPLE_COUNT_1_BIT))
-        .setExtent(VulkanExtent3D.of(256, 256, 1))
+        .setExtent(extent)
         .setFormat(VK_FORMAT_R5G6B5_UNORM_PACK16)
         .setImageType(VK_IMAGE_TYPE_2D)
         .setInitialLayout(VK_IMAGE_LAYOUT_UNDEFINED)
@@ -711,11 +744,18 @@ public abstract class VulkanLogicalDeviceContract extends VulkanOnDeviceContract
   {
     Assumptions.assumeTrue(this.shouldRun(), "Test should run");
 
+    final var extent =
+      VulkanExtent3D.builder()
+        .setWidth(256)
+        .setHeight(256)
+        .setDepth(1)
+        .build();
+
     try (var image = this.device.createImage(
       VulkanImageCreateInfo.builder()
         .setArrayLayers(1)
         .setSamples(Set.of(VK_SAMPLE_COUNT_1_BIT))
-        .setExtent(VulkanExtent3D.of(256, 256, 1))
+        .setExtent(extent)
         .setFormat(VK_FORMAT_R5G6B5_UNORM_PACK16)
         .setImageType(VK_IMAGE_TYPE_2D)
         .setInitialLayout(VK_IMAGE_LAYOUT_UNDEFINED)
@@ -824,14 +864,21 @@ public abstract class VulkanLogicalDeviceContract extends VulkanOnDeviceContract
                            .setRenderPass(renderPass)
                            .build())) {
                   buffer.beginCommandBuffer();
+
+                  final var extent256 =
+                    VulkanExtent2D.builder()
+                      .setWidth(256)
+                      .setHeight(256)
+                      .build();
+
                   buffer.beginRenderPass(
                     VulkanRenderPassBeginInfo.builder()
                       .setRenderPass(renderPass)
                       .setFramebuffer(framebuffer)
                       .setRenderArea(
                         VulkanRectangle2D.builder()
-                          .setExtent(VulkanExtent2D.of(256, 256))
-                          .setOffset(VulkanOffset2D.of(0, 0))
+                          .setExtent(extent256)
+                          .setOffset(VulkanOffset2D.ZERO)
                           .build())
                       .build(),
                     VulkanSubpassContents.VK_SUBPASS_CONTENTS_INLINE
@@ -1004,12 +1051,13 @@ public abstract class VulkanLogicalDeviceContract extends VulkanOnDeviceContract
             bufferMemoryRequirements,
             Set.of(VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT));
 
-      try (var memory =
-             this.device.allocateMemory(
-               VulkanMemoryAllocateInfo.of(
-                 bufferMemoryRequirements.size(),
-                 memoryType.index())
-             )) {
+      final var allocateInfo =
+        VulkanMemoryAllocateInfo.builder()
+          .setSize(bufferMemoryRequirements.size())
+          .setMemoryTypeIndex(memoryType.index())
+          .build();
+
+      try (var memory = this.device.allocateMemory(allocateInfo)) {
 
         final VulkanMappedMemoryType unmapped;
         try (var map =
@@ -1018,12 +1066,12 @@ public abstract class VulkanLogicalDeviceContract extends VulkanOnDeviceContract
           assertTrue(map.isMapped());
 
           final var byteBuffer = map.asByteBuffer();
-          for (int index = 0; index < 128; ++index) {
+          for (var index = 0; index < 128; ++index) {
             byteBuffer.put(index, (byte) index);
           }
           map.flushRange(0L, 128L);
 
-          for (int index = 0; index < 128; ++index) {
+          for (var index = 0; index < 128; ++index) {
             byteBuffer.put(index, (byte) (index + 2));
           }
           map.flush();

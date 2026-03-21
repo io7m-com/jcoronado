@@ -67,7 +67,6 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 import static com.io7m.jcoronado.api.VulkanLogicalDeviceType.VulkanFenceStatus.VK_FENCE_SIGNALLED;
 import static com.io7m.jcoronado.api.VulkanLogicalDeviceType.VulkanWaitStatus.VK_WAIT_SUCCEEDED;
-import static com.io7m.jcoronado.api.VulkanLogicalDeviceType.VulkanWaitStatus.VK_WAIT_TIMED_OUT;
 import static com.io7m.jcoronado.api.VulkanQueueFamilyPropertyFlag.VK_QUEUE_GRAPHICS_BIT;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -82,6 +81,12 @@ public final class JCSwapchainManagerTest
 {
   private static final Logger LOG =
     LoggerFactory.getLogger(JCSwapchainManagerTest.class);
+
+  private static final VulkanExtent2D EXTENT =
+    VulkanExtent2D.builder()
+      .setWidth(640)
+      .setHeight(480)
+      .build();
 
   private VulkanLogicalDeviceType device;
   private JCSwapchainManagerType manager;
@@ -160,6 +165,13 @@ public final class JCSwapchainManagerTest
     when(this.device.debugging())
       .thenReturn(this.debugging);
 
+    final var extent =
+      VulkanExtent3D.builder()
+        .setWidth(1)
+        .setHeight(1)
+        .setDepth(1)
+        .build();
+
     when(this.graphicsQueue.queueFamilyProperties())
       .thenReturn(
         VulkanQueueFamilyProperties.of(
@@ -167,7 +179,7 @@ public final class JCSwapchainManagerTest
           1,
           Set.of(VK_QUEUE_GRAPHICS_BIT),
           32,
-          VulkanExtent3D.of(1, 1, 1)
+          extent
         )
       );
 
@@ -178,7 +190,7 @@ public final class JCSwapchainManagerTest
           1,
           Set.of(),
           32,
-          VulkanExtent3D.of(1, 1, 1)
+          extent
         )
       );
 
@@ -243,9 +255,9 @@ public final class JCSwapchainManagerTest
         .thenReturn(VulkanSurfaceCapabilitiesKHR.of(
           1,
           1,
-          VulkanExtent2D.of(640, 480),
-          VulkanExtent2D.of(640, 480),
-          VulkanExtent2D.of(640, 480),
+          EXTENT,
+          EXTENT,
+          EXTENT,
           1,
           Set.of(),
           Set.of(),
@@ -341,9 +353,9 @@ public final class JCSwapchainManagerTest
         .thenReturn(VulkanSurfaceCapabilitiesKHR.of(
           1,
           1,
-          VulkanExtent2D.of(640, 480),
-          VulkanExtent2D.of(640, 480),
-          VulkanExtent2D.of(640, 480),
+          EXTENT,
+          EXTENT,
+          EXTENT,
           1,
           Set.of(),
           Set.of(),
@@ -435,9 +447,9 @@ public final class JCSwapchainManagerTest
         .thenReturn(VulkanSurfaceCapabilitiesKHR.of(
           1,
           1,
-          VulkanExtent2D.of(640, 480),
-          VulkanExtent2D.of(640, 480),
-          VulkanExtent2D.of(640, 480),
+          EXTENT,
+          EXTENT,
+          EXTENT,
           1,
           Set.of(),
           Set.of(),
@@ -535,9 +547,9 @@ public final class JCSwapchainManagerTest
         .thenReturn(VulkanSurfaceCapabilitiesKHR.of(
           1,
           1,
-          VulkanExtent2D.of(640, 480),
-          VulkanExtent2D.of(640, 480),
-          VulkanExtent2D.of(640, 480),
+          EXTENT,
+          EXTENT,
+          EXTENT,
           1,
           Set.of(),
           Set.of(),
@@ -625,9 +637,9 @@ public final class JCSwapchainManagerTest
         .thenReturn(VulkanSurfaceCapabilitiesKHR.of(
           1,
           1,
-          VulkanExtent2D.of(640, 480),
-          VulkanExtent2D.of(640, 480),
-          VulkanExtent2D.of(640, 480),
+          EXTENT,
+          EXTENT,
+          EXTENT,
           1,
           Set.of(),
           Set.of(),
@@ -715,9 +727,9 @@ public final class JCSwapchainManagerTest
         .thenReturn(VulkanSurfaceCapabilitiesKHR.of(
           1,
           1,
-          VulkanExtent2D.of(640, 480),
-          VulkanExtent2D.of(640, 480),
-          VulkanExtent2D.of(640, 480),
+          EXTENT,
+          EXTENT,
+          EXTENT,
           1,
           Set.of(),
           Set.of(),
@@ -805,9 +817,9 @@ public final class JCSwapchainManagerTest
         .thenReturn(VulkanSurfaceCapabilitiesKHR.of(
           1,
           1,
-          VulkanExtent2D.of(640, 480),
-          VulkanExtent2D.of(640, 480),
-          VulkanExtent2D.of(640, 480),
+          EXTENT,
+          EXTENT,
+          EXTENT,
           1,
           Set.of(),
           Set.of(),
@@ -880,9 +892,9 @@ public final class JCSwapchainManagerTest
         .thenReturn(VulkanSurfaceCapabilitiesKHR.of(
           1,
           1,
-          VulkanExtent2D.of(640, 480),
-          VulkanExtent2D.of(640, 480),
-          VulkanExtent2D.of(640, 480),
+          EXTENT,
+          EXTENT,
+          EXTENT,
           1,
           Set.of(),
           Set.of(),
@@ -990,9 +1002,9 @@ public final class JCSwapchainManagerTest
         .thenReturn(VulkanSurfaceCapabilitiesKHR.of(
           1,
           1,
-          VulkanExtent2D.of(640, 480),
-          VulkanExtent2D.of(640, 480),
-          VulkanExtent2D.of(640, 480),
+          EXTENT,
+          EXTENT,
+          EXTENT,
           1,
           Set.of(),
           Set.of(),
@@ -1092,9 +1104,9 @@ public final class JCSwapchainManagerTest
         .thenReturn(VulkanSurfaceCapabilitiesKHR.of(
           1,
           1,
-          VulkanExtent2D.of(640, 480),
-          VulkanExtent2D.of(640, 480),
-          VulkanExtent2D.of(640, 480),
+          EXTENT,
+          EXTENT,
+          EXTENT,
           1,
           Set.of(),
           Set.of(),

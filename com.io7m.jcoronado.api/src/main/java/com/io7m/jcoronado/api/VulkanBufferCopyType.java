@@ -34,20 +34,29 @@ public interface VulkanBufferCopyType
    * @return The starting offset in bytes from the start of the source buffer.
    */
 
-  @Value.Parameter
-  long sourceOffset();
+  @Value.Default
+  default long sourceOffset()
+  {
+    return 0L;
+  }
 
   /**
    * @return The starting offset in bytes from the start of the target buffer.
    */
 
-  @Value.Parameter
-  long targetOffset();
+  @Value.Default
+  default long targetOffset()
+  {
+    return 0L;
+  }
 
   /**
    * @return The number of bytes to copy.
    */
 
-  @Value.Parameter
-  long size();
+  @Value.Default
+  default long size()
+  {
+    return 0L;
+  }
 }

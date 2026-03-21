@@ -39,7 +39,10 @@ import java.util.Objects;
 public final class VFakeExtKHRSwapChain implements VulkanExtKHRSwapChainType
 {
   private static final VulkanExtensionProperties VK_KHR_SWAPCHAIN =
-    VulkanExtensionProperties.of("VK_KHR_swapchain", 1);
+    VulkanExtensionProperties.builder()
+      .setName("VK_KHR_swapchain")
+      .setVersion(1)
+      .build();
 
   private VulkanKHRSwapChainType nextSwapChain;
 

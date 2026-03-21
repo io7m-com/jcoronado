@@ -16,7 +16,6 @@
 
 package com.io7m.jcoronado.examples;
 
-import com.io7m.jcoronado.api.VulkanAccessFlag;
 import com.io7m.jcoronado.api.VulkanApplicationInfo;
 import com.io7m.jcoronado.api.VulkanAttachmentLoadOp;
 import com.io7m.jcoronado.api.VulkanAttachmentStoreOp;
@@ -26,14 +25,13 @@ import com.io7m.jcoronado.api.VulkanCommandBufferBeginInfo;
 import com.io7m.jcoronado.api.VulkanCommandBufferCreateInfo;
 import com.io7m.jcoronado.api.VulkanCommandBufferSubmitInfo;
 import com.io7m.jcoronado.api.VulkanCommandPoolCreateInfo;
-import com.io7m.jcoronado.api.VulkanComponentMapping;
+import com.io7m.jcoronado.api.VulkanComponentMappingType;
 import com.io7m.jcoronado.api.VulkanDependencyInfo;
 import com.io7m.jcoronado.api.VulkanException;
 import com.io7m.jcoronado.api.VulkanExtensionProperties;
 import com.io7m.jcoronado.api.VulkanExtensions;
 import com.io7m.jcoronado.api.VulkanExtent2D;
 import com.io7m.jcoronado.api.VulkanGraphicsPipelineCreateInfo;
-import com.io7m.jcoronado.api.VulkanImageAspectFlag;
 import com.io7m.jcoronado.api.VulkanImageLayout;
 import com.io7m.jcoronado.api.VulkanImageMemoryBarrier;
 import com.io7m.jcoronado.api.VulkanImageSubresourceRange;
@@ -65,7 +63,6 @@ import com.io7m.jcoronado.api.VulkanPipelineMultisampleStateCreateInfo;
 import com.io7m.jcoronado.api.VulkanPipelineRasterizationStateCreateInfo;
 import com.io7m.jcoronado.api.VulkanPipelineRenderingCreateInfo;
 import com.io7m.jcoronado.api.VulkanPipelineShaderStageCreateInfo;
-import com.io7m.jcoronado.api.VulkanPipelineStageFlag;
 import com.io7m.jcoronado.api.VulkanPipelineVertexInputStateCreateInfo;
 import com.io7m.jcoronado.api.VulkanPipelineViewportStateCreateInfo;
 import com.io7m.jcoronado.api.VulkanQueueFamilyIndex;
@@ -135,9 +132,7 @@ import static com.io7m.jcoronado.api.VulkanAccessFlag.VK_ACCESS_COLOR_ATTACHMENT
 import static com.io7m.jcoronado.api.VulkanBufferUsageFlag.VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
 import static com.io7m.jcoronado.api.VulkanCommandBufferLevel.VK_COMMAND_BUFFER_LEVEL_PRIMARY;
 import static com.io7m.jcoronado.api.VulkanCommandBufferUsageFlag.VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
-import static com.io7m.jcoronado.api.VulkanCommandBufferUsageFlag.VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT;
 import static com.io7m.jcoronado.api.VulkanCommandPoolCreateFlag.VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
-import static com.io7m.jcoronado.api.VulkanComponentSwizzle.VK_COMPONENT_SWIZZLE_IDENTITY;
 import static com.io7m.jcoronado.api.VulkanCullModeFlag.VK_CULL_MODE_BACK_BIT;
 import static com.io7m.jcoronado.api.VulkanFormat.VK_FORMAT_B8G8R8A8_UNORM;
 import static com.io7m.jcoronado.api.VulkanFormat.VK_FORMAT_R32G32B32_SFLOAT;
@@ -257,26 +252,27 @@ public final class HelloVulkanDynamic implements ExampleType
   {
     try {
       final var range =
-        VulkanImageSubresourceRange.of(
-          Set.of(VK_IMAGE_ASPECT_COLOR_BIT),
-          0,
-          1,
-          0,
-          1);
+        VulkanImageSubresourceRange.builder()
+          .addAspectMask(VK_IMAGE_ASPECT_COLOR_BIT)
+          .setLevelCount(1)
+          .setLayerCount(1)
+          .setBaseMipLevel(0)
+          .setBaseArrayLayer(0)
+          .build();
 
       final Set<VulkanImageViewCreateFlag> flags = Set.of();
-      return device.createImageView(VulkanImageViewCreateInfo.of(
-        flags,
-        image,
-        VK_IMAGE_VIEW_TYPE_2D,
-        surfaceFormat.format(),
-        VulkanComponentMapping.of(
-          VK_COMPONENT_SWIZZLE_IDENTITY,
-          VK_COMPONENT_SWIZZLE_IDENTITY,
-          VK_COMPONENT_SWIZZLE_IDENTITY,
-          VK_COMPONENT_SWIZZLE_IDENTITY),
-        range)
-      );
+
+      final var viewCreateInfo =
+        VulkanImageViewCreateInfo.builder()
+          .addAllFlags(flags)
+          .setImage(image)
+          .setFormat(surfaceFormat.format())
+          .setComponents(VulkanComponentMappingType.identity())
+          .setViewType(VK_IMAGE_VIEW_TYPE_2D)
+          .setSubresourceRange(range)
+          .build();
+
+      return device.createImageView(viewCreateInfo);
     } catch (final VulkanException e) {
       throw new VulkanUncheckedException(e);
     }
@@ -402,14 +398,22 @@ public final class HelloVulkanDynamic implements ExampleType
       return surfaceCaps.currentExtent();
     }
 
-    return VulkanExtent2D.of(
+    final var width =
       Math.max(
         surfaceCaps.minImageExtent().width(),
-        Math.min(surfaceCaps.maxImageExtent().width(), 640)),
+        Math.min(surfaceCaps.maxImageExtent().width(), 640)
+      );
+
+    final var height =
       Math.max(
         surfaceCaps.minImageExtent().height(),
-        Math.min(surfaceCaps.maxImageExtent().height(), 480))
-    );
+        Math.min(surfaceCaps.maxImageExtent().height(), 480)
+      );
+
+    return VulkanExtent2D.builder()
+      .setWidth(width)
+      .setHeight(height)
+      .build();
   }
 
   private static VulkanPresentModeKHR pickPresentationMode(
@@ -477,7 +481,7 @@ public final class HelloVulkanDynamic implements ExampleType
 
     for (final var format : formats) {
       if (format.format() == VK_FORMAT_B8G8R8A8_UNORM
-          && format.colorSpace() == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR) {
+        && format.colorSpace() == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR) {
         return format;
       }
     }
@@ -533,7 +537,7 @@ public final class HelloVulkanDynamic implements ExampleType
         device.extensions(Optional.empty());
 
       return extensions.containsKey("VK_KHR_swapchain")
-             && extensions.containsKey("VK_EXT_swapchain_maintenance1");
+        && extensions.containsKey("VK_EXT_swapchain_maintenance1");
     } catch (final VulkanException e) {
       throw new VulkanUncheckedException(e);
     }
@@ -1045,18 +1049,20 @@ public final class HelloVulkanDynamic implements ExampleType
           .setPrimitiveRestartEnable(false)
           .build();
 
+      final var viewport =
+        VulkanViewport.builder()
+          .setX(0.0f)
+          .setY(0.0f)
+          .setWidth((float) surfaceExtent.width())
+          .setHeight((float) surfaceExtent.height())
+          .setMinDepth(0.0f)
+          .setMaxDepth(1.0f)
+          .build();
+
       final var viewportStateInfo =
         VulkanPipelineViewportStateCreateInfo.builder()
-          .addScissors(VulkanRectangle2D.of(
-            VulkanOffset2D.of(0, 0),
-            surfaceExtent))
-          .addViewports(VulkanViewport.of(
-            0.0f,
-            0.0f,
-            (float) surfaceExtent.width(),
-            (float) surfaceExtent.height(),
-            0.0f,
-            1.0f))
+          .addScissors(VulkanRectangle2D.of(VulkanOffset2D.ZERO, surfaceExtent))
+          .addViewports(viewport)
           .build();
 
       final var rasterizer =
@@ -1294,7 +1300,7 @@ public final class HelloVulkanDynamic implements ExampleType
             .addColorAttachments(colorAttachment)
             .setRenderArea(
               VulkanRectangle2D.of(
-                VulkanOffset2D.of(0, 0),
+                VulkanOffset2D.ZERO,
                 surfaceExtent
               )
             )
@@ -1374,7 +1380,8 @@ public final class HelloVulkanDynamic implements ExampleType
           VulkanSubmitInfo.builder()
             .addWaitSemaphores(
               VulkanSemaphoreSubmitInfo.builder()
-                .setStageMask(Set.of(VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT))
+                .setStageMask(Set.of(
+                  VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT))
                 .setSemaphore(imageAvailable)
                 .build()
             )

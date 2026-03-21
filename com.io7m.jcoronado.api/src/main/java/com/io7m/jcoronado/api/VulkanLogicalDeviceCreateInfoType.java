@@ -38,34 +38,29 @@ public interface VulkanLogicalDeviceCreateInfoType
    * @return The creation flags
    */
 
-  @Value.Parameter
   Set<VulkanLogicalDeviceCreateFlag> flags();
 
   /**
    * @return A list of queues to be created
    */
 
-  @Value.Parameter
   List<VulkanLogicalDeviceQueueCreateInfo> queueCreateInfos();
 
   /**
    * @return A list of layers to be enabled
    */
 
-  @Value.Parameter
   List<String> enabledLayers();
 
   /**
    * @return A list of extensions to be enabled
    */
 
-  @Value.Parameter
   List<String> enabledExtensions();
 
   /**
    * @return A set of features to be enabled
    */
 
-  @Value.Parameter
   Optional<VulkanPhysicalDeviceFeatures> features();
 }

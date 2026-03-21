@@ -31,13 +31,19 @@ public interface VulkanViewportDimensionsType
    * @return The maximum value in the X dimension
    */
 
-  @Value.Parameter
-  int maximumX();
+  @Value.Default
+  default int maximumX()
+  {
+    return 0;
+  }
 
   /**
    * @return The maximum value in the Y dimension
    */
 
-  @Value.Parameter
-  int maximumY();
+  @Value.Default
+  default int maximumY()
+  {
+    return 0;
+  }
 }

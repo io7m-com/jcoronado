@@ -1510,10 +1510,13 @@ public final class VulkanLWJGLLogicalDevice
     }
 
     final VulkanLWJGLFlushRangedFunctionType flush = (map_mem, map_off, map_size) ->
-      this.flushMappedMemoryRange(VulkanMappedMemoryRange.of(
-        map_mem,
-        map_off,
-        map_size));
+      this.flushMappedMemoryRange(
+        VulkanMappedMemoryRange.builder()
+          .setMemory(map_mem)
+          .setOffset(map_off)
+          .setSize(map_size)
+          .build()
+      );
 
     return new VulkanLWJGLMappedMemory(
       this.device,

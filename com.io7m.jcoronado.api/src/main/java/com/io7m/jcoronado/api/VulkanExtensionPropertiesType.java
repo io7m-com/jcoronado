@@ -34,13 +34,11 @@ public interface VulkanExtensionPropertiesType
    * @return The name of the extension
    */
 
-  @Value.Parameter
   String name();
 
   /**
    * @return The version of the extension
    */
 
-  @Value.Parameter
   int version();
 }

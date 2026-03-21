@@ -67,10 +67,16 @@ public final class VulkanLWJGLVulkanRectangle2DTest
   @Test
   public void testOffsetPack()
   {
+    final var extent =
+      VulkanExtent2D.builder()
+        .setWidth(128)
+        .setHeight(128)
+        .build();
+
     final var source =
       VulkanRectangle2D.of(
-        VulkanOffset2D.of(0, 0),
-        VulkanExtent2D.of(128, 128));
+        VulkanOffset2D.ZERO,
+        extent);
 
     final var out =
       VulkanLWJGLRect2Ds.pack(this.stack, source);
@@ -82,10 +88,16 @@ public final class VulkanLWJGLVulkanRectangle2DTest
   public void testOffsetPackList()
     throws VulkanException
   {
+    final var extent =
+      VulkanExtent2D.builder()
+        .setWidth(128)
+        .setHeight(128)
+        .build();
+
     final var source =
       VulkanRectangle2D.of(
-        VulkanOffset2D.of(0, 0),
-        VulkanExtent2D.of(128, 128));
+        VulkanOffset2D.ZERO,
+        extent);
 
     final var out =
       VulkanLWJGLRect2Ds.packList(
@@ -101,10 +113,17 @@ public final class VulkanLWJGLVulkanRectangle2DTest
   public void testOffsetPackListOrNull()
     throws VulkanException
   {
+    final var extent =
+      VulkanExtent2D.builder()
+        .setWidth(128)
+        .setHeight(128)
+        .build();
+
     final var source =
       VulkanRectangle2D.of(
-        VulkanOffset2D.of(0, 0),
-        VulkanExtent2D.of(128, 128));
+        VulkanOffset2D.ZERO,
+        extent
+      );
 
     final var packed =
       VulkanLWJGLRect2Ds.packListOrNull(

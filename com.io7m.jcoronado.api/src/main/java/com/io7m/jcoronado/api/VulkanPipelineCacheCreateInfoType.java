@@ -37,7 +37,6 @@ public interface VulkanPipelineCacheCreateInfoType
    * @return The creation flags
    */
 
-  @Value.Parameter
   Set<VulkanPipelineCacheCreateFlag> flags();
 
   /**
@@ -45,6 +44,5 @@ public interface VulkanPipelineCacheCreateInfoType
    * incompatible with the device, the pipeline cache will be initially empty.
    */
 
-  @Value.Parameter
   ByteBuffer initialData();
 }

@@ -36,7 +36,6 @@ public interface VulkanCommandPoolCreateInfoType
    * @return Flags specifying how the command pool will be generated.
    */
 
-  @Value.Parameter
   Set<VulkanCommandPoolCreateFlag> flags();
 
   /**
@@ -44,6 +43,5 @@ public interface VulkanCommandPoolCreateInfoType
    * allocated from this command pool must be submitted on queues from the same queue family.
    */
 
-  @Value.Parameter
   VulkanQueueFamilyIndex queueFamilyIndex();
 }

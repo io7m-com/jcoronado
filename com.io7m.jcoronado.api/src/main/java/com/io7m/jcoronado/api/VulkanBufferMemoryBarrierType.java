@@ -79,12 +79,20 @@ public interface VulkanBufferMemoryBarrierType
    * offset as bound to the buffer
    */
 
-  long offset();
+  @Value.Default
+  default long offset()
+  {
+    return 0L;
+  }
 
   /**
    * @return A size in bytes of the affected area of backing memory for buffer, or VK_WHOLE_SIZE to
    * use the range from offset to the end of the buffer.
    */
 
-  long size();
+  @Value.Default
+  default long size()
+  {
+    return 0L;
+  }
 }

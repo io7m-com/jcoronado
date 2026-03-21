@@ -32,16 +32,32 @@ import org.immutables.value.Value;
 public interface VulkanOffset2DType
 {
   /**
+   * The zero offset.
+   */
+
+  VulkanOffset2D ZERO =
+    VulkanOffset2D.builder()
+      .setX(0)
+      .setY(0)
+      .build();
+
+  /**
    * @return The x offset
    */
 
-  @Value.Parameter
-  int x();
+  @Value.Default
+  default int x()
+  {
+    return 0;
+  }
 
   /**
    * @return The y offset
    */
 
-  @Value.Parameter
-  int y();
+  @Value.Default
+  default int y()
+  {
+    return 0;
+  }
 }

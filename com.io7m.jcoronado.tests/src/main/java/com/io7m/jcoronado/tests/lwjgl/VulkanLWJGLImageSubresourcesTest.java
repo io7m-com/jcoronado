@@ -69,11 +69,11 @@ public final class VulkanLWJGLImageSubresourcesTest
     throws VulkanException
   {
     final var source =
-      VulkanImageSubresource.of(
-        EnumSet.allOf(VulkanImageAspectFlag.class),
-        1,
-        2
-      );
+      VulkanImageSubresource.builder()
+        .addAllAspectMask(EnumSet.allOf(VulkanImageAspectFlag.class))
+        .setArrayLayer(2)
+        .setMipLevel(1)
+        .build();
 
     final var out =
       VulkanLWJGLImageSubresources.pack(this.stack, source);
@@ -86,11 +86,11 @@ public final class VulkanLWJGLImageSubresourcesTest
     throws VulkanException
   {
     final var source =
-      VulkanImageSubresource.of(
-        EnumSet.allOf(VulkanImageAspectFlag.class),
-        1,
-        2
-      );
+      VulkanImageSubresource.builder()
+        .addAllAspectMask(EnumSet.allOf(VulkanImageAspectFlag.class))
+        .setArrayLayer(2)
+        .setMipLevel(1)
+        .build();
 
     final var out =
       VulkanLWJGLImageSubresources.packList(
@@ -107,11 +107,11 @@ public final class VulkanLWJGLImageSubresourcesTest
     throws VulkanException
   {
     final var source =
-      VulkanImageSubresource.of(
-        EnumSet.allOf(VulkanImageAspectFlag.class),
-        1,
-        2
-      );
+      VulkanImageSubresource.builder()
+        .addAllAspectMask(EnumSet.allOf(VulkanImageAspectFlag.class))
+        .setArrayLayer(2)
+        .setMipLevel(1)
+        .build();
 
     final var packed =
       VulkanLWJGLImageSubresources.packListOrNull(

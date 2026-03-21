@@ -57,12 +57,12 @@ public final class VulkanLWJGLDescriptorSetLayoutBindingsTest
     throws Exception
   {
     final var binding =
-      VulkanDescriptorSetLayoutBinding.of(
-        1,
-        VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
-        1,
-        Set.of(VK_SHADER_STAGE_VERTEX_BIT),
-        List.of());
+      VulkanDescriptorSetLayoutBinding.builder()
+        .setBinding(1)
+        .setDescriptorCount(1)
+        .setDescriptorType(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER)
+        .addStageFlags(VK_SHADER_STAGE_VERTEX_BIT)
+        .build();
 
     final var packed =
       VulkanLWJGLDescriptorSetLayoutBindings.pack(this.stack, binding);
@@ -111,12 +111,13 @@ public final class VulkanLWJGLDescriptorSetLayoutBindingsTest
       .thenReturn(39L);
 
     final var binding =
-      VulkanDescriptorSetLayoutBinding.of(
-        1,
-        VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
-        3,
-        Set.of(VK_SHADER_STAGE_VERTEX_BIT),
-        List.of(sampler_0, sampler_1, sampler_2));
+      VulkanDescriptorSetLayoutBinding.builder()
+        .setBinding(1)
+        .setDescriptorCount(3)
+        .setDescriptorType(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER)
+        .addStageFlags(VK_SHADER_STAGE_VERTEX_BIT)
+        .addAllImmutableSamplers(List.of(sampler_0, sampler_1, sampler_2))
+        .build();
 
     final var packed =
       VulkanLWJGLDescriptorSetLayoutBindings.pack(this.stack, binding);

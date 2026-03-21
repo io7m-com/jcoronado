@@ -65,7 +65,11 @@ public final class VulkanLWJGLVulkanOffset3DTest
   public void testOffsetPack()
   {
     final var source =
-      VulkanOffset3D.of(23, 25, 27);
+      VulkanOffset3D.builder()
+        .setX(23)
+        .setY(25)
+        .setZ(27)
+        .build();
 
     final var out =
       VulkanLWJGLOffset3Ds.pack(this.stack, source);
@@ -78,7 +82,11 @@ public final class VulkanLWJGLVulkanOffset3DTest
     throws VulkanException
   {
     final var source =
-      VulkanOffset3D.of(23, 25, 27);
+      VulkanOffset3D.builder()
+        .setX(23)
+        .setY(25)
+        .setZ(27)
+        .build();
 
     final var out =
       VulkanLWJGLOffset3Ds.packList(
@@ -95,7 +103,11 @@ public final class VulkanLWJGLVulkanOffset3DTest
     throws VulkanException
   {
     final var source =
-      VulkanOffset3D.of(23, 25, 27);
+      VulkanOffset3D.builder()
+        .setX(23)
+        .setY(25)
+        .setZ(27)
+        .build();
 
     final var packed =
       VulkanLWJGLOffset3Ds.packListOrNull(

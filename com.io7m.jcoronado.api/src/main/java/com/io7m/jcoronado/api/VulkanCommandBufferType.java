@@ -55,7 +55,11 @@ public interface VulkanCommandBufferType extends VulkanHandleDispatchableType
     final Set<VulkanCommandBufferUsageFlag> flags)
     throws VulkanException
   {
-    this.beginCommandBuffer(VulkanCommandBufferBeginInfo.of(flags));
+    this.beginCommandBuffer(
+      VulkanCommandBufferBeginInfo.builder()
+        .addAllFlags(flags)
+        .build()
+    );
   }
 
   /**
@@ -72,7 +76,11 @@ public interface VulkanCommandBufferType extends VulkanHandleDispatchableType
     final VulkanCommandBufferUsageFlag... flags)
     throws VulkanException
   {
-    this.beginCommandBuffer(VulkanCommandBufferBeginInfo.of(Set.of(flags)));
+    this.beginCommandBuffer(
+      VulkanCommandBufferBeginInfo.builder()
+        .addFlags(flags)
+        .build()
+    );
   }
 
   /**

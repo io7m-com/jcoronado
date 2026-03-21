@@ -84,6 +84,12 @@ public final class VulkanLWJGLHostAllocatorJeMalloc
   @Override
   public VulkanHostAllocatorCallbacks createCallbacks()
   {
-    return VulkanHostAllocatorCallbacks.of(this, this, this, this, this);
+    return VulkanHostAllocatorCallbacks.builder()
+      .setReallocation(this)
+      .setOnInternalDeallocation(this)
+      .setOnInternalAllocation(this)
+      .setDeallocation(this)
+      .setAllocation(this)
+      .build();
   }
 }

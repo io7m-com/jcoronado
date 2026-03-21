@@ -35,7 +35,6 @@ public interface VulkanImageCreateInfoType
    * @return A set of flags describing additional parameters of the image.
    */
 
-  @Value.Parameter
   Set<VulkanImageCreateFlag> flags();
 
   /**
@@ -43,57 +42,73 @@ public interface VulkanImageCreateInfoType
    * not count as a dimension for the purposes of the image type.
    */
 
-  @Value.Parameter
-  VulkanImageKind imageType();
+  @Value.Default
+  default VulkanImageKind imageType()
+  {
+    return VulkanImageKind.VK_IMAGE_TYPE_2D;
+  }
 
   /**
    * @return A value describing the format and type of the texel blocks that will be contained in
    * the image.
    */
 
-  @Value.Parameter
-  VulkanFormat format();
+  @Value.Default
+  default VulkanFormat format()
+  {
+    return VulkanFormat.VK_FORMAT_UNDEFINED;
+  }
 
   /**
    * @return A value describing the number of data elements in each dimension of the base level.
    */
 
-  @Value.Parameter
-  VulkanExtent3D extent();
+  @Value.Default
+  default VulkanExtent3D extent()
+  {
+    return VulkanExtent3D.builder().build();
+  }
 
   /**
    * @return The number of levels of detail available for minified sampling of the image.
    */
 
-  @Value.Parameter
-  int mipLevels();
+  @Value.Default
+  default int mipLevels()
+  {
+    return 1;
+  }
 
   /**
    * @return The the number of layers in the image.
    */
 
-  @Value.Parameter
-  int arrayLayers();
+  @Value.Default
+  default int arrayLayers()
+  {
+    return 1;
+  }
 
   /**
    * @return A value specifying the number of samples per texel.
    */
 
-  @Value.Parameter
   Set<VulkanSampleCountFlag> samples();
 
   /**
    * @return A value specifying the tiling arrangement of the texel blocks in memory.
    */
 
-  @Value.Parameter
-  VulkanImageTiling tiling();
+  @Value.Default
+  default VulkanImageTiling tiling()
+  {
+    return VulkanImageTiling.VK_IMAGE_TILING_OPTIMAL;
+  }
 
   /**
    * @return A value describing the intended usage of the image.
    */
 
-  @Value.Parameter
   Set<VulkanImageUsageFlag> usage();
 
   /**
@@ -101,21 +116,26 @@ public interface VulkanImageCreateInfoType
    * queue families.
    */
 
-  @Value.Parameter
-  VulkanSharingMode sharingMode();
+  @Value.Default
+  default VulkanSharingMode sharingMode()
+  {
+    return VulkanSharingMode.VK_SHARING_MODE_EXCLUSIVE;
+  }
 
   /**
    * @return A list of queue families that will access this image (ignored if sharingMode is not
    * VK_SHARING_MODE_CONCURRENT).
    */
 
-  @Value.Parameter
   List<Integer> queueFamilyIndices();
 
   /**
    * @return A value specifying the initial layout of all image subresources of the image.
    */
 
-  @Value.Parameter
-  VulkanImageLayout initialLayout();
+  @Value.Default
+  default VulkanImageLayout initialLayout()
+  {
+    return VulkanImageLayout.VK_IMAGE_LAYOUT_UNDEFINED;
+  }
 }

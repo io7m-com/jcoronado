@@ -111,9 +111,13 @@ public final class VulkanLWJGLExtKHRSurface implements VulkanExtKHRSurfaceType
     return results;
   }
 
-  private static VulkanExtent2D parseExtent(final VkExtent2D extent)
+  private static VulkanExtent2D parseExtent(
+    final VkExtent2D extent)
   {
-    return VulkanExtent2D.of(extent.width(), extent.height());
+    return VulkanExtent2D.builder()
+      .setWidth(extent.width())
+      .setHeight(extent.height())
+      .build();
   }
 
   @Override

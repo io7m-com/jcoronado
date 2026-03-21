@@ -34,34 +34,41 @@ public interface VulkanImageCopyType
    * @return The subresource to copy from
    */
 
-  @Value.Parameter
   VulkanImageSubresourceLayers sourceSubresource();
 
   /**
    * @return The offset of the source region
    */
 
-  @Value.Parameter
-  VulkanOffset3D sourceOffset();
+  @Value.Default
+  default VulkanOffset3D sourceOffset()
+  {
+    return VulkanOffset3D.builder().build();
+  }
 
   /**
    * @return The subresource to copy to
    */
 
-  @Value.Parameter
   VulkanImageSubresourceLayers targetSubresource();
 
   /**
    * @return The offset of the target region
    */
 
-  @Value.Parameter
-  VulkanOffset3D targetOffset();
+  @Value.Default
+  default VulkanOffset3D targetOffset()
+  {
+    return VulkanOffset3D.builder().build();
+  }
 
   /**
    * @return The extent of the copied region
    */
 
-  @Value.Parameter
-  VulkanExtent3D extent();
+  @Value.Default
+  default VulkanExtent3D extent()
+  {
+    return VulkanExtent3D.builder().build();
+  }
 }

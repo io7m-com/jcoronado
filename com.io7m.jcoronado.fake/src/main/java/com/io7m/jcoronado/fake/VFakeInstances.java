@@ -40,8 +40,13 @@ public final class VFakeInstances
     "com.io7m.jcoronado.fake";
   private String providerVersion =
     "1.0.0";
+
   private VulkanVersion vulkanVersion =
-    VulkanVersion.of(1, 0, 0);
+    VulkanVersion.builder()
+      .setMajor(1)
+      .setMinor(0)
+      .setPatch(0)
+      .build();
 
   private Map<String, VulkanExtensionProperties> extensions = Map.of();
   private Map<String, VulkanLayerProperties> layers = Map.of();
@@ -147,7 +152,11 @@ public final class VFakeInstances
   @Override
   public VulkanVersion minimumRequiredVersion()
   {
-    return VulkanVersion.of(1, 0, 0);
+    return VulkanVersion.builder()
+      .setMajor(1)
+      .setMinor(0)
+      .setPatch(0)
+      .build();
   }
 
   @Override

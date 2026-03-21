@@ -30,7 +30,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.lwjgl.system.MemoryStack;
-import org.lwjgl.vulkan.VkImageMemoryBarrier;
 import org.lwjgl.vulkan.VkImageMemoryBarrier2;
 import org.mockito.Mockito;
 import org.slf4j.Logger;
@@ -89,13 +88,13 @@ public final class VulkanLWJGLImageMemoryBarriersTest
       Mockito.mock(VulkanLWJGLImage.class);
 
     final var subresource =
-      VulkanImageSubresourceRange.of(
-        EnumSet.allOf(VulkanImageAspectFlag.class),
-        1,
-        2,
-        3,
-        4
-      );
+      VulkanImageSubresourceRange.builder()
+        .setAspectMask(EnumSet.allOf(VulkanImageAspectFlag.class))
+        .setBaseArrayLayer(3)
+        .setBaseMipLevel(1)
+        .setLayerCount(4)
+        .setLevelCount(2)
+        .build();
 
     final var source =
       VulkanImageMemoryBarrier.builder()
@@ -123,13 +122,13 @@ public final class VulkanLWJGLImageMemoryBarriersTest
       Mockito.mock(VulkanLWJGLImage.class);
 
     final var subresource =
-      VulkanImageSubresourceRange.of(
-        EnumSet.allOf(VulkanImageAspectFlag.class),
-        1,
-        2,
-        3,
-        4
-      );
+      VulkanImageSubresourceRange.builder()
+        .setAspectMask(EnumSet.allOf(VulkanImageAspectFlag.class))
+        .setBaseArrayLayer(3)
+        .setBaseMipLevel(1)
+        .setLayerCount(4)
+        .setLevelCount(2)
+        .build();
 
     final var source =
       VulkanImageMemoryBarrier.builder()
@@ -161,13 +160,13 @@ public final class VulkanLWJGLImageMemoryBarriersTest
       Mockito.mock(VulkanLWJGLImage.class);
 
     final var subresource =
-      VulkanImageSubresourceRange.of(
-        EnumSet.allOf(VulkanImageAspectFlag.class),
-        1,
-        2,
-        3,
-        4
-      );
+      VulkanImageSubresourceRange.builder()
+        .setAspectMask(EnumSet.allOf(VulkanImageAspectFlag.class))
+        .setBaseArrayLayer(3)
+        .setBaseMipLevel(1)
+        .setLayerCount(4)
+        .setLevelCount(2)
+        .build();
 
     final var source =
       VulkanImageMemoryBarrier.builder()

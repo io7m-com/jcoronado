@@ -37,30 +37,23 @@ public interface VulkanInstanceCreateInfoType
    * @return The application info
    */
 
-  @Value.Parameter
   VulkanApplicationInfo applicationInfo();
 
   /**
    * @return The names of all extensions that should be enabled
    */
 
-  @Value.Parameter
   Set<String> enabledExtensions();
 
   /**
    * @return The names of all layers that should be enabled
    */
 
-  @Value.Parameter
   Set<String> enabledLayers();
 
   /**
    * @return The list of instance creation extensions
    */
 
-  @Value.Default
-  default List<VulkanInstanceExtensionInfoType> extensionInfo()
-  {
-    return List.of();
-  }
+  List<VulkanInstanceExtensionInfoType> extensionInfo();
 }

@@ -39,77 +39,66 @@ public interface VulkanGraphicsPipelineCreateInfoType
    * @return Flags specifying how the pipeline will be generated.
    */
 
-  @Value.Parameter
   Set<VulkanPipelineCreateFlag> flags();
 
   /**
    * @return The shader stages to be included in the graphics pipeline.
    */
 
-  @Value.Parameter
   List<VulkanPipelineShaderStageCreateInfo> stages();
 
   /**
    * @return State for the vertex shading stage
    */
 
-  @Value.Parameter
   VulkanPipelineVertexInputStateCreateInfo vertexInputState();
 
   /**
    * @return State for the input assembly stage
    */
 
-  @Value.Parameter
   VulkanPipelineInputAssemblyStateCreateInfo inputAssemblyState();
 
   /**
    * @return State for the tesselation stage
    */
 
-  @Value.Parameter
   Optional<VulkanPipelineTessellationStateCreateInfo> tessellationState();
 
   /**
    * @return State for the viewport
    */
 
-  @Value.Parameter
   Optional<VulkanPipelineViewportStateCreateInfo> viewportState();
 
   /**
    * @return State for the rasterization stage
    */
 
-  @Value.Parameter
   VulkanPipelineRasterizationStateCreateInfo rasterizationState();
 
   /**
    * @return State for multisampling
    */
 
-  @Value.Parameter
   Optional<VulkanPipelineMultisampleStateCreateInfo> multisampleState();
 
   /**
    * @return State for the depth/stencil buffer
    */
 
-  @Value.Parameter
   Optional<VulkanPipelineDepthStencilStateCreateInfo> depthStencilState();
 
   /**
    * @return State for the color blending stage
    */
 
-  @Value.Parameter
   Optional<VulkanPipelineColorBlendStateCreateInfo> colorBlendState();
 
   /**
    * @return Dynamic state
    */
 
-  @Value.Parameter
   Optional<VulkanPipelineDynamicStateCreateInfo> dynamicState();
 
   /**
@@ -117,7 +106,6 @@ public interface VulkanGraphicsPipelineCreateInfoType
    * with the pipeline.
    */
 
-  @Value.Parameter
   VulkanPipelineLayoutType layout();
 
   /**
@@ -126,28 +114,25 @@ public interface VulkanGraphicsPipelineCreateInfoType
    * one provided.
    */
 
-  @Value.Parameter
   Optional<VulkanRenderPassType> renderPass();
 
   /**
    * @return The index of the subpass in the render pass where this pipeline will be used.
    */
 
-  @Value.Parameter
-  int subpass();
+  @Value.Default
+  default int subpass() { return 0; }
 
   /**
    * @return A pipeline to derive from.
    */
 
-  @Value.Parameter
   Optional<VulkanPipelineType> basePipeline();
 
   /**
    * @return An index into the createInfos parameter to use as a pipeline to derive from.
    */
 
-  @Value.Parameter
   OptionalInt basePipelineIndex();
 
   /**

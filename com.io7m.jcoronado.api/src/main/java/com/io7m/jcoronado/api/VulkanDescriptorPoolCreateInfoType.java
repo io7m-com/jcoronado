@@ -35,21 +35,22 @@ public interface VulkanDescriptorPoolCreateInfoType
    * @return The flags specifying certain supported operations on the pool.
    */
 
-  @Value.Parameter
   Set<VulkanDescriptorPoolCreateFlag> flags();
 
   /**
    * @return The maximum number of descriptor sets that can be allocated from the pool.
    */
 
-  @Value.Parameter
-  int maxSets();
+  @Value.Default
+  default int maxSets()
+  {
+    return 0;
+  }
 
   /**
    * @return An array of structures each containing a descriptor type and number of descriptors of
    * that type to be allocated in the pool.
    */
 
-  @Value.Parameter
   List<VulkanDescriptorPoolSize> poolSizes();
 }

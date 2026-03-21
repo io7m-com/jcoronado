@@ -32,14 +32,16 @@ public interface VulkanMemoryAllocateInfoType
    * @return The size of the allocation in bytes
    */
 
-  @Value.Parameter
-  long size();
+  @Value.Default
+  default long size()
+  {
+    return 0L;
+  }
 
   /**
    * @return An index identifying a memory type from the memoryTypes array of the
    * VkPhysicalDeviceMemoryProperties structure
    */
 
-  @Value.Parameter
   VulkanMemoryTypeIndex memoryTypeIndex();
 }

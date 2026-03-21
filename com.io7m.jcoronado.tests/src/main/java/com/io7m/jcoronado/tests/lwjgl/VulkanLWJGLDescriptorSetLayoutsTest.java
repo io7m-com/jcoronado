@@ -27,8 +27,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.nio.LongBuffer;
-import java.util.List;
-import java.util.Set;
 
 import static com.io7m.jcoronado.api.VulkanDescriptorType.VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
 import static com.io7m.jcoronado.api.VulkanDescriptorType.VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
@@ -56,28 +54,28 @@ public final class VulkanLWJGLDescriptorSetLayoutsTest
     throws Exception
   {
     final var binding_0 =
-      VulkanDescriptorSetLayoutBinding.of(
-        23,
-        VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
-        1,
-        Set.of(VK_SHADER_STAGE_VERTEX_BIT),
-        List.of());
+      VulkanDescriptorSetLayoutBinding.builder()
+        .addStageFlags(VK_SHADER_STAGE_VERTEX_BIT)
+        .setBinding(23)
+        .setDescriptorCount(1)
+        .setDescriptorType(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER)
+        .build();
 
     final var binding_1 =
-      VulkanDescriptorSetLayoutBinding.of(
-        24,
-        VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
-        1,
-        Set.of(VK_SHADER_STAGE_FRAGMENT_BIT),
-        List.of());
+      VulkanDescriptorSetLayoutBinding.builder()
+        .addStageFlags(VK_SHADER_STAGE_FRAGMENT_BIT)
+        .setBinding(24)
+        .setDescriptorCount(1)
+        .setDescriptorType(VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER)
+        .build();
 
     final var binding_2 =
-      VulkanDescriptorSetLayoutBinding.of(
-        25,
-        VK_DESCRIPTOR_TYPE_STORAGE_BUFFER,
-        1,
-        Set.of(VK_SHADER_STAGE_GEOMETRY_BIT),
-        List.of());
+      VulkanDescriptorSetLayoutBinding.builder()
+        .addStageFlags(VK_SHADER_STAGE_GEOMETRY_BIT)
+        .setBinding(25)
+        .setDescriptorCount(1)
+        .setDescriptorType(VK_DESCRIPTOR_TYPE_STORAGE_BUFFER)
+        .build();
 
     final var create_info =
       VulkanDescriptorSetLayoutCreateInfo.builder()
