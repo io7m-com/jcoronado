@@ -21,6 +21,7 @@
 
   <properties>
     <mdep.analyze.skip>true</mdep.analyze.skip>
+    <bnd.baseline.skip>true</bnd.baseline.skip>
   </properties>
 
   <dependencies>

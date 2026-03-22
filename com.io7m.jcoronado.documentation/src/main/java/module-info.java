@@ -35,4 +35,5 @@ module com.io7m.jcoronado.documentation
   requires com.io7m.jcoronado.utility.allocation_tracker;
   requires com.io7m.jcoronado.utility.swapchain;
   requires com.io7m.jcoronado.vma;
+  requires org.osgi.annotation.versioning;
 }
