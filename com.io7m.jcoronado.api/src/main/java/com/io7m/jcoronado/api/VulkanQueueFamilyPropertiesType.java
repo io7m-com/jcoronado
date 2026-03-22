@@ -36,21 +36,26 @@ public interface VulkanQueueFamilyPropertiesType
    * @return The index of the queue family
    */
 
-  @Value.Parameter
-  VulkanQueueFamilyIndex queueFamilyIndex();
+  @Value.Default
+  default VulkanQueueFamilyIndex queueFamilyIndex()
+  {
+    return VulkanQueueFamilyIndex.ignored();
+  }
 
   /**
    * @return The number of queues available in the family
    */
 
-  @Value.Parameter
-  int queueCount();
+  @Value.Default
+  default int queueCount()
+  {
+    return 0;
+  }
 
   /**
    * @return The property flags for the queue family
    */
 
-  @Value.Parameter
   Set<VulkanQueueFamilyPropertyFlag> queueFlags();
 
   /**
@@ -58,16 +63,22 @@ public interface VulkanQueueFamilyPropertiesType
    * vkCmdWriteTimestamp.
    */
 
-  @Value.Parameter
-  int timestampValidBits();
+  @Value.Default
+  default int timestampValidBits()
+  {
+    return 0;
+  }
 
   /**
    * @return The minimum granularity supported for image transfer operations on the queues in this
    * queue family.
    */
 
-  @Value.Parameter
-  VulkanExtent3D minImageTransferGranularity();
+  @Value.Default
+  default VulkanExtent3D minImageTransferGranularity()
+  {
+    return VulkanExtent3D.ZERO;
+  }
 
   /**
    * All commands that are allowed on a queue that supports transfer operations
@@ -86,7 +97,7 @@ public interface VulkanQueueFamilyPropertiesType
   {
     final var f = this.queueFlags();
     return f.contains(VulkanQueueFamilyPropertyFlag.VK_QUEUE_TRANSFER_BIT)
-           || f.contains(VulkanQueueFamilyPropertyFlag.VK_QUEUE_COMPUTE_BIT)
-           || f.contains(VulkanQueueFamilyPropertyFlag.VK_QUEUE_GRAPHICS_BIT);
+      || f.contains(VulkanQueueFamilyPropertyFlag.VK_QUEUE_COMPUTE_BIT)
+      || f.contains(VulkanQueueFamilyPropertyFlag.VK_QUEUE_GRAPHICS_BIT);
   }
 }

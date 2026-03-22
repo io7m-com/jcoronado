@@ -26,6 +26,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.vulkan.VK10;
+import org.lwjgl.vulkan.VK13;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,10 +50,10 @@ public final class VulkanLWJGLSubpassesTest
     final var dependency =
       VulkanSubpassDependency.builder()
         .addDependencyFlags(VulkanDependencyFlag.values())
-        .addDstAccessMask(VulkanAccessFlag.VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT)
-        .addDstStageMask(VulkanPipelineStageFlag.VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT)
         .addSrcAccessMask(VulkanAccessFlag.VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT)
-        .addSrcStageMask(VulkanPipelineStageFlag.VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT)
+        .addSrcStageMask(VulkanPipelineStageFlag.VK_PIPELINE_STAGE_NONE)
+        .addDstAccessMask(VulkanAccessFlag.VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT)
+        .addDstStageMask(VulkanPipelineStageFlag.VK_PIPELINE_STAGE_ALL_GRAPHICS_BIT)
         .setSrcSubpass(23)
         .setDstSubpass(24)
         .build();
@@ -70,7 +71,7 @@ public final class VulkanLWJGLSubpassesTest
       },
       () -> {
         Assertions.assertEquals(
-          VK10.VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT, packed.dstStageMask());
+          VK13.VK_PIPELINE_STAGE_ALL_GRAPHICS_BIT, packed.dstStageMask());
       },
       () -> {
         Assertions.assertEquals(
@@ -79,7 +80,7 @@ public final class VulkanLWJGLSubpassesTest
       },
       () -> {
         Assertions.assertEquals(
-          VK10.VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT, packed.srcStageMask());
+          VK13.VK_PIPELINE_STAGE_NONE, packed.srcStageMask());
       },
       () -> {
         Assertions.assertEquals(23, packed.srcSubpass());

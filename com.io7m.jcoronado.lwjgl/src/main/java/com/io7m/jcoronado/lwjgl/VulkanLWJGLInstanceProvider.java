@@ -24,6 +24,7 @@ import com.io7m.jcoronado.api.VulkanInstanceExtensionInfoType;
 import com.io7m.jcoronado.api.VulkanInstanceProviderType;
 import com.io7m.jcoronado.api.VulkanInstanceType;
 import com.io7m.jcoronado.api.VulkanLayerProperties;
+import com.io7m.jcoronado.api.VulkanMissingRequiredVersionException;
 import com.io7m.jcoronado.api.VulkanVersion;
 import com.io7m.jcoronado.api.VulkanVersions;
 import com.io7m.jcoronado.lwjgl.internal.VulkanLWJGLExtensionsRegistry;
@@ -61,6 +62,13 @@ public final class VulkanLWJGLInstanceProvider
   private static final Logger LOG =
     LoggerFactory.getLogger(VulkanLWJGLInstanceProvider.class);
 
+  private static final VulkanVersion VULKAN_14 =
+    VulkanVersion.builder()
+      .setMajor(1)
+      .setMinor(4)
+      .setPatch(0)
+      .build();
+
   private final MemoryStack initialStack;
   private final VulkanLWJGLExtensionsRegistry extensions;
 
@@ -93,6 +101,12 @@ public final class VulkanLWJGLInstanceProvider
   VulkanLWJGLExtensionsRegistry extensionRegistry()
   {
     return this.extensions;
+  }
+
+  @Override
+  public VulkanVersion minimumRequiredVersion()
+  {
+    return VULKAN_14;
   }
 
   @Override
@@ -135,7 +149,7 @@ public final class VulkanLWJGLInstanceProvider
       }
 
       final var instanceExtensions =
-        VkExtensionProperties.malloc(size, stack);
+        VkExtensionProperties.calloc(size, stack);
 
       checkReturnCode(
         VK10.vkEnumerateInstanceExtensionProperties(
@@ -149,10 +163,13 @@ public final class VulkanLWJGLInstanceProvider
 
       for (var index = 0; index < size; ++index) {
         instanceExtensions.position(index);
+
         final var extension =
-          VulkanExtensionProperties.of(
-            instanceExtensions.extensionNameString(),
-            instanceExtensions.specVersion());
+          VulkanExtensionProperties.builder()
+            .setName(instanceExtensions.extensionNameString())
+            .setVersion(instanceExtensions.specVersion())
+            .build();
+
         availableExtensions.put(extension.name(), extension);
       }
 
@@ -179,7 +196,7 @@ public final class VulkanLWJGLInstanceProvider
       }
 
       final var layersBuffer =
-        VkLayerProperties.malloc(size, stack);
+        VkLayerProperties.calloc(size, stack);
 
       checkReturnCode(
         VK10.vkEnumerateInstanceLayerProperties(
@@ -192,11 +209,12 @@ public final class VulkanLWJGLInstanceProvider
         layersBuffer.position(index);
 
         final var layer =
-          VulkanLayerProperties.of(
-            layersBuffer.layerNameString(),
-            layersBuffer.descriptionString(),
-            layersBuffer.specVersion(),
-            layersBuffer.implementationVersion());
+          VulkanLayerProperties.builder()
+            .setDescription(layersBuffer.descriptionString())
+            .setImplementationVersion(layersBuffer.implementationVersion())
+            .setName(layersBuffer.layerNameString())
+            .setSpecificationVersion(layersBuffer.specVersion())
+            .build();
 
         layers.put(layer.name(), layer);
       }
@@ -218,10 +236,44 @@ public final class VulkanLWJGLInstanceProvider
     final var enabledExtensions =
       info.enabledExtensions();
 
+    final var requestedVersion =
+      VulkanVersions.decode(info.applicationInfo().vulkanAPIVersion());
+    final var supportedVersion =
+      this.findSupportedInstanceVersion();
+
     if (LOG.isDebugEnabled()) {
-      final var apiVersion =
-        VulkanVersions.decode(info.applicationInfo().vulkanAPIVersion());
-      LOG.debug("Creating instance for API {}", apiVersion.toHumanString());
+      LOG.debug(
+        "Requested Vulkan version: {}",
+        requestedVersion.toHumanString());
+      LOG.debug(
+        "Required Vulkan version:  {}",
+        VULKAN_14.toHumanString());
+      LOG.debug(
+        "Supported Vulkan version: {}",
+        supportedVersion.toHumanString());
+    }
+
+    /*
+     * We require Vulkan 1.4+ as various extensions such as
+     * VK_KHR_synchronization2 were moved to core.
+     */
+
+    if (requestedVersion.compareTo(VULKAN_14) < 0) {
+      throw new VulkanMissingRequiredVersionException(
+        requestedVersion,
+        VULKAN_14,
+        supportedVersion
+      );
+    }
+    if (supportedVersion.compareTo(requestedVersion) < 0) {
+      throw new VulkanMissingRequiredVersionException(
+        requestedVersion,
+        VULKAN_14,
+        supportedVersion
+      );
+    }
+
+    if (LOG.isDebugEnabled()) {
       enabledLayers
         .forEach(layer -> LOG.debug("Enabling layer: {}", layer));
       enabledExtensions
@@ -242,7 +294,7 @@ public final class VulkanLWJGLInstanceProvider
         stack.ASCII(applicationInfo.engineName());
 
       final var vkApplicationInfo =
-        VkApplicationInfo.malloc(stack)
+        VkApplicationInfo.calloc(stack)
           .sType(VK10.VK_STRUCTURE_TYPE_APPLICATION_INFO)
           .pNext(0L)
           .pApplicationName(appNamePtr)
@@ -257,7 +309,7 @@ public final class VulkanLWJGLInstanceProvider
         this.createInstanceCreateInfoExtensions(stack, info.extensionInfo());
 
       final var vkInstanceCreateInfo =
-        VkInstanceCreateInfo.malloc(stack)
+        VkInstanceCreateInfo.calloc(stack)
           .sType(VK10.VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO)
           .pNext(vkInstanceCreateInfoExtensions)
           .flags(0)
@@ -315,7 +367,8 @@ public final class VulkanLWJGLInstanceProvider
       new ArrayList<Map.Entry<Long, Long>>();
 
     var next = 0L;
-    INFO_LOOP: for (int infoIndex = infos.size() - 1; infoIndex >= 0; --infoIndex) {
+    INFO_LOOP:
+    for (int infoIndex = infos.size() - 1; infoIndex >= 0; --infoIndex) {
       final var info = infos.get(infoIndex);
       for (final var handler : handlers) {
         if (handler.supports(info.getClass())) {

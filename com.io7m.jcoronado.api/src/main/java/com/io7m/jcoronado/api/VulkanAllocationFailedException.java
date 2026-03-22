@@ -16,23 +16,38 @@
 
 package com.io7m.jcoronado.api;
 
+import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * An exception raised by a memory allocation failure.
  */
 
-public final class VulkanAllocationFailedException extends VulkanException
+public final class VulkanAllocationFailedException
+  extends VulkanException
 {
   /**
    * Construct an exception.
    *
-   * @param message The error message
+   * @param message   The error message
+   * @param size      The requested size
+   * @param alignment The requested alignment
    */
 
   public VulkanAllocationFailedException(
-    final String message)
+    final String message,
+    final long size,
+    final long alignment)
   {
-    super(Objects.requireNonNull(message, "message"));
+    super(
+      Objects.requireNonNull(message, "message"),
+      Map.ofEntries(
+        Map.entry("Allocation Size", Long.toUnsignedString(size)),
+        Map.entry("Allocation Alignment", Long.toUnsignedString(alignment))
+      ),
+      "error-vulkan-memory-allocation",
+      Optional.empty()
+    );
   }
 }

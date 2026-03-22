@@ -30,11 +30,15 @@ public final class VulkanSpecializationMapTest
   {
     final var e = Assertions.assertThrows(
       IllegalArgumentException.class, () -> {
-        VulkanSpecializationMap.of(List.of(), ByteBuffer.allocate(23));
+        VulkanSpecializationMap.builder()
+          .setEntries(List.of())
+          .setData(ByteBuffer.allocate(23))
+          .build();
       });
 
-    Assertions.assertTrue(e.getMessage()
-                            .contains(
-                              "Must use direct byte buffers for specialization data"));
+    Assertions.assertTrue(
+      e.getMessage()
+        .contains("Must use direct byte buffers for specialization data")
+    );
   }
 }

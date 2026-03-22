@@ -34,41 +34,35 @@ public interface VulkanImageBlitType
    * @return The subresource to blit from
    */
 
-  @Value.Parameter
   VulkanImageSubresourceLayers sourceSubresource();
 
   /**
    * @return A corner of the source region
    */
 
-  @Value.Parameter
   VulkanOffset3D sourceOffset0();
 
   /**
    * @return A corner of the source region
    */
 
-  @Value.Parameter
   VulkanOffset3D sourceOffset1();
 
   /**
    * @return The subresource to blit to
    */
 
-  @Value.Parameter
   VulkanImageSubresourceLayers targetSubresource();
 
   /**
    * @return A corner of the target region
    */
 
-  @Value.Parameter
   VulkanOffset3D targetOffset0();
 
   /**
    * @return A corner of the target region
    */
 
-  @Value.Parameter
   VulkanOffset3D targetOffset1();
 }

@@ -36,62 +36,82 @@ public interface VulkanAttachmentDescriptionType
    * @return flags specifying additional properties of the attachment.
    */
 
-  @Value.Parameter
   Set<VulkanAttachmentDescriptionFlag> flags();
 
   /**
    * @return the format of the image view that will be used for the attachment.
    */
 
-  @Value.Parameter
-  VulkanFormat format();
+  @Value.Default
+  default VulkanFormat format()
+  {
+    return VulkanFormat.VK_FORMAT_UNDEFINED;
+  }
 
   /**
    * @return the number of samples of the image.
    */
 
-  @Value.Parameter
-  VulkanSampleCountFlag samples();
+  @Value.Default
+  default VulkanSampleCountFlag samples()
+  {
+    return VulkanSampleCountFlag.VK_SAMPLE_COUNT_1_BIT;
+  }
 
   /**
    * @return A value specifying how the contents of color and depth components of the attachment are
    * treated at the beginning of the subpass where it is first used.
    */
 
-  @Value.Parameter
-  VulkanAttachmentLoadOp loadOp();
+  @Value.Default
+  default VulkanAttachmentLoadOp loadOp()
+  {
+    return VulkanAttachmentLoadOp.VK_ATTACHMENT_LOAD_OP_LOAD;
+  }
 
   /**
    * @return A value specifying how the contents of color and depth components of the attachment are
    * treated at the end of the subpass where it is last used.
    */
 
-  @Value.Parameter
-  VulkanAttachmentStoreOp storeOp();
+  @Value.Default
+  default VulkanAttachmentStoreOp storeOp()
+  {
+    return VulkanAttachmentStoreOp.VK_ATTACHMENT_STORE_OP_STORE;
+  }
 
   /**
    * @return A value specifying how the contents of stencil components of the attachment are treated
    * at the beginning of the subpass where it is first used.
    */
 
-  @Value.Parameter
-  VulkanAttachmentLoadOp stencilLoadOp();
+  @Value.Default
+  default VulkanAttachmentLoadOp stencilLoadOp()
+  {
+    return VulkanAttachmentLoadOp.VK_ATTACHMENT_LOAD_OP_LOAD;
+  }
 
   /**
    * @return A value specifying how the contents of stencil components of the attachment are treated
    * at the end of the last subpass where it is used.
    */
 
-  @Value.Parameter
-  VulkanAttachmentStoreOp stencilStoreOp();
+  @Value.Default
+  default VulkanAttachmentStoreOp stencilStoreOp()
+  {
+    return VulkanAttachmentStoreOp.VK_ATTACHMENT_STORE_OP_STORE;
+  }
 
   /**
    * @return The layout the attachment image subresource will be in when a render pass instance
    * begins.
    */
 
-  @Value.Parameter
-  VulkanImageLayout initialLayout();
+  @Value.Default
+  default VulkanImageLayout initialLayout()
+  {
+    return VulkanImageLayout.VK_IMAGE_LAYOUT_UNDEFINED;
+  }
 
   /**
    * @return The layout the attachment image subresource will be transitioned to when a render pass
@@ -99,6 +119,9 @@ public interface VulkanAttachmentDescriptionType
    * subpass, if desired.
    */
 
-  @Value.Parameter
-  VulkanImageLayout finalLayout();
+  @Value.Default
+  default VulkanImageLayout finalLayout()
+  {
+    return VulkanImageLayout.VK_IMAGE_LAYOUT_UNDEFINED;
+  }
 }

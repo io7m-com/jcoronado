@@ -51,7 +51,7 @@ public final class VulkanLWJGLClearRectangles
     Objects.requireNonNull(stack, "stack");
     Objects.requireNonNull(info, "info");
 
-    return packInto(stack, info, VkClearRect.malloc(stack));
+    return packInto(stack, info, VkClearRect.calloc(stack));
   }
 
   /**
@@ -100,7 +100,7 @@ public final class VulkanLWJGLClearRectangles
     return VulkanLWJGLArrays.pack(
       infos,
       VulkanLWJGLClearRectangles::packInto,
-      VkClearRect::malloc,
+      VkClearRect::calloc,
       stack
     );
   }
@@ -127,7 +127,7 @@ public final class VulkanLWJGLClearRectangles
     return VulkanLWJGLArrays.packOrNull(
       infos,
       VulkanLWJGLClearRectangles::packInto,
-      VkClearRect::malloc,
+      VkClearRect::calloc,
       stack
     );
   }

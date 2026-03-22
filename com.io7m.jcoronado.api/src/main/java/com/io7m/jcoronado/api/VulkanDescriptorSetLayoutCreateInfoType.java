@@ -36,13 +36,11 @@ public interface VulkanDescriptorSetLayoutCreateInfoType
    * descriptor set layout creation.
    */
 
-  @Value.Parameter
   Set<VulkanDescriptorSetLayoutCreateFlag> flags();
 
   /**
    * @return An array of VulkanDescriptorSetLayoutBinding structures.
    */
 
-  @Value.Parameter
   List<VulkanDescriptorSetLayoutBinding> bindings();
 }

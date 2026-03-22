@@ -68,9 +68,14 @@ public final class VulkanLWJGLVulkanViewportsTest
   public void testPack()
   {
     final var source =
-      VulkanViewport.of(
-        1.0f, 2.0f, 3.0f, 4.0f, 0.0f, 2.0f
-      );
+      VulkanViewport.builder()
+        .setX(1.0f)
+        .setY(2.0f)
+        .setWidth(3.0f)
+        .setHeight(4.0f)
+        .setMinDepth(0.0f)
+        .setMaxDepth(2.0f)
+        .build();
 
     final var out =
       VulkanLWJGLViewports.pack(this.stack, source);
@@ -83,9 +88,14 @@ public final class VulkanLWJGLVulkanViewportsTest
     throws VulkanException
   {
     final var source =
-      VulkanViewport.of(
-        1.0f, 2.0f, 3.0f, 4.0f, 0.0f, 2.0f
-      );
+      VulkanViewport.builder()
+        .setX(1.0f)
+        .setY(2.0f)
+        .setWidth(3.0f)
+        .setHeight(4.0f)
+        .setMinDepth(0.0f)
+        .setMaxDepth(2.0f)
+        .build();
 
     final var out =
       VulkanLWJGLViewports.packList(
@@ -102,9 +112,14 @@ public final class VulkanLWJGLVulkanViewportsTest
     throws VulkanException
   {
     final var source =
-      VulkanViewport.of(
-        1.0f, 2.0f, 3.0f, 4.0f, 0.0f, 2.0f
-      );
+      VulkanViewport.builder()
+        .setX(1.0f)
+        .setY(2.0f)
+        .setWidth(3.0f)
+        .setHeight(4.0f)
+        .setMinDepth(0.0f)
+        .setMaxDepth(2.0f)
+        .build();
 
     final var packed =
       VulkanLWJGLViewports.packListOrNull(

@@ -32,21 +32,20 @@ public interface VulkanMappedMemoryRangeType
    * @return The memory object to which this range belongs.
    */
 
-  @Value.Parameter
   VulkanDeviceMemoryType memory();
 
   /**
    * @return The zero-based byte offset from the beginning of the memory object.
    */
 
-  @Value.Parameter
-  long offset();
+  @Value.Default
+  default long offset() { return 0L; }
 
   /**
    * @return Either the size of range, or VK_WHOLE_SIZE to affect the range from offset to the end
    * of the current mapping of the allocation.
    */
 
-  @Value.Parameter
-  long size();
+  @Value.Default
+  default long size() { return 0L; }
 }

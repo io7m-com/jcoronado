@@ -50,7 +50,7 @@ public final class VulkanLWJGLDescriptorPoolSizes
     Objects.requireNonNull(stack, "stack");
     Objects.requireNonNull(infos, "infos");
 
-    final var buffer = VkDescriptorPoolSize.malloc(infos.size(), stack);
+    final var buffer = VkDescriptorPoolSize.calloc(infos.size(), stack);
     for (var index = 0; index < infos.size(); ++index) {
       packDescriptorPoolSizeInto(infos.get(index), buffer.get(index));
     }
@@ -73,7 +73,7 @@ public final class VulkanLWJGLDescriptorPoolSizes
     Objects.requireNonNull(stack, "stack");
     Objects.requireNonNull(info, "info");
 
-    final var buffer = VkDescriptorPoolSize.malloc(stack);
+    final var buffer = VkDescriptorPoolSize.calloc(stack);
     packDescriptorPoolSizeInto(info, buffer);
     return buffer;
   }

@@ -38,14 +38,16 @@ public interface VulkanPipelineColorBlendAttachmentStateType
    * is not enabled, the source fragment’s color for that attachment is passed through unmodified.
    */
 
-  @Value.Parameter
-  boolean enable();
+  @Value.Default
+  default boolean enable()
+  {
+    return false;
+  }
 
   /**
    * @return the blend factor used to determine the source factors  (Sr,Sg,Sb).
    */
 
-  @Value.Parameter
   @Value.Default
   default VulkanBlendFactor srcColorBlendFactor()
   {
@@ -56,7 +58,6 @@ public interface VulkanPipelineColorBlendAttachmentStateType
    * @return the blend factor used to determine the destination factors (Dr,Dg,Db).
    */
 
-  @Value.Parameter
   @Value.Default
   default VulkanBlendFactor dstColorBlendFactor()
   {
@@ -67,7 +68,6 @@ public interface VulkanPipelineColorBlendAttachmentStateType
    * @return the blend operation used to calculate the RGB values to write to the color attachment.
    */
 
-  @Value.Parameter
   @Value.Default
   default VulkanBlendOp colorBlendOp()
   {
@@ -78,7 +78,6 @@ public interface VulkanPipelineColorBlendAttachmentStateType
    * @return the blend factor used to determine the source factor Sa.
    */
 
-  @Value.Parameter
   @Value.Default
   default VulkanBlendFactor srcAlphaBlendFactor()
   {
@@ -89,7 +88,6 @@ public interface VulkanPipelineColorBlendAttachmentStateType
    * @return the blend factor used to determine the destination factor Da.
    */
 
-  @Value.Parameter
   @Value.Default
   default VulkanBlendFactor dstAlphaBlendFactor()
   {
@@ -101,7 +99,6 @@ public interface VulkanPipelineColorBlendAttachmentStateType
    * attachment.
    */
 
-  @Value.Parameter
   @Value.Default
   default VulkanBlendOp alphaBlendOp()
   {
@@ -112,7 +109,6 @@ public interface VulkanPipelineColorBlendAttachmentStateType
    * @return the R, G, B, and/or A components enabled for writing.
    */
 
-  @Value.Parameter
   @Value.Default
   default Set<VulkanColorComponentFlag> colorWriteMask()
   {

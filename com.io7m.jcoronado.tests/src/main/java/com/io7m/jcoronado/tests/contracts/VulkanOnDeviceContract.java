@@ -26,7 +26,7 @@ public abstract class VulkanOnDeviceContract
 
   protected boolean shouldRun()
   {
-    return !Objects.equals(System.getProperty(
-      "com.io7m.jcoronado.tests.noDeviceTests"), "true");
+    return !Objects.equals(System.getenv(
+      "NO_VULKAN_DEVICE_TESTS"), "true");
   }
 }

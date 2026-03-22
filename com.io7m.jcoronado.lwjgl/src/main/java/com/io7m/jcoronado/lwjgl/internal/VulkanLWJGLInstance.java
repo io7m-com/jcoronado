@@ -40,6 +40,7 @@ import com.io7m.jcoronado.api.VulkanPhysicalDeviceFeatures10;
 import com.io7m.jcoronado.api.VulkanPhysicalDeviceFeatures11;
 import com.io7m.jcoronado.api.VulkanPhysicalDeviceFeatures12;
 import com.io7m.jcoronado.api.VulkanPhysicalDeviceFeatures13;
+import com.io7m.jcoronado.api.VulkanPhysicalDeviceFeatures14;
 import com.io7m.jcoronado.api.VulkanPhysicalDeviceIDProperties;
 import com.io7m.jcoronado.api.VulkanPhysicalDeviceLimits;
 import com.io7m.jcoronado.api.VulkanPhysicalDeviceMemoryProperties;
@@ -73,6 +74,7 @@ import org.lwjgl.vulkan.VkPhysicalDeviceProperties2;
 import org.lwjgl.vulkan.VkPhysicalDeviceVulkan11Features;
 import org.lwjgl.vulkan.VkPhysicalDeviceVulkan12Features;
 import org.lwjgl.vulkan.VkPhysicalDeviceVulkan13Features;
+import org.lwjgl.vulkan.VkPhysicalDeviceVulkan14Features;
 import org.lwjgl.vulkan.VkQueueFamilyProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -100,6 +102,7 @@ import static org.lwjgl.vulkan.VK12.VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DRIVER_PRO
 import static org.lwjgl.vulkan.VK12.VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_1_FEATURES;
 import static org.lwjgl.vulkan.VK12.VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_2_FEATURES;
 import static org.lwjgl.vulkan.VK13.VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_3_FEATURES;
+import static org.lwjgl.vulkan.VK14.VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_4_FEATURES;
 
 /**
  * LWJGL {@link VkInstance}
@@ -173,7 +176,7 @@ public final class VulkanLWJGLInstance
       }
 
       final var vkQueueFamilies =
-        VkQueueFamilyProperties.malloc(queueFamilyCount, stack);
+        VkQueueFamilyProperties.calloc(queueFamilyCount, stack);
 
       VK10.vkGetPhysicalDeviceQueueFamilyProperties(
         vkDevice, count, vkQueueFamilies);
@@ -183,17 +186,17 @@ public final class VulkanLWJGLInstance
         vkQueueFamilies.position(index);
 
         final var properties =
-          VulkanQueueFamilyProperties.of(
-            new VulkanQueueFamilyIndex(index),
-            vkQueueFamilies.queueCount(),
-            parseQueueFlags(vkQueueFamilies.queueFlags()),
-            vkQueueFamilies.timestampValidBits(),
-            parseExtent3D(vkQueueFamilies.minImageTransferGranularity()));
+          VulkanQueueFamilyProperties.builder()
+            .setQueueFamilyIndex(new VulkanQueueFamilyIndex(index))
+            .setQueueCount(vkQueueFamilies.queueCount())
+            .setQueueFlags(parseQueueFlags(vkQueueFamilies.queueFlags()))
+            .setTimestampValidBits(vkQueueFamilies.timestampValidBits())
+            .setMinImageTransferGranularity(
+              parseExtent3D(vkQueueFamilies.minImageTransferGranularity())
+            )
+            .build();
 
-        families.put(
-          new VulkanQueueFamilyIndex(index),
-          properties
-        );
+        families.put(new VulkanQueueFamilyIndex(index), properties);
       }
     }
 
@@ -203,10 +206,11 @@ public final class VulkanLWJGLInstance
   private static VulkanExtent3D parseExtent3D(
     final VkExtent3D e)
   {
-    return VulkanExtent3D.of(
-      e.width(),
-      e.height(),
-      e.depth());
+    return VulkanExtent3D.builder()
+      .setWidth(e.width())
+      .setDepth(e.depth())
+      .setHeight(e.height())
+      .build();
   }
 
   private static Set<VulkanQueueFamilyPropertyFlag> parseQueueFlags(
@@ -277,13 +281,14 @@ public final class VulkanLWJGLInstance
         Integer.valueOf(driver_version.patch()));
     }
 
-    return VulkanPhysicalDeviceProperties.of(
-      device_name,
-      device_type,
-      device_id,
-      device_vendor,
-      version,
-      driver_version);
+    return VulkanPhysicalDeviceProperties.builder()
+      .setApiVersion(version)
+      .setDriverVersion(driver_version)
+      .setId(device_id)
+      .setName(device_name)
+      .setType(device_type)
+      .setVendorId(device_vendor)
+      .build();
   }
 
   private static VulkanPhysicalDeviceMemoryProperties
@@ -316,11 +321,11 @@ public final class VulkanLWJGLInstance
     final int typeIndex,
     final VkMemoryType type)
   {
-    return VulkanMemoryType.of(
-      new VulkanMemoryTypeIndex(typeIndex),
-      new VulkanMemoryHeapIndex(type.heapIndex()),
-      parseTypeFlags(type.propertyFlags())
-    );
+    return VulkanMemoryType.builder()
+      .setIndex(new VulkanMemoryTypeIndex(typeIndex))
+      .setHeapIndex(new VulkanMemoryHeapIndex(type.heapIndex()))
+      .setFlags(parseTypeFlags(type.propertyFlags()))
+      .build();
   }
 
   private static Set<VulkanMemoryPropertyFlag> parseTypeFlags(
@@ -343,11 +348,11 @@ public final class VulkanLWJGLInstance
     final int heapIndex,
     final VkMemoryHeap heap)
   {
-    return VulkanMemoryHeap.of(
-      new VulkanMemoryHeapIndex(heapIndex),
-      heap.size(),
-      parseHeapFlags(heap.flags())
-    );
+    return VulkanMemoryHeap.builder()
+      .setIndex(new VulkanMemoryHeapIndex(heapIndex))
+      .setSize(heap.size())
+      .setFlags(parseHeapFlags(heap.flags()))
+      .build();
   }
 
   private static Set<VulkanMemoryHeapFlag> parseHeapFlags(
@@ -713,98 +718,66 @@ public final class VulkanLWJGLInstance
   private static VulkanViewportBoundsRange parseViewportBoundsRange(
     final FloatBuffer buffer)
   {
-    return VulkanViewportBoundsRange.of(
-      buffer.get(0),
-      buffer.get(1));
+    return VulkanViewportBoundsRange.builder()
+      .setMinimum(buffer.get(0))
+      .setMaximum(buffer.get(1))
+      .build();
   }
 
   private static VulkanPointSizeRange parsePointSizeRange(
     final FloatBuffer buffer)
   {
-    return VulkanPointSizeRange.of(
-      buffer.get(0),
-      buffer.get(1));
+    return VulkanPointSizeRange.builder()
+      .setMinimum(buffer.get(0))
+      .setMaximum(buffer.get(1))
+      .build();
   }
 
   private static VulkanViewportDimensions parseViewportDimensions(
     final IntBuffer buffer)
   {
-    return VulkanViewportDimensions.of(
-      buffer.get(0),
-      buffer.get(1));
+    return VulkanViewportDimensions.builder()
+      .setMaximumX(buffer.get(0))
+      .setMaximumY(buffer.get(1))
+      .build();
   }
 
   private static VulkanComputeWorkGroupSize parseComputeWorkGroupSize(
     final IntBuffer buffer)
   {
-    return VulkanComputeWorkGroupSize.of(
-      buffer.get(0),
-      buffer.get(1),
-      buffer.get(2));
+    return VulkanComputeWorkGroupSize.builder()
+      .setMaximumX(buffer.get(0))
+      .setMaximumY(buffer.get(1))
+      .setMaximumZ(buffer.get(2))
+      .build();
   }
 
   private static VulkanComputeWorkGroupCount parseComputeWorkGroupCount(
     final IntBuffer buffer)
   {
-    return VulkanComputeWorkGroupCount.of(
-      buffer.get(0),
-      buffer.get(1),
-      buffer.get(2));
+    return VulkanComputeWorkGroupCount.builder()
+      .setMaximumX(buffer.get(0))
+      .setMaximumY(buffer.get(1))
+      .setMaximumZ(buffer.get(2))
+      .build();
   }
 
   private static VulkanLineWidthRange parseLineWidthRange(
     final FloatBuffer buffer)
   {
-    return VulkanLineWidthRange.of(
-      buffer.get(0),
-      buffer.get(1));
+    return VulkanLineWidthRange.builder()
+      .setMinimum(buffer.get(0))
+      .setMaximum(buffer.get(1))
+      .build();
   }
 
   private static VulkanPhysicalDeviceFeatures parseAllFeatures(
     final MemoryStack stack,
-    final VkPhysicalDevice vkDevice,
-    final VulkanVersion requestedApiVersion)
+    final VkPhysicalDevice vkDevice)
   {
-    /*
-     * For Vulkan 1.0, we need to call the plain vkGetPhysicalDeviceFeatures
-     * function.
-     */
-
-    if (requestedApiVersion.major() == 1 && requestedApiVersion.minor() == 0) {
-      LOG.debug(
-        "Requested API version is {}; physical device features retrieved using vkGetPhysicalDeviceFeatures",
-        requestedApiVersion.toHumanString()
-      );
-
-      final var vkFeatures =
-        VkPhysicalDeviceFeatures.calloc(stack);
-
-      VK10.vkGetPhysicalDeviceFeatures(vkDevice, vkFeatures);
-
-      final var features10 =
-        parsePhysicalDeviceFeatures10(vkFeatures);
-      final var features11 =
-        VulkanPhysicalDeviceFeatures11.builder()
-          .build();
-      final var features12 =
-        VulkanPhysicalDeviceFeatures12.builder()
-          .build();
-      final var features13 =
-        VulkanPhysicalDeviceFeatures13.builder()
-          .build();
-
-      return VulkanPhysicalDeviceFeatures.builder()
-        .setFeatures10(features10)
-        .setFeatures11(features11)
-        .setFeatures12(features12)
-        .setFeatures13(features13)
-        .build();
-    }
-
-    /*
-     * For newer versions of Vulkan, we call vkGetPhysicalDeviceFeatures2
-     * and fetch all the new embedded structures.
-     */
+    final var vkFeatures14 =
+      VkPhysicalDeviceVulkan14Features.calloc(stack);
+    vkFeatures14.sType(VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_4_FEATURES);
 
     final var vkFeatures13 =
       VkPhysicalDeviceVulkan13Features.calloc(stack);
@@ -822,14 +795,10 @@ public final class VulkanLWJGLInstance
       VkPhysicalDeviceFeatures2.calloc(stack);
     vkFeatures.sType(VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FEATURES_2);
 
+    vkFeatures13.pNext(vkFeatures14.address());
     vkFeatures12.pNext(vkFeatures13.address());
     vkFeatures11.pNext(vkFeatures12.address());
     vkFeatures.pNext(vkFeatures11.address());
-
-    LOG.debug(
-      "Requested API version is {}; physical device features retrieved using vkGetPhysicalDeviceFeatures2",
-      requestedApiVersion.toHumanString()
-    );
 
     VK11.vkGetPhysicalDeviceFeatures2(vkDevice, vkFeatures);
 
@@ -841,12 +810,15 @@ public final class VulkanLWJGLInstance
       parsePhysicalDeviceFeatures12(vkFeatures12);
     final var features13 =
       parsePhysicalDeviceFeatures13(vkFeatures13);
+    final var features14 =
+      parsePhysicalDeviceFeatures14(vkFeatures14);
 
     return VulkanPhysicalDeviceFeatures.builder()
       .setFeatures10(features10)
       .setFeatures11(features11)
       .setFeatures12(features12)
       .setFeatures13(features13)
+      .setFeatures14(features14)
       .build();
   }
 
@@ -1017,6 +989,51 @@ public final class VulkanLWJGLInstance
       .build();
   }
 
+  private static VulkanPhysicalDeviceFeatures14 parsePhysicalDeviceFeatures14(
+    final VkPhysicalDeviceVulkan14Features features14)
+  {
+    return VulkanPhysicalDeviceFeatures14.builder()
+      .setBresenhamLines(
+        features14.bresenhamLines())
+      .setDynamicRenderingLocalRead(
+        features14.dynamicRenderingLocalRead())
+      .setGlobalPriorityQuery(
+        features14.globalPriorityQuery())
+      .setHostImageCopy(
+        features14.hostImageCopy())
+      .setIndexTypeUint8(
+        features14.indexTypeUint8())
+      .setMaintenance5(
+        features14.maintenance5())
+      .setMaintenance6(
+        features14.maintenance6())
+      .setPipelineRobustness(
+        features14.pipelineRobustness())
+      .setPushDescriptor(
+        features14.pushDescriptor())
+      .setRectangularLines(
+        features14.rectangularLines())
+      .setShaderExpectAssume(
+        features14.shaderExpectAssume())
+      .setShaderFloatControls2(
+        features14.shaderFloatControls2())
+      .setShaderSubgroupRotate(
+        features14.shaderSubgroupRotate())
+      .setShaderSubgroupRotateClustered(
+        features14.shaderSubgroupRotateClustered())
+      .setSmoothLines(
+        features14.smoothLines())
+      .setStippledRectangularLines(
+        features14.stippledRectangularLines())
+      .setStippledSmoothLines(
+        features14.stippledSmoothLines())
+      .setVertexAttributeInstanceRateDivisor(
+        features14.vertexAttributeInstanceRateDivisor())
+      .setVertexAttributeInstanceRateZeroDivisor(
+        features14.vertexAttributeInstanceRateZeroDivisor())
+      .build();
+  }
+
   VulkanLWJGLExtensionsRegistry extensionRegistry()
   {
     return this.extensionsRegistry;
@@ -1066,9 +1083,9 @@ public final class VulkanLWJGLInstance
         "vkEnumeratePhysicalDevices");
 
       final var vkProperties =
-        VkPhysicalDeviceProperties.malloc(stack);
+        VkPhysicalDeviceProperties.calloc(stack);
       final var vkMemory =
-        VkPhysicalDeviceMemoryProperties.malloc(stack);
+        VkPhysicalDeviceMemoryProperties.calloc(stack);
 
       devices = new ArrayList<>(deviceCount);
       for (var index = 0; index < deviceCount; ++index) {
@@ -1086,7 +1103,16 @@ public final class VulkanLWJGLInstance
             index,
             vkProperties,
             vkMemory,
-            this.apiVersionUsed);
+            this.apiVersionUsed
+          );
+
+        final var features13 = device.features().features13();
+        if (!features13.synchronization2()) {
+          LOG.warn(
+            "Device {} does not support synchronization2 and so is being ignored.",
+            device
+          );
+        }
 
         devices.add(device);
       }
@@ -1127,8 +1153,7 @@ public final class VulkanLWJGLInstance
     final var features =
       parseAllFeatures(
         stack,
-        vkDevice,
-        apiVersion
+        vkDevice
       );
 
     VK10.vkGetPhysicalDeviceMemoryProperties(vkDevice, vkMemory);
@@ -1160,51 +1185,19 @@ public final class VulkanLWJGLInstance
     final int index,
     final VulkanVersion apiVersion)
   {
-    /*
-     * For Vulkan 1.0, we need to call the plain vkGetPhysicalDeviceProperties
-     * function.
-     */
-
-    if (apiVersion.major() == 1 && apiVersion.minor() == 0) {
-      LOG.debug(
-        "Requested API version is {}; physical device properties retrieved using vkGetPhysicalDeviceProperties",
-        apiVersion.toHumanString()
-      );
-
-      final var vkProperties =
-        VkPhysicalDeviceProperties.malloc(stack);
-
-      VK10.vkGetPhysicalDeviceProperties(vkDevice, vkProperties);
-      return new PropertiesAndExtras(
-        parsePhysicalDeviceProperties(vkProperties, index),
-        Optional.empty(),
-        Optional.empty()
-      );
-    }
-
-    /*
-     * For newer versions of Vulkan, we call vkGetPhysicalDeviceProperties2
-     * and fetch all the new embedded structures.
-     */
-
-    LOG.debug(
-      "Requested API version is {}; physical device properties retrieved using vkGetPhysicalDeviceProperties2",
-      apiVersion.toHumanString()
-    );
-
     final var vkIdProperties =
-      VkPhysicalDeviceIDProperties.malloc(stack);
+      VkPhysicalDeviceIDProperties.calloc(stack);
     vkIdProperties.sType(VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_ID_PROPERTIES);
     vkIdProperties.pNext(0L);
 
     final var vkProperties2 =
-      VkPhysicalDeviceProperties2.malloc(stack);
+      VkPhysicalDeviceProperties2.calloc(stack);
     vkProperties2.sType(VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PROPERTIES_2);
     vkProperties2.pNext(vkIdProperties.address());
 
     VkPhysicalDeviceDriverProperties vkDriverProperties = null;
     if (apiVersion.major() >= 1 && apiVersion.minor() >= 2) {
-      vkDriverProperties = VkPhysicalDeviceDriverProperties.malloc(stack);
+      vkDriverProperties = VkPhysicalDeviceDriverProperties.calloc(stack);
       vkDriverProperties.sType(
         VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DRIVER_PROPERTIES);
       vkDriverProperties.pNext(0L);

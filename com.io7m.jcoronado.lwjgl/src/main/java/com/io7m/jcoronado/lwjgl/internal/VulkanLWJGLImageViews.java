@@ -45,7 +45,7 @@ public final class VulkanLWJGLImageViews
   {
     return packSubresourceRangeInto(
       range,
-      VkImageSubresourceRange.malloc(stack));
+      VkImageSubresourceRange.calloc(stack));
   }
 
   private static VkImageSubresourceRange packSubresourceRangeInto(
@@ -66,7 +66,7 @@ public final class VulkanLWJGLImageViews
   {
     return packComponentMappingInto(
       components,
-      VkComponentMapping.malloc(stack));
+      VkComponentMapping.calloc(stack));
   }
 
   private static VkComponentMapping packComponentMappingInto(
@@ -100,7 +100,7 @@ public final class VulkanLWJGLImageViews
     Objects.requireNonNull(image, "image");
     Objects.requireNonNull(stack, "stack");
 
-    final var target = VkImageViewCreateInfo.malloc(stack);
+    final var target = VkImageViewCreateInfo.calloc(stack);
     return packImageViewCreateInfoInto(stack, info, image, target);
   }
 

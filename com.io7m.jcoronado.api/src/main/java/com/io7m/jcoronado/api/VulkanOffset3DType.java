@@ -32,23 +32,43 @@ import org.immutables.value.Value;
 public interface VulkanOffset3DType
 {
   /**
+   * The zero offset.
+   */
+
+  VulkanOffset3D ZERO =
+    VulkanOffset3D.builder()
+      .setX(0)
+      .setY(0)
+      .setZ(0)
+      .build();
+
+  /**
    * @return The x offset
    */
 
-  @Value.Parameter
-  int x();
+  @Value.Default
+  default int x()
+  {
+    return 0;
+  }
 
   /**
    * @return The y offset
    */
 
-  @Value.Parameter
-  int y();
+  @Value.Default
+  default int y()
+  {
+    return 0;
+  }
 
   /**
    * @return The z offset
    */
 
-  @Value.Parameter
-  int z();
+  @Value.Default
+  default int z()
+  {
+    return 0;
+  }
 }

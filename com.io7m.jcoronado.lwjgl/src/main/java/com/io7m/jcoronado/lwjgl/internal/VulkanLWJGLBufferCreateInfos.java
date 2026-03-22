@@ -58,7 +58,7 @@ public final class VulkanLWJGLBufferCreateInfos
     Objects.requireNonNull(stack, "stack");
     Objects.requireNonNull(info, "info");
 
-    return VkBufferCreateInfo.malloc(stack)
+    return VkBufferCreateInfo.calloc(stack)
       .sType(VK10.VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO)
       .pNext(0L)
       .flags(VulkanEnumMaps.packValues(info.flags()))

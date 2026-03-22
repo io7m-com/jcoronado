@@ -76,8 +76,11 @@ import com.io7m.jcoronado.api.VulkanRenderPassCreateInfo;
 import com.io7m.jcoronado.api.VulkanRenderPassType;
 import com.io7m.jcoronado.api.VulkanSamplerCreateInfo;
 import com.io7m.jcoronado.api.VulkanSamplerType;
-import com.io7m.jcoronado.api.VulkanSemaphoreCreateInfo;
-import com.io7m.jcoronado.api.VulkanSemaphoreType;
+import com.io7m.jcoronado.api.VulkanSemaphoreBinaryCreateInfo;
+import com.io7m.jcoronado.api.VulkanSemaphoreBinaryType;
+import com.io7m.jcoronado.api.VulkanSemaphoreTimelineCreateInfo;
+import com.io7m.jcoronado.api.VulkanSemaphoreTimelineType;
+import com.io7m.jcoronado.api.VulkanSemaphoreTimelineWait;
 import com.io7m.jcoronado.api.VulkanShaderModuleCreateInfo;
 import com.io7m.jcoronado.api.VulkanShaderModuleType;
 import com.io7m.jcoronado.api.VulkanSubresourceLayout;
@@ -87,10 +90,15 @@ import com.io7m.jcoronado.extensions.ext_debug_utils.api.VulkanDebugUtilsType;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.vulkan.VK10;
+import org.lwjgl.vulkan.VK13;
 import org.lwjgl.vulkan.VkCommandBuffer;
 import org.lwjgl.vulkan.VkDevice;
 import org.lwjgl.vulkan.VkMemoryRequirements;
 import org.lwjgl.vulkan.VkQueue;
+import org.lwjgl.vulkan.VkSemaphoreCreateInfo;
+import org.lwjgl.vulkan.VkSemaphoreSignalInfo;
+import org.lwjgl.vulkan.VkSemaphoreTypeCreateInfo;
+import org.lwjgl.vulkan.VkSemaphoreWaitInfo;
 import org.lwjgl.vulkan.VkSubresourceLayout;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -125,7 +133,8 @@ import static org.lwjgl.vulkan.VK10.VK_TIMEOUT;
  */
 
 public final class VulkanLWJGLLogicalDevice
-  extends VulkanLWJGLHandle implements VulkanLogicalDeviceType
+  extends VulkanLWJGLHandle
+  implements VulkanLogicalDeviceType
 {
   private static final Logger LOG =
     LoggerFactory.getLogger(VulkanLWJGLLogicalDevice.class);
@@ -593,7 +602,7 @@ public final class VulkanLWJGLLogicalDevice
         LOG.trace("Allocated {} descriptor sets", Integer.valueOf(count));
       }
 
-      final ArrayList<VulkanDescriptorSetType> results = new ArrayList<>(count);
+      final var results = new ArrayList<VulkanDescriptorSetType>(count);
       for (var index = 0; index < count; ++index) {
         results.add(new VulkanLWJGLDescriptorSet(
           handles.get(index), this.hostAllocatorProxy()));
@@ -636,14 +645,16 @@ public final class VulkanLWJGLLogicalDevice
       final var pass = new long[1];
       final var proxy = this.hostAllocatorProxy();
       VulkanChecks.checkReturnCode(
-        VK10.vkCreateRenderPass(
+        VK13.vkCreateRenderPass2(
           this.device,
           VulkanLWJGLRenderPasses.packRenderPassCreateInfo(
             stack,
             render_pass_create_info),
           proxy.callbackBuffer(),
-          pass),
-        "vkCreateRenderPass");
+          pass
+        ),
+        "vkCreateRenderPass"
+      );
 
       final var pass_handle = pass[0];
       if (LOG.isTraceEnabled()) {
@@ -730,7 +741,7 @@ public final class VulkanLWJGLLogicalDevice
       checkInstanceOf(image, VulkanLWJGLImage.class);
 
     try (var stack = this.stack_initial.push()) {
-      final var info = VkMemoryRequirements.malloc(stack);
+      final var info = VkMemoryRequirements.calloc(stack);
 
       VK10.vkGetImageMemoryRequirements(this.device, cimage.handle(), info);
 
@@ -799,8 +810,8 @@ public final class VulkanLWJGLLogicalDevice
           pipes),
         "vkCreateGraphicsPipelines");
 
-      final ArrayList<VulkanLWJGLPipeline> result_pipelines =
-        new ArrayList<>(pipeline_infos.size());
+      final var result_pipelines =
+        new ArrayList<VulkanLWJGLPipeline>(pipeline_infos.size());
 
       for (var index = 0; index < pipeline_infos.size(); ++index) {
         final var pipe = pipes[index];
@@ -990,39 +1001,115 @@ public final class VulkanLWJGLLogicalDevice
   }
 
   @Override
-  public VulkanSemaphoreType createSemaphore(
-    final VulkanSemaphoreCreateInfo create_info)
+  public VulkanSemaphoreBinaryType createBinarySemaphore(
+    final VulkanSemaphoreBinaryCreateInfo info)
     throws VulkanException
   {
-    Objects.requireNonNull(create_info, "create_info");
+    Objects.requireNonNull(info, "info");
 
     this.checkNotClosed();
 
     try (var stack = this.stack_initial.push()) {
-      final var proxy = this.hostAllocatorProxy();
-      final var handles = new long[1];
+      final var createInfo =
+        VkSemaphoreCreateInfo.calloc(stack);
+
+      createInfo.sType(VK10.VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO);
+      createInfo.flags(0);
+      createInfo.pNext(0L);
+
+      final var proxy =
+        this.hostAllocatorProxy();
+      final var handles =
+        new long[1];
+
       VulkanChecks.checkReturnCode(
         VK10.vkCreateSemaphore(
           this.device,
-          VulkanLWJGLSemaphoreCreateInfos.pack(stack, create_info),
+          createInfo,
           proxy.callbackBuffer(),
-          handles),
-        "vkCreateSemaphore");
+          handles
+        ),
+        "vkCreateSemaphore"
+      );
 
       final var handle = handles[0];
       if (LOG.isTraceEnabled()) {
-        LOG.trace("Created semaphore: 0x{}", Long.toUnsignedString(handle, 16));
+        LOG.trace(
+          "Created binary semaphore: 0x{}",
+          Long.toUnsignedString(handle, 16)
+        );
       }
-      return new VulkanLWJGLSemaphore(USER_OWNED, this.device, handle, proxy);
+
+      return new VulkanLWJGLSemaphoreBinary(
+        USER_OWNED,
+        this.device,
+        handle,
+        proxy
+      );
+    }
+  }
+
+  @Override
+  public VulkanSemaphoreTimelineType createTimelineSemaphore(
+    final VulkanSemaphoreTimelineCreateInfo info)
+    throws VulkanException
+  {
+    Objects.requireNonNull(info, "info");
+
+    this.checkNotClosed();
+
+    try (var stack = this.stack_initial.push()) {
+      final var timelineInfo =
+        VkSemaphoreTypeCreateInfo.calloc(stack);
+      final var createInfo =
+        VkSemaphoreCreateInfo.calloc(stack);
+
+      timelineInfo.sType(VK13.VK_STRUCTURE_TYPE_SEMAPHORE_TYPE_CREATE_INFO);
+      timelineInfo.semaphoreType(VK13.VK_SEMAPHORE_TYPE_TIMELINE);
+      timelineInfo.initialValue(info.initialValue());
+
+      createInfo.sType(VK10.VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO);
+      createInfo.flags(0);
+      createInfo.pNext(timelineInfo.address());
+
+      final var proxy =
+        this.hostAllocatorProxy();
+      final var handles =
+        new long[1];
+
+      VulkanChecks.checkReturnCode(
+        VK10.vkCreateSemaphore(
+          this.device,
+          createInfo,
+          proxy.callbackBuffer(),
+          handles
+        ),
+        "vkCreateSemaphore"
+      );
+
+      final var handle = handles[0];
+      if (LOG.isTraceEnabled()) {
+        LOG.trace(
+          "Created timeline semaphore: 0x{}",
+          Long.toUnsignedString(handle, 16)
+        );
+      }
+
+      return new VulkanLWJGLSemaphoreTimeline(
+        USER_OWNED,
+        this.device,
+        handle,
+        proxy
+      );
     }
   }
 
   @Override
   public VulkanFenceType createFence(
-    final VulkanFenceCreateInfo create_info)
+    final VulkanFenceCreateInfo createInfo)
     throws VulkanException
   {
-    Objects.requireNonNull(create_info, "create_info");
+    Objects.requireNonNull(createInfo, "create_info");
 
     this.checkNotClosed();
 
@@ -1032,7 +1119,7 @@ public final class VulkanLWJGLLogicalDevice
       VulkanChecks.checkReturnCode(
         VK10.vkCreateFence(
           this.device,
-          VulkanLWJGLFenceCreateInfos.pack(stack, create_info),
+          VulkanLWJGLFenceCreateInfos.pack(stack, createInfo),
           proxy.callbackBuffer(),
           fences),
         "vkCreateFence");
@@ -1287,7 +1374,7 @@ public final class VulkanLWJGLLogicalDevice
     final var cbuffer = checkInstanceOf(buffer, VulkanLWJGLBuffer.class);
 
     try (var stack = this.stack_initial.push()) {
-      final var info = VkMemoryRequirements.malloc(stack);
+      final var info = VkMemoryRequirements.calloc(stack);
 
       VK10.vkGetBufferMemoryRequirements(this.device, cbuffer.handle(), info);
 
@@ -1423,10 +1510,13 @@ public final class VulkanLWJGLLogicalDevice
     }
 
     final VulkanLWJGLFlushRangedFunctionType flush = (map_mem, map_off, map_size) ->
-      this.flushMappedMemoryRange(VulkanMappedMemoryRange.of(
-        map_mem,
-        map_off,
-        map_size));
+      this.flushMappedMemoryRange(
+        VulkanMappedMemoryRange.builder()
+          .setMemory(map_mem)
+          .setOffset(map_off)
+          .setSize(map_size)
+          .build()
+      );
 
     return new VulkanLWJGLMappedMemory(
       this.device,
@@ -1513,6 +1603,37 @@ public final class VulkanLWJGLLogicalDevice
   }
 
   @Override
+  public long getSemaphoreCounterValue(
+    final VulkanSemaphoreTimelineType semaphore)
+    throws VulkanException
+  {
+    Objects.requireNonNull(semaphore, "semaphore");
+
+    this.checkNotClosed();
+
+    final var vkSemaphore =
+      checkInstanceOf(semaphore, VulkanLWJGLSemaphoreTimeline.class);
+
+    try (var stack = this.stack_initial.push()) {
+      final var data =
+        stack.callocLong(1);
+
+      final var result =
+        VK13.vkGetSemaphoreCounterValue(
+          this.device,
+          vkSemaphore.handle(),
+          data
+        );
+
+      if (result == VK_SUCCESS) {
+        return data.get(0);
+      }
+
+      throw VulkanChecks.failed(result, "vkGetSemaphoreCounterValue");
+    }
+  }
+
+  @Override
   public @VulkanExternallySynchronizedType VulkanFenceStatus getFenceStatus(
     final VulkanFenceType fence)
     throws VulkanException
@@ -1550,7 +1671,7 @@ public final class VulkanLWJGLLogicalDevice
     this.checkNotClosed();
 
     try (var stack = this.stack_initial.push()) {
-      final var vk_layout = VkSubresourceLayout.malloc(stack);
+      final var vk_layout = VkSubresourceLayout.calloc(stack);
 
       VK10.vkGetImageSubresourceLayout(
         this.device,
@@ -1589,8 +1710,8 @@ public final class VulkanLWJGLLogicalDevice
           pipes),
         "vkCreateComputePipelines");
 
-      final ArrayList<VulkanLWJGLPipeline> result_pipelines =
-        new ArrayList<>(pipeline_infos.size());
+      final var result_pipelines =
+        new ArrayList<VulkanLWJGLPipeline>(pipeline_infos.size());
 
       for (var index = 0; index < pipeline_infos.size(); ++index) {
         final var pipe = pipes[index];
@@ -1605,6 +1726,81 @@ public final class VulkanLWJGLLogicalDevice
       }
 
       return castPipelines(result_pipelines);
+    }
+  }
+
+  @Override
+  public VulkanWaitStatus waitForTimelineSemaphores(
+    final List<VulkanSemaphoreTimelineWait> semaphores,
+    final boolean waitAll,
+    final long timeoutNanos)
+    throws VulkanException
+  {
+    Objects.requireNonNull(semaphores, "semaphores");
+
+    this.checkNotClosed();
+
+    try (var stack = this.stack_initial.push()) {
+      final var info =
+        VkSemaphoreWaitInfo.calloc(stack);
+
+      info.sType(VK13.VK_STRUCTURE_TYPE_SEMAPHORE_WAIT_INFO);
+      if (!waitAll) {
+        info.flags(VK13.VK_SEMAPHORE_WAIT_ANY_BIT);
+      }
+      info.semaphoreCount(semaphores.size());
+      info.pValues(
+        packLongs(stack, semaphores, VulkanSemaphoreTimelineWait::value)
+      );
+      info.pSemaphores(
+        packLongs(
+          stack,
+          semaphores,
+          value -> {
+            return checkInstanceOf(
+              value.semaphore(),
+              VulkanLWJGLSemaphoreTimeline.class
+            ).handle();
+          })
+      );
+
+      final var r =
+        VK13.vkWaitSemaphores(this.device, info, timeoutNanos);
+
+      if (r == VK_SUCCESS) {
+        return VK_WAIT_SUCCEEDED;
+      }
+      if (r == VK_TIMEOUT) {
+        return VK_WAIT_TIMED_OUT;
+      }
+      throw VulkanChecks.failed(r, "vkWaitSemaphores");
+    }
+  }
+
+  @Override
+  public void signalTimelineSemaphore(
+    final VulkanSemaphoreTimelineType semaphore,
+    final long value)
+    throws VulkanException
+  {
+    Objects.requireNonNull(semaphore, "semaphore");
+
+    this.checkNotClosed();
+
+    try (var stack = this.stack_initial.push()) {
+      final var info =
+        VkSemaphoreSignalInfo.calloc(stack);
+      info.sType(VK13.VK_STRUCTURE_TYPE_SEMAPHORE_SIGNAL_INFO);
+      info.semaphore(
+        checkInstanceOf(semaphore, VulkanLWJGLSemaphoreTimeline.class)
+          .handle()
+      );
+      info.value(value);
+
+      VulkanChecks.checkReturnCode(
+        VK13.vkSignalSemaphore(this.device, info),
+        "vkSignalSemaphore"
+      );
     }
   }
 

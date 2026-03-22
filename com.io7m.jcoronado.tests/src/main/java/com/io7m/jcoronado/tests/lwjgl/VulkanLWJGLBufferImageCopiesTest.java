@@ -84,20 +84,37 @@ public final class VulkanLWJGLBufferImageCopiesTest
   public void testOffsetPack()
     throws VulkanException
   {
+    final var layers =
+      VulkanImageSubresourceLayers.builder()
+        .addAllAspectMask(EnumSet.allOf(VulkanImageAspectFlag.class))
+        .setBaseArrayLayer(2)
+        .setLayerCount(3)
+        .setMipLevel(1)
+        .build();
+
+    final var extent =
+      VulkanExtent3D.builder()
+        .setWidth(1000)
+        .setHeight(2000)
+        .setDepth(3000)
+        .build();
+
+    final var offset =
+      VulkanOffset3D.builder()
+        .setX(100)
+        .setY(200)
+        .setZ(300)
+        .build();
+
     final var source =
-      VulkanBufferImageCopy.of(
-        0L,
-        200,
-        300,
-        VulkanImageSubresourceLayers.of(
-          EnumSet.allOf(VulkanImageAspectFlag.class),
-          1,
-          2,
-          3
-        ),
-        VulkanOffset3D.of(100, 200, 300),
-        VulkanExtent3D.of(1000, 2000, 3000)
-      );
+      VulkanBufferImageCopy.builder()
+        .setBufferOffset(0L)
+        .setBufferImageHeight(300)
+        .setBufferRowLength(200)
+        .setImageSubresource(layers)
+        .setImageOffset(offset)
+        .setImageExtent(extent)
+        .build();
 
     final var out =
       VulkanLWJGLBufferImageCopy.pack(this.stack, source);
@@ -109,20 +126,37 @@ public final class VulkanLWJGLBufferImageCopiesTest
   public void testOffsetPackList()
     throws VulkanException
   {
+    final var layers =
+      VulkanImageSubresourceLayers.builder()
+        .addAllAspectMask(EnumSet.allOf(VulkanImageAspectFlag.class))
+        .setBaseArrayLayer(2)
+        .setLayerCount(3)
+        .setMipLevel(1)
+        .build();
+
+    final var extent =
+      VulkanExtent3D.builder()
+        .setWidth(1000)
+        .setHeight(2000)
+        .setDepth(3000)
+        .build();
+
+    final var offset =
+      VulkanOffset3D.builder()
+        .setX(100)
+        .setY(200)
+        .setZ(300)
+        .build();
+
     final var source =
-      VulkanBufferImageCopy.of(
-        0L,
-        200,
-        300,
-        VulkanImageSubresourceLayers.of(
-          EnumSet.allOf(VulkanImageAspectFlag.class),
-          1,
-          2,
-          3
-        ),
-        VulkanOffset3D.of(100, 200, 300),
-        VulkanExtent3D.of(1000, 2000, 3000)
-      );
+      VulkanBufferImageCopy.builder()
+        .setBufferOffset(0L)
+        .setBufferImageHeight(300)
+        .setBufferRowLength(200)
+        .setImageSubresource(layers)
+        .setImageOffset(offset)
+        .setImageExtent(extent)
+        .build();
 
     final var out =
       VulkanLWJGLBufferImageCopy.packList(
@@ -138,20 +172,37 @@ public final class VulkanLWJGLBufferImageCopiesTest
   public void testOffsetPackListOrNull()
     throws VulkanException
   {
+    final var layers =
+      VulkanImageSubresourceLayers.builder()
+        .addAllAspectMask(EnumSet.allOf(VulkanImageAspectFlag.class))
+        .setBaseArrayLayer(2)
+        .setLayerCount(3)
+        .setMipLevel(1)
+        .build();
+
+    final var extent =
+      VulkanExtent3D.builder()
+        .setWidth(1000)
+        .setHeight(2000)
+        .setDepth(3000)
+        .build();
+
+    final var offset =
+      VulkanOffset3D.builder()
+        .setX(100)
+        .setY(200)
+        .setZ(300)
+        .build();
+
     final var source =
-      VulkanBufferImageCopy.of(
-        0L,
-        200,
-        300,
-        VulkanImageSubresourceLayers.of(
-          EnumSet.allOf(VulkanImageAspectFlag.class),
-          1,
-          2,
-          3
-        ),
-        VulkanOffset3D.of(100, 200, 300),
-        VulkanExtent3D.of(1000, 2000, 3000)
-      );
+      VulkanBufferImageCopy.builder()
+        .setBufferOffset(0L)
+        .setBufferImageHeight(300)
+        .setBufferRowLength(200)
+        .setImageSubresource(layers)
+        .setImageOffset(offset)
+        .setImageExtent(extent)
+        .build();
 
     final var packed =
       VulkanLWJGLBufferImageCopy.packListOrNull(

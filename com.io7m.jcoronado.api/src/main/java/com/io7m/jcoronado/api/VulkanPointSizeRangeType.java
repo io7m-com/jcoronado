@@ -32,13 +32,19 @@ public interface VulkanPointSizeRangeType
    * @return The minimum size
    */
 
-  @Value.Parameter
-  float minimum();
+  @Value.Default
+  default float minimum()
+  {
+    return 0.0f;
+  }
 
   /**
    * @return The maximum size
    */
 
-  @Value.Parameter
-  float maximum();
+  @Value.Default
+  default float maximum()
+  {
+    return 0.0f;
+  }
 }

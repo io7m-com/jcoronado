@@ -72,7 +72,7 @@ public final class VulkanLWJGLSpecializationInfos
     Objects.requireNonNull(map, "map");
 
     final var map_entries = map.entries();
-    final var entry_buffer = VkSpecializationMapEntry.malloc(
+    final var entry_buffer = VkSpecializationMapEntry.calloc(
       map_entries.size(),
       stack);
 
@@ -83,7 +83,7 @@ public final class VulkanLWJGLSpecializationInfos
       packEntryInto(source, target);
     }
 
-    final var info = VkSpecializationInfo.malloc(stack);
+    final var info = VkSpecializationInfo.calloc(stack);
     info.pData(map.data());
     info.pMapEntries(entry_buffer);
     return info;

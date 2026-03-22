@@ -34,6 +34,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.vulkan.VK10;
+import org.lwjgl.vulkan.VK13;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -71,9 +72,9 @@ public final class VulkanLWJGLRenderPassesTest
       VulkanSubpassDependency.builder()
         .addDependencyFlags(VulkanDependencyFlag.values())
         .addDstAccessMask(VulkanAccessFlag.VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT)
-        .addDstStageMask(VulkanPipelineStageFlag.VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT)
+        .addDstStageMask(VulkanPipelineStageFlag.VK_PIPELINE_STAGE_NONE)
         .addSrcAccessMask(VulkanAccessFlag.VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT)
-        .addSrcStageMask(VulkanPipelineStageFlag.VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT)
+        .addSrcStageMask(VulkanPipelineStageFlag.VK_PIPELINE_STAGE_ALL_GRAPHICS_BIT)
         .setSrcSubpass(23)
         .setDstSubpass(24)
         .build();
@@ -140,8 +141,9 @@ public final class VulkanLWJGLRenderPassesTest
     Assertions.assertAll(
       () -> {
         Assertions.assertEquals(
-          VK10.VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO,
-          packed.sType());
+          VK13.VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO_2,
+          packed.sType()
+        );
       },
       () -> {
         Assertions.assertEquals(0L, packed.pNext());

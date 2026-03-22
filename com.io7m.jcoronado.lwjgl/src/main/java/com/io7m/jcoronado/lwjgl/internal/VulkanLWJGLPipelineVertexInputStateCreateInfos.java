@@ -55,7 +55,7 @@ public final class VulkanLWJGLPipelineVertexInputStateCreateInfos
     Objects.requireNonNull(info, "info");
 
     final var target =
-      VkPipelineVertexInputStateCreateInfo.malloc(stack);
+      VkPipelineVertexInputStateCreateInfo.calloc(stack);
 
     return target.sType(VK10.VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO)
       .pNext(0L)
@@ -78,7 +78,7 @@ public final class VulkanLWJGLPipelineVertexInputStateCreateInfos
       return null;
     }
 
-    final var buffer = VkVertexInputBindingDescription.malloc(
+    final var buffer = VkVertexInputBindingDescription.calloc(
       descs_count,
       stack);
     for (var index = 0; index < descs_count; ++index) {
@@ -110,7 +110,7 @@ public final class VulkanLWJGLPipelineVertexInputStateCreateInfos
     }
 
     final var buffer =
-      VkVertexInputAttributeDescription.malloc(descs_count, stack);
+      VkVertexInputAttributeDescription.calloc(descs_count, stack);
     for (var index = 0; index < descs_count; ++index) {
       final var source = descs.get(index);
       final var target = VkVertexInputAttributeDescription.create(buffer.address(

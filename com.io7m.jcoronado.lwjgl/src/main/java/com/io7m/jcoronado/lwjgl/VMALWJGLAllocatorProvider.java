@@ -32,8 +32,6 @@ import org.lwjgl.util.vma.VmaAllocatorCreateInfo;
 import org.lwjgl.util.vma.VmaDeviceMemoryCallbacks;
 import org.lwjgl.util.vma.VmaVulkanFunctions;
 import org.lwjgl.vulkan.VkAllocationCallbacks;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.nio.IntBuffer;
 import java.nio.LongBuffer;
@@ -45,9 +43,6 @@ import java.util.Objects;
 
 public final class VMALWJGLAllocatorProvider implements VMAAllocatorProviderType
 {
-  private static final Logger LOG =
-    LoggerFactory.getLogger(VMALWJGLAllocatorProvider.class);
-
   private final MemoryStack initial_stack;
 
   private VMALWJGLAllocatorProvider(
@@ -106,7 +101,7 @@ public final class VMALWJGLAllocatorProvider implements VMAAllocatorProviderType
 
     try (var stack = this.initial_stack.push()) {
       final var functions =
-        VmaVulkanFunctions.malloc(stack);
+        VmaVulkanFunctions.calloc(stack);
       final var vkInstance =
         instance.instance();
       final var vkDevice =
@@ -116,9 +111,9 @@ public final class VMALWJGLAllocatorProvider implements VMAAllocatorProviderType
       final var buffer =
         stack.mallocPointer(1);
       final var cinfo =
-        VmaAllocatorCreateInfo.malloc(stack);
+        VmaAllocatorCreateInfo.calloc(stack);
       final var vkVulkanFunctions =
-        VmaVulkanFunctions.malloc(stack);
+        VmaVulkanFunctions.calloc(stack);
 
       vkVulkanFunctions.set(vkInstance, vkDevice);
 

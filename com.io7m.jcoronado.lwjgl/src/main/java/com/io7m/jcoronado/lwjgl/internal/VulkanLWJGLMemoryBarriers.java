@@ -20,8 +20,8 @@ import com.io7m.jcoronado.api.VulkanEnumMaps;
 import com.io7m.jcoronado.api.VulkanException;
 import com.io7m.jcoronado.api.VulkanMemoryBarrier;
 import org.lwjgl.system.MemoryStack;
-import org.lwjgl.vulkan.VK10;
-import org.lwjgl.vulkan.VkMemoryBarrier;
+import org.lwjgl.vulkan.VK13;
+import org.lwjgl.vulkan.VkMemoryBarrier2;
 
 import java.util.List;
 import java.util.Objects;
@@ -46,14 +46,14 @@ public final class VulkanLWJGLMemoryBarriers
    * @return A packed structure
    */
 
-  public static VkMemoryBarrier pack(
+  public static VkMemoryBarrier2 pack(
     final MemoryStack stack,
     final VulkanMemoryBarrier info)
   {
     Objects.requireNonNull(stack, "stack");
     Objects.requireNonNull(info, "info");
 
-    return packInto(info, VkMemoryBarrier.malloc(stack));
+    return packInto(info, VkMemoryBarrier2.calloc(stack));
   }
 
   /**
@@ -65,18 +65,22 @@ public final class VulkanLWJGLMemoryBarriers
    * @return A packed structure
    */
 
-  public static VkMemoryBarrier packInto(
+  public static VkMemoryBarrier2 packInto(
     final VulkanMemoryBarrier source,
-    final VkMemoryBarrier target)
+    final VkMemoryBarrier2 target)
   {
     Objects.requireNonNull(source, "source");
     Objects.requireNonNull(target, "target");
 
-    return target
-      .sType(VK10.VK_STRUCTURE_TYPE_MEMORY_BARRIER)
+    final var srcAccessMask =
+      VulkanEnumMaps.packValuesLong(source.srcAccessMask());
+    final var dstAccessMask =
+      VulkanEnumMaps.packValuesLong(source.dstAccessMask());
+
+    return target.sType(VK13.VK_STRUCTURE_TYPE_MEMORY_BARRIER_2)
       .pNext(0L)
-      .srcAccessMask(VulkanEnumMaps.packValues(source.sourceAccessMask()))
-      .dstAccessMask(VulkanEnumMaps.packValues(source.targetAccessMask()));
+      .srcAccessMask(srcAccessMask)
+      .dstAccessMask(dstAccessMask);
   }
 
   /**
@@ -90,7 +94,7 @@ public final class VulkanLWJGLMemoryBarriers
    * @throws VulkanException On errors
    */
 
-  public static VkMemoryBarrier.Buffer packList(
+  public static VkMemoryBarrier2.Buffer packList(
     final MemoryStack stack,
     final List<VulkanMemoryBarrier> infos)
     throws VulkanException
@@ -101,7 +105,7 @@ public final class VulkanLWJGLMemoryBarriers
     return VulkanLWJGLArrays.pack(
       infos,
       (sstack, value, output) -> packInto(value, output),
-      VkMemoryBarrier::malloc,
+      VkMemoryBarrier2::calloc,
       stack
     );
   }
@@ -117,7 +121,7 @@ public final class VulkanLWJGLMemoryBarriers
    * @throws VulkanException On errors
    */
 
-  public static VkMemoryBarrier.Buffer packListOrNull(
+  public static VkMemoryBarrier2.Buffer packListOrNull(
     final MemoryStack stack,
     final List<VulkanMemoryBarrier> infos)
     throws VulkanException
@@ -128,7 +132,7 @@ public final class VulkanLWJGLMemoryBarriers
     return VulkanLWJGLArrays.packOrNull(
       infos,
       (sstack, value, output) -> packInto(value, output),
-      VkMemoryBarrier::malloc,
+      VkMemoryBarrier2::calloc,
       stack
     );
   }

@@ -62,7 +62,7 @@ public final class VulkanLWJGLFramebufferCreateInfos
     Objects.requireNonNull(views, "views");
     Objects.requireNonNull(pass, "pass");
 
-    return VkFramebufferCreateInfo.malloc(stack)
+    return VkFramebufferCreateInfo.calloc(stack)
       .sType(VK10.VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO)
       .pNext(0L)
       .flags(VulkanEnumMaps.packValues(info.flags()))

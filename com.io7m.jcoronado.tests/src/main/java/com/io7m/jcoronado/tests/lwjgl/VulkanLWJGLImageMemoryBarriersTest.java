@@ -30,7 +30,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.lwjgl.system.MemoryStack;
-import org.lwjgl.vulkan.VkImageMemoryBarrier;
+import org.lwjgl.vulkan.VkImageMemoryBarrier2;
 import org.mockito.Mockito;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,10 +51,10 @@ public final class VulkanLWJGLImageMemoryBarriersTest
   private MemoryStack stack = MemoryStack.create();
 
   private static void checkPacked(
-    final VkImageMemoryBarrier out)
+    final VkImageMemoryBarrier2 out)
   {
-    assertEquals(0b1111_1111_1111_1111_1111, out.srcAccessMask());
-    assertEquals(0b1111_1111_1111_1111_1111, out.dstAccessMask());
+    assertEquals(0b11100000000000000011111111111111111L, out.srcAccessMask());
+    assertEquals(0b11100000000000000011111111111111111L, out.dstAccessMask());
     assertEquals(23, out.srcQueueFamilyIndex());
     assertEquals(25, out.dstQueueFamilyIndex());
     assertEquals(VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL, out.newLayout());
@@ -88,25 +88,25 @@ public final class VulkanLWJGLImageMemoryBarriersTest
       Mockito.mock(VulkanLWJGLImage.class);
 
     final var subresource =
-      VulkanImageSubresourceRange.of(
-        EnumSet.allOf(VulkanImageAspectFlag.class),
-        1,
-        2,
-        3,
-        4
-      );
+      VulkanImageSubresourceRange.builder()
+        .setAspectMask(EnumSet.allOf(VulkanImageAspectFlag.class))
+        .setBaseArrayLayer(3)
+        .setBaseMipLevel(1)
+        .setLayerCount(4)
+        .setLevelCount(2)
+        .build();
 
     final var source =
-      VulkanImageMemoryBarrier.of(
-        EnumSet.allOf(VulkanAccessFlag.class),
-        EnumSet.allOf(VulkanAccessFlag.class),
-        VulkanImageLayout.VK_IMAGE_LAYOUT_UNDEFINED,
-        VulkanImageLayout.VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
-        new VulkanQueueFamilyIndex(23),
-        new VulkanQueueFamilyIndex(25),
-        image,
-        subresource
-      );
+      VulkanImageMemoryBarrier.builder()
+        .setImage(image)
+        .setSubresourceRange(subresource)
+        .setOldLayout(VulkanImageLayout.VK_IMAGE_LAYOUT_UNDEFINED)
+        .setNewLayout(VulkanImageLayout.VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL)
+        .setSrcQueueFamilyIndex(new VulkanQueueFamilyIndex(23))
+        .setDstQueueFamilyIndex(new VulkanQueueFamilyIndex(25))
+        .setSrcAccessMask(EnumSet.allOf(VulkanAccessFlag.class))
+        .setDstAccessMask(EnumSet.allOf(VulkanAccessFlag.class))
+        .build();
 
     final var out =
       VulkanLWJGLImageMemoryBarriers.pack(this.stack, source);
@@ -122,25 +122,25 @@ public final class VulkanLWJGLImageMemoryBarriersTest
       Mockito.mock(VulkanLWJGLImage.class);
 
     final var subresource =
-      VulkanImageSubresourceRange.of(
-        EnumSet.allOf(VulkanImageAspectFlag.class),
-        1,
-        2,
-        3,
-        4
-      );
+      VulkanImageSubresourceRange.builder()
+        .setAspectMask(EnumSet.allOf(VulkanImageAspectFlag.class))
+        .setBaseArrayLayer(3)
+        .setBaseMipLevel(1)
+        .setLayerCount(4)
+        .setLevelCount(2)
+        .build();
 
     final var source =
-      VulkanImageMemoryBarrier.of(
-        EnumSet.allOf(VulkanAccessFlag.class),
-        EnumSet.allOf(VulkanAccessFlag.class),
-        VulkanImageLayout.VK_IMAGE_LAYOUT_UNDEFINED,
-        VulkanImageLayout.VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
-        new VulkanQueueFamilyIndex(23),
-        new VulkanQueueFamilyIndex(25),
-        image,
-        subresource
-      );
+      VulkanImageMemoryBarrier.builder()
+        .setImage(image)
+        .setSubresourceRange(subresource)
+        .setOldLayout(VulkanImageLayout.VK_IMAGE_LAYOUT_UNDEFINED)
+        .setNewLayout(VulkanImageLayout.VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL)
+        .setSrcQueueFamilyIndex(new VulkanQueueFamilyIndex(23))
+        .setDstQueueFamilyIndex(new VulkanQueueFamilyIndex(25))
+        .setSrcAccessMask(EnumSet.allOf(VulkanAccessFlag.class))
+        .setDstAccessMask(EnumSet.allOf(VulkanAccessFlag.class))
+        .build();
 
     final var out =
       VulkanLWJGLImageMemoryBarriers.packList(
@@ -160,25 +160,25 @@ public final class VulkanLWJGLImageMemoryBarriersTest
       Mockito.mock(VulkanLWJGLImage.class);
 
     final var subresource =
-      VulkanImageSubresourceRange.of(
-        EnumSet.allOf(VulkanImageAspectFlag.class),
-        1,
-        2,
-        3,
-        4
-      );
+      VulkanImageSubresourceRange.builder()
+        .setAspectMask(EnumSet.allOf(VulkanImageAspectFlag.class))
+        .setBaseArrayLayer(3)
+        .setBaseMipLevel(1)
+        .setLayerCount(4)
+        .setLevelCount(2)
+        .build();
 
     final var source =
-      VulkanImageMemoryBarrier.of(
-        EnumSet.allOf(VulkanAccessFlag.class),
-        EnumSet.allOf(VulkanAccessFlag.class),
-        VulkanImageLayout.VK_IMAGE_LAYOUT_UNDEFINED,
-        VulkanImageLayout.VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
-        new VulkanQueueFamilyIndex(23),
-        new VulkanQueueFamilyIndex(25),
-        image,
-        subresource
-      );
+      VulkanImageMemoryBarrier.builder()
+        .setImage(image)
+        .setSubresourceRange(subresource)
+        .setOldLayout(VulkanImageLayout.VK_IMAGE_LAYOUT_UNDEFINED)
+        .setNewLayout(VulkanImageLayout.VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL)
+        .setSrcQueueFamilyIndex(new VulkanQueueFamilyIndex(23))
+        .setDstQueueFamilyIndex(new VulkanQueueFamilyIndex(25))
+        .setSrcAccessMask(EnumSet.allOf(VulkanAccessFlag.class))
+        .setDstAccessMask(EnumSet.allOf(VulkanAccessFlag.class))
+        .build();
 
     final var packed =
       VulkanLWJGLImageMemoryBarriers.packListOrNull(

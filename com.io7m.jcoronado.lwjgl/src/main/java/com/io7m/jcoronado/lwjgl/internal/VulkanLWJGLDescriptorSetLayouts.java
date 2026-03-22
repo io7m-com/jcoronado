@@ -58,7 +58,7 @@ public final class VulkanLWJGLDescriptorSetLayouts
     Objects.requireNonNull(stack, "stack");
     Objects.requireNonNull(info, "info");
 
-    final var buffer = VkDescriptorSetLayoutCreateInfo.malloc(stack);
+    final var buffer = VkDescriptorSetLayoutCreateInfo.calloc(stack);
     packDescriptorSetLayoutCreateInfoInto(stack, info, buffer);
     return buffer;
   }
@@ -88,7 +88,7 @@ public final class VulkanLWJGLDescriptorSetLayouts
       return null;
     }
 
-    final var vk_bindings = VkDescriptorSetLayoutBinding.malloc(count);
+    final var vk_bindings = VkDescriptorSetLayoutBinding.calloc(count);
     for (var index = 0; index < count; ++index) {
       final var source = bindings.get(index);
       final var target = vk_bindings.get(index);

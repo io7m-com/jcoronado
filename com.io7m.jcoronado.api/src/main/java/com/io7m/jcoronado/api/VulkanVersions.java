@@ -109,9 +109,10 @@ public final class VulkanVersions
   public static VulkanVersion decode(
     final int version)
   {
-    return VulkanVersion.of(
-      decodeMajor(version),
-      decodeMinor(version),
-      decodePatch(version));
+    return VulkanVersion.builder()
+      .setMajor(decodeMajor(version))
+      .setMinor(decodeMinor(version))
+      .setPatch(decodePatch(version))
+      .build();
   }
 }

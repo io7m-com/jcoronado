@@ -21,11 +21,12 @@ import com.io7m.jcoronado.api.VulkanHandleType;
 import org.slf4j.Logger;
 
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 
 sealed abstract class VulkanLWJGLHandle
   implements VulkanHandleType
-  permits
-  VMALWJGLAllocator,
+  permits VMALWJGLAllocator,
   VMALWJGLAllocator.VMALWJGLMappedMemory,
   VulkanLWJGLBuffer,
   VulkanLWJGLBufferView,
@@ -53,20 +54,22 @@ sealed abstract class VulkanLWJGLHandle
   VulkanLWJGLQueue,
   VulkanLWJGLRenderPass,
   VulkanLWJGLSampler,
-  VulkanLWJGLSemaphore,
+  VulkanLWJGLSemaphoreBinary,
+  VulkanLWJGLSemaphoreTimeline,
   VulkanLWJGLShaderModule
 {
   private final Ownership ownership;
   private final VulkanLWJGLHostAllocatorProxy host_allocator_proxy;
   private final long handle;
-  private boolean closed;
+  private final AtomicReference<String> name;
+  private final AtomicBoolean closed;
 
   VulkanLWJGLHandle(
     final Ownership in_ownership,
     final VulkanLWJGLHostAllocatorProxy in_host_allocator_proxy,
     final long inHandle)
   {
-    this.closed = false;
+    this.closed = new AtomicBoolean(false);
     this.ownership =
       Objects.requireNonNull(in_ownership, "ownership");
     this.host_allocator_proxy =
@@ -75,6 +78,7 @@ sealed abstract class VulkanLWJGLHandle
         "in_host_allocator_proxy"
       );
     this.handle = inHandle;
+    this.name = new AtomicReference<>("");
   }
 
   /**
@@ -89,7 +93,7 @@ sealed abstract class VulkanLWJGLHandle
   @Override
   public final boolean isClosed()
   {
-    return this.closed;
+    return this.closed.get();
   }
 
   protected abstract Logger logger();
@@ -97,21 +101,15 @@ sealed abstract class VulkanLWJGLHandle
   @Override
   public final void close()
   {
-    if (!this.closed) {
-      try {
-        switch (this.ownership) {
-          case USER_OWNED:
-            this.closeActual();
-            break;
-          case VULKAN_OWNED:
-            // XXX: Vulkan will free the object itself, but should the user be told that
-            //      they did something wrong by trying to close it themselves?
-            break;
-        }
-
-
-      } finally {
-        this.closed = true;
+    if (this.closed.compareAndSet(false, true)) {
+      switch (this.ownership) {
+        case USER_OWNED:
+          this.closeActual();
+          break;
+        case VULKAN_OWNED:
+          // XXX: Vulkan will free the object itself, but should the user be told that
+          //      they did something wrong by trying to close it themselves?
+          break;
       }
     }
   }
@@ -139,9 +137,10 @@ sealed abstract class VulkanLWJGLHandle
   public final String toString()
   {
     return String.format(
-      "[%s 0x%s]",
+      "[%s 0x%s ('%s')]",
       this.getClass().getSimpleName(),
-      Long.toUnsignedString(this.handle, 16)
+      Long.toUnsignedString(this.handle, 16),
+      this.name.get()
     );
   }
 
@@ -157,12 +156,27 @@ sealed abstract class VulkanLWJGLHandle
   protected final void checkNotClosed()
     throws VulkanDestroyedException
   {
-    if (this.closed) {
-      throw new VulkanDestroyedException("Object has been closed/destroyed.");
+    if (this.closed.get()) {
+      throw new VulkanDestroyedException(
+        "Object has been closed/destroyed.",
+        this.getClass()
+      );
     }
   }
 
   protected abstract void closeActual();
+
+  /**
+   * Set the object name for debugging.
+   *
+   * @param inName The name
+   */
+
+  public void setName(
+    final String inName)
+  {
+    this.name.set(Objects.requireNonNullElse(inName, ""));
+  }
 
   /**
    * The ownership status of the object.

@@ -18,14 +18,19 @@ package com.io7m.jcoronado.lwjgl.internal;
 
 import com.io7m.jcoronado.api.VulkanEnumMaps;
 import com.io7m.jcoronado.api.VulkanException;
+import com.io7m.jcoronado.api.VulkanFormat;
 import com.io7m.jcoronado.api.VulkanGraphicsPipelineCreateInfo;
 import com.io7m.jcoronado.api.VulkanIncompatibleClassException;
+import com.io7m.jcoronado.api.VulkanPipelineRenderingCreateInfo;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.vulkan.VK10;
 import org.lwjgl.vulkan.VkGraphicsPipelineCreateInfo;
+import org.lwjgl.vulkan.VkPipelineRenderingCreateInfo;
 
 import java.util.List;
 import java.util.Objects;
+
+import static org.lwjgl.vulkan.VK13.VK_STRUCTURE_TYPE_PIPELINE_RENDERING_CREATE_INFO;
 
 /**
  * Functions to pack pipeline creation info.
@@ -59,7 +64,7 @@ public final class VulkanLWJGLGraphicsPipelineCreateInfos
     Objects.requireNonNull(pipeline_infos, "pipeline_infos");
 
     final var buffer =
-      VkGraphicsPipelineCreateInfo.malloc(pipeline_infos.size(), stack);
+      VkGraphicsPipelineCreateInfo.calloc(pipeline_infos.size(), stack);
 
     for (var index = 0; index < pipeline_infos.size(); ++index) {
       final var source = pipeline_infos.get(index);
@@ -81,6 +86,18 @@ public final class VulkanLWJGLGraphicsPipelineCreateInfos
       .pNext(0L)
       .sType(VK10.VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO)
       .flags(VulkanEnumMaps.packValues(source.flags()));
+
+    if (source.renderingCreateInfo().isPresent()) {
+      final var createInfo =
+        VkPipelineRenderingCreateInfo.calloc(stack);
+
+      packIntoRenderingCreateInfo(
+        stack,
+        source.renderingCreateInfo().get(),
+        createInfo
+      );
+      target.pNext(createInfo.address());
+    }
 
     packIntoBasePipelineIndex(source, target);
     packIntoBasePipelineHandle(source, target);
@@ -121,6 +138,36 @@ public final class VulkanLWJGLGraphicsPipelineCreateInfos
         source.stages()));
   }
 
+  private static void packIntoRenderingCreateInfo(
+    final MemoryStack stack,
+    final VulkanPipelineRenderingCreateInfo info,
+    final VkPipelineRenderingCreateInfo target)
+    throws VulkanException
+  {
+    final var colorAttachmentFormats =
+      VulkanLWJGLScalarArrays.packInts(
+        stack,
+        info.colorAttachmentFormats(),
+        VulkanFormat::value
+      );
+
+    final var depthAttachmentFormat =
+      info.depthAttachmentFormat()
+        .map(x -> Integer.valueOf(x.value()))
+        .orElse(Integer.valueOf(0));
+
+    final var stencilAttachmentFormat =
+      info.stencilAttachmentFormat()
+        .map(x -> Integer.valueOf(x.value()))
+        .orElse(Integer.valueOf(0));
+
+    target.sType(VK_STRUCTURE_TYPE_PIPELINE_RENDERING_CREATE_INFO)
+      .pColorAttachmentFormats(colorAttachmentFormats)
+      .depthAttachmentFormat(depthAttachmentFormat)
+      .stencilAttachmentFormat(stencilAttachmentFormat)
+      .viewMask((int) info.viewMask());
+  }
+
   private static void packIntoSubpass(
     final VulkanGraphicsPipelineCreateInfo source,
     final VkGraphicsPipelineCreateInfo target)
@@ -133,10 +180,17 @@ public final class VulkanLWJGLGraphicsPipelineCreateInfos
     final VkGraphicsPipelineCreateInfo target)
     throws VulkanIncompatibleClassException
   {
-    final var rpl = VulkanLWJGLClassChecks.checkInstanceOf(
-      source.renderPass(),
-      VulkanLWJGLRenderPass.class);
-    target.renderPass(rpl.handle());
+    if (source.renderPass().isPresent()) {
+      final var rpl =
+        VulkanLWJGLClassChecks.checkInstanceOf(
+          source.renderPass().get(),
+          VulkanLWJGLRenderPass.class
+        );
+
+      target.renderPass(rpl.handle());
+    } else {
+      target.renderPass(0L);
+    }
   }
 
   private static void packIntoLayout(

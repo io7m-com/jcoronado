@@ -16,18 +16,16 @@
 
 package com.io7m.jcoronado.lwjgl.internal;
 
-import com.io7m.jcoronado.api.VulkanCommandBufferType;
+import com.io7m.jcoronado.api.VulkanCommandBufferSubmitInfo;
 import com.io7m.jcoronado.api.VulkanException;
-import com.io7m.jcoronado.api.VulkanPipelineStageFlag;
-import com.io7m.jcoronado.api.VulkanSemaphoreType;
+import com.io7m.jcoronado.api.VulkanSemaphoreSubmitInfo;
 import com.io7m.jcoronado.api.VulkanSubmitInfo;
-import org.lwjgl.PointerBuffer;
 import org.lwjgl.system.MemoryStack;
-import org.lwjgl.vulkan.VK10;
-import org.lwjgl.vulkan.VkSubmitInfo;
+import org.lwjgl.vulkan.VK13;
+import org.lwjgl.vulkan.VkCommandBufferSubmitInfo;
+import org.lwjgl.vulkan.VkSemaphoreSubmitInfo;
+import org.lwjgl.vulkan.VkSubmitInfo2;
 
-import java.nio.IntBuffer;
-import java.nio.LongBuffer;
 import java.util.List;
 import java.util.Objects;
 
@@ -55,7 +53,7 @@ public final class VulkanLWJGLSubmitInfos
   public static void packInfos(
     final MemoryStack stack,
     final List<VulkanSubmitInfo> infos,
-    final VkSubmitInfo.Buffer buffer)
+    final VkSubmitInfo2.Buffer buffer)
     throws VulkanException
   {
     Objects.requireNonNull(stack, "stack");
@@ -66,55 +64,44 @@ public final class VulkanLWJGLSubmitInfos
       final var info = infos.get(index);
       buffer.position(index)
         .pNext(0L)
-        .sType(VK10.VK_STRUCTURE_TYPE_SUBMIT_INFO)
-        .pWaitDstStageMask(packWaitStages(stack, info.waitStageMasks()))
-        .pCommandBuffers(packCommandBuffers(stack, info.commandBuffers()))
-        .pSignalSemaphores(packSemaphores(stack, info.signalSemaphores()))
-        .pWaitSemaphores(packSemaphores(stack, info.waitSemaphores()))
-        .waitSemaphoreCount(info.waitSemaphores().size());
+        .sType(VK13.VK_STRUCTURE_TYPE_SUBMIT_INFO_2)
+        .pWaitSemaphoreInfos(
+          packSemaphoreInfos(stack, info.waitSemaphores()))
+        .pCommandBufferInfos(
+          packCommandBufferInfos(stack, info.commandBuffers()))
+        .pSignalSemaphoreInfos(
+          packSemaphoreInfos(stack, info.signalSemaphores()));
     }
     buffer.position(0);
   }
 
-  private static IntBuffer packWaitStages(
+  private static VkCommandBufferSubmitInfo.Buffer packCommandBufferInfos(
     final MemoryStack stack,
-    final List<VulkanPipelineStageFlag> stages)
+    final List<VulkanCommandBufferSubmitInfo> infos)
     throws VulkanException
   {
-    return VulkanLWJGLScalarArrays.packIntsOrNull(
-      stack,
-      stages,
-      VulkanPipelineStageFlag::value);
+    return VulkanLWJGLArrays.packOrNull(
+      infos,
+      (_, value, output) -> {
+        VulkanLWJGLCommandBufferSubmitInfos.packInto(value, output);
+      },
+      VkCommandBufferSubmitInfo::calloc,
+      stack
+    );
   }
 
-  private static LongBuffer packSemaphores(
+  private static VkSemaphoreSubmitInfo.Buffer packSemaphoreInfos(
     final MemoryStack stack,
-    final List<VulkanSemaphoreType> semaphores)
+    final List<VulkanSemaphoreSubmitInfo> infos)
     throws VulkanException
   {
-    return VulkanLWJGLScalarArrays.packLongsOrNull(
-      stack,
-      semaphores,
-      semaphore -> VulkanLWJGLClassChecks.checkInstanceOf(
-        semaphore,
-        VulkanLWJGLSemaphore.class).handle());
-  }
-
-  private static PointerBuffer packCommandBuffers(
-    final MemoryStack stack,
-    final List<VulkanCommandBufferType> commandBuffers)
-    throws VulkanException
-  {
-    return VulkanLWJGLScalarArrays.packPointersOrNull(
-      stack,
-      commandBuffers,
-      commandBuffer -> {
-        final var actualBuffer =
-          VulkanLWJGLClassChecks.checkInstanceOf(
-            commandBuffer,
-            VulkanLWJGLCommandBuffer.class
-          );
-        return actualBuffer.handle();
-      });
+    return VulkanLWJGLArrays.packOrNull(
+      infos,
+      (_, value, output) -> {
+        VulkanLWJGLSemaphoreSubmitInfos.packInto(value, output);
+      },
+      VkSemaphoreSubmitInfo::calloc,
+      stack
+    );
   }
 }

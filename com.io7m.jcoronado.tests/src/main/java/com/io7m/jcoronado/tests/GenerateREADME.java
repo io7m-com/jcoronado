@@ -196,6 +196,10 @@ public final class GenerateREADME
           function.vulkanFunction());
       }
 
+      case "VK_EXT_debug_utils": {
+        return "https://registry.khronos.org/vulkan/specs/latest/man/html/VK_EXT_debug_utils.html";
+      }
+
       case "VK_KHR_surface": {
         return "https://www.khronos.org/registry/vulkan/specs/1.1-extensions/html/vkspec.html#VK_KHR_surface";
       }

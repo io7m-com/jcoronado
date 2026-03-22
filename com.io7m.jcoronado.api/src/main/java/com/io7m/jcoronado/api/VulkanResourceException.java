@@ -16,7 +16,9 @@
 
 package com.io7m.jcoronado.api;
 
+import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * An exception raised by mishandling a resource.
@@ -33,6 +35,11 @@ public final class VulkanResourceException extends VulkanException
   public VulkanResourceException(
     final String message)
   {
-    super(Objects.requireNonNull(message, "message"));
+    super(
+      Objects.requireNonNull(message, "message"),
+      Map.of(),
+      "error-vulkan-resource",
+      Optional.empty()
+    );
   }
 }

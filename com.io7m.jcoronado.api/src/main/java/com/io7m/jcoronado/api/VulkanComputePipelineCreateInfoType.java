@@ -38,14 +38,12 @@ public interface VulkanComputePipelineCreateInfoType
    * @return Flags specifying how the pipeline will be generated.
    */
 
-  @Value.Parameter
   Set<VulkanPipelineCreateFlag> flags();
 
   /**
    * @return The shader stages to be included in the graphics pipeline.
    */
 
-  @Value.Parameter
   VulkanPipelineShaderStageCreateInfo stage();
 
   /**
@@ -53,20 +51,17 @@ public interface VulkanComputePipelineCreateInfoType
    * with the pipeline.
    */
 
-  @Value.Parameter
   VulkanPipelineLayoutType layout();
 
   /**
    * @return A pipeline to derive from.
    */
 
-  @Value.Parameter
   Optional<VulkanPipelineType> basePipeline();
 
   /**
    * @return An index into the createInfos parameter to use as a pipeline to derive from.
    */
 
-  @Value.Parameter
   OptionalInt basePipelineIndex();
 }

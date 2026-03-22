@@ -25,10 +25,10 @@ import java.util.Set;
 /**
  * Structure specifying parameters of a newly created render pass.
  *
- * @see "VkRenderPassCreateInfo"
+ * @see "VkRenderPassCreateInfo2"
  */
 
-@VulkanAPIStructType(vulkanStruct = "VkRenderPassCreateInfo")
+@VulkanAPIStructType(vulkanStruct = "VkRenderPassCreateInfo2")
 @ImmutablesStyleType
 @Value.Immutable
 public interface VulkanRenderPassCreateInfoType
@@ -37,27 +37,23 @@ public interface VulkanRenderPassCreateInfoType
    * @return The module creation flags
    */
 
-  @Value.Parameter
   Set<VulkanRenderPassCreateFlag> flags();
 
   /**
    * @return The render pass attachments
    */
 
-  @Value.Parameter
   List<VulkanAttachmentDescription> attachments();
 
   /**
    * @return The subpasses
    */
 
-  @Value.Parameter
   List<VulkanSubpassDescription> subpasses();
 
   /**
    * @return The subpass dependencies
    */
 
-  @Value.Parameter
   List<VulkanSubpassDependency> dependencies();
 }

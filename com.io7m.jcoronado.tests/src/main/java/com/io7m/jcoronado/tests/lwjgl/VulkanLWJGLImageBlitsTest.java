@@ -101,25 +101,59 @@ public final class VulkanLWJGLImageBlitsTest
   public void testOffsetPack()
     throws VulkanException
   {
+    final var layers0 =
+      VulkanImageSubresourceLayers.builder()
+        .setAspectMask(EnumSet.allOf(VulkanImageAspectFlag.class))
+        .setBaseArrayLayer(2)
+        .setLayerCount(3)
+        .setMipLevel(1)
+        .build();
+
+    final var layers1 =
+      VulkanImageSubresourceLayers.builder()
+        .setAspectMask(EnumSet.allOf(VulkanImageAspectFlag.class))
+        .setBaseArrayLayer(20)
+        .setLayerCount(30)
+        .setMipLevel(10)
+        .build();
+
+    final var source0 =
+      VulkanOffset3D.builder()
+        .setX(100)
+        .setY(200)
+        .setZ(300)
+        .build();
+
+    final var source1 =
+      VulkanOffset3D.builder()
+        .setX(400)
+        .setY(500)
+        .setZ(600)
+        .build();
+
+    final var target0 =
+      VulkanOffset3D.builder()
+        .setX(1100)
+        .setY(1200)
+        .setZ(1300)
+        .build();
+
+    final var target1 =
+      VulkanOffset3D.builder()
+        .setX(1400)
+        .setY(1500)
+        .setZ(1600)
+        .build();
+
     final var source =
-      VulkanImageBlit.of(
-        VulkanImageSubresourceLayers.of(
-          EnumSet.allOf(VulkanImageAspectFlag.class),
-          1,
-          2,
-          3
-        ),
-        VulkanOffset3D.of(100, 200, 300),
-        VulkanOffset3D.of(400, 500, 600),
-        VulkanImageSubresourceLayers.of(
-          EnumSet.allOf(VulkanImageAspectFlag.class),
-          10,
-          20,
-          30
-        ),
-        VulkanOffset3D.of(1100, 1200, 1300),
-        VulkanOffset3D.of(1400, 1500, 1600)
-      );
+      VulkanImageBlit.builder()
+        .setSourceSubresource(layers0)
+        .setTargetSubresource(layers1)
+        .setSourceOffset0(source0)
+        .setSourceOffset1(source1)
+        .setTargetOffset0(target0)
+        .setTargetOffset1(target1)
+        .build();
 
     final var out =
       VulkanLWJGLImageBlits.pack(this.stack, source);
@@ -131,25 +165,59 @@ public final class VulkanLWJGLImageBlitsTest
   public void testOffsetPackList()
     throws VulkanException
   {
+    final var layers0 =
+      VulkanImageSubresourceLayers.builder()
+        .setAspectMask(EnumSet.allOf(VulkanImageAspectFlag.class))
+        .setBaseArrayLayer(2)
+        .setLayerCount(3)
+        .setMipLevel(1)
+        .build();
+
+    final var layers1 =
+      VulkanImageSubresourceLayers.builder()
+        .setAspectMask(EnumSet.allOf(VulkanImageAspectFlag.class))
+        .setBaseArrayLayer(20)
+        .setLayerCount(30)
+        .setMipLevel(10)
+        .build();
+
+    final var source0 =
+      VulkanOffset3D.builder()
+        .setX(100)
+        .setY(200)
+        .setZ(300)
+        .build();
+
+    final var source1 =
+      VulkanOffset3D.builder()
+        .setX(400)
+        .setY(500)
+        .setZ(600)
+        .build();
+
+    final var target0 =
+      VulkanOffset3D.builder()
+        .setX(1100)
+        .setY(1200)
+        .setZ(1300)
+        .build();
+
+    final var target1 =
+      VulkanOffset3D.builder()
+        .setX(1400)
+        .setY(1500)
+        .setZ(1600)
+        .build();
+
     final var source =
-      VulkanImageBlit.of(
-        VulkanImageSubresourceLayers.of(
-          EnumSet.allOf(VulkanImageAspectFlag.class),
-          1,
-          2,
-          3
-        ),
-        VulkanOffset3D.of(100, 200, 300),
-        VulkanOffset3D.of(400, 500, 600),
-        VulkanImageSubresourceLayers.of(
-          EnumSet.allOf(VulkanImageAspectFlag.class),
-          10,
-          20,
-          30
-        ),
-        VulkanOffset3D.of(1100, 1200, 1300),
-        VulkanOffset3D.of(1400, 1500, 1600)
-      );
+      VulkanImageBlit.builder()
+        .setSourceSubresource(layers0)
+        .setTargetSubresource(layers1)
+        .setSourceOffset0(source0)
+        .setSourceOffset1(source1)
+        .setTargetOffset0(target0)
+        .setTargetOffset1(target1)
+        .build();
 
     final var out =
       VulkanLWJGLImageBlits.packList(
@@ -165,25 +233,59 @@ public final class VulkanLWJGLImageBlitsTest
   public void testOffsetPackListOrNull()
     throws VulkanException
   {
+    final var layers0 =
+      VulkanImageSubresourceLayers.builder()
+        .setAspectMask(EnumSet.allOf(VulkanImageAspectFlag.class))
+        .setBaseArrayLayer(2)
+        .setLayerCount(3)
+        .setMipLevel(1)
+        .build();
+
+    final var layers1 =
+      VulkanImageSubresourceLayers.builder()
+        .setAspectMask(EnumSet.allOf(VulkanImageAspectFlag.class))
+        .setBaseArrayLayer(20)
+        .setLayerCount(30)
+        .setMipLevel(10)
+        .build();
+
+    final var source0 =
+      VulkanOffset3D.builder()
+        .setX(100)
+        .setY(200)
+        .setZ(300)
+        .build();
+
+    final var source1 =
+      VulkanOffset3D.builder()
+        .setX(400)
+        .setY(500)
+        .setZ(600)
+        .build();
+
+    final var target0 =
+      VulkanOffset3D.builder()
+        .setX(1100)
+        .setY(1200)
+        .setZ(1300)
+        .build();
+
+    final var target1 =
+      VulkanOffset3D.builder()
+        .setX(1400)
+        .setY(1500)
+        .setZ(1600)
+        .build();
+
     final var source =
-      VulkanImageBlit.of(
-        VulkanImageSubresourceLayers.of(
-          EnumSet.allOf(VulkanImageAspectFlag.class),
-          1,
-          2,
-          3
-        ),
-        VulkanOffset3D.of(100, 200, 300),
-        VulkanOffset3D.of(400, 500, 600),
-        VulkanImageSubresourceLayers.of(
-          EnumSet.allOf(VulkanImageAspectFlag.class),
-          10,
-          20,
-          30
-        ),
-        VulkanOffset3D.of(1100, 1200, 1300),
-        VulkanOffset3D.of(1400, 1500, 1600)
-      );
+      VulkanImageBlit.builder()
+        .setSourceSubresource(layers0)
+        .setTargetSubresource(layers1)
+        .setSourceOffset0(source0)
+        .setSourceOffset1(source1)
+        .setTargetOffset0(target0)
+        .setTargetOffset1(target1)
+        .build();
 
     final var packed =
       VulkanLWJGLImageBlits.packListOrNull(

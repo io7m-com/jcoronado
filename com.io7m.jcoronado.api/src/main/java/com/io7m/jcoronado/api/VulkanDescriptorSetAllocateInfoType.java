@@ -34,7 +34,6 @@ public interface VulkanDescriptorSetAllocateInfoType
    * @return The descriptor pool from which descriptor sets will be allocated
    */
 
-  @Value.Parameter
   VulkanDescriptorPoolType descriptorPool();
 
   /**
@@ -42,6 +41,5 @@ public interface VulkanDescriptorSetAllocateInfoType
    * descriptor set is allocated.
    */
 
-  @Value.Parameter
   List<VulkanDescriptorSetLayoutType> setLayouts();
 }

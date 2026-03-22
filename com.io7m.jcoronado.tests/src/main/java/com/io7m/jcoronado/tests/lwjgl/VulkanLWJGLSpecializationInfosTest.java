@@ -47,11 +47,25 @@ public final class VulkanLWJGLSpecializationInfosTest
   public void testSpecializationInfo()
   {
     final var entry_0 =
-      VulkanSpecializationMapEntry.of(0, 23L, 36L);
+      VulkanSpecializationMapEntry.builder()
+        .setConstantID(0)
+        .setOffset(23L)
+        .setSize(36L)
+        .build();
+
     final var entry_1 =
-      VulkanSpecializationMapEntry.of(1, 12L, 23L);
+      VulkanSpecializationMapEntry.builder()
+        .setConstantID(1)
+        .setOffset(12L)
+        .setSize(23L)
+        .build();
+
     final var entry_2 =
-      VulkanSpecializationMapEntry.of(2, 7L, 6L);
+      VulkanSpecializationMapEntry.builder()
+        .setConstantID(2)
+        .setOffset(7L)
+        .setSize(6L)
+        .build();
 
     final var map =
       VulkanSpecializationMap.builder()

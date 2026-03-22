@@ -52,7 +52,7 @@ public final class VulkanLWJGLMemoryAllocateInfos
     Objects.requireNonNull(stack, "stack");
     Objects.requireNonNull(info, "info");
 
-    return packInto(info, VkMemoryAllocateInfo.malloc(stack));
+    return packInto(info, VkMemoryAllocateInfo.calloc(stack));
   }
 
   /**
@@ -100,7 +100,7 @@ public final class VulkanLWJGLMemoryAllocateInfos
     return VulkanLWJGLArrays.pack(
       infos,
       (sstack, value, output) -> packInto(value, output),
-      VkMemoryAllocateInfo::malloc,
+      VkMemoryAllocateInfo::calloc,
       stack
     );
   }
@@ -127,7 +127,7 @@ public final class VulkanLWJGLMemoryAllocateInfos
     return VulkanLWJGLArrays.packOrNull(
       infos,
       (sstack, value, output) -> packInto(value, output),
-      VkMemoryAllocateInfo::malloc,
+      VkMemoryAllocateInfo::calloc,
       stack
     );
   }

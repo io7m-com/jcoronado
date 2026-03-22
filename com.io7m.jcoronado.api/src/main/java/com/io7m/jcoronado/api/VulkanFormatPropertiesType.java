@@ -35,7 +35,6 @@ public interface VulkanFormatPropertiesType
    * of VK_IMAGE_TILING_LINEAR.
    */
 
-  @Value.Parameter
   Set<VulkanFormatFeatureFlag> linearTilingFeatures();
 
   /**
@@ -43,13 +42,11 @@ public interface VulkanFormatPropertiesType
    * of VK_IMAGE_TILING_OPTIMAL.
    */
 
-  @Value.Parameter
   Set<VulkanFormatFeatureFlag> optimalTilingFeatures();
 
   /**
    * @return A set of flags specifying features supported by buffers.
    */
 
-  @Value.Parameter
   Set<VulkanFormatFeatureFlag> bufferFeatures();
 }

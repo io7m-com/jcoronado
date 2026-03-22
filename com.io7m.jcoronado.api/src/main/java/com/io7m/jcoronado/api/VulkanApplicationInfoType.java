@@ -34,28 +34,24 @@ public interface VulkanApplicationInfoType
    * @return The application name
    */
 
-  @Value.Parameter
   String applicationName();
 
   /**
    * @return The application version
    */
 
-  @Value.Parameter
   int applicationVersion();
 
   /**
    * @return The engine name
    */
 
-  @Value.Parameter
   String engineName();
 
   /**
    * @return The engine version
    */
 
-  @Value.Parameter
   int engineVersion();
 
   /**
@@ -64,6 +60,5 @@ public interface VulkanApplicationInfoType
    * @see VulkanVersions
    */
 
-  @Value.Parameter
   int vulkanAPIVersion();
 }

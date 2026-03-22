@@ -26,6 +26,7 @@ import com.io7m.jcoronado.api.VulkanQueueType;
 import com.io7m.jcoronado.api.VulkanSubmitInfo;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -80,9 +81,11 @@ public final class VFakeQueue implements VulkanQueueType
   public void submit(
     final List<VulkanSubmitInfo> submissions,
     final Optional<VulkanFenceType> fence)
-    throws VulkanException
   {
-    throw errorNotImplemented("submit");
+    if (fence.isPresent()) {
+      final var fakeFence = (VFakeFence) fence.get();
+      fakeFence.signal();
+    }
   }
 
   @Override
@@ -109,10 +112,15 @@ public final class VFakeQueue implements VulkanQueueType
   private static VulkanCallFailedException errorNotImplemented(
     final String function)
   {
+    final var map =
+      Map.ofEntries(
+        Map.entry("ErrorCode", "0x7fff_ffff"),
+        Map.entry("Function", function)
+      );
+
     return new VulkanCallFailedException(
-      0x7fff_ffff,
-      function,
-      "Not implemented (%s)".formatted(function)
+      "Not implemented (%s)".formatted(function),
+      map
     );
   }
 }

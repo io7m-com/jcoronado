@@ -36,27 +36,27 @@ public interface VulkanQueryPoolCreateInfoType
    * @return A set of flags specifying the creation of the pool
    */
 
-  @Value.Parameter
   Set<VulkanQueryPoolCreateFlag> flags();
 
   /**
    * @return A value specifying the type of queries managed by the pool.
    */
 
-  @Value.Parameter
   VulkanQueryKind queryType();
 
   /**
    * @return The number of queries managed by the pool.
    */
 
-  @Value.Parameter
-  int queryCount();
+  @Value.Default
+  default int queryCount()
+  {
+    return 0;
+  }
 
   /**
    * @return A set of flags specifying which counters will be returned in queries on the new pool
    */
 
-  @Value.Parameter
   Set<VulkanQueryPipelineStatisticFlag> pipelineStatistics();
 }

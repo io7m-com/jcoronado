@@ -36,69 +36,95 @@ public interface VulkanPipelineDepthStencilStateCreateInfoType
    * @return Creation flags
    */
 
-  @Value.Parameter
   Set<VulkanPipelineDepthStencilStateCreateFlag> flags();
 
   /**
    * @return {@code true} if depth testing is enabled.
    */
 
-  @Value.Parameter
-  boolean depthTestEnable();
+  @Value.Default
+  default boolean depthTestEnable()
+  {
+    return false;
+  }
 
   /**
    * @return {@code true} if depth writing is enabled.
    */
 
-  @Value.Parameter
-  boolean depthWriteEnable();
+  @Value.Default
+  default boolean depthWriteEnable()
+  {
+    return false;
+  }
 
   /**
    * @return The comparison operator used in the depth test.
    */
 
-  @Value.Parameter
-  VulkanCompareOp depthCompareOp();
+  @Value.Default
+  default VulkanCompareOp depthCompareOp()
+  {
+    return VulkanCompareOp.VK_COMPARE_OP_NEVER;
+  }
 
   /**
    * @return {@code true} if depth bounds testing is enabled.
    */
 
-  @Value.Parameter
-  boolean depthBoundsTestEnable();
+  @Value.Default
+  default boolean depthBoundsTestEnable()
+  {
+    return false;
+  }
 
   /**
    * @return {@code true} if stencil testing is enabled.
    */
 
-  @Value.Parameter
-  boolean stencilTestEnable();
+  @Value.Default
+  default boolean stencilTestEnable()
+  {
+    return false;
+  }
 
   /**
    * @return The stencil op state for front faces.
    */
 
-  @Value.Parameter
-  VulkanStencilOpState front();
+  @Value.Default
+  default VulkanStencilOpState front()
+  {
+    return VulkanStencilOpState.builder().build();
+  }
 
   /**
    * @return The stencil op state for back faces.
    */
 
-  @Value.Parameter
-  VulkanStencilOpState back();
+  @Value.Default
+  default VulkanStencilOpState back()
+  {
+    return VulkanStencilOpState.builder().build();
+  }
 
   /**
    * @return The minimum depth for bounds testing
    */
 
-  @Value.Parameter
-  float minDepthBounds();
+  @Value.Default
+  default float minDepthBounds()
+  {
+    return 0.0f;
+  }
 
   /**
    * @return The maximum depth for bounds testing
    */
 
-  @Value.Parameter
-  float maxDepthBounds();
+  @Value.Default
+  default float maxDepthBounds()
+  {
+    return 0.0f;
+  }
 }

@@ -23,6 +23,8 @@ import java.util.Optional;
 import java.util.OptionalDouble;
 import java.util.Set;
 
+import static com.io7m.jcoronado.api.VulkanBorderColor.VK_BORDER_COLOR_FLOAT_TRANSPARENT_BLACK;
+
 /**
  * Structure specifying how to create a sampler.
  *
@@ -38,58 +40,78 @@ public interface VulkanSamplerCreateInfoType
    * @return A set of flags describing additional parameters of the sampler.
    */
 
-  @Value.Parameter
   Set<VulkanSamplerCreateFlag> flags();
 
   /**
    * @return The magnification filter to apply to lookups.
    */
 
-  @Value.Parameter
-  VulkanFilter magFilter();
+  @Value.Default
+  default VulkanFilter magFilter()
+  {
+    return VulkanFilter.VK_FILTER_NEAREST;
+  }
 
   /**
    * @return The minification filter to apply to lookups.
    */
 
-  @Value.Parameter
-  VulkanFilter minFilter();
+  @Value.Default
+  default VulkanFilter minFilter()
+  {
+    return VulkanFilter.VK_FILTER_NEAREST;
+  }
 
   /**
    * @return The mipmap filter to apply to lookups.
    */
 
-  @Value.Parameter
-  VulkanSamplerMipmapMode mipmapMode();
+  @Value.Default
+  default VulkanSamplerMipmapMode mipmapMode()
+  {
+    return VulkanSamplerMipmapMode.VK_SAMPLER_MIPMAP_MODE_NEAREST;
+  }
 
   /**
    * @return The addressing mode for outside [0..1] range for U coordinates.
    */
 
-  @Value.Parameter
-  VulkanSamplerAddressMode addressModeU();
+  @Value.Default
+  default VulkanSamplerAddressMode addressModeU()
+  {
+    return VulkanSamplerAddressMode.VK_SAMPLER_ADDRESS_MODE_REPEAT;
+  }
 
   /**
    * @return The addressing mode for outside [0..1] range for V coordinates.
    */
 
-  @Value.Parameter
-  VulkanSamplerAddressMode addressModeV();
+  @Value.Default
+  default VulkanSamplerAddressMode addressModeV()
+  {
+    return VulkanSamplerAddressMode.VK_SAMPLER_ADDRESS_MODE_REPEAT;
+  }
 
   /**
    * @return The addressing mode for outside [0..1] range for W coordinates.
    */
 
-  @Value.Parameter
-  VulkanSamplerAddressMode addressModeW();
+  @Value.Default
+  default VulkanSamplerAddressMode addressModeW()
+  {
+    return VulkanSamplerAddressMode.VK_SAMPLER_ADDRESS_MODE_REPEAT;
+  }
 
   /**
    * @return The bias to be added to mipmap LOD (level-of-detail) calculation and bias provided by
    * the image sampling functions in SPIR-V.
    */
 
-  @Value.Parameter
-  float mipLodBias();
+  @Value.Default
+  default float mipLodBias()
+  {
+    return 0.0f;
+  }
 
   /**
    * If this value is non-empty, enable anisotropic filtering using the given amount of anisotropy.
@@ -98,41 +120,51 @@ public interface VulkanSamplerCreateInfoType
    */
 
   @VulkanAPIDeviceFeatureRequiredType(featureName = "samplerAnisotropy")
-  @Value.Parameter
   OptionalDouble maxAnisotropy();
 
   /**
    * @return A value specifying the comparison function to apply to fetched data before filtering
    */
 
-  @Value.Parameter
   Optional<VulkanCompareOp> compareOp();
 
   /**
    * @return The minimum LOD clamp value
    */
 
-  @Value.Parameter
-  float minLod();
+  @Value.Default
+  default float minLod()
+  {
+    return 0.0f;
+  }
 
   /**
    * @return The maximum LOD clamp value
    */
 
-  @Value.Parameter
-  float maxLod();
+  @Value.Default
+  default float maxLod()
+  {
+    return 0.0f;
+  }
 
   /**
    * @return The predefined border color to use.
    */
 
-  @Value.Parameter
-  VulkanBorderColor borderColor();
+  @Value.Default
+  default VulkanBorderColor borderColor()
+  {
+    return VK_BORDER_COLOR_FLOAT_TRANSPARENT_BLACK;
+  }
 
   /**
    * @return {@code true} if the sampler coordinates should unnormalized
    */
 
-  @Value.Parameter
-  boolean unnormalizedCoordinates();
+  @Value.Default
+  default boolean unnormalizedCoordinates()
+  {
+    return false;
+  }
 }

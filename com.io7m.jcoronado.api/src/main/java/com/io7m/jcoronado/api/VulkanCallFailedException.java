@@ -16,71 +16,76 @@
 
 package com.io7m.jcoronado.api;
 
+import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * An exception raised by a failing Vulkan call.
  */
 
-public final class VulkanCallFailedException extends VulkanException
+public final class VulkanCallFailedException
+  extends VulkanException
 {
-  private final int code;
-  private final String function;
+  /**
+   * Construct an exception.
+   *
+   * @param message    The message
+   * @param cause      The cause
+   * @param attributes The error attributes
+   */
+
+  public VulkanCallFailedException(
+    final String message,
+    final Throwable cause,
+    final Map<String, String> attributes)
+  {
+    super(
+      Objects.requireNonNull(message, "message"),
+      Objects.requireNonNull(cause, "cause"),
+      Map.copyOf(attributes),
+      "error-vulkan-call",
+      Optional.empty()
+    );
+  }
 
   /**
    * Construct an exception.
    *
-   * @param in_code     The returned error code
-   * @param in_function The function that failed
-   * @param message     The error message
+   * @param message           The message
+   * @param attributes        The error attributes
+   * @param remediatingAction The remediating action
    */
 
   public VulkanCallFailedException(
-    final int in_code,
-    final String in_function,
-    final String message)
+    final String message,
+    final Map<String, String> attributes,
+    final Optional<String> remediatingAction)
   {
-    super(Objects.requireNonNull(message, "message"));
-    this.code = in_code;
-    this.function = Objects.requireNonNull(in_function, "function");
-  }
-
-  @Override
-  public boolean equals(final Object o)
-  {
-    if (this == o) {
-      return true;
-    }
-    if (o == null || !Objects.equals(this.getClass(), o.getClass())) {
-      return false;
-    }
-    final var that = (VulkanCallFailedException) o;
-    return this.code == that.code && Objects.equals(
-      this.function,
-      that.function);
-  }
-
-  @Override
-  public int hashCode()
-  {
-    return Objects.hash(Integer.valueOf(this.code), this.function);
+    super(
+      message,
+      Map.copyOf(attributes),
+      "error-vulkan-call",
+      remediatingAction
+    );
   }
 
   /**
-   * @return The name of the function that failed
+   * Construct an exception.
+   *
+   * @param message    The message
+   * @param attributes The error attributes
    */
 
-  public String function()
+  public VulkanCallFailedException(
+    final String message,
+    final Map<String, String> attributes)
   {
-    return this.function;
-  }
-
-  /**
-   * @return The error code returned by the function that failed
-   */
-
-  public int errorCode()
-  {
-    return this.code;
+    super(
+      Objects.requireNonNull(message, "message"),
+      Map.copyOf(attributes),
+      "error-vulkan-call",
+      Optional.empty()
+    );
   }
 }

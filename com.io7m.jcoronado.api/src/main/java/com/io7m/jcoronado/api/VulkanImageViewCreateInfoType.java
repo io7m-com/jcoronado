@@ -36,45 +36,51 @@ public interface VulkanImageViewCreateInfoType
    * @return The view creation flags
    */
 
-  @Value.Parameter
   Set<VulkanImageViewCreateFlag> flags();
 
   /**
    * @return The image
    */
 
-  @Value.Parameter
   VulkanImageType image();
 
   /**
    * @return The view type
    */
 
-  @Value.Parameter
-  VulkanImageViewKind viewType();
+  @Value.Default
+  default VulkanImageViewKind viewType()
+  {
+    return VulkanImageViewKind.VK_IMAGE_VIEW_TYPE_2D;
+  }
 
   /**
    * @return The format
    */
 
-  @Value.Parameter
-  VulkanFormat format();
+  @Value.Default
+  default VulkanFormat format()
+  {
+    return VulkanFormat.VK_FORMAT_UNDEFINED;
+  }
 
   /**
    * @return The component mapping
    */
 
-  @Value.Parameter
   @Value.Default
   default VulkanComponentMapping components()
   {
-    return VulkanComponentMappingType.identity();
+    return VulkanComponentMappingType.IDENTITY;
   }
 
   /**
    * @return The set of mipmap levels and array layers to be accessible to the view
    */
 
-  @Value.Parameter
-  VulkanImageSubresourceRange subresourceRange();
+  @Value.Default
+  default VulkanImageSubresourceRange subresourceRange()
+  {
+    return VulkanImageSubresourceRange.builder().build();
+  }
 }

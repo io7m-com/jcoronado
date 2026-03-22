@@ -93,7 +93,7 @@ public final class VulkanLWJGLScalarArrays
     Objects.requireNonNull(getter, "getter");
 
     final var size = values.size();
-    final var buffer = stack.malloc(size * 8);
+    final var buffer = stack.calloc(size * 8);
     for (var index = 0; index < size; ++index) {
       final var value = values.get(index);
       buffer.asLongBuffer().put(index, getter.get(value));
@@ -187,7 +187,7 @@ public final class VulkanLWJGLScalarArrays
     Objects.requireNonNull(getter, "getter");
 
     final var size = values.size();
-    final var buffer = stack.malloc(size * 4);
+    final var buffer = stack.calloc(size * 4);
     for (var index = 0; index < size; ++index) {
       final var value = values.get(index);
       buffer.asIntBuffer().put(index, getter.get(value));
@@ -311,7 +311,7 @@ public final class VulkanLWJGLScalarArrays
     Objects.requireNonNull(getter, "getter");
 
     final var size = values.size();
-    final var buffer = stack.malloc(size * 4);
+    final var buffer = stack.calloc(size * 4);
     for (var index = 0; index < size; ++index) {
       final var value = values.get(index);
       buffer.asFloatBuffer().put(index, getter.get(value));
@@ -343,7 +343,7 @@ public final class VulkanLWJGLScalarArrays
     Objects.requireNonNull(getter, "getter");
 
     final var size = values.size();
-    final var buffer = stack.malloc(size * 8);
+    final var buffer = stack.calloc(size * 8);
     for (var index = 0; index < size; ++index) {
       final var value = values.get(index);
       buffer.asDoubleBuffer().put(index, getter.get(value));

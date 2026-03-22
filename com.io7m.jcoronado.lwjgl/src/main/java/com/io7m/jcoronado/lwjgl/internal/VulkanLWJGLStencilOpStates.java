@@ -49,7 +49,7 @@ public final class VulkanLWJGLStencilOpStates
     Objects.requireNonNull(stack, "stack");
     Objects.requireNonNull(state, "state");
 
-    return VkStencilOpState.malloc(stack)
+    return VkStencilOpState.calloc(stack)
       .compareMask(state.compareMask())
       .compareOp(state.compareOp().value())
       .depthFailOp(state.depthFailOp().value())

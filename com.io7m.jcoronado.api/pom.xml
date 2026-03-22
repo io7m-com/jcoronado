@@ -9,7 +9,7 @@
   <parent>
     <artifactId>com.io7m.jcoronado</artifactId>
     <groupId>com.io7m.jcoronado</groupId>
-    <version>0.0.1</version>
+    <version>1.0.0-beta0001</version>
   </parent>
 
   <artifactId>com.io7m.jcoronado.api</artifactId>
@@ -20,6 +20,11 @@
   <url>https://www.io7m.com/software/jcoronado</url>
 
   <dependencies>
+    <dependency>
+      <groupId>com.io7m.seltzer</groupId>
+      <artifactId>com.io7m.seltzer.api</artifactId>
+    </dependency>
+
     <dependency>
       <groupId>com.io7m.immutables-style</groupId>
       <artifactId>com.io7m.immutables-style</artifactId>

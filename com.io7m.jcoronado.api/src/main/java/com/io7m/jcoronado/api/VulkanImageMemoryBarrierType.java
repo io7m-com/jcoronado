@@ -33,58 +33,62 @@ import java.util.Set;
 public interface VulkanImageMemoryBarrierType
 {
   /**
+   * @return The source stage mask
+   */
+
+  Set<VulkanPipelineStageFlag> srcStageMask();
+
+  /**
    * @return The source access mask
    */
 
-  @Value.Parameter
-  Set<VulkanAccessFlag> sourceAccessMask();
+  Set<VulkanAccessFlag> srcAccessMask();
 
   /**
-   * @return The target access mask
+   * @return The destination stage mask
    */
 
-  @Value.Parameter
-  Set<VulkanAccessFlag> targetAccessMask();
+  Set<VulkanPipelineStageFlag> dstStageMask();
+
+  /**
+   * @return The destination access mask
+   */
+
+  Set<VulkanAccessFlag> dstAccessMask();
 
   /**
    * @return The original image layout
    */
 
-  @Value.Parameter
   VulkanImageLayout oldLayout();
 
   /**
    * @return The target image layout
    */
 
-  @Value.Parameter
   VulkanImageLayout newLayout();
 
   /**
    * @return The source queue family for a queue family ownership transfer.
    */
 
-  @Value.Parameter
-  VulkanQueueFamilyIndex sourceQueueFamilyIndex();
+  VulkanQueueFamilyIndex srcQueueFamilyIndex();
 
   /**
    * @return The target queue family for a queue family ownership transfer.
    */
 
-  @Value.Parameter
-  VulkanQueueFamilyIndex targetQueueFamilyIndex();
+  VulkanQueueFamilyIndex dstQueueFamilyIndex();
 
   /**
    * @return The image affected by this barrier.
    */
 
-  @Value.Parameter
   VulkanImageType image();
 
   /**
    * @return The image subresource range within image that is affected by this barrier.
    */
 
-  @Value.Parameter
   VulkanImageSubresourceRange subresourceRange();
 }

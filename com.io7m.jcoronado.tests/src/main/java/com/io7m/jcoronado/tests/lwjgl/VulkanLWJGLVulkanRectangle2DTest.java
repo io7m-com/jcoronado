@@ -18,7 +18,7 @@ package com.io7m.jcoronado.tests.lwjgl;
 
 import com.io7m.jcoronado.api.VulkanException;
 import com.io7m.jcoronado.api.VulkanExtent2D;
-import com.io7m.jcoronado.api.VulkanOffset2D;
+import com.io7m.jcoronado.api.VulkanOffset2DType;
 import com.io7m.jcoronado.api.VulkanRectangle2D;
 import com.io7m.jcoronado.lwjgl.internal.VulkanLWJGLRect2Ds;
 import org.junit.jupiter.api.AfterEach;
@@ -67,10 +67,17 @@ public final class VulkanLWJGLVulkanRectangle2DTest
   @Test
   public void testOffsetPack()
   {
+    final var extent =
+      VulkanExtent2D.builder()
+        .setWidth(128)
+        .setHeight(128)
+        .build();
+
     final var source =
-      VulkanRectangle2D.of(
-        VulkanOffset2D.of(0, 0),
-        VulkanExtent2D.of(128, 128));
+      VulkanRectangle2D.builder()
+        .setOffset(VulkanOffset2DType.ZERO)
+        .setExtent(extent)
+        .build();
 
     final var out =
       VulkanLWJGLRect2Ds.pack(this.stack, source);
@@ -82,10 +89,17 @@ public final class VulkanLWJGLVulkanRectangle2DTest
   public void testOffsetPackList()
     throws VulkanException
   {
+    final var extent =
+      VulkanExtent2D.builder()
+        .setWidth(128)
+        .setHeight(128)
+        .build();
+
     final var source =
-      VulkanRectangle2D.of(
-        VulkanOffset2D.of(0, 0),
-        VulkanExtent2D.of(128, 128));
+      VulkanRectangle2D.builder()
+        .setOffset(VulkanOffset2DType.ZERO)
+        .setExtent(extent)
+        .build();
 
     final var out =
       VulkanLWJGLRect2Ds.packList(
@@ -101,10 +115,17 @@ public final class VulkanLWJGLVulkanRectangle2DTest
   public void testOffsetPackListOrNull()
     throws VulkanException
   {
+    final var extent =
+      VulkanExtent2D.builder()
+        .setWidth(128)
+        .setHeight(128)
+        .build();
+
     final var source =
-      VulkanRectangle2D.of(
-        VulkanOffset2D.of(0, 0),
-        VulkanExtent2D.of(128, 128));
+      VulkanRectangle2D.builder()
+        .setOffset(VulkanOffset2DType.ZERO)
+        .setExtent(extent)
+        .build();
 
     final var packed =
       VulkanLWJGLRect2Ds.packListOrNull(

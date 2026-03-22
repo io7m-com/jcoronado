@@ -16,7 +16,6 @@
 
 package com.io7m.jcoronado.examples;
 
-import com.io7m.jcoronado.allocation_tracker.VulkanHostAllocatorTracker;
 import com.io7m.jcoronado.api.VulkanApplicationInfo;
 import com.io7m.jcoronado.api.VulkanAttachmentDescription;
 import com.io7m.jcoronado.api.VulkanAttachmentReference;
@@ -26,10 +25,12 @@ import com.io7m.jcoronado.api.VulkanBufferType;
 import com.io7m.jcoronado.api.VulkanClearValueColorFloatingPoint;
 import com.io7m.jcoronado.api.VulkanCommandBufferBeginInfo;
 import com.io7m.jcoronado.api.VulkanCommandBufferCreateInfo;
+import com.io7m.jcoronado.api.VulkanCommandBufferSubmitInfo;
 import com.io7m.jcoronado.api.VulkanCommandBufferType;
 import com.io7m.jcoronado.api.VulkanCommandPoolCreateInfo;
 import com.io7m.jcoronado.api.VulkanCommandPoolType;
-import com.io7m.jcoronado.api.VulkanComponentMappingType;
+import com.io7m.jcoronado.api.VulkanComponentMapping;
+import com.io7m.jcoronado.api.VulkanDependencyInfo;
 import com.io7m.jcoronado.api.VulkanDescriptorBufferInfo;
 import com.io7m.jcoronado.api.VulkanDescriptorImageInfo;
 import com.io7m.jcoronado.api.VulkanDescriptorPoolCreateInfo;
@@ -65,7 +66,7 @@ import com.io7m.jcoronado.api.VulkanLogicalDeviceCreateInfo;
 import com.io7m.jcoronado.api.VulkanLogicalDeviceQueueCreateInfo;
 import com.io7m.jcoronado.api.VulkanLogicalDeviceType;
 import com.io7m.jcoronado.api.VulkanMissingRequiredExtensionsException;
-import com.io7m.jcoronado.api.VulkanOffset2D;
+import com.io7m.jcoronado.api.VulkanOffset2DType;
 import com.io7m.jcoronado.api.VulkanOffset3D;
 import com.io7m.jcoronado.api.VulkanPhysicalDeviceType;
 import com.io7m.jcoronado.api.VulkanPipelineColorBlendAttachmentState;
@@ -76,7 +77,6 @@ import com.io7m.jcoronado.api.VulkanPipelineLayoutType;
 import com.io7m.jcoronado.api.VulkanPipelineMultisampleStateCreateInfo;
 import com.io7m.jcoronado.api.VulkanPipelineRasterizationStateCreateInfo;
 import com.io7m.jcoronado.api.VulkanPipelineShaderStageCreateInfo;
-import com.io7m.jcoronado.api.VulkanPipelineStageFlag;
 import com.io7m.jcoronado.api.VulkanPipelineType;
 import com.io7m.jcoronado.api.VulkanPipelineVertexInputStateCreateInfo;
 import com.io7m.jcoronado.api.VulkanPipelineViewportStateCreateInfo;
@@ -90,8 +90,9 @@ import com.io7m.jcoronado.api.VulkanRenderPassType;
 import com.io7m.jcoronado.api.VulkanResourceException;
 import com.io7m.jcoronado.api.VulkanSamplerCreateInfo;
 import com.io7m.jcoronado.api.VulkanSamplerType;
-import com.io7m.jcoronado.api.VulkanSemaphoreCreateInfo;
-import com.io7m.jcoronado.api.VulkanSemaphoreType;
+import com.io7m.jcoronado.api.VulkanSemaphoreBinaryCreateInfo;
+import com.io7m.jcoronado.api.VulkanSemaphoreBinaryType;
+import com.io7m.jcoronado.api.VulkanSemaphoreSubmitInfo;
 import com.io7m.jcoronado.api.VulkanShaderModuleCreateInfo;
 import com.io7m.jcoronado.api.VulkanShaderModuleType;
 import com.io7m.jcoronado.api.VulkanSharingMode;
@@ -119,10 +120,16 @@ import com.io7m.jcoronado.extensions.khr_swapchain.api.VulkanExtKHRSwapChainType
 import com.io7m.jcoronado.extensions.khr_swapchain.api.VulkanPresentInfoKHR;
 import com.io7m.jcoronado.extensions.khr_swapchain.api.VulkanPresentModeKHR;
 import com.io7m.jcoronado.extensions.khr_swapchain.api.VulkanSwapChainCreateInfo;
+import com.io7m.jcoronado.extensions.khr_swapchain.api.VulkanSwapChainNotReady;
+import com.io7m.jcoronado.extensions.khr_swapchain.api.VulkanSwapChainOK;
+import com.io7m.jcoronado.extensions.khr_swapchain.api.VulkanSwapChainOutOfDate;
+import com.io7m.jcoronado.extensions.khr_swapchain.api.VulkanSwapChainSubOptimal;
+import com.io7m.jcoronado.extensions.khr_swapchain.api.VulkanSwapChainTimedOut;
 import com.io7m.jcoronado.lwjgl.VMALWJGLAllocatorProvider;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLHostAllocatorJeMalloc;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLInstanceProvider;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLTemporaryAllocator;
+import com.io7m.jcoronado.utility.allocation_tracker.VulkanHostAllocatorTracker;
 import com.io7m.jcoronado.vma.VMAAllocationCreateInfo;
 import com.io7m.jcoronado.vma.VMAAllocationResult;
 import com.io7m.jcoronado.vma.VMAAllocatorCreateInfo;
@@ -194,7 +201,7 @@ import static com.io7m.jcoronado.api.VulkanMemoryPropertyFlag.VK_MEMORY_PROPERTY
 import static com.io7m.jcoronado.api.VulkanPipelineBindPoint.VK_PIPELINE_BIND_POINT_GRAPHICS;
 import static com.io7m.jcoronado.api.VulkanPipelineStageFlag.VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
 import static com.io7m.jcoronado.api.VulkanPipelineStageFlag.VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT;
-import static com.io7m.jcoronado.api.VulkanPipelineStageFlag.VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT;
+import static com.io7m.jcoronado.api.VulkanPipelineStageFlag.VK_PIPELINE_STAGE_NONE;
 import static com.io7m.jcoronado.api.VulkanPipelineStageFlag.VK_PIPELINE_STAGE_TRANSFER_BIT;
 import static com.io7m.jcoronado.api.VulkanPolygonMode.VK_POLYGON_MODE_FILL;
 import static com.io7m.jcoronado.api.VulkanPrimitiveTopology.VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
@@ -235,6 +242,14 @@ public final class HelloVulkanWithVMA implements ExampleType
       new Vertex(0.0, -0.5, 1.0, 0.0, 0.0, 0.0, 0.0),
       new Vertex(0.5, 0.5, 0.0, 1.0, 0.0, 1.0, 0.0),
       new Vertex(-0.5, 0.5, 0.0, 0.0, 1.0, 1.0, 1.0));
+
+  private static final VulkanClearValueColorFloatingPoint CLEAR_BLACK =
+    VulkanClearValueColorFloatingPoint.builder()
+      .setRed(0.0f)
+      .setGreen(0.0f)
+      .setBlue(0.0f)
+      .setAlpha(1.0f)
+      .build();
 
   public HelloVulkanWithVMA()
   {
@@ -333,7 +348,7 @@ public final class HelloVulkanWithVMA implements ExampleType
     final var image_view =
       device.createImageView(
         VulkanImageViewCreateInfo.builder()
-          .setComponents(VulkanComponentMappingType.identity())
+          .setComponents(VulkanComponentMapping.IDENTITY)
           .setFormat(texture_format)
           .setImage(gpu_image)
           .setViewType(VK_IMAGE_VIEW_TYPE_2D)
@@ -383,34 +398,56 @@ public final class HelloVulkanWithVMA implements ExampleType
       VK_COMMAND_BUFFER_LEVEL_PRIMARY)) {
       commands.beginCommandBuffer(VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT);
 
+      final var extent =
+        VulkanExtent3D.builder()
+          .setWidth(texture_width)
+          .setHeight(texture_height)
+          .setDepth(1)
+          .build();
+
+      final var zero =
+        VulkanOffset3D.builder()
+          .setX(0)
+          .setY(0)
+          .setZ(0)
+          .build();
+
+      final var copyOp =
+        VulkanBufferImageCopy.builder()
+          .setBufferImageHeight(0)
+          .setBufferOffset(0L)
+          .setBufferRowLength(0)
+          .setImageExtent(extent)
+          .setImageOffset(zero)
+          .setImageSubresource(
+            VulkanImageSubresourceLayers.builder()
+              .addAspectMask(VK_IMAGE_ASPECT_COLOR_BIT)
+              .setBaseArrayLayer(0)
+              .setLayerCount(1)
+              .setMipLevel(0)
+              .build())
+          .build();
+
       commands.copyBufferToImage(
         source,
         target,
         VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
-        List.of(VulkanBufferImageCopy.builder()
-                  .setBufferImageHeight(0)
-                  .setBufferOffset(0L)
-                  .setBufferRowLength(0)
-                  .setImageExtent(VulkanExtent3D.of(
-                    texture_width,
-                    texture_height,
-                    1))
-                  .setImageOffset(VulkanOffset3D.of(0, 0, 0))
-                  .setImageSubresource(
-                    VulkanImageSubresourceLayers.builder()
-                      .addAspectMask(VK_IMAGE_ASPECT_COLOR_BIT)
-                      .setBaseArrayLayer(0)
-                      .setLayerCount(1)
-                      .setMipLevel(0)
-                      .build())
-                  .build()));
+        List.of(copyOp));
 
       commands.endCommandBuffer();
 
       LOG.trace("submitting image copy");
-      queue.submit(List.of(VulkanSubmitInfo.builder()
-                             .addCommandBuffers(commands)
-                             .build()));
+      queue.submit(
+        List.of(
+          VulkanSubmitInfo.builder()
+            .addCommandBuffers(
+              VulkanCommandBufferSubmitInfo.builder()
+                .setCommandBuffer(commands)
+                .build()
+            )
+            .build()
+        )
+      );
 
       LOG.trace("submitting waiting for image copy");
       queue.waitIdle();
@@ -426,10 +463,10 @@ public final class HelloVulkanWithVMA implements ExampleType
     final VulkanImageLayout new_layout)
     throws VulkanException
   {
-    final var barrier_builder =
+    final var barrierBuilder =
       VulkanImageMemoryBarrier.builder()
-        .setSourceQueueFamilyIndex(new VulkanQueueFamilyIndex(-1))
-        .setTargetQueueFamilyIndex(new VulkanQueueFamilyIndex(-1))
+        .setSrcQueueFamilyIndex(new VulkanQueueFamilyIndex(-1))
+        .setDstQueueFamilyIndex(new VulkanQueueFamilyIndex(-1))
         .setImage(image)
         .setSubresourceRange(
           VulkanImageSubresourceRange.builder()
@@ -442,21 +479,26 @@ public final class HelloVulkanWithVMA implements ExampleType
         .setOldLayout(old_layout)
         .setNewLayout(new_layout);
 
-    final Set<VulkanPipelineStageFlag> source_stage;
-    final Set<VulkanPipelineStageFlag> target_stage;
-
     if (old_layout == VK_IMAGE_LAYOUT_UNDEFINED
       && new_layout == VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL) {
-      barrier_builder.setSourceAccessMask(Set.of());
-      barrier_builder.setTargetAccessMask(Set.of(VK_ACCESS_TRANSFER_WRITE_BIT));
-      source_stage = Set.of(VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT);
-      target_stage = Set.of(VK_PIPELINE_STAGE_TRANSFER_BIT);
+      barrierBuilder.setSrcAccessMask(
+        Set.of());
+      barrierBuilder.setDstAccessMask(
+        Set.of(VK_ACCESS_TRANSFER_WRITE_BIT));
+      barrierBuilder.setSrcStageMask(
+        Set.of(VK_PIPELINE_STAGE_NONE));
+      barrierBuilder.setDstStageMask(
+        Set.of(VK_PIPELINE_STAGE_TRANSFER_BIT));
     } else if (old_layout == VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL
       && new_layout == VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL) {
-      barrier_builder.setSourceAccessMask(Set.of(VK_ACCESS_TRANSFER_WRITE_BIT));
-      barrier_builder.setTargetAccessMask(Set.of(VK_ACCESS_SHADER_READ_BIT));
-      source_stage = Set.of(VK_PIPELINE_STAGE_TRANSFER_BIT);
-      target_stage = Set.of(VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT);
+      barrierBuilder.setSrcAccessMask(
+        Set.of(VK_ACCESS_TRANSFER_WRITE_BIT));
+      barrierBuilder.setDstAccessMask(
+        Set.of(VK_ACCESS_SHADER_READ_BIT));
+      barrierBuilder.setSrcStageMask(
+        Set.of(VK_PIPELINE_STAGE_TRANSFER_BIT));
+      barrierBuilder.setDstStageMask(
+        Set.of(VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT));
     } else {
       throw new UnsupportedOperationException("Unsupported layout transition");
     }
@@ -465,24 +507,29 @@ public final class HelloVulkanWithVMA implements ExampleType
       command_pool,
       VK_COMMAND_BUFFER_LEVEL_PRIMARY)) {
       commands.beginCommandBuffer(VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT);
-
       commands.pipelineBarrier(
-        source_stage,
-        target_stage,
-        Set.of(),
-        List.of(),
-        List.of(),
-        List.of(barrier_builder.build()));
-
+        VulkanDependencyInfo.builder()
+          .addImageMemoryBarriers(barrierBuilder.build())
+          .build()
+      );
       commands.endCommandBuffer();
 
       LOG.trace(
         "submitting image transition {} -> {} barrier",
         old_layout,
         new_layout);
-      queue.submit(List.of(VulkanSubmitInfo.builder()
-                             .addCommandBuffers(commands)
-                             .build()));
+
+      queue.submit(
+        List.of(
+          VulkanSubmitInfo.builder()
+            .addCommandBuffers(
+              VulkanCommandBufferSubmitInfo.builder()
+                .setCommandBuffer(commands)
+                .build()
+            )
+            .build()
+        )
+      );
 
       LOG.trace("waiting for image transition barrier");
       queue.waitIdle();
@@ -506,10 +553,17 @@ public final class HelloVulkanWithVMA implements ExampleType
       Integer.valueOf(texture_width),
       Integer.valueOf(texture_height));
 
+    final var extent =
+      VulkanExtent3D.builder()
+        .setWidth(texture_width)
+        .setHeight(texture_height)
+        .setDepth(1)
+        .build();
+
     final var texture_buffer_create_info =
       VulkanImageCreateInfo.builder()
         .setArrayLayers(1)
-        .setExtent(VulkanExtent3D.of(texture_width, texture_height, 1))
+        .setExtent(extent)
         .setFormat(format)
         .setImageType(VulkanImageKind.VK_IMAGE_TYPE_2D)
         .setInitialLayout(VK_IMAGE_LAYOUT_UNDEFINED)
@@ -608,16 +662,20 @@ public final class HelloVulkanWithVMA implements ExampleType
     LOG.trace(
       "swap chain has {} images, allocating {} descriptor sets",
       imageCount,
-      imageCount);
+      imageCount
+    );
 
     final var descriptorPoolUniformBuffer =
-      VulkanDescriptorPoolSize.of(
-        VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
-        imageCount);
+      VulkanDescriptorPoolSize.builder()
+        .setType(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER)
+        .setDescriptorCount(imageCount)
+        .build();
+
     final var descriptorPoolSampler =
-      VulkanDescriptorPoolSize.of(
-        VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
-        imageCount);
+      VulkanDescriptorPoolSize.builder()
+        .setType(VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER)
+        .setDescriptorCount(imageCount)
+        .build();
 
     final var descriptorPoolCreateInfo =
       VulkanDescriptorPoolCreateInfo.builder()
@@ -858,18 +916,26 @@ public final class HelloVulkanWithVMA implements ExampleType
         .setPrimitiveRestartEnable(false)
         .build();
 
+    final var viewport =
+      VulkanViewport.builder()
+        .setX(0.0f)
+        .setY(0.0f)
+        .setWidth((float) surface_extent.width())
+        .setHeight((float) surface_extent.height())
+        .setMinDepth(0.0f)
+        .setMaxDepth(1.0f)
+        .build();
+
+    final var scissorArea =
+      VulkanRectangle2D.builder()
+        .setOffset(VulkanOffset2DType.ZERO)
+        .setExtent(surface_extent)
+        .build();
+
     final var viewport_state_info =
       VulkanPipelineViewportStateCreateInfo.builder()
-        .addScissors(VulkanRectangle2D.of(
-          VulkanOffset2D.of(0, 0),
-          surface_extent))
-        .addViewports(VulkanViewport.of(
-          0.0f,
-          0.0f,
-          (float) surface_extent.width(),
-          (float) surface_extent.height(),
-          0.0f,
-          1.0f))
+        .addScissors(scissorArea)
+        .addViewports(viewport)
         .build();
 
     final var rasterizer =
@@ -1106,8 +1172,8 @@ public final class HelloVulkanWithVMA implements ExampleType
   private static void drawFrame(
     final VulkanExtKHRSwapChainType khr_swapchain_ext,
     final VulkanKHRSwapChainType swap_chain,
-    final VulkanSemaphoreType image_available,
-    final VulkanSemaphoreType render_finished,
+    final VulkanSemaphoreBinaryType imageAvailable,
+    final VulkanSemaphoreBinaryType renderFinished,
     final List<VulkanCommandBufferType> graphics_command_buffers,
     final VulkanQueueType graphics_queue,
     final VulkanQueueType queue_presentation)
@@ -1122,16 +1188,33 @@ public final class HelloVulkanWithVMA implements ExampleType
     final var acquisition =
       swap_chain.acquireImageWithSemaphore(
         0xffff_ffff_ffff_ffffL,
-        image_available);
+        imageAvailable);
 
-    final var image_index_option = acquisition.imageIndex();
-    if (!image_index_option.isPresent()) {
-      LOG.error("could not acquire image");
-      return;
+    final int imageIndex;
+    switch (acquisition) {
+      case final VulkanSwapChainOK r -> {
+        imageIndex = r.imageIndex();
+      }
+      case final VulkanSwapChainNotReady r -> {
+        LOG.error("Could not acquire image ({})", r);
+        return;
+      }
+      case final VulkanSwapChainOutOfDate r -> {
+        LOG.error("Could not acquire image ({})", r);
+        return;
+      }
+      case final VulkanSwapChainSubOptimal r -> {
+        LOG.error("Could not acquire image ({})", r);
+        return;
+      }
+      case final VulkanSwapChainTimedOut r -> {
+        LOG.error("Could not acquire image ({})", r);
+        return;
+      }
     }
 
-    final var image_index = image_index_option.getAsInt();
-    final var graphics_command_buffer = graphics_command_buffers.get(image_index);
+    final var graphicsCommandBuffer =
+      graphics_command_buffers.get(imageIndex);
 
     /*
      * Wait until the image is available (via the image available semaphore) before writing
@@ -1141,10 +1224,22 @@ public final class HelloVulkanWithVMA implements ExampleType
 
     final var submit_info =
       VulkanSubmitInfo.builder()
-        .addWaitSemaphores(image_available)
-        .addWaitStageMasks(VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT)
-        .addCommandBuffers(graphics_command_buffer)
-        .addSignalSemaphores(render_finished)
+        .addWaitSemaphores(
+          VulkanSemaphoreSubmitInfo.builder()
+            .setStageMask(Set.of(VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT))
+            .setSemaphore(imageAvailable)
+            .build()
+        )
+        .addCommandBuffers(
+          VulkanCommandBufferSubmitInfo.builder()
+            .setCommandBuffer(graphicsCommandBuffer)
+            .build()
+        )
+        .addSignalSemaphores(
+          VulkanSemaphoreSubmitInfo.builder()
+            .setSemaphore(renderFinished)
+            .build()
+        )
         .build();
 
     graphics_queue.submit(List.of(submit_info), Optional.empty());
@@ -1155,9 +1250,9 @@ public final class HelloVulkanWithVMA implements ExampleType
 
     final var presentation_info =
       VulkanPresentInfoKHR.builder()
-        .addImageIndices(image_index)
+        .addImageIndices(imageIndex)
         .addSwapChains(swap_chain)
-        .addWaitSemaphores(render_finished)
+        .addWaitSemaphores(renderFinished)
         .build();
 
     khr_swapchain_ext.queuePresent(queue_presentation, presentation_info);
@@ -1183,11 +1278,15 @@ public final class HelloVulkanWithVMA implements ExampleType
     return allocator.withAllocationBufferInitialized(
       data,
       4L,
-      buffer -> device.createShaderModule(
-        VulkanShaderModuleCreateInfo.of(
-          Set.of(),
-          buffer,
-          buffer.capacity())));
+      buffer -> {
+        final var moduleInfo =
+          VulkanShaderModuleCreateInfo.builder()
+            .setData(buffer)
+            .setSize(buffer.capacity())
+            .build();
+
+        return device.createShaderModule(moduleInfo);
+      });
   }
 
   private static byte[] readShaderModule(
@@ -1206,21 +1305,27 @@ public final class HelloVulkanWithVMA implements ExampleType
   {
     try {
       final var range =
-        VulkanImageSubresourceRange.of(
-          Set.of(VK_IMAGE_ASPECT_COLOR_BIT),
-          0,
-          1,
-          0,
-          1);
+        VulkanImageSubresourceRange.builder()
+          .addAspectMask(VK_IMAGE_ASPECT_COLOR_BIT)
+          .setLevelCount(1)
+          .setLayerCount(1)
+          .setBaseMipLevel(0)
+          .setBaseArrayLayer(0)
+          .build();
 
       final Set<VulkanImageViewCreateFlag> flags = Set.of();
-      return device.createImageView(VulkanImageViewCreateInfo.of(
-        flags,
-        image,
-        VK_IMAGE_VIEW_TYPE_2D,
-        surface_format.format(),
-        VulkanComponentMappingType.identity(),
-        range));
+
+      final var viewCreateInfo =
+        VulkanImageViewCreateInfo.builder()
+          .addAllFlags(flags)
+          .setImage(image)
+          .setFormat(surface_format.format())
+          .setComponents(VulkanComponentMapping.IDENTITY)
+          .setViewType(VK_IMAGE_VIEW_TYPE_2D)
+          .setSubresourceRange(range)
+          .build();
+
+      return device.createImageView(viewCreateInfo);
     } catch (final VulkanException e) {
       throw new VulkanUncheckedException(e);
     }
@@ -1243,7 +1348,10 @@ public final class HelloVulkanWithVMA implements ExampleType
     final List<VulkanQueueFamilyIndex> queueFamilyIndices =
       new ArrayList<>();
     final var image_sharing_mode =
-      pickImageSharingMode(graphics_queue, presentation_queue, queueFamilyIndices);
+      pickImageSharingMode(
+        graphics_queue,
+        presentation_queue,
+        queueFamilyIndices);
     final var image_usage_flags =
       Set.of(VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT);
     final var surface_alpha_flags =
@@ -1345,14 +1453,22 @@ public final class HelloVulkanWithVMA implements ExampleType
       return surface_caps.currentExtent();
     }
 
-    return VulkanExtent2D.of(
+    final var width =
       Math.max(
         surface_caps.minImageExtent().width(),
-        Math.min(surface_caps.maxImageExtent().width(), 640)),
+        Math.min(surface_caps.maxImageExtent().width(), 640)
+      );
+
+    final var height =
       Math.max(
         surface_caps.minImageExtent().height(),
-        Math.min(surface_caps.maxImageExtent().height(), 480))
-    );
+        Math.min(surface_caps.maxImageExtent().height(), 480)
+      );
+
+    return VulkanExtent2D.builder()
+      .setWidth(width)
+      .setHeight(height)
+      .build();
   }
 
   private static VulkanPresentModeKHR pickPresentationMode(
@@ -1468,10 +1584,14 @@ public final class HelloVulkanWithVMA implements ExampleType
 
     try {
       LOG.debug(
-        "checking device \"{}\" for VK_KHR_swapchain support",
+        "Checking device \"{}\" for VK_KHR_swapchain support",
         device.properties().name());
 
-      return device.extensions(Optional.empty()).containsKey("VK_KHR_swapchain");
+      final var extensions =
+        device.extensions(Optional.empty());
+
+      return extensions.containsKey("VK_KHR_swapchain")
+        && extensions.containsKey("VK_EXT_swapchain_maintenance1");
     } catch (final VulkanException e) {
       throw new VulkanUncheckedException(e);
     }
@@ -1489,7 +1609,7 @@ public final class HelloVulkanWithVMA implements ExampleType
 
     try {
       LOG.debug(
-        "checking device \"{}\" for presentation support",
+        "Checking device \"{}\" for presentation support",
         device.properties().name());
 
       final var queues_presentable =
@@ -1505,7 +1625,7 @@ public final class HelloVulkanWithVMA implements ExampleType
   {
     try {
       LOG.debug(
-        "checking device \"{}\" for graphics queue support",
+        "Checking device \"{}\" for graphics queue support",
         device.properties().name());
 
       return device.queueFamilyFindWithFlags(VK_QUEUE_GRAPHICS_BIT).isPresent();
@@ -1683,15 +1803,18 @@ public final class HelloVulkanWithVMA implements ExampleType
        * Create a new instance.
        */
 
+      final var appInfo =
+        VulkanApplicationInfo.builder()
+          .setApplicationName("com.io7m.jcoronado.tests.Demo")
+          .setApplicationVersion(VulkanVersions.encode(0, 0, 1))
+          .setEngineName("com.io7m.jcoronado.tests")
+          .setEngineVersion(VulkanVersions.encode(0, 0, 1))
+          .setVulkanAPIVersion(VulkanVersions.encode(instances.minimumRequiredVersion()))
+          .build();
+
       final var createInfo =
         VulkanInstanceCreateInfo.builder()
-          .setApplicationInfo(
-            VulkanApplicationInfo.of(
-              "com.io7m.jcoronado.tests.Demo",
-              VulkanVersions.encode(0, 0, 1),
-              "com.io7m.jcoronado.tests",
-              VulkanVersions.encode(0, 0, 1),
-              VulkanVersions.encode(1, 0, 0)))
+          .setApplicationInfo(appInfo)
           .setEnabledExtensions(enableExtensions)
           .setEnabledLayers(enableLayers)
           .build();
@@ -1858,6 +1981,7 @@ public final class HelloVulkanWithVMA implements ExampleType
         physicalDevice.createLogicalDevice(
           logicalDeviceInfoBuilder
             .addEnabledExtensions("VK_KHR_swapchain")
+            .addEnabledExtensions("VK_EXT_swapchain_maintenance1")
             .addEnabledExtensions("VK_KHR_get_memory_requirements2")
             .build()));
 
@@ -1889,11 +2013,15 @@ public final class HelloVulkanWithVMA implements ExampleType
        */
 
       final var graphicsQueue =
-        device.queue(graphicsQueueProps.queueFamilyIndex(), new VulkanQueueIndex(0))
+        device.queue(
+            graphicsQueueProps.queueFamilyIndex(),
+            new VulkanQueueIndex(0))
           .orElseThrow(() -> new IllegalStateException(
             "Could not find graphics queue"));
       final var presentationQueue =
-        device.queue(presentationQueueProps.queueFamilyIndex(), new VulkanQueueIndex(0))
+        device.queue(
+            presentationQueueProps.queueFamilyIndex(),
+            new VulkanQueueIndex(0))
           .orElseThrow(() -> new IllegalStateException(
             "Could not find presentation queue"));
 
@@ -2069,9 +2197,13 @@ public final class HelloVulkanWithVMA implements ExampleType
        */
 
       final var renderFinished =
-        resources.add(device.createSemaphore(VulkanSemaphoreCreateInfo.builder().build()));
+        resources.add(device.createBinarySemaphore(
+          VulkanSemaphoreBinaryCreateInfo.builder().build()
+        ));
       final var imageAvailable =
-        resources.add(device.createSemaphore(VulkanSemaphoreCreateInfo.builder().build()));
+        resources.add(device.createBinarySemaphore(
+          VulkanSemaphoreBinaryCreateInfo.builder().build()
+        ));
 
       /*
        * Start recording commands.
@@ -2086,18 +2218,18 @@ public final class HelloVulkanWithVMA implements ExampleType
             .addFlags(VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT)
             .build();
 
+        final var renderArea =
+          VulkanRectangle2D.builder()
+            .setOffset(VulkanOffset2DType.ZERO)
+            .setExtent(surfaceExtent)
+            .build();
+
         final var renderInfo =
           VulkanRenderPassBeginInfo.builder()
             .setFramebuffer(framebuffer)
-            .setRenderArea(VulkanRectangle2D.of(
-              VulkanOffset2D.of(0, 0),
-              surfaceExtent))
+            .setRenderArea(renderArea)
             .setRenderPass(renderPass)
-            .addClearValues(VulkanClearValueColorFloatingPoint.of(
-              0.0f,
-              0.0f,
-              0.0f,
-              1.0f))
+            .addClearValues(CLEAR_BLACK)
             .build();
 
         graphicsCommandBuffer.beginCommandBuffer(beginInfo);
@@ -2157,8 +2289,8 @@ public final class HelloVulkanWithVMA implements ExampleType
 
       LOG.debug("waiting for device to idle");
       device.waitIdle();
-    } catch (final VulkanException e) {
-      LOG.error("vulkan error: ", e);
+    } catch (final Exception e) {
+      LOG.error("", e);
       throw e;
     } finally {
       GLFW_ERROR_CALLBACK.close();

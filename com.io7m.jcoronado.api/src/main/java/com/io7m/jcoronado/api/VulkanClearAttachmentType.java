@@ -37,7 +37,6 @@ public interface VulkanClearAttachmentType
    * cleared.
    */
 
-  @Value.Parameter
   Set<VulkanImageAspectFlag> aspectMask();
 
   /**
@@ -46,13 +45,11 @@ public interface VulkanClearAttachmentType
    * of the current subpass which selects the color attachment to clear.
    */
 
-  @Value.Parameter
   int colorAttachment();
 
   /**
    * @return The color or depth/stencil value to clear the attachment to
    */
 
-  @Value.Parameter
   VulkanClearValueType clearValue();
 }

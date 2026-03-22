@@ -31,16 +31,32 @@ import org.immutables.value.Value;
 public interface VulkanRectangle2DType
 {
   /**
+   * The zero size rectangle.
+   */
+
+  VulkanRectangle2D ZERO =
+    VulkanRectangle2D.builder()
+      .setExtent(VulkanExtent2D.ZERO)
+      .setOffset(VulkanOffset2D.ZERO)
+      .build();
+
+  /**
    * @return The offset
    */
 
-  @Value.Parameter
-  VulkanOffset2D offset();
+  @Value.Default
+  default VulkanOffset2D offset()
+  {
+    return VulkanOffset2D.ZERO;
+  }
 
   /**
    * @return The extent
    */
 
-  @Value.Parameter
-  VulkanExtent2D extent();
+  @Value.Default
+  default VulkanExtent2D extent()
+  {
+    return VulkanExtent2D.ZERO;
+  }
 }

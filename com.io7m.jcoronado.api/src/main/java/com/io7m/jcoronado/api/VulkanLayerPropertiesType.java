@@ -34,27 +34,31 @@ public interface VulkanLayerPropertiesType
    * @return The name of the layer
    */
 
-  @Value.Parameter
   String name();
 
   /**
    * @return A humanly-readable description of the layer
    */
 
-  @Value.Parameter
   String description();
 
   /**
    * @return The version of the specification defining this layer
    */
 
-  @Value.Parameter
-  int specificationVersion();
+  @Value.Default
+  default int specificationVersion()
+  {
+    return 0;
+  }
 
   /**
    * @return The version of the layer implementation
    */
 
-  @Value.Parameter
-  int implementationVersion();
+  @Value.Default
+  default int implementationVersion()
+  {
+    return 0;
+  }
 }

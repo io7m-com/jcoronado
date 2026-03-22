@@ -36,34 +36,45 @@ public interface VulkanImageSubresourceRangeType
    * @return The image aspect flags
    */
 
-  @Value.Parameter
   Set<VulkanImageAspectFlag> aspectMask();
 
   /**
    * @return The first mipmap level accessible to the view.
    */
 
-  @Value.Parameter
-  int baseMipLevel();
+  @Value.Default
+  default int baseMipLevel()
+  {
+    return 0;
+  }
 
   /**
    * @return The number of mipmap levels (starting from baseMipLevel) accessible to the view.
    */
 
-  @Value.Parameter
-  int levelCount();
+  @Value.Default
+  default int levelCount()
+  {
+    return 1;
+  }
 
   /**
    * @return The first array layer accessible to the view.
    */
 
-  @Value.Parameter
-  int baseArrayLayer();
+  @Value.Default
+  default int baseArrayLayer()
+  {
+    return 0;
+  }
 
   /**
    * @return The number of array layers (starting from baseArrayLayer) accessible to the view.
    */
 
-  @Value.Parameter
-  int layerCount();
+  @Value.Default
+  default int layerCount()
+  {
+    return 1;
+  }
 }

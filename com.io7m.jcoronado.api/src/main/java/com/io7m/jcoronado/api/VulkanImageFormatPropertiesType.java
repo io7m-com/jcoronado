@@ -34,34 +34,45 @@ public interface VulkanImageFormatPropertiesType
    * @return The maximum image dimensions.
    */
 
-  @Value.Parameter
-  VulkanExtent3D maxExtent();
+  @Value.Default
+  default VulkanExtent3D maxExtent()
+  {
+    return VulkanExtent3D.builder().build();
+  }
 
   /**
    * @return The maximum number of mipmap levels.
    */
 
-  @Value.Parameter
-  int maxMipLevels();
+  @Value.Default
+  default int maxMipLevels()
+  {
+    return 0;
+  }
 
   /**
    * @return The maximum number of array layers.
    */
 
-  @Value.Parameter
-  int maxArrayLayers();
+  @Value.Default
+  default int maxArrayLayers()
+  {
+    return 0;
+  }
 
   /**
    * @return A set of flags specifying all the supported sample counts for this image
    */
 
-  @Value.Parameter
   Set<VulkanSampleCountFlag> sampleCounts();
 
   /**
    * @return An upper bound on the total image size in bytes, inclusive of all image subresources.
    */
 
-  @Value.Parameter
-  long maxResourceSize();
+  @Value.Default
+  default long maxResourceSize()
+  {
+    return 0L;
+  }
 }

@@ -24,7 +24,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.lwjgl.system.MemoryStack;
-import org.lwjgl.vulkan.VkMemoryBarrier;
+import org.lwjgl.vulkan.VkMemoryBarrier2;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,10 +42,10 @@ public final class VulkanLWJGLMemoryBarriersTest
   private MemoryStack stack = MemoryStack.create();
 
   private static void checkPacked(
-    final VkMemoryBarrier out)
+    final VkMemoryBarrier2 out)
   {
-    assertEquals(0b1111_1111_1111_1111_1111, out.srcAccessMask());
-    assertEquals(0b1111_1111_1111_1111_1111, out.dstAccessMask());
+    assertEquals(0b11100000000000000011111111111111111L, out.srcAccessMask());
+    assertEquals(0b11100000000000000011111111111111111L, out.dstAccessMask());
   }
 
   @BeforeEach
@@ -66,10 +66,10 @@ public final class VulkanLWJGLMemoryBarriersTest
   public void testOffsetPack()
   {
     final var source =
-      VulkanMemoryBarrier.of(
-        EnumSet.allOf(VulkanAccessFlag.class),
-        EnumSet.allOf(VulkanAccessFlag.class)
-      );
+      VulkanMemoryBarrier.builder()
+        .addAllDstAccessMask(EnumSet.allOf(VulkanAccessFlag.class))
+        .addAllSrcAccessMask(EnumSet.allOf(VulkanAccessFlag.class))
+        .build();
 
     final var out =
       VulkanLWJGLMemoryBarriers.pack(this.stack, source);
@@ -82,10 +82,10 @@ public final class VulkanLWJGLMemoryBarriersTest
     throws VulkanException
   {
     final var source =
-      VulkanMemoryBarrier.of(
-        EnumSet.allOf(VulkanAccessFlag.class),
-        EnumSet.allOf(VulkanAccessFlag.class)
-      );
+      VulkanMemoryBarrier.builder()
+        .addAllDstAccessMask(EnumSet.allOf(VulkanAccessFlag.class))
+        .addAllSrcAccessMask(EnumSet.allOf(VulkanAccessFlag.class))
+        .build();
 
     final var out =
       VulkanLWJGLMemoryBarriers.packList(
@@ -102,10 +102,10 @@ public final class VulkanLWJGLMemoryBarriersTest
     throws VulkanException
   {
     final var source =
-      VulkanMemoryBarrier.of(
-        EnumSet.allOf(VulkanAccessFlag.class),
-        EnumSet.allOf(VulkanAccessFlag.class)
-      );
+      VulkanMemoryBarrier.builder()
+        .addAllDstAccessMask(EnumSet.allOf(VulkanAccessFlag.class))
+        .addAllSrcAccessMask(EnumSet.allOf(VulkanAccessFlag.class))
+        .build();
 
     final var packed =
       VulkanLWJGLMemoryBarriers.packListOrNull(

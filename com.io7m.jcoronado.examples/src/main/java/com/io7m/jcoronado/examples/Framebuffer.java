@@ -16,7 +16,8 @@
 
 package com.io7m.jcoronado.examples;
 
-import com.io7m.jcoronado.allocation_tracker.VulkanHostAllocatorTracker;
+import com.io7m.jcoronado.api.VulkanComponentMapping;
+import com.io7m.jcoronado.utility.allocation_tracker.VulkanHostAllocatorTracker;
 import com.io7m.jcoronado.api.VulkanApplicationInfo;
 import com.io7m.jcoronado.api.VulkanAttachmentDescription;
 import com.io7m.jcoronado.api.VulkanAttachmentReference;
@@ -310,15 +311,18 @@ public final class Framebuffer implements ExampleType
        * Create a new instance.
        */
 
+      final var appInfo =
+        VulkanApplicationInfo.builder()
+          .setApplicationName("com.io7m.jcoronado.tests.Demo")
+          .setApplicationVersion(VulkanVersions.encode(0, 0, 1))
+          .setEngineName("com.io7m.jcoronado.tests")
+          .setEngineVersion(VulkanVersions.encode(0, 0, 1))
+          .setVulkanAPIVersion(VulkanVersions.encode(instances.minimumRequiredVersion()))
+          .build();
+
       final var createInfo =
         VulkanInstanceCreateInfo.builder()
-          .setApplicationInfo(
-            VulkanApplicationInfo.of(
-              "com.io7m.jcoronado.tests.Demo",
-              VulkanVersions.encode(0, 0, 1),
-              "com.io7m.jcoronado.tests",
-              VulkanVersions.encode(0, 0, 1),
-              VulkanVersions.encode(1, 0, 0)))
+          .setApplicationInfo(appInfo)
           .setEnabledExtensions(enableExtensions)
           .setEnabledLayers(enableLayers)
           .build();
@@ -468,10 +472,17 @@ public final class Framebuffer implements ExampleType
           .setMemoryTypeBits(0L)
           .build();
 
+      final var extent =
+        VulkanExtent3D.builder()
+          .setWidth(480)
+          .setHeight(480)
+          .setDepth(1)
+          .build();
+
       final var imageCreateInfo =
         VulkanImageCreateInfo.builder()
           .setArrayLayers(1)
-          .setExtent(VulkanExtent3D.of(640, 480, 1))
+          .setExtent(extent)
           .setFormat(VK_FORMAT_R8G8B8A8_UNORM)
           .setImageType(VulkanImageKind.VK_IMAGE_TYPE_2D)
           .setInitialLayout(VK_IMAGE_LAYOUT_UNDEFINED)
@@ -501,7 +512,7 @@ public final class Framebuffer implements ExampleType
           .setImage(imageAllocation0.result())
           .setViewType(VK_IMAGE_VIEW_TYPE_2D)
           .setFormat(VK_FORMAT_R8G8B8A8_UNORM)
-          .setComponents(VulkanComponentMappingType.identity())
+          .setComponents(VulkanComponentMapping.IDENTITY)
           .setSubresourceRange(imageViewRange0)
           .build();
 
@@ -562,8 +573,8 @@ public final class Framebuffer implements ExampleType
       LOG.debug("waiting for device to idle");
       device.waitIdle();
 
-    } catch (final VulkanException e) {
-      LOG.error("vulkan error: ", e);
+    } catch (final Exception e) {
+      LOG.error("", e);
       throw e;
     } finally {
       GLFW_ERROR_CALLBACK.close();

@@ -22,6 +22,7 @@ module com.io7m.jcoronado.lwjgl
 {
   requires static org.osgi.annotation.bundle;
   requires static org.osgi.annotation.versioning;
+  requires static org.jspecify;
 
   requires com.io7m.jcoronado.api;
   requires com.io7m.jcoronado.extensions.ext_debug_utils.api;

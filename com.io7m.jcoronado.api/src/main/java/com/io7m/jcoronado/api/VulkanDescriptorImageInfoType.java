@@ -34,7 +34,6 @@ public interface VulkanDescriptorImageInfoType
    * updated does not use immutable samplers.
    */
 
-  @Value.Parameter
   VulkanSamplerType sampler();
 
   /**
@@ -43,7 +42,6 @@ public interface VulkanDescriptorImageInfoType
    * VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, and VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT.
    */
 
-  @Value.Parameter
   VulkanImageViewType imageView();
 
   /**
@@ -53,6 +51,9 @@ public interface VulkanDescriptorImageInfoType
    * VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, and VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT.
    */
 
-  @Value.Parameter
-  VulkanImageLayout imageLayout();
+  @Value.Default
+  default VulkanImageLayout imageLayout()
+  {
+    return VulkanImageLayout.VK_IMAGE_LAYOUT_UNDEFINED;
+  }
 }

@@ -38,7 +38,10 @@ import java.util.Set;
 public final class VFakeExtKHRSurface implements VulkanExtKHRSurfaceType
 {
   private static final VulkanExtensionProperties VK_KHR_SURFACE =
-    VulkanExtensionProperties.of("VK_KHR_surface", 1);
+    VulkanExtensionProperties.builder()
+      .setName("VK_KHR_surface")
+      .setVersion(1)
+      .build();
 
   private List<VulkanPresentModeKHR> surfacePresentModes;
   private VulkanSurfaceCapabilitiesKHR surfaceCapabilities;
@@ -51,6 +54,17 @@ public final class VFakeExtKHRSurface implements VulkanExtKHRSurfaceType
 
   public VFakeExtKHRSurface()
   {
+    final var extent640 =
+      VulkanExtent2D.builder()
+        .setWidth(640)
+        .setHeight(480)
+        .build();
+    final var extent1 =
+      VulkanExtent2D.builder()
+        .setWidth(1)
+        .setHeight(1)
+        .build();
+
     this.surfacePresentModes = List.of();
     this.surfaceFormats = List.of();
     this.surfaceSupport = List.of();
@@ -58,9 +72,9 @@ public final class VFakeExtKHRSurface implements VulkanExtKHRSurfaceType
       VulkanSurfaceCapabilitiesKHR.of(
         1,
         1,
-        VulkanExtent2D.of(640, 480),
-        VulkanExtent2D.of(1, 1),
-        VulkanExtent2D.of(640, 480),
+        extent640,
+        extent1,
+        extent640,
         1,
         Set.of(),
         Set.of(),

@@ -145,10 +145,18 @@ public final class VulkanLWJGLPipelineColorBlendStateCreateInfosTest
         .setSrcColorBlendFactor(VK_BLEND_FACTOR_CONSTANT_COLOR)
         .build();
 
+    final var blendConstants =
+      VulkanBlendConstants.builder()
+        .setR(1.0f)
+        .setG(2.0f)
+        .setB(3.0f)
+        .setA(4.0f)
+        .build();
+
     final var info =
       VulkanPipelineColorBlendStateCreateInfo.builder()
         .setLogicOp(VulkanLogicOp.VK_LOGIC_OP_AND_INVERTED)
-        .setBlendConstants(VulkanBlendConstants.of(1.0f, 2.0f, 3.0f, 4.0f))
+        .setBlendConstants(blendConstants)
         .addAttachments(state)
         .build();
 
@@ -181,10 +189,18 @@ public final class VulkanLWJGLPipelineColorBlendStateCreateInfosTest
         .setSrcColorBlendFactor(VK_BLEND_FACTOR_CONSTANT_COLOR)
         .build();
 
+    final var blendConstants =
+      VulkanBlendConstants.builder()
+        .setR(1.0f)
+        .setG(2.0f)
+        .setB(3.0f)
+        .setA(4.0f)
+        .build();
+
     final var info =
       VulkanPipelineColorBlendStateCreateInfo.builder()
         .setLogicOp(Optional.empty())
-        .setBlendConstants(VulkanBlendConstants.of(1.0f, 2.0f, 3.0f, 4.0f))
+        .setBlendConstants(blendConstants)
         .addAttachments(state)
         .build();
 

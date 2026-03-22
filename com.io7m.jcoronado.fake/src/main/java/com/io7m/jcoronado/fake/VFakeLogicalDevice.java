@@ -43,6 +43,7 @@ import com.io7m.jcoronado.api.VulkanEventType;
 import com.io7m.jcoronado.api.VulkanException;
 import com.io7m.jcoronado.api.VulkanExtensionType;
 import com.io7m.jcoronado.api.VulkanExternallySynchronizedType;
+import com.io7m.jcoronado.api.VulkanFenceCreateFlag;
 import com.io7m.jcoronado.api.VulkanFenceCreateInfo;
 import com.io7m.jcoronado.api.VulkanFenceType;
 import com.io7m.jcoronado.api.VulkanFramebufferCreateInfo;
@@ -72,8 +73,11 @@ import com.io7m.jcoronado.api.VulkanRenderPassCreateInfo;
 import com.io7m.jcoronado.api.VulkanRenderPassType;
 import com.io7m.jcoronado.api.VulkanSamplerCreateInfo;
 import com.io7m.jcoronado.api.VulkanSamplerType;
-import com.io7m.jcoronado.api.VulkanSemaphoreCreateInfo;
-import com.io7m.jcoronado.api.VulkanSemaphoreType;
+import com.io7m.jcoronado.api.VulkanSemaphoreBinaryCreateInfo;
+import com.io7m.jcoronado.api.VulkanSemaphoreBinaryType;
+import com.io7m.jcoronado.api.VulkanSemaphoreTimelineCreateInfo;
+import com.io7m.jcoronado.api.VulkanSemaphoreTimelineType;
+import com.io7m.jcoronado.api.VulkanSemaphoreTimelineWait;
 import com.io7m.jcoronado.api.VulkanShaderModuleCreateInfo;
 import com.io7m.jcoronado.api.VulkanShaderModuleType;
 import com.io7m.jcoronado.api.VulkanSubresourceLayout;
@@ -85,7 +89,10 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicBoolean;
+
+import static java.util.concurrent.TimeUnit.NANOSECONDS;
 
 /**
  * A logical device.
@@ -342,25 +349,37 @@ public final class VFakeLogicalDevice implements VulkanLogicalDeviceType
   @Override
   public List<VulkanCommandBufferType> createCommandBuffers(
     final VulkanCommandBufferCreateInfo create_info)
-    throws VulkanCallFailedException
   {
-    throw errorNotImplemented("createCommandBuffers");
+    return List.of(
+      new VFakeCommandBuffer()
+    );
   }
 
   @Override
-  public VulkanSemaphoreType createSemaphore(
-    final VulkanSemaphoreCreateInfo create_info)
+  public VulkanSemaphoreBinaryType createBinarySemaphore(
+    final VulkanSemaphoreBinaryCreateInfo info)
     throws VulkanException
   {
-    throw errorNotImplemented("createSemaphore");
+    throw errorNotImplemented("createBinarySemaphore");
+  }
+
+  @Override
+  public VulkanSemaphoreTimelineType createTimelineSemaphore(
+    final VulkanSemaphoreTimelineCreateInfo info)
+    throws VulkanException
+  {
+    throw errorNotImplemented("createTimelineSemaphore");
   }
 
   @Override
   public VulkanFenceType createFence(
-    final VulkanFenceCreateInfo create_info)
+    final VulkanFenceCreateInfo createInfo)
     throws VulkanException
   {
-    throw errorNotImplemented("createFence");
+    return new VFakeFence(
+      createInfo.flags()
+        .contains(VulkanFenceCreateFlag.VK_FENCE_CREATE_SIGNALED_BIT)
+    );
   }
 
   @Override
@@ -411,7 +430,35 @@ public final class VFakeLogicalDevice implements VulkanLogicalDeviceType
     final long timeout_nanos)
     throws VulkanException
   {
-    throw errorNotImplemented("waitForFences");
+    final var fakeFences =
+      fences.stream()
+        .map(f -> (VFakeFence) f)
+        .toList();
+
+    if (wait_all) {
+      try {
+        VFakeFence.awaitAll(
+          fakeFences,
+          timeout_nanos,
+          NANOSECONDS
+        );
+        return VulkanWaitStatus.VK_WAIT_SUCCEEDED;
+      } catch (final InterruptedException e) {
+        throw new VulkanCallFailedException(
+          "waitForFences interrupted.",
+          e,
+          Map.of()
+        );
+      } catch (final TimeoutException e) {
+        return VulkanWaitStatus.VK_WAIT_TIMED_OUT;
+      }
+    }
+
+    final var ok = VFakeFence.awaitAny(fakeFences, timeout_nanos, NANOSECONDS);
+    if (ok) {
+      return VulkanWaitStatus.VK_WAIT_SUCCEEDED;
+    }
+    return VulkanWaitStatus.VK_WAIT_TIMED_OUT;
   }
 
   @Override
@@ -511,6 +558,14 @@ public final class VFakeLogicalDevice implements VulkanLogicalDeviceType
   }
 
   @Override
+  public long getSemaphoreCounterValue(
+    final VulkanSemaphoreTimelineType semaphore)
+    throws VulkanException
+  {
+    throw errorNotImplemented("getSemaphoreCounterValue");
+  }
+
+  @Override
   public VulkanFenceStatus getFenceStatus(
     final VulkanFenceType fence)
     throws VulkanException
@@ -521,10 +576,15 @@ public final class VFakeLogicalDevice implements VulkanLogicalDeviceType
   private static VulkanCallFailedException errorNotImplemented(
     final String function)
   {
+    final var map =
+      Map.ofEntries(
+        Map.entry("ErrorCode", "0x7fff_ffff"),
+        Map.entry("Function", function)
+      );
+
     return new VulkanCallFailedException(
-      0x7fff_ffff,
-      function,
-      "Not implemented (%s)".formatted(function)
+      "Not implemented (%s)".formatted(function),
+      map
     );
   }
 
@@ -544,5 +604,24 @@ public final class VFakeLogicalDevice implements VulkanLogicalDeviceType
     throws VulkanException
   {
     throw errorNotImplemented("createComputePipelines");
+  }
+
+  @Override
+  public VulkanWaitStatus waitForTimelineSemaphores(
+    final List<VulkanSemaphoreTimelineWait> semaphores,
+    final boolean waitAll,
+    final long timeoutNanos)
+    throws VulkanException
+  {
+    throw errorNotImplemented("waitForSemaphores");
+  }
+
+  @Override
+  public void signalTimelineSemaphore(
+    final VulkanSemaphoreTimelineType semaphore,
+    final long value)
+    throws VulkanException
+  {
+    throw errorNotImplemented("signalTimelineSemaphore");
   }
 }

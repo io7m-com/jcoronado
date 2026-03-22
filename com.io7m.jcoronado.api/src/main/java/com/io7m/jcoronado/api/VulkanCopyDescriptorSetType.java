@@ -32,49 +32,41 @@ public interface VulkanCopyDescriptorSetType
    * @return The source set
    */
 
-  @Value.Parameter
   VulkanDescriptorSetType sourceSet();
 
   /**
    * @return The source binding
    */
 
-  @Value.Parameter
   int sourceBinding();
 
   /**
    * @return The source array element
    */
 
-  @Value.Parameter
   int sourceArrayElement();
 
   /**
    * @return The destination set
    */
 
-  @Value.Parameter
   VulkanDescriptorSetType destinationSet();
 
   /**
    * @return The destination binding
    */
 
-  @Value.Parameter
   int destinationBinding();
 
   /**
    * @return The destination array element
    */
 
-  @Value.Parameter
   int destinationArrayElement();
 
   /**
    * @return The number of descriptors to copy from the source to destination
    */
 
-  @Value.Parameter
   int descriptorCount();
-
 }

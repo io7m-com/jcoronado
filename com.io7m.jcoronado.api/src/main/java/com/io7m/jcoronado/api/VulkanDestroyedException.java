@@ -16,23 +16,35 @@
 
 package com.io7m.jcoronado.api;
 
+import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * An exception raised by attempting to call a method on an object that has been closed/destroyed.
  */
 
-public final class VulkanDestroyedException extends VulkanException
+public final class VulkanDestroyedException
+  extends VulkanException
 {
   /**
    * Construct an exception.
    *
    * @param message The error message
+   * @param aClass  The class
    */
 
   public VulkanDestroyedException(
-    final String message)
+    final String message,
+    final Class<?> aClass)
   {
-    super(Objects.requireNonNull(message, "message"));
+    super(
+      Objects.requireNonNull(message, "message"),
+      Map.ofEntries(
+        Map.entry("Class", aClass.getName())
+      ),
+      "error-vulkan-destroyed",
+      Optional.empty()
+    );
   }
 }

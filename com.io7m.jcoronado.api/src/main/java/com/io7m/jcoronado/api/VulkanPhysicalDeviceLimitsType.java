@@ -35,7 +35,6 @@ public interface VulkanPhysicalDeviceLimitsType
    * resources can be bound to adjacent offsets in the same VkDeviceMemory object without aliasing.
    */
 
-  @Value.Parameter
   long bufferImageGranularity();
 
   /**
@@ -47,7 +46,6 @@ public interface VulkanPhysicalDeviceLimitsType
    * contribution should be covered by different equations in the spec).
    */
 
-  @Value.Parameter
   int discreteQueuePriorities();
 
   /**
@@ -57,7 +55,6 @@ public interface VulkanPhysicalDeviceLimitsType
    * with integer formats.
    */
 
-  @Value.Parameter
   int framebufferColorSampleCounts();
 
   /**
@@ -65,7 +62,6 @@ public interface VulkanPhysicalDeviceLimitsType
    * all framebuffer depth/stencil attachments, when the format includes a depth component.
    */
 
-  @Value.Parameter
   int framebufferDepthSampleCounts();
 
   /**
@@ -73,7 +69,6 @@ public interface VulkanPhysicalDeviceLimitsType
    * framebuffer with no attachments.
    */
 
-  @Value.Parameter
   int framebufferNoAttachmentsSampleCounts();
 
   /**
@@ -81,7 +76,6 @@ public interface VulkanPhysicalDeviceLimitsType
    * all framebuffer depth/stencil attachments, when the format includes a stencil component.
    */
 
-  @Value.Parameter
   int framebufferStencilSampleCounts();
 
   /**
@@ -90,7 +84,6 @@ public interface VulkanPhysicalDeviceLimitsType
    * successive supported line widths.
    */
 
-  @Value.Parameter
   float lineWidthGranularity();
 
   /**
@@ -99,7 +92,6 @@ public interface VulkanPhysicalDeviceLimitsType
    * vkCmdSetLineWidth are clamped to this range.
    */
 
-  @Value.Parameter
   VulkanLineWidthRange lineWidthRange();
 
   /**
@@ -108,7 +100,6 @@ public interface VulkanPhysicalDeviceLimitsType
    * maxBoundDescriptorSets.
    */
 
-  @Value.Parameter
   int maxBoundDescriptorSets();
 
   /**
@@ -117,7 +108,6 @@ public interface VulkanPhysicalDeviceLimitsType
    * less than or equal to this limit.
    */
 
-  @Value.Parameter
   int maxClipDistances();
 
   /**
@@ -126,7 +116,6 @@ public interface VulkanPhysicalDeviceLimitsType
    * equal to this limit.
    */
 
-  @Value.Parameter
   int maxColorAttachments();
 
   /**
@@ -136,7 +125,6 @@ public interface VulkanPhysicalDeviceLimitsType
    * than or equal to this limit.
    */
 
-  @Value.Parameter
   int maxCombinedClipAndCullDistances();
 
   /**
@@ -145,7 +133,6 @@ public interface VulkanPhysicalDeviceLimitsType
    * in the compute shader stage.
    */
 
-  @Value.Parameter
   int maxComputeSharedMemorySize();
 
   /**
@@ -155,7 +142,6 @@ public interface VulkanPhysicalDeviceLimitsType
    * less than or equal to the corresponding limit.
    */
 
-  @Value.Parameter
   VulkanComputeWorkGroupCount maxComputeWorkGroupCount();
 
   /**
@@ -165,7 +151,6 @@ public interface VulkanPhysicalDeviceLimitsType
    * limit.
    */
 
-  @Value.Parameter
   int maxComputeWorkGroupInvocations();
 
   /**
@@ -176,7 +161,6 @@ public interface VulkanPhysicalDeviceLimitsType
    * limit.
    */
 
-  @Value.Parameter
   VulkanComputeWorkGroupSize maxComputeWorkGroupSize();
 
   /**
@@ -185,7 +169,6 @@ public interface VulkanPhysicalDeviceLimitsType
    * less than or equal to this limit.
    */
 
-  @Value.Parameter
   int maxCullDistances();
 
   /**
@@ -197,7 +180,6 @@ public interface VulkanPhysicalDeviceLimitsType
    * bit set count against this limit.
    */
 
-  @Value.Parameter
   int maxDescriptorSetInputAttachments();
 
   /**
@@ -210,7 +192,6 @@ public interface VulkanPhysicalDeviceLimitsType
    * bit set count against this limit.
    */
 
-  @Value.Parameter
   int maxDescriptorSetSampledImages();
 
   /**
@@ -222,7 +203,6 @@ public interface VulkanPhysicalDeviceLimitsType
    * limit.
    */
 
-  @Value.Parameter
   int maxDescriptorSetSamplers();
 
   /**
@@ -234,7 +214,6 @@ public interface VulkanPhysicalDeviceLimitsType
    * bit set count against this limit.
    */
 
-  @Value.Parameter
   int maxDescriptorSetStorageBuffersDynamic();
 
   /**
@@ -246,7 +225,6 @@ public interface VulkanPhysicalDeviceLimitsType
    * limit.
    */
 
-  @Value.Parameter
   int maxDescriptorSetStorageBuffers();
 
   /**
@@ -258,7 +236,6 @@ public interface VulkanPhysicalDeviceLimitsType
    * limit.
    */
 
-  @Value.Parameter
   int maxDescriptorSetStorageImages();
 
   /**
@@ -270,7 +247,6 @@ public interface VulkanPhysicalDeviceLimitsType
    * bit set count against this limit.
    */
 
-  @Value.Parameter
   int maxDescriptorSetUniformBuffersDynamic();
 
   /**
@@ -282,7 +258,6 @@ public interface VulkanPhysicalDeviceLimitsType
    * limit.
    */
 
-  @Value.Parameter
   int maxDescriptorSetUniformBuffers();
 
   /**
@@ -290,14 +265,12 @@ public interface VulkanPhysicalDeviceLimitsType
    * indices. This excludes the primitive restart index value of 0xFFFFFFFF.
    */
 
-  @Value.Parameter
   int maxDrawIndexedIndexValue();
 
   /**
    * @return the maximum draw count that is supported for indirect draw calls.
    */
 
-  @Value.Parameter
   int maxDrawIndirectCount();
 
   /**
@@ -305,7 +278,6 @@ public interface VulkanPhysicalDeviceLimitsType
    * used in the fragment shader stage.
    */
 
-  @Value.Parameter
   int maxFragmentCombinedOutputResources();
 
   /**
@@ -313,7 +285,6 @@ public interface VulkanPhysicalDeviceLimitsType
    * stage when blending is enabled and one of the dual source blend modes is in use.
    */
 
-  @Value.Parameter
   int maxFragmentDualSrcAttachments();
 
   /**
@@ -321,7 +292,6 @@ public interface VulkanPhysicalDeviceLimitsType
    * the fragment shader stage.
    */
 
-  @Value.Parameter
   int maxFragmentInputComponents();
 
   /**
@@ -329,7 +299,6 @@ public interface VulkanPhysicalDeviceLimitsType
    * stage.
    */
 
-  @Value.Parameter
   int maxFragmentOutputAttachments();
 
   /**
@@ -337,7 +306,6 @@ public interface VulkanPhysicalDeviceLimitsType
    * structure must be less than or equal to this limit.
    */
 
-  @Value.Parameter
   int maxFramebufferHeight();
 
   /**
@@ -345,7 +313,6 @@ public interface VulkanPhysicalDeviceLimitsType
    * VkFramebufferCreateInfo structure must be less than or equal to this limit.
    */
 
-  @Value.Parameter
   int maxFramebufferLayers();
 
   /**
@@ -353,7 +320,6 @@ public interface VulkanPhysicalDeviceLimitsType
    * structure must be less than or equal to this limit.
    */
 
-  @Value.Parameter
   int maxFramebufferWidth();
 
   /**
@@ -361,7 +327,6 @@ public interface VulkanPhysicalDeviceLimitsType
    * the geometry shader stage.
    */
 
-  @Value.Parameter
   int maxGeometryInputComponents();
 
   /**
@@ -369,14 +334,12 @@ public interface VulkanPhysicalDeviceLimitsType
    * geometry shader stage.
    */
 
-  @Value.Parameter
   int maxGeometryOutputComponents();
 
   /**
    * @return the maximum number of vertices which can be emitted by any geometry shader.
    */
 
-  @Value.Parameter
   int maxGeometryOutputVertices();
 
   /**
@@ -385,7 +348,6 @@ public interface VulkanPhysicalDeviceLimitsType
    * limit.
    */
 
-  @Value.Parameter
   int maxGeometryShaderInvocations();
 
   /**
@@ -393,14 +355,12 @@ public interface VulkanPhysicalDeviceLimitsType
    * can be output from the geometry shader stage.
    */
 
-  @Value.Parameter
   int maxGeometryTotalOutputComponents();
 
   /**
    * @return the maximum number of layers (arrayLayers) for an image.
    */
 
-  @Value.Parameter
   int maxImageArrayLayers();
 
   /**
@@ -408,7 +368,6 @@ public interface VulkanPhysicalDeviceLimitsType
    * VK_IMAGE_TYPE_1D.
    */
 
-  @Value.Parameter
   int maxImageDimension1D();
 
   /**
@@ -416,7 +375,6 @@ public interface VulkanPhysicalDeviceLimitsType
    * imageType of VK_IMAGE_TYPE_2D and without VK_IMAGE_CREATE_CUBE_COMPATIBLE_BIT set in flags.
    */
 
-  @Value.Parameter
   int maxImageDimension2D();
 
   /**
@@ -424,7 +382,6 @@ public interface VulkanPhysicalDeviceLimitsType
    * an imageType of VK_IMAGE_TYPE_3D.
    */
 
-  @Value.Parameter
   int maxImageDimension3D();
 
   /**
@@ -432,7 +389,6 @@ public interface VulkanPhysicalDeviceLimitsType
    * imageType of VK_IMAGE_TYPE_2D and with VK_IMAGE_CREATE_CUBE_COMPATIBLE_BIT set in flags.
    */
 
-  @Value.Parameter
   int maxImageDimensionCube();
 
   /**
@@ -440,7 +396,6 @@ public interface VulkanPhysicalDeviceLimitsType
    * extended instruction.
    */
 
-  @Value.Parameter
   float maxInterpolationOffset();
 
   /**
@@ -448,7 +403,6 @@ public interface VulkanPhysicalDeviceLimitsType
    * can simultaneously exist.
    */
 
-  @Value.Parameter
   int maxMemoryAllocationCount();
 
   /**
@@ -461,7 +415,6 @@ public interface VulkanPhysicalDeviceLimitsType
    * supported for the fragment stage.
    */
 
-  @Value.Parameter
   int maxPerStageDescriptorInputAttachments();
 
   /**
@@ -474,7 +427,6 @@ public interface VulkanPhysicalDeviceLimitsType
    * VkDescriptorSetLayoutBinding structure has the bit for that shader stage set.
    */
 
-  @Value.Parameter
   int maxPerStageDescriptorSampledImages();
 
   /**
@@ -488,7 +440,6 @@ public interface VulkanPhysicalDeviceLimitsType
    * stage set.
    */
 
-  @Value.Parameter
   int maxPerStageDescriptorSamplers();
 
   /**
@@ -502,7 +453,6 @@ public interface VulkanPhysicalDeviceLimitsType
    * stage set.
    */
 
-  @Value.Parameter
   int maxPerStageDescriptorStorageBuffers();
 
   /**
@@ -516,7 +466,6 @@ public interface VulkanPhysicalDeviceLimitsType
    * stage set.
    */
 
-  @Value.Parameter
   int maxPerStageDescriptorStorageImages();
 
   /**
@@ -530,7 +479,6 @@ public interface VulkanPhysicalDeviceLimitsType
    * stage set.
    */
 
-  @Value.Parameter
   int maxPerStageDescriptorUniformBuffers();
 
   /**
@@ -546,7 +494,6 @@ public interface VulkanPhysicalDeviceLimitsType
    * attachments also count against this limit.
    */
 
-  @Value.Parameter
   int maxPerStageResources();
 
   /**
@@ -555,7 +502,6 @@ public interface VulkanPhysicalDeviceLimitsType
    * structure, (offset + size) must be less than or equal to this limit.
    */
 
-  @Value.Parameter
   int maxPushConstantsSize();
 
   /**
@@ -563,7 +509,6 @@ public interface VulkanPhysicalDeviceLimitsType
    * built-in decoration.
    */
 
-  @Value.Parameter
   int maxSampleMaskWords();
 
   /**
@@ -571,7 +516,6 @@ public interface VulkanPhysicalDeviceLimitsType
    * simultaneously exist on a device.
    */
 
-  @Value.Parameter
   int maxSamplerAllocationCount();
 
   /**
@@ -580,7 +524,6 @@ public interface VulkanPhysicalDeviceLimitsType
    * VkSamplerCreateInfo structure and this limit.
    */
 
-  @Value.Parameter
   float maxSamplerAnisotropy();
 
   /**
@@ -590,7 +533,6 @@ public interface VulkanPhysicalDeviceLimitsType
    * range [-maxSamplerLodBias,+maxSamplerLodBias].
    */
 
-  @Value.Parameter
   float maxSamplerLodBias();
 
   /**
@@ -599,7 +541,6 @@ public interface VulkanPhysicalDeviceLimitsType
    * type VK_DESCRIPTOR_TYPE_STORAGE_BUFFER or VK_DESCRIPTOR_TYPE_STORAGE_BUFFER_DYNAMIC.
    */
 
-  @Value.Parameter
   int maxStorageBufferRange();
 
   /**
@@ -607,7 +548,6 @@ public interface VulkanPhysicalDeviceLimitsType
    * the tessellation control shader stage.
    */
 
-  @Value.Parameter
   int maxTessellationControlPerPatchOutputComponents();
 
   /**
@@ -615,7 +555,6 @@ public interface VulkanPhysicalDeviceLimitsType
    * inputs to the tessellation control shader stage.
    */
 
-  @Value.Parameter
   int maxTessellationControlPerVertexInputComponents();
 
   /**
@@ -623,7 +562,6 @@ public interface VulkanPhysicalDeviceLimitsType
    * from the tessellation control shader stage.
    */
 
-  @Value.Parameter
   int maxTessellationControlPerVertexOutputComponents();
 
   /**
@@ -631,7 +569,6 @@ public interface VulkanPhysicalDeviceLimitsType
    * which can be output from the tessellation control shader stage.
    */
 
-  @Value.Parameter
   int maxTessellationControlTotalOutputComponents();
 
   /**
@@ -639,7 +576,6 @@ public interface VulkanPhysicalDeviceLimitsType
    * inputs to the tessellation evaluation shader stage.
    */
 
-  @Value.Parameter
   int maxTessellationEvaluationInputComponents();
 
   /**
@@ -647,7 +583,6 @@ public interface VulkanPhysicalDeviceLimitsType
    * from the tessellation evaluation shader stage.
    */
 
-  @Value.Parameter
   int maxTessellationEvaluationOutputComponents();
 
   /**
@@ -655,7 +590,6 @@ public interface VulkanPhysicalDeviceLimitsType
    * primitive generator.
    */
 
-  @Value.Parameter
   int maxTessellationGenerationLevel();
 
   /**
@@ -666,7 +600,6 @@ public interface VulkanPhysicalDeviceLimitsType
    * equal to this limit.
    */
 
-  @Value.Parameter
   int maxTessellationPatchSize();
 
   /**
@@ -676,7 +609,6 @@ public interface VulkanPhysicalDeviceLimitsType
    * structure.
    */
 
-  @Value.Parameter
   int maxTexelBufferElements();
 
   /**
@@ -684,7 +616,6 @@ public interface VulkanPhysicalDeviceLimitsType
    * OpImage*Gather image instructions.
    */
 
-  @Value.Parameter
   int maxTexelGatherOffset();
 
   /**
@@ -692,7 +623,6 @@ public interface VulkanPhysicalDeviceLimitsType
    * or OpImageFetch* image instructions.
    */
 
-  @Value.Parameter
   int maxTexelOffset();
 
   /**
@@ -701,7 +631,6 @@ public interface VulkanPhysicalDeviceLimitsType
    * type VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER or VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC.
    */
 
-  @Value.Parameter
   int maxUniformBufferRange();
 
   /**
@@ -710,7 +639,6 @@ public interface VulkanPhysicalDeviceLimitsType
    * or equal to this limit.
    */
 
-  @Value.Parameter
   int maxVertexInputAttributeOffset();
 
   /**
@@ -720,7 +648,6 @@ public interface VulkanPhysicalDeviceLimitsType
    * the VkPipelineVertexInputStateCreateInfo structure.
    */
 
-  @Value.Parameter
   int maxVertexInputAttributes();
 
   /**
@@ -731,7 +658,6 @@ public interface VulkanPhysicalDeviceLimitsType
    * structure. The binding member of VkVertexInputBindingDescription must be less than this limit.
    */
 
-  @Value.Parameter
   int maxVertexInputBindings();
 
   /**
@@ -740,7 +666,6 @@ public interface VulkanPhysicalDeviceLimitsType
    * or equal to this limit.
    */
 
-  @Value.Parameter
   int maxVertexInputBindingStride();
 
   /**
@@ -748,7 +673,6 @@ public interface VulkanPhysicalDeviceLimitsType
    * shader.
    */
 
-  @Value.Parameter
   int maxVertexOutputComponents();
 
   /**
@@ -757,7 +681,6 @@ public interface VulkanPhysicalDeviceLimitsType
    * image which can be created and used as a framebuffer attachment.
    */
 
-  @Value.Parameter
   VulkanViewportDimensions maxViewportDimensions();
 
   /**
@@ -766,7 +689,6 @@ public interface VulkanPhysicalDeviceLimitsType
    * than or equal to this limit.
    */
 
-  @Value.Parameter
   int maxViewports();
 
   /**
@@ -774,7 +696,6 @@ public interface VulkanPhysicalDeviceLimitsType
    * extended instruction.
    */
 
-  @Value.Parameter
   float minInterpolationOffset();
 
   /**
@@ -783,7 +704,6 @@ public interface VulkanPhysicalDeviceLimitsType
    * from the returned pointer will always produce an integer multiple of this limit.
    */
 
-  @Value.Parameter
   long minMemoryMapAlignment();
 
   /**
@@ -794,7 +714,6 @@ public interface VulkanPhysicalDeviceLimitsType
    * buffers must be multiples of this limit.
    */
 
-  @Value.Parameter
   long minStorageBufferOffsetAlignment();
 
   /**
@@ -805,7 +724,6 @@ public interface VulkanPhysicalDeviceLimitsType
    * structure, the offset must be an integer multiple of this limit.
    */
 
-  @Value.Parameter
   long minTexelBufferOffsetAlignment();
 
   /**
@@ -813,7 +731,6 @@ public interface VulkanPhysicalDeviceLimitsType
    * OpImage*Gather image instructions.
    */
 
-  @Value.Parameter
   int minTexelGatherOffset();
 
   /**
@@ -821,7 +738,6 @@ public interface VulkanPhysicalDeviceLimitsType
    * or OpImageFetch* image instructions.
    */
 
-  @Value.Parameter
   int minTexelOffset();
 
   /**
@@ -832,7 +748,6 @@ public interface VulkanPhysicalDeviceLimitsType
    * buffers must be multiples of this limit.
    */
 
-  @Value.Parameter
   long minUniformBufferOffsetAlignment();
 
   /**
@@ -841,7 +756,6 @@ public interface VulkanPhysicalDeviceLimitsType
    * 2mipmapPrecisionBits is the actual number of divisions.
    */
 
-  @Value.Parameter
   int mipmapPrecisionBits();
 
   /**
@@ -849,7 +763,6 @@ public interface VulkanPhysicalDeviceLimitsType
    * memory.
    */
 
-  @Value.Parameter
   long nonCoherentAtomSize();
 
   /**
@@ -858,7 +771,6 @@ public interface VulkanPhysicalDeviceLimitsType
    * should use the optimal alignment for optimal performance and power use.
    */
 
-  @Value.Parameter
   long optimalBufferCopyOffsetAlignment();
 
   /**
@@ -869,7 +781,6 @@ public interface VulkanPhysicalDeviceLimitsType
    * power use.
    */
 
-  @Value.Parameter
   long optimalBufferCopyRowPitchAlignment();
 
   /**
@@ -878,7 +789,6 @@ public interface VulkanPhysicalDeviceLimitsType
    * successive supported point sizes.
    */
 
-  @Value.Parameter
   float pointSizeGranularity();
 
   /**
@@ -886,7 +796,6 @@ public interface VulkanPhysicalDeviceLimitsType
    * decorated with the PointSize built-in decoration are clamped to this range.
    */
 
-  @Value.Parameter
   VulkanPointSizeRange pointSizeRange();
 
   /**
@@ -895,7 +804,6 @@ public interface VulkanPhysicalDeviceLimitsType
    * non-integer color format.
    */
 
-  @Value.Parameter
   int sampledImageColorSampleCounts();
 
   /**
@@ -904,7 +812,6 @@ public interface VulkanPhysicalDeviceLimitsType
    * depth format.
    */
 
-  @Value.Parameter
   int sampledImageDepthSampleCounts();
 
   /**
@@ -913,7 +820,6 @@ public interface VulkanPhysicalDeviceLimitsType
    * an integer color format.
    */
 
-  @Value.Parameter
   int sampledImageIntegerSampleCounts();
 
   /**
@@ -922,7 +828,6 @@ public interface VulkanPhysicalDeviceLimitsType
    * stencil format.
    */
 
-  @Value.Parameter
   int sampledImageStencilSampleCounts();
 
   /**
@@ -931,7 +836,6 @@ public interface VulkanPhysicalDeviceLimitsType
    * any memory is bound to them.
    */
 
-  @Value.Parameter
   long sparseAddressSpaceSize();
 
   /**
@@ -940,7 +844,6 @@ public interface VulkanPhysicalDeviceLimitsType
    * set to VK_FALSE, the implementation may use different sample locations.
    */
 
-  @Value.Parameter
   boolean standardSampleLocations();
 
   /**
@@ -948,7 +851,6 @@ public interface VulkanPhysicalDeviceLimitsType
    * images created with VK_IMAGE_TILING_OPTIMAL, and usage containing VK_IMAGE_USAGE_STORAGE_BIT.
    */
 
-  @Value.Parameter
   int storageImageSampleCounts();
 
   /**
@@ -957,7 +859,6 @@ public interface VulkanPhysicalDeviceLimitsType
    * to VK_TRUE, lines are rasterized as per the strict definition.
    */
 
-  @Value.Parameter
   boolean strictLines();
 
   /**
@@ -965,14 +866,12 @@ public interface VulkanPhysicalDeviceLimitsType
    * InterpolateAtOffset extended instruction may be rounded to as fixed-point values.
    */
 
-  @Value.Parameter
   int subPixelInterpolationOffsetBits();
 
   /**
    * @return the number of bits of subpixel precision in framebuffer coordinates xf and yf.
    */
 
-  @Value.Parameter
   int subPixelPrecisionBits();
 
   /**
@@ -982,7 +881,6 @@ public interface VulkanPhysicalDeviceLimitsType
    * sampling will snap to these locations when generating the filtered results.
    */
 
-  @Value.Parameter
   int subTexelPrecisionBits();
 
   /**
@@ -992,14 +890,12 @@ public interface VulkanPhysicalDeviceLimitsType
    * at least 36.
    */
 
-  @Value.Parameter
   boolean timestampComputeAndGraphics();
 
   /**
    * @return the number of nanoseconds required for a timestamp query to be incremented by 1.
    */
 
-  @Value.Parameter
   float timestampPeriod();
 
   /**
@@ -1013,7 +909,6 @@ public interface VulkanPhysicalDeviceLimitsType
    * possible number of bits ends up with the specified range.
    */
 
-  @Value.Parameter
   VulkanViewportBoundsRange viewportBoundsRange();
 
   /**
@@ -1021,6 +916,5 @@ public interface VulkanPhysicalDeviceLimitsType
    * that floating-point viewport bounds are interpreted at is given by this limit.
    */
 
-  @Value.Parameter
   int viewportSubPixelBits();
 }

@@ -57,7 +57,7 @@ public final class VulkanLWJGLImageCreateInfos
     Objects.requireNonNull(stack, "stack");
     Objects.requireNonNull(source, "source");
 
-    final var output = VkImageCreateInfo.malloc(stack);
+    final var output = VkImageCreateInfo.calloc(stack);
     return packInto(stack, source, output);
   }
 

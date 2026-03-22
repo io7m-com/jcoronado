@@ -16,18 +16,27 @@
 
 package com.io7m.jcoronado.examples;
 
+import com.io7m.seltzer.api.SStructuredErrorType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.Map;
 
 public final class Main
 {
+  private static final Logger LOG =
+    LoggerFactory.getLogger(Main.class);
+
   private static final Map<String, ExampleType> EXAMPLES =
     Map.ofEntries(
-      Map.entry("hello", new HelloVulkan()),
-      Map.entry("hello-vma", new HelloVulkanWithVMA()),
-      Map.entry("framebuffer", new Framebuffer()),
-      Map.entry("versioning", new Versioning()),
       Map.entry("buffer-copy", new BufferCopy()),
-      Map.entry("memory-requirements", new MemoryRequirements())
+      Map.entry("framebuffer", new Framebuffer()),
+      Map.entry("hello", new HelloVulkan()),
+      Map.entry("hello-dynamic-rendering", new HelloVulkanDynamic()),
+      Map.entry("hello-swapchain", new HelloSwapChain()),
+      Map.entry("hello-vma", new HelloVulkanWithVMA()),
+      Map.entry("memory-requirements", new MemoryRequirements()),
+      Map.entry("versioning", new Versioning())
     );
 
   private Main()
@@ -48,7 +57,17 @@ public final class Main
       usage();
     }
 
-    exampleClass.execute();
+    try {
+      exampleClass.execute();
+    } catch (final Exception e) {
+      if (e instanceof final SStructuredErrorType<?> x) {
+        LOG.error("{}: {}: {}", e.getClass(), x.errorCode(), x.message());
+        for (final var entry : x.attributes().entrySet()) {
+          LOG.error("  {}: {}", entry.getKey(), entry.getValue());
+        }
+        throw e;
+      }
+    }
   }
 
   private static void usage()

@@ -43,6 +43,7 @@ import org.slf4j.LoggerFactory;
 import java.nio.ByteBuffer;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static com.io7m.jcoronado.lwjgl.internal.VulkanLWJGLHandle.Ownership.USER_OWNED;
 
@@ -54,7 +55,8 @@ public final class VMALWJGLAllocator
   extends VulkanLWJGLHandle
   implements VMAAllocatorType
 {
-  private static final Logger LOG = LoggerFactory.getLogger(VMALWJGLAllocator.class);
+  private static final Logger LOG =
+    LoggerFactory.getLogger(VMALWJGLAllocator.class);
 
   private final VulkanLWJGLLogicalDevice device;
   private final long allocator_address;
@@ -112,13 +114,14 @@ public final class VMALWJGLAllocator
   {
     Objects.requireNonNull(alloc_create_info, "alloc_create_info");
     Objects.requireNonNull(buffer_create_info, "buffer_create_info");
+    this.checkNotClosed();
 
     try (var stack = this.stack_initial.push()) {
       final var vk_buffer_create_info =
         VulkanLWJGLBufferCreateInfos.packInfo(stack, buffer_create_info);
 
       final var vk_alloc_create_info =
-        VmaAllocationCreateInfo.malloc(stack)
+        VmaAllocationCreateInfo.calloc(stack)
           .flags(VulkanEnumMaps.packValues(alloc_create_info.flags()))
           .memoryTypeBits((int) alloc_create_info.memoryTypeBits())
           .preferredFlags(VulkanEnumMaps.packValues(alloc_create_info.preferredFlags()))
@@ -129,7 +132,7 @@ public final class VMALWJGLAllocator
       final var vk_allocation =
         stack.mallocPointer(1);
       final var vk_allocation_info =
-        VmaAllocationInfo.malloc(stack);
+        VmaAllocationInfo.calloc(stack);
       final var vk_buffer =
         stack.mallocLong(1);
 
@@ -194,13 +197,14 @@ public final class VMALWJGLAllocator
   {
     Objects.requireNonNull(alloc_create_info, "alloc_create_info");
     Objects.requireNonNull(image_create_info, "image_create_info");
+    this.checkNotClosed();
 
     try (var stack = this.stack_initial.push()) {
       final var vk_image_create_info =
         VulkanLWJGLImageCreateInfos.pack(stack, image_create_info);
 
       final var vk_alloc_create_info =
-        VmaAllocationCreateInfo.malloc(stack)
+        VmaAllocationCreateInfo.calloc(stack)
           .flags(VulkanEnumMaps.packValues(alloc_create_info.flags()))
           .memoryTypeBits((int) alloc_create_info.memoryTypeBits())
           .preferredFlags(VulkanEnumMaps.packValues(alloc_create_info.preferredFlags()))
@@ -211,7 +215,7 @@ public final class VMALWJGLAllocator
       final var vk_allocation =
         stack.mallocPointer(1);
       final var vk_allocation_info =
-        VmaAllocationInfo.malloc(stack);
+        VmaAllocationInfo.calloc(stack);
       final var vk_image =
         stack.mallocLong(1);
 
@@ -308,6 +312,7 @@ public final class VMALWJGLAllocator
     throws VulkanException
   {
     Objects.requireNonNull(allocation, "allocation");
+    this.checkNotClosed();
 
     final VMALWJGLAllocation<?> lwjgl_allocation =
       VulkanLWJGLClassChecks.checkInstanceOf(
@@ -357,7 +362,13 @@ public final class VMALWJGLAllocator
 
   private enum AllocatedItemKind
   {
+    /**
+     * Allocated object is a buffer.
+     */
     BUFFER,
+    /**
+     * Allocated object is an image.
+     */
     IMAGE
   }
 
@@ -368,7 +379,7 @@ public final class VMALWJGLAllocator
     private final long allocation;
     private final VMALWJGLAllocator allocator;
     private final T item;
-    private boolean closed;
+    private final AtomicBoolean closed;
 
     private VMALWJGLAllocation(
       final VMALWJGLAllocator in_allocator,
@@ -387,7 +398,7 @@ public final class VMALWJGLAllocator
         Objects.requireNonNull(in_deallocation, "in_deallocation");
 
       this.allocation = in_allocation;
-      this.closed = false;
+      this.closed = new AtomicBoolean(false);
     }
 
     @Override
@@ -401,7 +412,7 @@ public final class VMALWJGLAllocator
       }
       final var that = (VMALWJGLAllocation<?>) o;
       return Objects.equals(this.info.deviceMemory(), that.info.deviceMemory())
-             && (this.info.offset() == that.info.offset());
+        && (this.info.offset() == that.info.offset());
     }
 
     @Override
@@ -438,20 +449,16 @@ public final class VMALWJGLAllocator
     @SuppressWarnings("unchecked")
     public void close()
     {
-      if (!this.closed) {
-        try {
-          switch (this.deallocation) {
-            case BUFFER: {
-              this.allocator.destroyBuffer((VMALWJGLAllocation<VulkanLWJGLBuffer>) this);
-              break;
-            }
-            case IMAGE: {
-              this.allocator.destroyImage((VMALWJGLAllocation<VulkanLWJGLImage>) this);
-              break;
-            }
+      if (this.closed.compareAndSet(false, true)) {
+        switch (this.deallocation) {
+          case BUFFER: {
+            this.allocator.destroyBuffer((VMALWJGLAllocation<VulkanLWJGLBuffer>) this);
+            break;
           }
-        } finally {
-          this.closed = true;
+          case IMAGE: {
+            this.allocator.destroyImage((VMALWJGLAllocation<VulkanLWJGLImage>) this);
+            break;
+          }
         }
       }
     }
@@ -459,7 +466,7 @@ public final class VMALWJGLAllocator
     @Override
     public boolean isClosed()
     {
-      return this.closed;
+      return this.closed.get();
     }
   }
 
@@ -470,7 +477,7 @@ public final class VMALWJGLAllocator
     private final VMALWJGLAllocator allocator;
     private final VMALWJGLAllocation<?> allocation;
     private final ByteBuffer buffer;
-    private boolean mapped;
+    private final AtomicBoolean mapped;
 
     VMALWJGLMappedMemory(
       final VMALWJGLAllocator inAllocator,
@@ -484,7 +491,7 @@ public final class VMALWJGLAllocator
       this.allocation = Objects.requireNonNull(inAllocation, "allocation");
 
       this.address = inAddress;
-      this.mapped = true;
+      this.mapped = new AtomicBoolean(true);
       this.buffer =
         MemoryUtil.memByteBuffer(inAddress, Math.toIntExact(inSize));
     }
@@ -492,7 +499,7 @@ public final class VMALWJGLAllocator
     @Override
     public boolean isMapped()
     {
-      return this.mapped;
+      return this.mapped.get();
     }
 
     @Override
@@ -500,12 +507,13 @@ public final class VMALWJGLAllocator
       final long offset,
       final long size)
     {
-      if (this.mapped) {
+      if (this.mapped.get()) {
         Vma.vmaFlushAllocation(
           this.allocator.allocator_address,
           this.allocation.allocation,
           offset,
-          size);
+          size
+        );
       }
     }
 
@@ -524,17 +532,13 @@ public final class VMALWJGLAllocator
     @Override
     protected void closeActual()
     {
-      if (this.mapped) {
-        try {
-          if (LOG.isTraceEnabled()) {
-            LOG.trace(
-              "Unmapping memory: 0x{}",
-              Long.toUnsignedString(this.address, 16));
-          }
-          Vma.vmaUnmapMemory(this.allocator.allocator_address, this.address);
-        } finally {
-          this.mapped = false;
+      if (this.mapped.compareAndSet(true, false)) {
+        if (LOG.isTraceEnabled()) {
+          LOG.trace(
+            "Unmapping memory: 0x{}",
+            Long.toUnsignedString(this.address, 16));
         }
+        Vma.vmaUnmapMemory(this.allocator.allocator_address, this.address);
       }
     }
 

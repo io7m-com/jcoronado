@@ -32,13 +32,19 @@ public interface VulkanLineWidthRangeType
    * @return The minimum width
    */
 
-  @Value.Parameter
-  float minimum();
+  @Value.Default
+  default float minimum()
+  {
+    return 0.0f;
+  }
 
   /**
    * @return The maximum width
    */
 
-  @Value.Parameter
-  float maximum();
+  @Value.Default
+  default float maximum()
+  {
+    return 0.0f;
+  }
 }

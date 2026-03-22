@@ -49,6 +49,6 @@ public final class VulkanLWJGLExtent2Ds
     Objects.requireNonNull(stack, "stack");
     Objects.requireNonNull(extent, "extent");
 
-    return VkExtent2D.malloc(stack).set(extent.width(), extent.height());
+    return VkExtent2D.calloc(stack).set(extent.width(), extent.height());
   }
 }

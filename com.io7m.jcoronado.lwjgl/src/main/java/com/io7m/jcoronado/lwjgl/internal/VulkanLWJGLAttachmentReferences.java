@@ -17,8 +17,10 @@
 package com.io7m.jcoronado.lwjgl.internal;
 
 import com.io7m.jcoronado.api.VulkanAttachmentReference;
+import com.io7m.jcoronado.api.VulkanEnumMaps;
 import org.lwjgl.system.MemoryStack;
-import org.lwjgl.vulkan.VkAttachmentReference;
+import org.lwjgl.vulkan.VK13;
+import org.lwjgl.vulkan.VkAttachmentReference2;
 
 import java.util.List;
 import java.util.Objects;
@@ -43,7 +45,7 @@ public final class VulkanLWJGLAttachmentReferences
    * @return A packed buffer
    */
 
-  public static VkAttachmentReference.Buffer packAttachmentReferences(
+  public static VkAttachmentReference2.Buffer packAttachmentReferences(
     final MemoryStack stack,
     final List<VulkanAttachmentReference> references)
   {
@@ -51,11 +53,13 @@ public final class VulkanLWJGLAttachmentReferences
     Objects.requireNonNull(references, "references");
 
     final var buffer =
-      VkAttachmentReference.malloc(references.size(), stack);
+      VkAttachmentReference2.calloc(references.size(), stack);
 
     for (var index = 0; index < references.size(); ++index) {
-      final var source = references.get(index);
-      final var target = VkAttachmentReference.create(buffer.address(index));
+      final var source =
+        references.get(index);
+      final var target =
+        VkAttachmentReference2.create(buffer.address(index));
       packInto(source, target);
     }
     return buffer;
@@ -70,22 +74,23 @@ public final class VulkanLWJGLAttachmentReferences
    * @return A packed reference
    */
 
-  public static VkAttachmentReference packAttachmentReference(
+  public static VkAttachmentReference2 packAttachmentReference(
     final MemoryStack stack,
     final VulkanAttachmentReference reference)
   {
     Objects.requireNonNull(stack, "stack");
     Objects.requireNonNull(reference, "reference");
 
-    return packInto(reference, VkAttachmentReference.malloc(stack));
+    return packInto(reference, VkAttachmentReference2.calloc(stack));
   }
 
-  private static VkAttachmentReference packInto(
+  private static VkAttachmentReference2 packInto(
     final VulkanAttachmentReference reference,
-    final VkAttachmentReference target)
+    final VkAttachmentReference2 target)
   {
-    return target
+    return target.sType(VK13.VK_STRUCTURE_TYPE_ATTACHMENT_REFERENCE_2)
       .attachment(reference.attachment())
+      .aspectMask(VulkanEnumMaps.packValues(reference.aspectMask()))
       .layout(reference.layout().value());
   }
 }

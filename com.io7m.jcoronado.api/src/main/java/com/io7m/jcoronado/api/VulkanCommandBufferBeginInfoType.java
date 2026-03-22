@@ -36,6 +36,5 @@ public interface VulkanCommandBufferBeginInfoType
    * @return Usage behaviour for the command buffer
    */
 
-  @Value.Parameter
   Set<VulkanCommandBufferUsageFlag> flags();
 }

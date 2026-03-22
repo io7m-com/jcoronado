@@ -36,20 +36,25 @@ public interface VulkanPushConstantRangeType
    * @return The stages that will access the range of push constants
    */
 
-  @Value.Parameter
   Set<VulkanShaderStageFlag> stageFlags();
 
   /**
    * @return The start of the range
    */
 
-  @Value.Parameter
-  int offset();
+  @Value.Default
+  default int offset()
+  {
+    return 0;
+  }
 
   /**
    * @return The size of the range
    */
 
-  @Value.Parameter
-  int size();
+  @Value.Default
+  default int size()
+  {
+    return 0;
+  }
 }

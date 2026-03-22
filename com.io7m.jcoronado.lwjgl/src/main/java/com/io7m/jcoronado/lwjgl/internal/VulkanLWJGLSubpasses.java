@@ -19,7 +19,8 @@ package com.io7m.jcoronado.lwjgl.internal;
 import com.io7m.jcoronado.api.VulkanEnumMaps;
 import com.io7m.jcoronado.api.VulkanSubpassDependency;
 import org.lwjgl.system.MemoryStack;
-import org.lwjgl.vulkan.VkSubpassDependency;
+import org.lwjgl.vulkan.VK13;
+import org.lwjgl.vulkan.VkSubpassDependency2;
 
 import java.util.List;
 import java.util.Objects;
@@ -44,7 +45,7 @@ public final class VulkanLWJGLSubpasses
    * @return Packed dependencies
    */
 
-  public static VkSubpassDependency.Buffer packSubpassDependencies(
+  public static VkSubpassDependency2.Buffer packSubpassDependencies(
     final MemoryStack stack,
     final List<VulkanSubpassDependency> dependencies)
   {
@@ -52,11 +53,13 @@ public final class VulkanLWJGLSubpasses
     Objects.requireNonNull(dependencies, "dependencies");
 
     final var buffer =
-      VkSubpassDependency.malloc(dependencies.size(), stack);
+      VkSubpassDependency2.calloc(dependencies.size(), stack);
 
     for (var index = 0; index < dependencies.size(); ++index) {
-      final var source = dependencies.get(index);
-      final var target = VkSubpassDependency.create(buffer.address(index));
+      final var source =
+        dependencies.get(index);
+      final var target =
+        VkSubpassDependency2.create(buffer.address(index));
       packSubpassDependencyInto(source, target);
     }
 
@@ -72,7 +75,7 @@ public final class VulkanLWJGLSubpasses
    * @return A dependency
    */
 
-  public static VkSubpassDependency packSubpassDependency(
+  public static VkSubpassDependency2 packSubpassDependency(
     final MemoryStack stack,
     final VulkanSubpassDependency dependency)
   {
@@ -80,20 +83,32 @@ public final class VulkanLWJGLSubpasses
     Objects.requireNonNull(dependency, "dependency");
     return packSubpassDependencyInto(
       dependency,
-      VkSubpassDependency.malloc(stack));
+      VkSubpassDependency2.calloc(stack)
+    );
   }
 
-  private static VkSubpassDependency packSubpassDependencyInto(
+  private static VkSubpassDependency2 packSubpassDependencyInto(
     final VulkanSubpassDependency dependency,
-    final VkSubpassDependency target)
+    final VkSubpassDependency2 target)
   {
-    return target
-      .dependencyFlags(VulkanEnumMaps.packValues(dependency.dependencyFlags()))
-      .dstAccessMask(VulkanEnumMaps.packValues(dependency.dstAccessMask()))
-      .dstStageMask(VulkanEnumMaps.packValues(dependency.dstStageMask()))
+    final var dstAccessMask =
+      (int) VulkanEnumMaps.packValuesLong(dependency.dstAccessMask());
+    final var dstStageMask =
+      (int) VulkanEnumMaps.packValuesLong(dependency.dstStageMask());
+    final var srcAccessMask =
+      (int) VulkanEnumMaps.packValuesLong(dependency.srcAccessMask());
+    final var srcStageMask =
+      (int) VulkanEnumMaps.packValuesLong(dependency.srcStageMask());
+    final var depFlags =
+      VulkanEnumMaps.packValues(dependency.dependencyFlags());
+
+    return target.sType(VK13.VK_STRUCTURE_TYPE_SUBPASS_DEPENDENCY_2)
+      .dependencyFlags(depFlags)
+      .dstAccessMask(dstAccessMask)
+      .dstStageMask(dstStageMask)
       .dstSubpass(dependency.dstSubpass())
-      .srcAccessMask(VulkanEnumMaps.packValues(dependency.srcAccessMask()))
-      .srcStageMask(VulkanEnumMaps.packValues(dependency.srcStageMask()))
+      .srcAccessMask(srcAccessMask)
+      .srcStageMask(srcStageMask)
       .srcSubpass(dependency.srcSubpass());
   }
 }

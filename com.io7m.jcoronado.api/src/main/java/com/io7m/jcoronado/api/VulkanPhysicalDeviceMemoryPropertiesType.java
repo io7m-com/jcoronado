@@ -38,7 +38,6 @@ public interface VulkanPhysicalDeviceMemoryPropertiesType
    * @return The memory heaps from which memory can be allocated.
    */
 
-  @Value.Parameter
   SortedMap<VulkanMemoryHeapIndex, VulkanMemoryHeap> heaps();
 
   /**
@@ -46,7 +45,6 @@ public interface VulkanPhysicalDeviceMemoryPropertiesType
    * the heaps specified by {@link #heaps()}
    */
 
-  @Value.Parameter
   SortedMap<VulkanMemoryTypeIndex, VulkanMemoryType> types();
 
   /**
@@ -118,9 +116,7 @@ public interface VulkanPhysicalDeviceMemoryPropertiesType
 
     throw new VulkanMissingRequiredMemoryTypeException(
       "No suitable memory type is available.",
-      requirements,
-      flags,
-      this.heaps().values(),
-      types.values());
+      requirements
+    );
   }
 }

@@ -16,6 +16,8 @@
 
 package com.io7m.jcoronado.api;
 
+import java.util.List;
+
 /**
  * An extension.
  */
@@ -27,4 +29,13 @@ public interface VulkanExtensionType
    */
 
   String name();
+
+  /**
+   * @return The extra extension names that are also required (such as "VK_EXT_swapchain_maintenance1")
+   */
+
+  default List<String> extraNames()
+  {
+    return List.of();
+  }
 }

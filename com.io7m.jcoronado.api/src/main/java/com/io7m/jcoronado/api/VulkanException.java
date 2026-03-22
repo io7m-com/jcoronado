@@ -16,51 +16,97 @@
 
 package com.io7m.jcoronado.api;
 
+import com.io7m.seltzer.api.SStructuredErrorExceptionType;
+
+import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * The base type of exceptions raised by the API.
  */
 
-public abstract class VulkanException extends Exception
+public abstract class VulkanException
+  extends Exception
+  implements SStructuredErrorExceptionType<String>
 {
-  /**
-   * Construct an exception.
-   *
-   * @param message The message
-   */
-
-  public VulkanException(
-    final String message)
-  {
-    super(Objects.requireNonNull(message, "message"));
-  }
+  private final Map<String, String> attributes;
+  private final String errorCode;
+  private final Optional<String> remediatingAction;
 
   /**
    * Construct an exception.
    *
-   * @param message The message
-   * @param cause   The cause
+   * @param message             The message
+   * @param inAttributes        The attributes
+   * @param inErrorCode         The error code
+   * @param inRemediatingAction The remediating action
    */
 
   public VulkanException(
     final String message,
-    final Throwable cause)
+    final Map<String, String> inAttributes,
+    final String inErrorCode,
+    final Optional<String> inRemediatingAction)
   {
-    super(
-      Objects.requireNonNull(message, "message"),
-      Objects.requireNonNull(cause, "cause"));
+    super(message);
+
+    this.attributes =
+      Map.copyOf(inAttributes);
+    this.errorCode =
+      Objects.requireNonNull(inErrorCode, "errorCode");
+    this.remediatingAction =
+      Objects.requireNonNull(inRemediatingAction, "remediatingAction");
   }
 
   /**
    * Construct an exception.
    *
-   * @param cause The cause
+   * @param message             The message
+   * @param cause               The cause
+   * @param inAttributes        The attributes
+   * @param inErrorCode         The error code
+   * @param inRemediatingAction The remediating action
    */
 
   public VulkanException(
-    final Throwable cause)
+    final String message,
+    final Throwable cause,
+    final Map<String, String> inAttributes,
+    final String inErrorCode,
+    final Optional<String> inRemediatingAction)
   {
-    super(Objects.requireNonNull(cause, "cause"));
+    super(message, cause);
+
+    this.attributes =
+      Map.copyOf(inAttributes);
+    this.errorCode =
+      Objects.requireNonNull(inErrorCode, "errorCode");
+    this.remediatingAction =
+      Objects.requireNonNull(inRemediatingAction, "remediatingAction");
+  }
+
+  @Override
+  public final Map<String, String> attributes()
+  {
+    return this.attributes;
+  }
+
+  @Override
+  public final String errorCode()
+  {
+    return this.errorCode;
+  }
+
+  @Override
+  public final Optional<String> remediatingAction()
+  {
+    return this.remediatingAction;
+  }
+
+  @Override
+  public final Optional<Throwable> exception()
+  {
+    return Optional.of(this);
   }
 }

@@ -36,6 +36,5 @@ public interface VulkanEventCreateInfoType
    * @return The event creation flags
    */
 
-  @Value.Parameter
   Set<VulkanEventCreateFlag> flags();
 }

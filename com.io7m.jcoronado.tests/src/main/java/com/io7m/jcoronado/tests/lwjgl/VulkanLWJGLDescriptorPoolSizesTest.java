@@ -45,7 +45,10 @@ public final class VulkanLWJGLDescriptorPoolSizesTest
   {
     for (final var type : VulkanDescriptorType.values()) {
       final var binding =
-        VulkanDescriptorPoolSize.of(type, 23);
+        VulkanDescriptorPoolSize.builder()
+          .setType(type)
+          .setDescriptorCount(23)
+          .build();
       final var packed =
         VulkanLWJGLDescriptorPoolSizes.packDescriptorPoolSize(
           this.stack,

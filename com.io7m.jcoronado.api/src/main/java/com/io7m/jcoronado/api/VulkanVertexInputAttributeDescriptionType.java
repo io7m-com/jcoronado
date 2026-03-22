@@ -34,28 +34,40 @@ public interface VulkanVertexInputAttributeDescriptionType
    * @return The shader binding location number for this attribute.
    */
 
-  @Value.Parameter
-  int location();
+  @Value.Default
+  default int location()
+  {
+    return 0;
+  }
 
   /**
    * @return The binding number which this attribute takes its data from.
    */
 
-  @Value.Parameter
-  int binding();
+  @Value.Default
+  default int binding()
+  {
+    return 0;
+  }
 
   /**
    * @return The the size and type of the vertex attribute data.
    */
 
-  @Value.Parameter
-  VulkanFormat format();
+  @Value.Default
+  default VulkanFormat format()
+  {
+    return VulkanFormat.VK_FORMAT_UNDEFINED;
+  }
 
   /**
    * @return a byte offset of this attribute relative to the start of an element in the vertex input
    * binding.
    */
 
-  @Value.Parameter
-  int offset();
+  @Value.Default
+  default int offset()
+  {
+    return 0;
+  }
 }

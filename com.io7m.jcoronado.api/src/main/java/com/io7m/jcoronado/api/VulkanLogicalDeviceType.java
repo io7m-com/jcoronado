@@ -80,7 +80,7 @@ public interface VulkanLogicalDeviceType extends VulkanHandleDispatchableType
     Objects.requireNonNull(queueFamily, "queueFamily");
 
     final Predicate<VulkanQueueType> queueMatches =
-      (VulkanQueueType queue) -> {
+      (final VulkanQueueType queue) -> {
         final var familyProperties =
           queue.queueFamilyProperties();
         final var familyMatches =
@@ -589,9 +589,9 @@ public interface VulkanLogicalDeviceType extends VulkanHandleDispatchableType
   }
 
   /**
-   * Create a semaphore.
+   * Create a binary semaphore.
    *
-   * @param create_info The semaphore creation info
+   * @param info The semaphore creation info
    *
    * @return A semaphore
    *
@@ -599,14 +599,69 @@ public interface VulkanLogicalDeviceType extends VulkanHandleDispatchableType
    */
 
   @VulkanAPIFunctionType(vulkanFunction = "vkCreateSemaphore")
-  VulkanSemaphoreType createSemaphore(
-    VulkanSemaphoreCreateInfo create_info)
+  VulkanSemaphoreBinaryType createBinarySemaphore(
+    VulkanSemaphoreBinaryCreateInfo info)
     throws VulkanException;
+
+  /**
+   * Create a binary semaphore.
+   *
+   * @return A semaphore
+   *
+   * @throws VulkanException On errors
+   */
+
+  @VulkanAPIFunctionType(vulkanFunction = "vkCreateSemaphore")
+  default VulkanSemaphoreBinaryType createBinarySemaphore()
+    throws VulkanException
+  {
+    return this.createBinarySemaphore(
+      VulkanSemaphoreBinaryCreateInfo.builder()
+        .build()
+    );
+  }
+
+  /**
+   * Create a timeline semaphore.
+   *
+   * @param info The semaphore creation info
+   *
+   * @return A semaphore
+   *
+   * @throws VulkanException On errors
+   */
+
+  @VulkanAPIFunctionType(vulkanFunction = "vkCreateSemaphore")
+  VulkanSemaphoreTimelineType createTimelineSemaphore(
+    VulkanSemaphoreTimelineCreateInfo info)
+    throws VulkanException;
+
+  /**
+   * Create a timeline semaphore.
+   *
+   * @param initialValue The semaphore initial value
+   *
+   * @return A semaphore
+   *
+   * @throws VulkanException On errors
+   */
+
+  @VulkanAPIFunctionType(vulkanFunction = "vkCreateSemaphore")
+  default VulkanSemaphoreTimelineType createTimelineSemaphore(
+    final long initialValue)
+    throws VulkanException
+  {
+    return this.createTimelineSemaphore(
+      VulkanSemaphoreTimelineCreateInfo.builder()
+        .setInitialValue(initialValue)
+        .build()
+    );
+  }
 
   /**
    * Create a fence.
    *
-   * @param create_info The fence creation info
+   * @param createInfo The fence creation info
    *
    * @return A fence
    *
@@ -615,8 +670,26 @@ public interface VulkanLogicalDeviceType extends VulkanHandleDispatchableType
 
   @VulkanAPIFunctionType(vulkanFunction = "vkCreateFence")
   VulkanFenceType createFence(
-    VulkanFenceCreateInfo create_info)
+    VulkanFenceCreateInfo createInfo)
     throws VulkanException;
+
+  /**
+   * Create a fence.
+   *
+   * @return A fence
+   *
+   * @throws VulkanException On errors
+   */
+
+  @VulkanAPIFunctionType(vulkanFunction = "vkCreateFence")
+  default VulkanFenceType createFence()
+    throws VulkanException
+  {
+    return this.createFence(
+      VulkanFenceCreateInfo.builder()
+        .build()
+    );
+  }
 
   /**
    * Create an event.
@@ -944,6 +1017,21 @@ public interface VulkanLogicalDeviceType extends VulkanHandleDispatchableType
     throws VulkanException;
 
   /**
+   * Retrieve the current value of a semaphore object.
+   *
+   * @param semaphore The semaphore
+   *
+   * @return The semaphore value
+   *
+   * @throws VulkanException On errors
+   */
+
+  @VulkanAPIFunctionType(vulkanFunction = "vkGetSemaphoreCounterValue")
+  long getSemaphoreCounterValue(
+    VulkanSemaphoreTimelineType semaphore)
+    throws VulkanException;
+
+  /**
    * Retrieve the status of a fence object.
    *
    * @param fence The fence
@@ -1095,6 +1183,65 @@ public interface VulkanLogicalDeviceType extends VulkanHandleDispatchableType
   {
     return this.createComputePipelines(Optional.empty(), pipeline_infos);
   }
+
+  /**
+   * Wait for one or more semaphores to become signaled.
+   *
+   * @param semaphores   The semaphores upon which to wait
+   * @param waitAll      {@code true} if all semaphores must become signalled to
+   *                     stop waiting, {@code false} if any semaphore can become
+   *                     signalled
+   * @param timeoutNanos The timeout period in units of nanoseconds.
+   *
+   * @return A value indicating whether waiting succeeded or timed out
+   *
+   * @throws VulkanException On errors
+   */
+
+  @VulkanAPIFunctionType(vulkanFunction = "vkWaitSemaphores")
+  VulkanWaitStatus waitForTimelineSemaphores(
+    List<VulkanSemaphoreTimelineWait> semaphores,
+    boolean waitAll,
+    long timeoutNanos)
+    throws VulkanException;
+
+  /**
+   * Wait for a semaphore to become signaled.
+   *
+   * @param semaphore    The semaphores upon which to wait
+   * @param timeoutNanos The timeout period in units of nanoseconds.
+   *
+   * @return A value indicating whether waiting succeeded or timed out
+   *
+   * @throws VulkanException On errors
+   */
+
+  @VulkanAPIFunctionType(vulkanFunction = "vkWaitSemaphores")
+  default VulkanWaitStatus waitForTimelineSemaphore(
+    final VulkanSemaphoreTimelineWait semaphore,
+    final long timeoutNanos)
+    throws VulkanException
+  {
+    return this.waitForTimelineSemaphores(
+      List.of(semaphore),
+      true,
+      timeoutNanos);
+  }
+
+  /**
+   * Signal a timeline semaphore.
+   *
+   * @param semaphore The semaphore
+   * @param value     The value
+   *
+   * @throws VulkanException On errors
+   */
+
+  @VulkanAPIFunctionType(vulkanFunction = "vkSignalSemaphore")
+  void signalTimelineSemaphore(
+    VulkanSemaphoreTimelineType semaphore,
+    long value)
+    throws VulkanException;
 
   /**
    * The result of fetching data for a pipeline cache.

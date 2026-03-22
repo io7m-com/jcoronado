@@ -21,8 +21,8 @@ import com.io7m.jcoronado.api.VulkanException;
 import com.io7m.jcoronado.api.VulkanImageMemoryBarrier;
 import com.io7m.jcoronado.api.VulkanIncompatibleClassException;
 import org.lwjgl.system.MemoryStack;
-import org.lwjgl.vulkan.VK10;
-import org.lwjgl.vulkan.VkImageMemoryBarrier;
+import org.lwjgl.vulkan.VK13;
+import org.lwjgl.vulkan.VkImageMemoryBarrier2;
 
 import java.util.List;
 import java.util.Objects;
@@ -51,7 +51,7 @@ public final class VulkanLWJGLImageMemoryBarriers
    * @throws VulkanIncompatibleClassException On errors
    */
 
-  public static VkImageMemoryBarrier pack(
+  public static VkImageMemoryBarrier2 pack(
     final MemoryStack stack,
     final VulkanImageMemoryBarrier info)
     throws VulkanIncompatibleClassException
@@ -59,7 +59,7 @@ public final class VulkanLWJGLImageMemoryBarriers
     Objects.requireNonNull(stack, "stack");
     Objects.requireNonNull(info, "info");
 
-    return packInto(stack, info, VkImageMemoryBarrier.malloc(stack));
+    return packInto(stack, info, VkImageMemoryBarrier2.calloc(stack));
   }
 
   /**
@@ -74,28 +74,53 @@ public final class VulkanLWJGLImageMemoryBarriers
    * @throws VulkanIncompatibleClassException On errors
    */
 
-  public static VkImageMemoryBarrier packInto(
+  public static VkImageMemoryBarrier2 packInto(
     final MemoryStack stack,
     final VulkanImageMemoryBarrier source,
-    final VkImageMemoryBarrier target)
+    final VkImageMemoryBarrier2 target)
     throws VulkanIncompatibleClassException
   {
     Objects.requireNonNull(source, "source");
     Objects.requireNonNull(target, "target");
 
+    final var dstStageMask =
+      VulkanEnumMaps.packValuesLong(source.dstStageMask());
+    final var dstAccessMask =
+      VulkanEnumMaps.packValuesLong(source.dstAccessMask());
+    final var dstQueue =
+      source.dstQueueFamilyIndex().value();
+
+    final var imageHandle =
+      checkInstanceOf(source.image(), VulkanLWJGLImage.class).handle();
+
+    final var newLayout =
+      source.newLayout().value();
+    final var oldLayout =
+      source.oldLayout().value();
+
+    final var subresource =
+      VulkanLWJGLImageSubresourceRanges.pack(stack, source.subresourceRange());
+
+    final var srcAccessMask =
+      VulkanEnumMaps.packValuesLong(source.srcAccessMask());
+    final var srcStageMask =
+      VulkanEnumMaps.packValuesLong(source.srcStageMask());
+    final var srcQueueIndex =
+      source.srcQueueFamilyIndex().value();
+
     return target
-      .sType(VK10.VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER)
+      .sType(VK13.VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER_2)
       .pNext(0L)
-      .dstAccessMask(VulkanEnumMaps.packValues(source.targetAccessMask()))
-      .dstQueueFamilyIndex(source.targetQueueFamilyIndex().value())
-      .image(checkInstanceOf(source.image(), VulkanLWJGLImage.class).handle())
-      .newLayout(source.newLayout().value())
-      .oldLayout(source.oldLayout().value())
-      .subresourceRange(VulkanLWJGLImageSubresourceRanges.pack(
-        stack,
-        source.subresourceRange()))
-      .srcAccessMask(VulkanEnumMaps.packValues(source.sourceAccessMask()))
-      .srcQueueFamilyIndex(source.sourceQueueFamilyIndex().value());
+      .dstAccessMask(dstAccessMask)
+      .dstQueueFamilyIndex(dstQueue)
+      .dstStageMask(dstStageMask)
+      .image(imageHandle)
+      .newLayout(newLayout)
+      .oldLayout(oldLayout)
+      .srcAccessMask(srcAccessMask)
+      .srcQueueFamilyIndex(srcQueueIndex)
+      .srcStageMask(srcStageMask)
+      .subresourceRange(subresource);
   }
 
   /**
@@ -109,7 +134,7 @@ public final class VulkanLWJGLImageMemoryBarriers
    * @throws VulkanException On errors
    */
 
-  public static VkImageMemoryBarrier.Buffer packList(
+  public static VkImageMemoryBarrier2.Buffer packList(
     final MemoryStack stack,
     final List<VulkanImageMemoryBarrier> infos)
     throws VulkanException
@@ -119,8 +144,8 @@ public final class VulkanLWJGLImageMemoryBarriers
 
     return VulkanLWJGLArrays.pack(
       infos,
-      (sstack, value, output) -> packInto(stack, value, output),
-      VkImageMemoryBarrier::malloc,
+      VulkanLWJGLImageMemoryBarriers::packInto,
+      VkImageMemoryBarrier2::calloc,
       stack
     );
   }
@@ -136,7 +161,7 @@ public final class VulkanLWJGLImageMemoryBarriers
    * @throws VulkanException On errors
    */
 
-  public static VkImageMemoryBarrier.Buffer packListOrNull(
+  public static VkImageMemoryBarrier2.Buffer packListOrNull(
     final MemoryStack stack,
     final List<VulkanImageMemoryBarrier> infos)
     throws VulkanException
@@ -146,8 +171,8 @@ public final class VulkanLWJGLImageMemoryBarriers
 
     return VulkanLWJGLArrays.packOrNull(
       infos,
-      (sstack, value, output) -> packInto(stack, value, output),
-      VkImageMemoryBarrier::malloc,
+      VulkanLWJGLImageMemoryBarriers::packInto,
+      VkImageMemoryBarrier2::calloc,
       stack
     );
   }

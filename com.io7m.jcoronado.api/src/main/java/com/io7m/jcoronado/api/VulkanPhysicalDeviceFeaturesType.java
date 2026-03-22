@@ -36,7 +36,11 @@ public interface VulkanPhysicalDeviceFeaturesType
    * @see "VkPhysicalDeviceVulkan11Features"
    */
 
-  VulkanPhysicalDeviceFeatures10 features10();
+  @Value.Default
+  default VulkanPhysicalDeviceFeatures10 features10()
+  {
+    return VulkanPhysicalDeviceFeatures10.builder().build();
+  }
 
   /**
    * @return The features supported by a physical Vulkan 1.1 device.
@@ -44,7 +48,11 @@ public interface VulkanPhysicalDeviceFeaturesType
    * @see "VkPhysicalDeviceVulkan11Features"
    */
 
-  VulkanPhysicalDeviceFeatures11 features11();
+  @Value.Default
+  default VulkanPhysicalDeviceFeatures11 features11()
+  {
+    return VulkanPhysicalDeviceFeatures11.builder().build();
+  }
 
   /**
    * @return The features supported by a physical Vulkan 1.2 device.
@@ -52,7 +60,11 @@ public interface VulkanPhysicalDeviceFeaturesType
    * @see "VkPhysicalDeviceVulkan12Features"
    */
 
-  VulkanPhysicalDeviceFeatures12 features12();
+  @Value.Default
+  default VulkanPhysicalDeviceFeatures12 features12()
+  {
+    return VulkanPhysicalDeviceFeatures12.builder().build();
+  }
 
   /**
    * @return The features supported by a physical Vulkan 1.3 device.
@@ -60,5 +72,21 @@ public interface VulkanPhysicalDeviceFeaturesType
    * @see "VkPhysicalDeviceVulkan13Features"
    */
 
-  VulkanPhysicalDeviceFeatures13 features13();
+  @Value.Default
+  default VulkanPhysicalDeviceFeatures13 features13()
+  {
+    return VulkanPhysicalDeviceFeatures13.builder().build();
+  }
+
+  /**
+   * @return The features supported by a physical Vulkan 1.4 device.
+   *
+   * @see "VkPhysicalDeviceVulkan14Features"
+   */
+
+  @Value.Default
+  default VulkanPhysicalDeviceFeatures14 features14()
+  {
+    return VulkanPhysicalDeviceFeatures14.builder().build();
+  }
 }

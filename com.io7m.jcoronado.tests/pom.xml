@@ -9,7 +9,7 @@
   <parent>
     <artifactId>com.io7m.jcoronado</artifactId>
     <groupId>com.io7m.jcoronado</groupId>
-    <version>0.0.1</version>
+    <version>1.0.0-beta0001</version>
   </parent>
 
   <artifactId>com.io7m.jcoronado.tests</artifactId>
@@ -34,12 +34,22 @@
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
+      <artifactId>com.io7m.jcoronado.fake</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
       <artifactId>com.io7m.jcoronado.lwjgl</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>com.io7m.jcoronado.extensions.ext_layer_settings.api</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>com.io7m.jcoronado.utility.swapchain</artifactId>
       <version>${project.version}</version>
     </dependency>
 

@@ -66,12 +66,10 @@ public final class VulkanLWJGLTemporaryAllocator
       address = this.alloc.aligned_alloc(alignment, size);
       if (address == 0L) {
         throw new VulkanAllocationFailedException(
-          new StringBuilder(64)
-            .append("Could not allocate ")
-            .append(Long.toUnsignedString(size))
-            .append(" bytes with alignment ")
-            .append(Long.toUnsignedString(alignment))
-            .toString());
+          "Memory allocation failed.",
+          size,
+          alignment
+        );
       }
 
       if (LOG.isTraceEnabled()) {

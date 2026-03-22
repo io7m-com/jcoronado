@@ -55,7 +55,7 @@ public final class VulkanLWJGLDescriptorBufferInfos
     Objects.requireNonNull(stack, "stack");
     Objects.requireNonNull(info, "info");
 
-    return packInto(info, VkDescriptorBufferInfo.malloc(stack));
+    return packInto(info, VkDescriptorBufferInfo.calloc(stack));
   }
 
   /**
@@ -109,7 +109,7 @@ public final class VulkanLWJGLDescriptorBufferInfos
     return VulkanLWJGLArrays.pack(
       infos,
       (sstack, value, output) -> packInto(value, output),
-      VkDescriptorBufferInfo::malloc,
+      VkDescriptorBufferInfo::calloc,
       stack
     );
   }
@@ -136,7 +136,7 @@ public final class VulkanLWJGLDescriptorBufferInfos
     return VulkanLWJGLArrays.packOrNull(
       infos,
       (sstack, value, output) -> packInto(value, output),
-      VkDescriptorBufferInfo::malloc,
+      VkDescriptorBufferInfo::calloc,
       stack
     );
   }

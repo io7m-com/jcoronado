@@ -37,14 +37,12 @@ public interface VulkanLogicalDeviceQueueCreateInfoType
    * @return The flags used to create the queue(s)
    */
 
-  @Value.Parameter
   Set<VulkanDeviceQueueCreationFlag> flags();
 
   /**
    * @return The queue family
    */
 
-  @Value.Parameter
   VulkanQueueFamilyIndex queueFamilyIndex();
 
   /**
@@ -54,7 +52,6 @@ public interface VulkanLogicalDeviceQueueCreateInfoType
    * @return The priorities of the queues
    */
 
-  @Value.Parameter
   List<Float> queuePriorities();
 
   /**

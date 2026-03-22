@@ -60,7 +60,7 @@ public final class VulkanLWJGLPipelineViewportStateCreateInfos
     Objects.requireNonNull(info, "info");
 
     final var target =
-      VkPipelineViewportStateCreateInfo.malloc(stack);
+      VkPipelineViewportStateCreateInfo.calloc(stack);
 
     return target
       .sType(VK10.VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO)
@@ -76,16 +76,16 @@ public final class VulkanLWJGLPipelineViewportStateCreateInfos
     final MemoryStack stack,
     final List<VulkanRectangle2D> scissors)
   {
-    final var buffer = VkRect2D.malloc(scissors.size(), stack);
+    final var buffer = VkRect2D.calloc(scissors.size(), stack);
     for (var index = 0; index < scissors.size(); ++index) {
       final var source = scissors.get(index);
       final var target = VkRect2D.create(buffer.address(index));
       final var extent = source.extent();
       final var offset = source.offset();
-      target.extent(VkExtent2D.malloc(stack).set(
+      target.extent(VkExtent2D.calloc(stack).set(
         extent.width(),
         extent.height()));
-      target.offset(VkOffset2D.malloc(stack).set(offset.x(), offset.y()));
+      target.offset(VkOffset2D.calloc(stack).set(offset.x(), offset.y()));
     }
     return buffer;
   }
@@ -94,7 +94,7 @@ public final class VulkanLWJGLPipelineViewportStateCreateInfos
     final MemoryStack stack,
     final List<VulkanViewport> viewports)
   {
-    final var buffer = VkViewport.malloc(viewports.size(), stack);
+    final var buffer = VkViewport.calloc(viewports.size(), stack);
     for (var index = 0; index < viewports.size(); ++index) {
       final var source = viewports.get(index);
       final var target = VkViewport.create(buffer.address(index));

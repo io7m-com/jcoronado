@@ -34,21 +34,26 @@ public interface VulkanPipelineInputAssemblyStateCreateInfoType
    * @return Flags reserved for future use
    */
 
-  @Value.Parameter
   Set<VulkanPipelineInputAssemblyStateCreateFlag> flags();
 
   /**
    * @return The primitive topology
    */
 
-  @Value.Parameter
-  VulkanPrimitiveTopology topology();
+  @Value.Default
+  default VulkanPrimitiveTopology topology()
+  {
+    return VulkanPrimitiveTopology.VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
+  }
 
   /**
    * @return {@code true} if a special vertex index value is treated as restarting the assembly of
    * primitives
    */
 
-  @Value.Parameter
-  boolean primitiveRestartEnable();
+  @Value.Default
+  default boolean primitiveRestartEnable()
+  {
+    return false;
+  }
 }

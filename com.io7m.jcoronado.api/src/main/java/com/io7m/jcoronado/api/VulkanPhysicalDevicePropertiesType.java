@@ -34,42 +34,36 @@ public interface VulkanPhysicalDevicePropertiesType
    * @return The device name
    */
 
-  @Value.Parameter
   String name();
 
   /**
    * @return The device type
    */
 
-  @Value.Parameter
   Type type();
 
   /**
    * @return The device ID (unique for a specific vendor)
    */
 
-  @Value.Parameter
   int id();
 
   /**
    * @return The vendor ID
    */
 
-  @Value.Parameter
   int vendorId();
 
   /**
    * @return The highest version of Vulkan supported
    */
 
-  @Value.Parameter
   VulkanVersion apiVersion();
 
   /**
    * @return The version of the underlying device driver
    */
 
-  @Value.Parameter
   VulkanVersion driverVersion();
 
   /**

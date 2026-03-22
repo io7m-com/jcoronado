@@ -27,44 +27,51 @@ import java.util.Set;
  * @see "VkBufferMemoryBarrier"
  */
 
-@VulkanAPIStructType(vulkanStruct = "VkBufferMemoryBarrier")
+@VulkanAPIStructType(vulkanStruct = "VkBufferMemoryBarrier2")
 @ImmutablesStyleType
 @Value.Immutable
 public interface VulkanBufferMemoryBarrierType
 {
   /**
+   * @return The source stage mask
+   */
+
+  Set<VulkanPipelineStageFlag> srcStageMask();
+
+  /**
    * @return The source access mask
    */
 
-  @Value.Parameter
-  Set<VulkanAccessFlag> sourceAccessMask();
+  Set<VulkanAccessFlag> srcAccessMask();
 
   /**
-   * @return The target access mask
+   * @return The destination stage mask
    */
 
-  @Value.Parameter
-  Set<VulkanAccessFlag> targetAccessMask();
+  Set<VulkanPipelineStageFlag> dstStageMask();
+
+  /**
+   * @return The destination access mask
+   */
+
+  Set<VulkanAccessFlag> dstAccessMask();
 
   /**
    * @return The source queue family for a queue family ownership transfer.
    */
 
-  @Value.Parameter
-  VulkanQueueFamilyIndex sourceQueueFamilyIndex();
+  VulkanQueueFamilyIndex srcQueueFamilyIndex();
 
   /**
    * @return The target queue family for a queue family ownership transfer.
    */
 
-  @Value.Parameter
-  VulkanQueueFamilyIndex targetQueueFamilyIndex();
+  VulkanQueueFamilyIndex dstQueueFamilyIndex();
 
   /**
    * @return The buffer affected by this barrier.
    */
 
-  @Value.Parameter
   VulkanBufferType buffer();
 
   /**
@@ -72,14 +79,20 @@ public interface VulkanBufferMemoryBarrierType
    * offset as bound to the buffer
    */
 
-  @Value.Parameter
-  long offset();
+  @Value.Default
+  default long offset()
+  {
+    return 0L;
+  }
 
   /**
    * @return A size in bytes of the affected area of backing memory for buffer, or VK_WHOLE_SIZE to
    * use the range from offset to the end of the buffer.
    */
 
-  @Value.Parameter
-  long size();
+  @Value.Default
+  default long size()
+  {
+    return 0L;
+  }
 }

@@ -38,7 +38,6 @@ public interface VulkanDescriptorSetLayoutBindingType
    * number in the shader stages
    */
 
-  @Value.Parameter
   int binding();
 
   /**
@@ -46,7 +45,6 @@ public interface VulkanDescriptorSetLayoutBindingType
    * binding.
    */
 
-  @Value.Parameter
   VulkanDescriptorType descriptorType();
 
   /**
@@ -57,8 +55,11 @@ public interface VulkanDescriptorSetLayoutBindingType
    * binding within any pipeline using the set layout.
    */
 
-  @Value.Parameter
-  int descriptorCount();
+  @Value.Default
+  default int descriptorCount()
+  {
+    return 0;
+  }
 
   /**
    * @return A set of VulkanShaderStageFlag values specifying which pipeline shader stages can
@@ -67,13 +68,11 @@ public interface VulkanDescriptorSetLayoutBindingType
    * resource.
    */
 
-  @Value.Parameter
   Set<VulkanShaderStageFlag> stageFlags();
 
   /**
    * @return A set of samplers to be initialized
    */
 
-  @Value.Parameter
   List<VulkanSamplerType> immutableSamplers();
 }

@@ -51,7 +51,7 @@ public final class VulkanLWJGLShaderModules
     Objects.requireNonNull(stack, "stack");
     Objects.requireNonNull(create_info, "create_info");
 
-    return VkShaderModuleCreateInfo.malloc(stack)
+    return VkShaderModuleCreateInfo.calloc(stack)
       .sType(VK10.VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO)
       .pNext(0L)
       .pCode(create_info.data())

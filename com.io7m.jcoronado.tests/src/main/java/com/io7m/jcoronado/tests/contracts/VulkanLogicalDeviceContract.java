@@ -22,8 +22,10 @@ import com.io7m.jcoronado.api.VulkanBufferCopy;
 import com.io7m.jcoronado.api.VulkanBufferCreateInfo;
 import com.io7m.jcoronado.api.VulkanBufferMemoryBarrier;
 import com.io7m.jcoronado.api.VulkanBufferViewCreateInfo;
+import com.io7m.jcoronado.api.VulkanCommandBufferSubmitInfo;
 import com.io7m.jcoronado.api.VulkanCommandPoolCreateInfo;
 import com.io7m.jcoronado.api.VulkanComponentMapping;
+import com.io7m.jcoronado.api.VulkanDependencyInfo;
 import com.io7m.jcoronado.api.VulkanEventCreateInfo;
 import com.io7m.jcoronado.api.VulkanException;
 import com.io7m.jcoronado.api.VulkanExtent2D;
@@ -45,7 +47,8 @@ import com.io7m.jcoronado.api.VulkanRectangle2D;
 import com.io7m.jcoronado.api.VulkanRenderPassBeginInfo;
 import com.io7m.jcoronado.api.VulkanRenderPassCreateInfo;
 import com.io7m.jcoronado.api.VulkanSamplerCreateInfo;
-import com.io7m.jcoronado.api.VulkanSemaphoreCreateInfo;
+import com.io7m.jcoronado.api.VulkanSemaphoreBinaryCreateInfo;
+import com.io7m.jcoronado.api.VulkanSemaphoreTimelineCreateInfo;
 import com.io7m.jcoronado.api.VulkanShaderModuleCreateInfo;
 import com.io7m.jcoronado.api.VulkanSubmitInfo;
 import com.io7m.jcoronado.api.VulkanSubpassContents;
@@ -175,11 +178,18 @@ public abstract class VulkanLogicalDeviceContract extends VulkanOnDeviceContract
   {
     Assumptions.assumeTrue(this.shouldRun(), "Test should run");
 
+    final var extent =
+      VulkanExtent3D.builder()
+        .setWidth(256)
+        .setHeight(256)
+        .setDepth(1)
+        .build();
+
     try (var image = this.device.createImage(
       VulkanImageCreateInfo.builder()
         .setArrayLayers(1)
         .setSamples(Set.of(VK_SAMPLE_COUNT_1_BIT))
-        .setExtent(VulkanExtent3D.of(256, 256, 1))
+        .setExtent(extent)
         .setFormat(VK_FORMAT_R8_UNORM)
         .setImageType(VK_IMAGE_TYPE_2D)
         .setInitialLayout(VK_IMAGE_LAYOUT_UNDEFINED)
@@ -261,16 +271,20 @@ public abstract class VulkanLogicalDeviceContract extends VulkanOnDeviceContract
       final var memory0 =
         resources.add(
           this.device.allocateMemory(
-            VulkanMemoryAllocateInfo.of(
-              buffer0Requirements.size(),
-              bufferMemoryType.index()))
+            VulkanMemoryAllocateInfo.builder()
+              .setMemoryTypeIndex(bufferMemoryType.index())
+              .setSize(buffer0Requirements.size())
+              .build()
+          )
         );
       final var memory1 =
         resources.add(
           this.device.allocateMemory(
-            VulkanMemoryAllocateInfo.of(
-              buffer1Requirements.size(),
-              bufferMemoryType.index()))
+            VulkanMemoryAllocateInfo.builder()
+              .setMemoryTypeIndex(bufferMemoryType.index())
+              .setSize(buffer1Requirements.size())
+              .build()
+          )
         );
 
       final var map0 =
@@ -290,11 +304,14 @@ public abstract class VulkanLogicalDeviceContract extends VulkanOnDeviceContract
           .findFirst()
           .orElseThrow();
 
+      final var queueFamilyIndex =
+        queue.queueFamilyProperties().queueFamilyIndex();
+
       final var commandPool =
         resources.add(
           this.device.createCommandPool(
             VulkanCommandPoolCreateInfo.builder()
-              .setQueueFamilyIndex(queue.queueFamilyProperties().queueFamilyIndex())
+              .setQueueFamilyIndex(queueFamilyIndex)
               .build())
         );
 
@@ -307,86 +324,105 @@ public abstract class VulkanLogicalDeviceContract extends VulkanOnDeviceContract
 
       final var fence =
         resources.add(
-          this.device.createFence(VulkanFenceCreateInfo.of(Set.of()))
+          this.device.createFence(VulkanFenceCreateInfo.builder().build())
         );
 
       final var fillBarrier0 =
-        VulkanBufferMemoryBarrier.of(
-          Set.of(VK_ACCESS_TRANSFER_WRITE_BIT),
-          Set.of(VK_ACCESS_TRANSFER_READ_BIT),
-          queue.queueFamilyProperties().queueFamilyIndex(),
-          queue.queueFamilyProperties().queueFamilyIndex(),
-          buffer0,
-          0L,
-          128L
-        );
+        VulkanBufferMemoryBarrier.builder()
+          .setBuffer(buffer0)
+          .setSrcStageMask(Set.of(VK_PIPELINE_STAGE_TRANSFER_BIT))
+          .setSrcAccessMask(Set.of(VK_ACCESS_TRANSFER_WRITE_BIT))
+          .setSrcQueueFamilyIndex(queueFamilyIndex)
+          .setDstStageMask(Set.of(VK_PIPELINE_STAGE_TRANSFER_BIT))
+          .setDstAccessMask(Set.of(VK_ACCESS_TRANSFER_READ_BIT))
+          .setDstQueueFamilyIndex(queueFamilyIndex)
+          .setOffset(0L)
+          .setSize(128L)
+          .build();
 
       final var fillBarrier1 =
-        VulkanBufferMemoryBarrier.of(
-          Set.of(VK_ACCESS_TRANSFER_WRITE_BIT),
-          Set.of(VK_ACCESS_TRANSFER_READ_BIT),
-          queue.queueFamilyProperties().queueFamilyIndex(),
-          queue.queueFamilyProperties().queueFamilyIndex(),
-          buffer1,
-          0L,
-          128L
-        );
+        VulkanBufferMemoryBarrier.builder()
+          .setBuffer(buffer1)
+          .setSrcStageMask(Set.of(VK_PIPELINE_STAGE_TRANSFER_BIT))
+          .setSrcAccessMask(Set.of(VK_ACCESS_TRANSFER_WRITE_BIT))
+          .setSrcQueueFamilyIndex(queueFamilyIndex)
+          .setDstStageMask(Set.of(VK_PIPELINE_STAGE_TRANSFER_BIT))
+          .setDstAccessMask(Set.of(VK_ACCESS_TRANSFER_READ_BIT))
+          .setDstQueueFamilyIndex(queueFamilyIndex)
+          .setOffset(0L)
+          .setSize(128L)
+          .build();
 
       final var copyBarrier0 =
-        VulkanBufferMemoryBarrier.of(
-          Set.of(VK_ACCESS_TRANSFER_WRITE_BIT),
-          Set.of(VK_ACCESS_HOST_READ_BIT),
-          queue.queueFamilyProperties().queueFamilyIndex(),
-          queue.queueFamilyProperties().queueFamilyIndex(),
-          buffer0,
-          0L,
-          128L
-        );
+        VulkanBufferMemoryBarrier.builder()
+          .setBuffer(buffer0)
+          .setSrcStageMask(Set.of(VK_PIPELINE_STAGE_TRANSFER_BIT))
+          .setSrcAccessMask(Set.of(VK_ACCESS_TRANSFER_WRITE_BIT))
+          .setSrcQueueFamilyIndex(queueFamilyIndex)
+          .setDstStageMask(Set.of(VK_PIPELINE_STAGE_HOST_BIT))
+          .setDstAccessMask(Set.of(VK_ACCESS_HOST_READ_BIT))
+          .setDstQueueFamilyIndex(queueFamilyIndex)
+          .setSize(128L)
+          .setOffset(0L)
+          .build();
 
       final var copyBarrier1 =
-        VulkanBufferMemoryBarrier.of(
-          Set.of(VK_ACCESS_TRANSFER_WRITE_BIT),
-          Set.of(VK_ACCESS_HOST_READ_BIT),
-          queue.queueFamilyProperties().queueFamilyIndex(),
-          queue.queueFamilyProperties().queueFamilyIndex(),
-          buffer1,
-          0L,
-          128L
-        );
+        VulkanBufferMemoryBarrier.builder()
+          .setBuffer(buffer1)
+          .setSrcStageMask(Set.of(VK_PIPELINE_STAGE_TRANSFER_BIT))
+          .setSrcAccessMask(Set.of(VK_ACCESS_TRANSFER_WRITE_BIT))
+          .setSrcQueueFamilyIndex(queueFamilyIndex)
+          .setDstStageMask(Set.of(VK_PIPELINE_STAGE_HOST_BIT))
+          .setDstAccessMask(Set.of(VK_ACCESS_HOST_READ_BIT))
+          .setDstQueueFamilyIndex(queueFamilyIndex)
+          .setSize(128L)
+          .setOffset(0L)
+          .build();
 
       commandBuffer.beginCommandBuffer(
         VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT);
 
       commandBuffer.fillBuffer(buffer0, 0L, 128L, 0x41414141);
       commandBuffer.fillBuffer(buffer1, 0L, 128L, 0x42424242);
+
       commandBuffer.pipelineBarrier(
-        Set.of(VK_PIPELINE_STAGE_TRANSFER_BIT),
-        Set.of(VK_PIPELINE_STAGE_TRANSFER_BIT),
-        Set.of(),
-        List.of(),
-        List.of(fillBarrier0, fillBarrier1),
-        List.of()
+        VulkanDependencyInfo.builder()
+          .addBufferMemoryBarriers(fillBarrier0)
+          .addBufferMemoryBarriers(fillBarrier1)
+          .build()
       );
+
+      final var bufferCopy =
+        VulkanBufferCopy.builder()
+          .setSize(128L)
+          .setSourceOffset(0L)
+          .setTargetOffset(0L)
+          .build();
 
       commandBuffer.copyBuffer(
         buffer0,
         buffer1,
-        List.of(VulkanBufferCopy.of(0L, 0L, 128L)));
-      commandBuffer.pipelineBarrier(
-        Set.of(VK_PIPELINE_STAGE_TRANSFER_BIT),
-        Set.of(VK_PIPELINE_STAGE_HOST_BIT),
-        Set.of(),
-        List.of(),
-        List.of(copyBarrier0, copyBarrier1),
-        List.of()
+        List.of(bufferCopy)
       );
+
+      commandBuffer.pipelineBarrier(
+        VulkanDependencyInfo.builder()
+          .addBufferMemoryBarriers(copyBarrier0)
+          .addBufferMemoryBarriers(copyBarrier1)
+          .build()
+      );
+
       commandBuffer.endCommandBuffer();
 
-      queue.submit(List.of(
-        VulkanSubmitInfo.builder()
-          .addCommandBuffers(commandBuffer)
-          .build()
-      ), Optional.of(fence));
+      queue.submit(
+        List.of(
+          VulkanSubmitInfo.builder()
+            .addCommandBuffers(
+              VulkanCommandBufferSubmitInfo.builder()
+                .setCommandBuffer(commandBuffer)
+                .build()
+            ).build()
+        ), Optional.of(fence));
 
       this.device.waitForFence(fence, 1_000_000_000L);
 
@@ -505,18 +541,27 @@ public abstract class VulkanLogicalDeviceContract extends VulkanOnDeviceContract
   {
     Assumptions.assumeTrue(this.shouldRun(), "Test should run");
 
+    final var extent =
+      VulkanExtent3D.builder()
+        .setWidth(256)
+        .setHeight(256)
+        .setDepth(1)
+        .build();
+
     try (var image = this.device.createImage(
       VulkanImageCreateInfo.builder()
         .setArrayLayers(1)
         .setSamples(Set.of(VK_SAMPLE_COUNT_1_BIT))
-        .setExtent(VulkanExtent3D.of(256, 256, 1))
+        .setExtent(extent)
         .setFormat(VK_FORMAT_R8G8B8A8_UNORM)
         .setImageType(VK_IMAGE_TYPE_2D)
         .setInitialLayout(VK_IMAGE_LAYOUT_UNDEFINED)
         .setMipLevels(1)
         .setSharingMode(VK_SHARING_MODE_EXCLUSIVE)
         .setTiling(VK_IMAGE_TILING_LINEAR)
-        .setUsage(Set.of(VK_IMAGE_USAGE_TRANSFER_SRC_BIT, VK_IMAGE_USAGE_SAMPLED_BIT))
+        .setUsage(Set.of(
+          VK_IMAGE_USAGE_TRANSFER_SRC_BIT,
+          VK_IMAGE_USAGE_SAMPLED_BIT))
         .build()
     )) {
       final var subresourceRange =
@@ -551,12 +596,7 @@ public abstract class VulkanLogicalDeviceContract extends VulkanOnDeviceContract
           VulkanImageViewCreateInfo.builder()
             .setFormat(VK_FORMAT_R8G8B8A8_UNORM)
             .setImage(image)
-            .setComponents(VulkanComponentMapping.of(
-              VK_COMPONENT_SWIZZLE_IDENTITY,
-              VK_COMPONENT_SWIZZLE_IDENTITY,
-              VK_COMPONENT_SWIZZLE_IDENTITY,
-              VK_COMPONENT_SWIZZLE_IDENTITY
-            ))
+            .setComponents(VulkanComponentMapping.IDENTITY)
             .setViewType(VulkanImageViewKind.VK_IMAGE_VIEW_TYPE_2D)
             .setSubresourceRange(subresourceRange)
             .build()
@@ -579,11 +619,18 @@ public abstract class VulkanLogicalDeviceContract extends VulkanOnDeviceContract
   {
     Assumptions.assumeTrue(this.shouldRun(), "Test should run");
 
+    final var extent =
+      VulkanExtent3D.builder()
+        .setWidth(256)
+        .setHeight(256)
+        .setDepth(1)
+        .build();
+
     try (var image = this.device.createImage(
       VulkanImageCreateInfo.builder()
         .setArrayLayers(1)
         .setSamples(Set.of(VK_SAMPLE_COUNT_1_BIT))
-        .setExtent(VulkanExtent3D.of(256, 256, 1))
+        .setExtent(extent)
         .setFormat(VK_FORMAT_R5G6B5_UNORM_PACK16)
         .setImageType(VK_IMAGE_TYPE_2D)
         .setInitialLayout(VK_IMAGE_LAYOUT_UNDEFINED)
@@ -625,12 +672,7 @@ public abstract class VulkanLogicalDeviceContract extends VulkanOnDeviceContract
                  VulkanImageViewCreateInfo.builder()
                    .setFormat(VK_FORMAT_R5G6B5_UNORM_PACK16)
                    .setImage(image)
-                   .setComponents(VulkanComponentMapping.of(
-                     VK_COMPONENT_SWIZZLE_IDENTITY,
-                     VK_COMPONENT_SWIZZLE_IDENTITY,
-                     VK_COMPONENT_SWIZZLE_IDENTITY,
-                     VK_COMPONENT_SWIZZLE_IDENTITY
-                   ))
+                   .setComponents(VulkanComponentMapping.IDENTITY)
                    .setViewType(VulkanImageViewKind.VK_IMAGE_VIEW_TYPE_2D)
                    .setSubresourceRange(subresourceRange)
                    .build()
@@ -653,10 +695,12 @@ public abstract class VulkanLogicalDeviceContract extends VulkanOnDeviceContract
                          .build())
                      .addSubpasses(
                        VulkanSubpassDescription.builder()
-                         .addColorAttachments(VulkanAttachmentReference.of(
-                           0,
-                           VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL))
-                         .setPipelineBindPoint(VK_PIPELINE_BIND_POINT_GRAPHICS)
+                         .addColorAttachments(
+                           VulkanAttachmentReference.builder()
+                             .setAttachment(0)
+                             .setLayout(VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL)
+                             .build()
+                         ).setPipelineBindPoint(VK_PIPELINE_BIND_POINT_GRAPHICS)
                          .build())
                      .build()
                  )) {
@@ -690,11 +734,18 @@ public abstract class VulkanLogicalDeviceContract extends VulkanOnDeviceContract
   {
     Assumptions.assumeTrue(this.shouldRun(), "Test should run");
 
+    final var extent =
+      VulkanExtent3D.builder()
+        .setWidth(256)
+        .setHeight(256)
+        .setDepth(1)
+        .build();
+
     try (var image = this.device.createImage(
       VulkanImageCreateInfo.builder()
         .setArrayLayers(1)
         .setSamples(Set.of(VK_SAMPLE_COUNT_1_BIT))
-        .setExtent(VulkanExtent3D.of(256, 256, 1))
+        .setExtent(extent)
         .setFormat(VK_FORMAT_R5G6B5_UNORM_PACK16)
         .setImageType(VK_IMAGE_TYPE_2D)
         .setInitialLayout(VK_IMAGE_LAYOUT_UNDEFINED)
@@ -736,39 +787,40 @@ public abstract class VulkanLogicalDeviceContract extends VulkanOnDeviceContract
                  VulkanImageViewCreateInfo.builder()
                    .setFormat(VK_FORMAT_R5G6B5_UNORM_PACK16)
                    .setImage(image)
-                   .setComponents(VulkanComponentMapping.of(
-                     VK_COMPONENT_SWIZZLE_IDENTITY,
-                     VK_COMPONENT_SWIZZLE_IDENTITY,
-                     VK_COMPONENT_SWIZZLE_IDENTITY,
-                     VK_COMPONENT_SWIZZLE_IDENTITY
-                   ))
+                   .setComponents(VulkanComponentMapping.IDENTITY)
                    .setViewType(VulkanImageViewKind.VK_IMAGE_VIEW_TYPE_2D)
                    .setSubresourceRange(subresourceRange)
                    .build()
                )) {
 
+          final var subpassDescription =
+            VulkanSubpassDescription.builder()
+              .addColorAttachments(
+                VulkanAttachmentReference.builder()
+                  .setAttachment(0)
+                  .setLayout(VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL)
+                  .build()
+              )
+              .setPipelineBindPoint(VK_PIPELINE_BIND_POINT_GRAPHICS)
+              .build();
+
+          final var attachmentDescription =
+            VulkanAttachmentDescription.builder()
+              .setInitialLayout(VK_IMAGE_LAYOUT_UNDEFINED)
+              .setFormat(VK_FORMAT_R5G6B5_UNORM_PACK16)
+              .setSamples(VK_SAMPLE_COUNT_1_BIT)
+              .setFinalLayout(VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL)
+              .setLoadOp(VK_ATTACHMENT_LOAD_OP_DONT_CARE)
+              .setStoreOp(VK_ATTACHMENT_STORE_OP_DONT_CARE)
+              .setStencilLoadOp(VK_ATTACHMENT_LOAD_OP_DONT_CARE)
+              .setStencilStoreOp(VK_ATTACHMENT_STORE_OP_DONT_CARE)
+              .build();
+
           try (var renderPass =
                  this.device.createRenderPass(
                    VulkanRenderPassCreateInfo.builder()
-                     .addAttachments(
-                       VulkanAttachmentDescription.builder()
-                         .setInitialLayout(VK_IMAGE_LAYOUT_UNDEFINED)
-                         .setFormat(VK_FORMAT_R5G6B5_UNORM_PACK16)
-                         .setSamples(VK_SAMPLE_COUNT_1_BIT)
-                         .setFinalLayout(
-                           VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL)
-                         .setLoadOp(VK_ATTACHMENT_LOAD_OP_DONT_CARE)
-                         .setStoreOp(VK_ATTACHMENT_STORE_OP_DONT_CARE)
-                         .setStencilLoadOp(VK_ATTACHMENT_LOAD_OP_DONT_CARE)
-                         .setStencilStoreOp(VK_ATTACHMENT_STORE_OP_DONT_CARE)
-                         .build())
-                     .addSubpasses(
-                       VulkanSubpassDescription.builder()
-                         .addColorAttachments(VulkanAttachmentReference.of(
-                           0,
-                           VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL))
-                         .setPipelineBindPoint(VK_PIPELINE_BIND_POINT_GRAPHICS)
-                         .build())
+                     .addAttachments(attachmentDescription)
+                     .addSubpasses(subpassDescription)
                      .build()
                  )) {
 
@@ -797,14 +849,21 @@ public abstract class VulkanLogicalDeviceContract extends VulkanOnDeviceContract
                            .setRenderPass(renderPass)
                            .build())) {
                   buffer.beginCommandBuffer();
+
+                  final var extent256 =
+                    VulkanExtent2D.builder()
+                      .setWidth(256)
+                      .setHeight(256)
+                      .build();
+
                   buffer.beginRenderPass(
                     VulkanRenderPassBeginInfo.builder()
                       .setRenderPass(renderPass)
                       .setFramebuffer(framebuffer)
                       .setRenderArea(
                         VulkanRectangle2D.builder()
-                          .setExtent(VulkanExtent2D.of(256, 256))
-                          .setOffset(VulkanOffset2D.of(0, 0))
+                          .setExtent(extent256)
+                          .setOffset(VulkanOffset2D.ZERO)
                           .build())
                       .build(),
                     VulkanSubpassContents.VK_SUBPASS_CONTENTS_INLINE
@@ -916,14 +975,34 @@ public abstract class VulkanLogicalDeviceContract extends VulkanOnDeviceContract
    */
 
   @Test
-  public final void testCreateSemaphore()
+  public final void testCreateSemaphoreBinary()
     throws Exception
   {
     Assumptions.assumeTrue(this.shouldRun(), "Test should run");
 
     try (var semaphore =
-           this.device.createSemaphore(
-             VulkanSemaphoreCreateInfo.builder()
+           this.device.createBinarySemaphore(
+             VulkanSemaphoreBinaryCreateInfo.builder().build())) {
+      assertFalse(semaphore.isClosed());
+    }
+  }
+
+  /**
+   * Try creating a semaphore.
+   *
+   * @throws Exception On errors
+   */
+
+  @Test
+  public final void testCreateSemaphoreTimeline()
+    throws Exception
+  {
+    Assumptions.assumeTrue(this.shouldRun(), "Test should run");
+
+    try (var semaphore =
+           this.device.createTimelineSemaphore(
+             VulkanSemaphoreTimelineCreateInfo.builder()
+               .setInitialValue(23L)
                .build())) {
       assertFalse(semaphore.isClosed());
     }
@@ -957,12 +1036,13 @@ public abstract class VulkanLogicalDeviceContract extends VulkanOnDeviceContract
             bufferMemoryRequirements,
             Set.of(VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT));
 
-      try (var memory =
-             this.device.allocateMemory(
-               VulkanMemoryAllocateInfo.of(
-                 bufferMemoryRequirements.size(),
-                 memoryType.index())
-             )) {
+      final var allocateInfo =
+        VulkanMemoryAllocateInfo.builder()
+          .setSize(bufferMemoryRequirements.size())
+          .setMemoryTypeIndex(memoryType.index())
+          .build();
+
+      try (var memory = this.device.allocateMemory(allocateInfo)) {
 
         final VulkanMappedMemoryType unmapped;
         try (var map =
@@ -971,12 +1051,12 @@ public abstract class VulkanLogicalDeviceContract extends VulkanOnDeviceContract
           assertTrue(map.isMapped());
 
           final var byteBuffer = map.asByteBuffer();
-          for (int index = 0; index < 128; ++index) {
+          for (var index = 0; index < 128; ++index) {
             byteBuffer.put(index, (byte) index);
           }
           map.flushRange(0L, 128L);
 
-          for (int index = 0; index < 128; ++index) {
+          for (var index = 0; index < 128; ++index) {
             byteBuffer.put(index, (byte) (index + 2));
           }
           map.flush();

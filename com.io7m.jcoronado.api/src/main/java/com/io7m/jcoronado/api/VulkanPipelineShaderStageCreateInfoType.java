@@ -35,34 +35,29 @@ public interface VulkanPipelineShaderStageCreateInfoType
    * @return Flags reserved for future use
    */
 
-  @Value.Parameter
   Set<VulkanPipelineShaderStageCreateFlag> flags();
 
   /**
    * @return A single pipeline stage.
    */
 
-  @Value.Parameter
   VulkanShaderStageFlag stage();
 
   /**
    * @return A shader module containing the shader for the stage.
    */
 
-  @Value.Parameter
   VulkanShaderModuleType module();
 
   /**
    * @return The entry point name of the shader for this stage.
    */
 
-  @Value.Parameter
   String shaderEntryPoint();
 
   /**
    * @return The optional specialization info
    */
 
-  @Value.Parameter
   Optional<VulkanSpecializationMap> specializationInfo();
 }

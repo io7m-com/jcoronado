@@ -23,7 +23,7 @@ import com.io7m.jcoronado.api.VulkanHandleType;
 import com.io7m.jcoronado.api.VulkanImageType;
 import com.io7m.jcoronado.api.VulkanLogicalDeviceType;
 import com.io7m.jcoronado.api.VulkanQueueType;
-import com.io7m.jcoronado.api.VulkanSemaphoreType;
+import com.io7m.jcoronado.api.VulkanSemaphoreBinaryType;
 
 import java.util.List;
 
@@ -37,6 +37,14 @@ public interface VulkanExtKHRSwapChainType extends VulkanExtensionType
   default String name()
   {
     return "VK_KHR_swapchain";
+  }
+
+  @Override
+  default List<String> extraNames()
+  {
+    return List.of(
+      "VK_EXT_swapchain_maintenance1"
+    );
   }
 
   /**
@@ -59,17 +67,38 @@ public interface VulkanExtKHRSwapChainType extends VulkanExtensionType
   /**
    * Queue images for presentation.
    *
-   * @param queue        The presentation queue
-   * @param present_info The presentation info
+   * @param queue       The presentation queue
+   * @param presentInfo The presentation info
+   *
+   * @return The present result
    *
    * @throws VulkanException On errors
    * @see "vkQueuePresentKHR"
    */
 
-  void queuePresent(
+  QueuePresentResult queuePresent(
     VulkanQueueType queue,
-    VulkanPresentInfoKHR present_info)
+    VulkanPresentInfoKHR presentInfo)
     throws VulkanException;
+
+  /**
+   * The result of presenting an image.
+   */
+
+  enum QueuePresentResult
+  {
+    /**
+     * Presenting succeeded.
+     */
+
+    SUCCESS,
+
+    /**
+     * Presenting succeeded but the swapchain is suboptimal.
+     */
+
+    SUBOPTIMAL
+  }
 
   /**
    * A created swap chain.
@@ -99,9 +128,9 @@ public interface VulkanExtKHRSwapChainType extends VulkanExtensionType
      * @throws VulkanException On errors
      */
 
-    VulkanSwapChainImageAcquisition acquireImageWithSemaphore(
+    VulkanSwapChainAcquisitionResultType acquireImageWithSemaphore(
       long timeout,
-      VulkanSemaphoreType semaphore)
+      VulkanSemaphoreBinaryType semaphore)
       throws VulkanException;
 
     /**
@@ -117,7 +146,7 @@ public interface VulkanExtKHRSwapChainType extends VulkanExtensionType
      * @throws VulkanException On errors
      */
 
-    VulkanSwapChainImageAcquisition acquireImageWithFence(
+    VulkanSwapChainAcquisitionResultType acquireImageWithFence(
       long timeout,
       VulkanFenceType fence)
       throws VulkanException;
@@ -136,9 +165,9 @@ public interface VulkanExtKHRSwapChainType extends VulkanExtensionType
      * @throws VulkanException On errors
      */
 
-    VulkanSwapChainImageAcquisition acquireImageWithSemaphoreAndFence(
+    VulkanSwapChainAcquisitionResultType acquireImageWithSemaphoreAndFence(
       long timeout,
-      VulkanSemaphoreType semaphore,
+      VulkanSemaphoreBinaryType semaphore,
       VulkanFenceType fence)
       throws VulkanException;
   }

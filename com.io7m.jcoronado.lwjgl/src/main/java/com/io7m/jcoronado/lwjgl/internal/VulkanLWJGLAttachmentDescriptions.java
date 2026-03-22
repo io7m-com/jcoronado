@@ -19,7 +19,8 @@ package com.io7m.jcoronado.lwjgl.internal;
 import com.io7m.jcoronado.api.VulkanAttachmentDescription;
 import com.io7m.jcoronado.api.VulkanEnumMaps;
 import org.lwjgl.system.MemoryStack;
-import org.lwjgl.vulkan.VkAttachmentDescription;
+import org.lwjgl.vulkan.VK13;
+import org.lwjgl.vulkan.VkAttachmentDescription2;
 
 import java.util.List;
 import java.util.Objects;
@@ -44,19 +45,21 @@ public final class VulkanLWJGLAttachmentDescriptions
    * @return A packed buffer of attachments
    */
 
-  public static VkAttachmentDescription.Buffer packAttachments(
+  public static VkAttachmentDescription2.Buffer packAttachments(
     final MemoryStack stack,
     final List<VulkanAttachmentDescription> attachments)
   {
     Objects.requireNonNull(stack, "stack");
     Objects.requireNonNull(attachments, "attachments");
 
-    final var buffer = VkAttachmentDescription.malloc(
-      attachments.size(),
-      stack);
+    final var buffer =
+      VkAttachmentDescription2.calloc(attachments.size(), stack);
+
     for (var index = 0; index < attachments.size(); ++index) {
-      final var source = attachments.get(index);
-      final var target = VkAttachmentDescription.create(buffer.address(index));
+      final var source =
+        attachments.get(index);
+      final var target =
+        VkAttachmentDescription2.create(buffer.address(index));
       packAttachmentInto(source, target);
     }
 
@@ -72,22 +75,24 @@ public final class VulkanLWJGLAttachmentDescriptions
    * @return A packed attachment
    */
 
-  public static VkAttachmentDescription packAttachment(
+  public static VkAttachmentDescription2 packAttachment(
     final MemoryStack stack,
     final VulkanAttachmentDescription attachment)
   {
     Objects.requireNonNull(stack, "stack");
     Objects.requireNonNull(attachment, "attachment");
 
-    final var buffer = VkAttachmentDescription.malloc(stack);
-    return packAttachmentInto(attachment, buffer);
+    return packAttachmentInto(
+      attachment,
+      VkAttachmentDescription2.calloc(stack)
+    );
   }
 
-  private static VkAttachmentDescription packAttachmentInto(
+  private static VkAttachmentDescription2 packAttachmentInto(
     final VulkanAttachmentDescription source,
-    final VkAttachmentDescription target)
+    final VkAttachmentDescription2 target)
   {
-    return target
+    return target.sType(VK13.VK_STRUCTURE_TYPE_ATTACHMENT_DESCRIPTION_2)
       .finalLayout(source.finalLayout().value())
       .flags(VulkanEnumMaps.packValues(source.flags()))
       .format(source.format().value())

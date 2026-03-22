@@ -110,23 +110,34 @@ public final class VulkanLWJGLPipelineVertexInputStateCreateInfosTest
   public void testPipelineVertexInputStateCreateInfo()
   {
     final var desc_0 =
-      VulkanVertexInputAttributeDescription.of(
-        0,
-        1,
-        VK_FORMAT_B8G8R8A8_UNORM,
-        23);
+      VulkanVertexInputAttributeDescription.builder()
+        .setBinding(1)
+        .setLocation(0)
+        .setFormat(VK_FORMAT_B8G8R8A8_UNORM)
+        .setOffset(23)
+        .build();
+
     final var desc_1 =
-      VulkanVertexInputAttributeDescription.of(2, 3, VK_FORMAT_D16_UNORM, 26);
+      VulkanVertexInputAttributeDescription.builder()
+        .setBinding(3)
+        .setLocation(2)
+        .setFormat(VK_FORMAT_D16_UNORM)
+        .setOffset(26)
+        .build();
+
     final var bind_0 =
-      VulkanVertexInputBindingDescription.of(
-        3,
-        56,
-        VK_VERTEX_INPUT_RATE_VERTEX);
+      VulkanVertexInputBindingDescription.builder()
+        .setBinding(3)
+        .setStride(56)
+        .setInputRate(VK_VERTEX_INPUT_RATE_VERTEX)
+        .build();
+
     final var bind_1 =
-      VulkanVertexInputBindingDescription.of(
-        5,
-        57,
-        VK_VERTEX_INPUT_RATE_INSTANCE);
+      VulkanVertexInputBindingDescription.builder()
+        .setBinding(5)
+        .setStride(57)
+        .setInputRate(VK_VERTEX_INPUT_RATE_INSTANCE)
+        .build();
 
     final var info =
       VulkanPipelineVertexInputStateCreateInfo.builder()

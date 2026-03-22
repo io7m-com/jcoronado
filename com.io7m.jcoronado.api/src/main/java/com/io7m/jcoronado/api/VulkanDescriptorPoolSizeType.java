@@ -32,13 +32,15 @@ public interface VulkanDescriptorPoolSizeType
    * @return The type of descriptor.
    */
 
-  @Value.Parameter
   VulkanDescriptorType type();
 
   /**
    * @return The number of descriptors of that type to allocate.
    */
 
-  @Value.Parameter
-  int descriptorCount();
+  @Value.Default
+  default int descriptorCount()
+  {
+    return 0;
+  }
 }

@@ -54,7 +54,7 @@ public final class VulkanLWJGLPipelineMultisampleStateCreateInfos
     Objects.requireNonNull(info, "info");
 
     final var target =
-      VkPipelineMultisampleStateCreateInfo.malloc(stack);
+      VkPipelineMultisampleStateCreateInfo.calloc(stack);
 
     return target
       .sType(VK10.VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO)

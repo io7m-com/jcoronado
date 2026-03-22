@@ -22,13 +22,18 @@ import com.io7m.jcoronado.api.VulkanException;
 import com.io7m.jcoronado.api.VulkanRenderPassCreateInfo;
 import com.io7m.jcoronado.api.VulkanSubpassDescription;
 import org.lwjgl.system.MemoryStack;
-import org.lwjgl.vulkan.VK10;
-import org.lwjgl.vulkan.VkRenderPassCreateInfo;
-import org.lwjgl.vulkan.VkSubpassDescription;
+import org.lwjgl.vulkan.VK13;
+import org.lwjgl.vulkan.VkRenderPassCreateInfo2;
+import org.lwjgl.vulkan.VkSubpassDescription2;
 
 import java.nio.IntBuffer;
 import java.util.List;
 import java.util.Objects;
+
+import static com.io7m.jcoronado.lwjgl.internal.VulkanLWJGLAttachmentDescriptions.packAttachments;
+import static com.io7m.jcoronado.lwjgl.internal.VulkanLWJGLAttachmentReferences.packAttachmentReference;
+import static com.io7m.jcoronado.lwjgl.internal.VulkanLWJGLAttachmentReferences.packAttachmentReferences;
+import static com.io7m.jcoronado.lwjgl.internal.VulkanLWJGLSubpasses.packSubpassDependencies;
 
 /**
  * Functions to pack render passes.
@@ -52,7 +57,7 @@ public final class VulkanLWJGLRenderPasses
    * @throws VulkanException On errors
    */
 
-  public static VkRenderPassCreateInfo packRenderPassCreateInfo(
+  public static VkRenderPassCreateInfo2 packRenderPassCreateInfo(
     final MemoryStack stack,
     final VulkanRenderPassCreateInfo info)
     throws VulkanException
@@ -60,31 +65,29 @@ public final class VulkanLWJGLRenderPasses
     Objects.requireNonNull(stack, "stack");
     Objects.requireNonNull(info, "info");
 
-    return VkRenderPassCreateInfo.malloc(stack)
-      .sType(VK10.VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO)
+    return VkRenderPassCreateInfo2.calloc(stack)
+      .sType(VK13.VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO_2)
       .pNext(0L)
-      .pAttachments(VulkanLWJGLAttachmentDescriptions.packAttachments(
-        stack,
-        info.attachments()))
+      .pAttachments(packAttachments(stack, info.attachments()))
       .pSubpasses(packSubpasses(stack, info.subpasses()))
-      .pDependencies(VulkanLWJGLSubpasses.packSubpassDependencies(
-        stack,
-        info.dependencies()))
+      .pDependencies(packSubpassDependencies(stack, info.dependencies()))
+      .pCorrelatedViewMasks(null)
       .flags(VulkanEnumMaps.packValues(info.flags()));
   }
 
-  private static VkSubpassDescription.Buffer packSubpasses(
+  private static VkSubpassDescription2.Buffer packSubpasses(
     final MemoryStack stack,
     final List<VulkanSubpassDescription> subpasses)
     throws VulkanException
   {
     final var buffer =
-      VkSubpassDescription.malloc(subpasses.size(), stack);
+      VkSubpassDescription2.calloc(subpasses.size(), stack);
 
     for (var index = 0; index < subpasses.size(); ++index) {
       final var description = subpasses.get(index);
 
       buffer.position(index)
+        .sType(VK13.VK_STRUCTURE_TYPE_SUBPASS_DESCRIPTION_2)
         .flags(VulkanEnumMaps.packValues(description.flags()))
         .pipelineBindPoint(description.pipelineBindPoint().value());
 
@@ -100,14 +103,14 @@ public final class VulkanLWJGLRenderPasses
 
   private static void packDepthStencilAttachment(
     final MemoryStack stack,
-    final VkSubpassDescription.Buffer buffer,
+    final VkSubpassDescription2.Buffer buffer,
     final VulkanSubpassDescription description)
   {
-    final var attach_opt = description.depthStencilAttachment();
+    final var attach_opt =
+      description.depthStencilAttachment();
     if (attach_opt.isPresent()) {
       final var attach = attach_opt.get();
-      buffer.pDepthStencilAttachment(
-        VulkanLWJGLAttachmentReferences.packAttachmentReference(stack, attach));
+      buffer.pDepthStencilAttachment(packAttachmentReference(stack, attach));
     } else {
       buffer.pDepthStencilAttachment(null);
     }
@@ -115,14 +118,11 @@ public final class VulkanLWJGLRenderPasses
 
   private static void packResolveAttachments(
     final MemoryStack stack,
-    final VkSubpassDescription.Buffer buffer,
+    final VkSubpassDescription2.Buffer buffer,
     final List<VulkanAttachmentReference> resolve)
   {
     if (resolve.size() > 0) {
-      buffer.pResolveAttachments(
-        VulkanLWJGLAttachmentReferences.packAttachmentReferences(
-          stack,
-          resolve));
+      buffer.pResolveAttachments(packAttachmentReferences(stack, resolve));
     } else {
       buffer.pResolveAttachments(null);
     }
@@ -130,7 +130,7 @@ public final class VulkanLWJGLRenderPasses
 
   private static void packPreserveAttachments(
     final MemoryStack stack,
-    final VkSubpassDescription.Buffer buffer,
+    final VkSubpassDescription2.Buffer buffer,
     final List<Integer> preserve)
     throws VulkanException
   {
@@ -143,12 +143,11 @@ public final class VulkanLWJGLRenderPasses
 
   private static void packInputAttachments(
     final MemoryStack stack,
-    final VkSubpassDescription.Buffer buffer,
+    final VkSubpassDescription2.Buffer buffer,
     final List<VulkanAttachmentReference> input)
   {
     if (input.size() > 0) {
-      buffer.pInputAttachments(
-        VulkanLWJGLAttachmentReferences.packAttachmentReferences(stack, input));
+      buffer.pInputAttachments(packAttachmentReferences(stack, input));
     } else {
       buffer.pInputAttachments(null);
     }
@@ -156,13 +155,12 @@ public final class VulkanLWJGLRenderPasses
 
   private static void packColorAttachments(
     final MemoryStack stack,
-    final VkSubpassDescription.Buffer buffer,
+    final VkSubpassDescription2.Buffer buffer,
     final List<VulkanAttachmentReference> color)
   {
     if (color.size() > 0) {
       buffer.colorAttachmentCount(color.size());
-      buffer.pColorAttachments(
-        VulkanLWJGLAttachmentReferences.packAttachmentReferences(stack, color));
+      buffer.pColorAttachments(packAttachmentReferences(stack, color));
     } else {
       buffer.pColorAttachments(null);
       buffer.colorAttachmentCount(0);

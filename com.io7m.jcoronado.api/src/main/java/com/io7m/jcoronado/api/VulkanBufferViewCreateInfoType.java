@@ -36,30 +36,34 @@ public interface VulkanBufferViewCreateInfoType
    * @return A set of flags specifying additional parameters of the buffer view.
    */
 
-  @Value.Parameter
   Set<VulkanBufferViewCreateFlag> flags();
 
   /**
    * @return The buffer on which the view will be created
    */
 
-  @Value.Parameter
   VulkanBufferType buffer();
 
   /**
    * @return The format of the data elements in the buffer
    */
 
-  @Value.Parameter
-  VulkanFormat format();
+  @Value.Default
+  default VulkanFormat format()
+  {
+    return VulkanFormat.VK_FORMAT_UNDEFINED;
+  }
 
   /**
    * @return An offset in bytes from the base address of the buffer. Accesses to the buffer view
    * from shaders use addressing that is relative to this starting offset.
    */
 
-  @Value.Parameter
-  long offset();
+  @Value.Default
+  default long offset()
+  {
+    return 0L;
+  }
 
   /**
    * @return A size in bytes of the buffer view. If range is equal to VK_WHOLE_SIZE, the range from
@@ -68,6 +72,9 @@ public interface VulkanBufferViewCreateInfoType
    * used.
    */
 
-  @Value.Parameter
-  long range();
+  @Value.Default
+  default long range()
+  {
+    return 0L;
+  }
 }

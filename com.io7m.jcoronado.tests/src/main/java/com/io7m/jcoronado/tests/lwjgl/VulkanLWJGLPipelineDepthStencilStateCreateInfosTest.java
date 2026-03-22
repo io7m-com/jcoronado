@@ -143,24 +143,26 @@ public final class VulkanLWJGLPipelineDepthStencilStateCreateInfosTest
   public void testPipelineDepthStencilStateCreateInfo()
   {
     final var front =
-      VulkanStencilOpState.of(
-        VK_STENCIL_OP_KEEP,
-        VK_STENCIL_OP_DECREMENT_AND_CLAMP,
-        VK_STENCIL_OP_INCREMENT_AND_CLAMP,
-        VK_COMPARE_OP_ALWAYS,
-        23,
-        24,
-        25);
+      VulkanStencilOpState.builder()
+        .setPassOp(VK_STENCIL_OP_DECREMENT_AND_CLAMP)
+        .setCompareOp(VK_COMPARE_OP_ALWAYS)
+        .setDepthFailOp(VK_STENCIL_OP_INCREMENT_AND_CLAMP)
+        .setFailOp(VK_STENCIL_OP_KEEP)
+        .setCompareMask(23)
+        .setReference(25)
+        .setWriteMask(24)
+        .build();
 
     final var back =
-      VulkanStencilOpState.of(
-        VK_STENCIL_OP_INVERT,
-        VK_STENCIL_OP_REPLACE,
-        VK_STENCIL_OP_ZERO,
-        VK_COMPARE_OP_NEVER,
-        33,
-        34,
-        35);
+      VulkanStencilOpState.builder()
+        .setPassOp(VK_STENCIL_OP_REPLACE)
+        .setCompareOp(VK_COMPARE_OP_NEVER)
+        .setDepthFailOp(VK_STENCIL_OP_ZERO)
+        .setFailOp(VK_STENCIL_OP_INVERT)
+        .setCompareMask(33)
+        .setReference(35)
+        .setWriteMask(34)
+        .build();
 
     final var info =
       VulkanPipelineDepthStencilStateCreateInfo.builder()

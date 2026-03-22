@@ -60,7 +60,7 @@ public final class VulkanLWJGLClearValues
     Objects.requireNonNull(values, "values");
 
     final var count = values.size();
-    final var target_values = VkClearValue.malloc(values.size(), stack);
+    final var target_values = VkClearValue.calloc(values.size(), stack);
 
     for (var index = 0; index < count; ++index) {
       packTo(values.get(index), target_values.get(index));
@@ -85,7 +85,7 @@ public final class VulkanLWJGLClearValues
     Objects.requireNonNull(stack, "stack");
     Objects.requireNonNull(source, "source");
 
-    return packTo(source, VkClearValue.malloc(stack));
+    return packTo(source, VkClearValue.calloc(stack));
   }
 
   /**
@@ -182,7 +182,7 @@ public final class VulkanLWJGLClearValues
     Objects.requireNonNull(stack, "stack");
     Objects.requireNonNull(source, "source");
 
-    return packToColor(source, VkClearColorValue.malloc(stack));
+    return packToColor(source, VkClearColorValue.calloc(stack));
   }
 
   /**
@@ -203,6 +203,6 @@ public final class VulkanLWJGLClearValues
 
     return packToDepthStencil(
       source,
-      VkClearDepthStencilValue.malloc(stack));
+      VkClearDepthStencilValue.calloc(stack));
   }
 }

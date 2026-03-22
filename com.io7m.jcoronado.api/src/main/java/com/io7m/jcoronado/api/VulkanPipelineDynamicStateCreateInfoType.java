@@ -37,7 +37,6 @@ public interface VulkanPipelineDynamicStateCreateInfoType
    * @return Flags reserved for future use
    */
 
-  @Value.Parameter
   Set<VulkanPipelineDynamicStateCreateFlag> flags();
 
   /**
@@ -45,6 +44,5 @@ public interface VulkanPipelineDynamicStateCreateInfoType
    * commands rather than from pipeline state creation info.
    */
 
-  @Value.Parameter
   List<VulkanDynamicState> dynamicStates();
 }

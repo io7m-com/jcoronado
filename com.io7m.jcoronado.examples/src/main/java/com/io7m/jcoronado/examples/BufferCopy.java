@@ -16,12 +16,13 @@
 
 package com.io7m.jcoronado.examples;
 
-import com.io7m.jcoronado.allocation_tracker.VulkanHostAllocatorTracker;
 import com.io7m.jcoronado.api.VulkanApplicationInfo;
 import com.io7m.jcoronado.api.VulkanBufferCopy;
 import com.io7m.jcoronado.api.VulkanBufferCreateInfo;
 import com.io7m.jcoronado.api.VulkanBufferMemoryBarrier;
+import com.io7m.jcoronado.api.VulkanCommandBufferSubmitInfo;
 import com.io7m.jcoronado.api.VulkanCommandPoolCreateInfo;
+import com.io7m.jcoronado.api.VulkanDependencyInfo;
 import com.io7m.jcoronado.api.VulkanException;
 import com.io7m.jcoronado.api.VulkanExtensionProperties;
 import com.io7m.jcoronado.api.VulkanExtensions;
@@ -45,6 +46,7 @@ import com.io7m.jcoronado.extensions.ext_debug_utils.api.VulkanDebugUtilsSLF4J;
 import com.io7m.jcoronado.extensions.ext_debug_utils.api.VulkanDebugUtilsType;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLHostAllocatorJeMalloc;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLInstanceProvider;
+import com.io7m.jcoronado.utility.allocation_tracker.VulkanHostAllocatorTracker;
 import com.io7m.jmulticlose.core.CloseableCollection;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWErrorCallback;
@@ -289,15 +291,18 @@ public final class BufferCopy implements ExampleType
        * Create a new instance.
        */
 
+      final var appInfo =
+        VulkanApplicationInfo.builder()
+          .setApplicationName("com.io7m.jcoronado.tests.Demo")
+          .setApplicationVersion(VulkanVersions.encode(0, 0, 1))
+          .setEngineName("com.io7m.jcoronado.tests")
+          .setEngineVersion(VulkanVersions.encode(0, 0, 1))
+          .setVulkanAPIVersion(VulkanVersions.encode(instances.minimumRequiredVersion()))
+          .build();
+
       final var createInfo =
         VulkanInstanceCreateInfo.builder()
-          .setApplicationInfo(
-            VulkanApplicationInfo.of(
-              "com.io7m.jcoronado.tests.Demo",
-              VulkanVersions.encode(0, 0, 1),
-              "com.io7m.jcoronado.tests",
-              VulkanVersions.encode(0, 0, 1),
-              VulkanVersions.encode(1, 0, 0)))
+          .setApplicationInfo(appInfo)
           .setEnabledExtensions(enableExtensions)
           .setEnabledLayers(enableLayers)
           .build();
@@ -414,16 +419,20 @@ public final class BufferCopy implements ExampleType
       final var memory0 =
         resources.add(
           device.allocateMemory(
-            VulkanMemoryAllocateInfo.of(
-              buffer0Requirements.size(),
-              bufferMemoryType.index()))
+            VulkanMemoryAllocateInfo.builder()
+              .setMemoryTypeIndex(bufferMemoryType.index())
+              .setSize(buffer0Requirements.size())
+              .build()
+          )
         );
       final var memory1 =
         resources.add(
           device.allocateMemory(
-            VulkanMemoryAllocateInfo.of(
-              buffer1Requirements.size(),
-              bufferMemoryType.index()))
+            VulkanMemoryAllocateInfo.builder()
+              .setMemoryTypeIndex(bufferMemoryType.index())
+              .setSize(buffer1Requirements.size())
+              .build()
+          )
         );
 
       final var map0 =
@@ -453,57 +462,67 @@ public final class BufferCopy implements ExampleType
 
       final var commandBuffer =
         resources.add(
-          device.createCommandBuffer(commandPool, VK_COMMAND_BUFFER_LEVEL_PRIMARY)
+          device.createCommandBuffer(
+            commandPool,
+            VK_COMMAND_BUFFER_LEVEL_PRIMARY)
         );
 
       final var fence =
         resources.add(
-          device.createFence(VulkanFenceCreateInfo.of(Set.of()))
+          device.createFence(VulkanFenceCreateInfo.builder().build())
         );
 
       final var fillBarrier0 =
-        VulkanBufferMemoryBarrier.of(
-          Set.of(VK_ACCESS_TRANSFER_WRITE_BIT),
-          Set.of(VK_ACCESS_TRANSFER_READ_BIT),
-          queue.queueFamilyIndex(),
-          queue.queueFamilyIndex(),
-          buffer0,
-          0L,
-           128L
-        );
+        VulkanBufferMemoryBarrier.builder()
+          .setBuffer(buffer0)
+          .setOffset(0L)
+          .setSize(128L)
+          .setSrcAccessMask(Set.of(VK_ACCESS_TRANSFER_WRITE_BIT))
+          .setSrcStageMask(Set.of(VK_PIPELINE_STAGE_TRANSFER_BIT))
+          .setSrcQueueFamilyIndex(queue.queueFamilyIndex())
+          .setDstAccessMask(Set.of(VK_ACCESS_TRANSFER_READ_BIT))
+          .setDstStageMask(Set.of(VK_PIPELINE_STAGE_TRANSFER_BIT))
+          .setDstQueueFamilyIndex(queue.queueFamilyIndex())
+          .build();
 
       final var fillBarrier1 =
-        VulkanBufferMemoryBarrier.of(
-          Set.of(VK_ACCESS_TRANSFER_WRITE_BIT),
-          Set.of(VK_ACCESS_TRANSFER_READ_BIT),
-          queue.queueFamilyIndex(),
-          queue.queueFamilyIndex(),
-          buffer1,
-          0L,
-          128L
-        );
+        VulkanBufferMemoryBarrier.builder()
+          .setBuffer(buffer1)
+          .setOffset(0L)
+          .setSize(128L)
+          .setSrcAccessMask(Set.of(VK_ACCESS_TRANSFER_WRITE_BIT))
+          .setSrcStageMask(Set.of(VK_PIPELINE_STAGE_TRANSFER_BIT))
+          .setSrcQueueFamilyIndex(queue.queueFamilyIndex())
+          .setDstAccessMask(Set.of(VK_ACCESS_TRANSFER_READ_BIT))
+          .setDstStageMask(Set.of(VK_PIPELINE_STAGE_TRANSFER_BIT))
+          .setDstQueueFamilyIndex(queue.queueFamilyIndex())
+          .build();
 
       final var copyBarrier0 =
-        VulkanBufferMemoryBarrier.of(
-          Set.of(VK_ACCESS_TRANSFER_WRITE_BIT),
-          Set.of(VK_ACCESS_HOST_READ_BIT),
-          queue.queueFamilyIndex(),
-          queue.queueFamilyIndex(),
-          buffer0,
-          0L,
-          128L
-        );
+        VulkanBufferMemoryBarrier.builder()
+          .setBuffer(buffer0)
+          .setOffset(0L)
+          .setSize(128L)
+          .setSrcAccessMask(Set.of(VK_ACCESS_TRANSFER_WRITE_BIT))
+          .setSrcStageMask(Set.of(VK_PIPELINE_STAGE_TRANSFER_BIT))
+          .setSrcQueueFamilyIndex(queue.queueFamilyIndex())
+          .setDstAccessMask(Set.of(VK_ACCESS_HOST_READ_BIT))
+          .setDstStageMask(Set.of(VK_PIPELINE_STAGE_HOST_BIT))
+          .setDstQueueFamilyIndex(queue.queueFamilyIndex())
+          .build();
 
       final var copyBarrier1 =
-        VulkanBufferMemoryBarrier.of(
-          Set.of(VK_ACCESS_TRANSFER_WRITE_BIT),
-          Set.of(VK_ACCESS_HOST_READ_BIT),
-          queue.queueFamilyIndex(),
-          queue.queueFamilyIndex(),
-          buffer1,
-          0L,
-          128L
-        );
+        VulkanBufferMemoryBarrier.builder()
+          .setBuffer(buffer1)
+          .setOffset(0L)
+          .setSize(128L)
+          .setSrcAccessMask(Set.of(VK_ACCESS_TRANSFER_WRITE_BIT))
+          .setSrcStageMask(Set.of(VK_PIPELINE_STAGE_TRANSFER_BIT))
+          .setSrcQueueFamilyIndex(queue.queueFamilyIndex())
+          .setDstAccessMask(Set.of(VK_ACCESS_HOST_READ_BIT))
+          .setDstStageMask(Set.of(VK_PIPELINE_STAGE_HOST_BIT))
+          .setDstQueueFamilyIndex(queue.queueFamilyIndex())
+          .build();
 
       commandBuffer.beginCommandBuffer(
         VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT);
@@ -512,34 +531,42 @@ public final class BufferCopy implements ExampleType
       commandBuffer.fillBuffer(buffer0, 0L, 128L, 0x41414141);
       commandBuffer.fillBuffer(buffer1, 0L, 128L, 0x42424242);
       commandBuffer.pipelineBarrier(
-        Set.of(VK_PIPELINE_STAGE_TRANSFER_BIT),
-        Set.of(VK_PIPELINE_STAGE_TRANSFER_BIT),
-        Set.of(),
-        List.of(),
-        List.of(fillBarrier0, fillBarrier1),
-        List.of()
+        VulkanDependencyInfo.builder()
+          .addBufferMemoryBarriers(fillBarrier0)
+          .addBufferMemoryBarriers(fillBarrier1)
+          .build()
       );
 
       debug.insertInto(commandBuffer, "copy");
       commandBuffer.copyBuffer(
         buffer0,
         buffer1,
-        List.of(VulkanBufferCopy.of(0L, 0L, 128L)));
+        List.of(
+          VulkanBufferCopy.builder()
+            .setSize(128L)
+            .setSourceOffset(0L)
+            .setTargetOffset(0L)
+            .build()
+        ));
+
       commandBuffer.pipelineBarrier(
-        Set.of(VK_PIPELINE_STAGE_TRANSFER_BIT),
-        Set.of(VK_PIPELINE_STAGE_HOST_BIT),
-        Set.of(),
-        List.of(),
-        List.of(copyBarrier0, copyBarrier1),
-        List.of()
+        VulkanDependencyInfo.builder()
+          .addBufferMemoryBarriers(copyBarrier0)
+          .addBufferMemoryBarriers(copyBarrier1)
+          .build()
       );
       commandBuffer.endCommandBuffer();
 
-      queue.submit(List.of(
-        VulkanSubmitInfo.builder()
-          .addCommandBuffers(commandBuffer)
-          .build()
-      ), Optional.of(fence));
+      queue.submit(
+        List.of(
+          VulkanSubmitInfo.builder()
+            .addCommandBuffers(
+              VulkanCommandBufferSubmitInfo.builder()
+                .setCommandBuffer(commandBuffer)
+                .build()
+            )
+            .build()
+        ), Optional.of(fence));
 
       LOG.debug("waiting for fence");
       device.waitForFence(fence, 1_000_000_000L);
@@ -580,8 +607,8 @@ public final class BufferCopy implements ExampleType
       LOG.debug("waiting for device to idle");
       device.waitIdle();
 
-    } catch (final VulkanException e) {
-      LOG.error("vulkan error: ", e);
+    } catch (final Exception e) {
+      LOG.error("", e);
       throw e;
     } finally {
       GLFW_ERROR_CALLBACK.close();
