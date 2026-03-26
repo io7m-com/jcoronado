@@ -4,7 +4,7 @@
     <c:release date="2024-12-03T00:00:00+00:00" is-open="false" ticket-system="com.github.io7m.jcoronado" version="0.0.1">
       <c:changes/>
     </c:release>
-    <c:release date="2026-03-22T10:42:14+00:00" is-open="false" ticket-system="com.github.io7m.jcoronado" version="1.0.0-beta0001">
+    <c:release date="2026-03-22T00:00:00+00:00" is-open="false" ticket-system="com.github.io7m.jcoronado" version="1.0.0-beta0001">
       <c:changes>
         <c:change date="2024-12-06T00:00:00+00:00" summary="Update nl.jqno.equalsverifier:equalsverifier:3.17.4 → 3.17.5."/>
         <c:change date="2024-12-18T00:00:00+00:00" summary="Update ch.qos.logback:logback-classic:1.5.12 → 1.5.13."/>
@@ -40,6 +40,9 @@
         <c:change date="2026-02-01T00:00:00+00:00" summary="Update ch.qos.logback:logback-classic:1.5.20 → 1.5.24."/>
         <c:change date="2026-03-17T00:00:00+00:00" summary="Update mockito.version:5.20.0 → 5.21.0."/>
       </c:changes>
+    </c:release>
+    <c:release date="2026-03-26T19:03:19+00:00" is-open="false" ticket-system="com.github.io7m.jcoronado" version="1.0.0-beta0002">
+      <c:changes/>
     </c:release>
   </c:releases>
   <c:ticket-systems>
