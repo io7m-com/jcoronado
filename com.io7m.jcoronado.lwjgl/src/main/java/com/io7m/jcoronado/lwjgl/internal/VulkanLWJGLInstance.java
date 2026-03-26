@@ -115,7 +115,6 @@ public final class VulkanLWJGLInstance
     LoggerFactory.getLogger(VulkanLWJGLInstance.class);
 
   private final VkInstance instance;
-  private final MemoryStack initialStack;
   private final Map<String, VulkanExtensionType> extensionsEnabledReadOnly;
   private final VulkanLWJGLExtensionsRegistry extensionsRegistry;
   private final VulkanVersion apiVersionMaximumSupported;
@@ -152,8 +151,6 @@ public final class VulkanLWJGLInstance
         "apiVersionMaximumSupported");
     this.apiVersionUsed =
       Objects.requireNonNull(inApiVersionUsed, "apiVersionUsed");
-    this.initialStack =
-      MemoryStack.create();
     this.extensionsEnabledReadOnly =
       Collections.unmodifiableMap(
         Objects.requireNonNull(inExtensionsEnabled, "in_extensions"));
@@ -1064,7 +1061,7 @@ public final class VulkanLWJGLInstance
     this.checkNotClosed();
 
     final ArrayList<VulkanPhysicalDeviceType> devices;
-    try (var stack = this.initialStack.push()) {
+    try (var stack = VulkanLWJGLMemoryStack.stack()) {
       final var count = new int[1];
       VulkanChecks.checkReturnCode(
         VK10.vkEnumeratePhysicalDevices(this.instance, count, null),

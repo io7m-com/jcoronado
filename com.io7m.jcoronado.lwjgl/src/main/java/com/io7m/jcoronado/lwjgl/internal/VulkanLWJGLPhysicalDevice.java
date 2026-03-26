@@ -100,7 +100,6 @@ public final class VulkanLWJGLPhysicalDevice
   private static final VulkanFormatFeatureFlag[] FLAGS =
     VulkanFormatFeatureFlag.values();
 
-  private final MemoryStack stackInitial;
   private final Optional<VulkanPhysicalDeviceDriverProperties> driverProperties;
   private final Optional<VulkanPhysicalDeviceIDProperties> idProperties;
   private final SortedMap<VulkanQueueFamilyIndex, VulkanQueueFamilyProperties> queueFamilies;
@@ -144,8 +143,6 @@ public final class VulkanLWJGLPhysicalDevice
       Objects.requireNonNull(inDriverProperties, "driverProperties");
     this.idProperties =
       Objects.requireNonNull(inIdProperties, "idProperties");
-    this.stackInitial =
-      MemoryStack.create();
   }
 
   /**
@@ -652,7 +649,7 @@ public final class VulkanLWJGLPhysicalDevice
 
     this.checkNotClosed();
 
-    try (var stack = this.stackInitial.push()) {
+    try (var stack = VulkanLWJGLMemoryStack.stack()) {
       final var count = new int[1];
 
       final var layer_ptr =
@@ -704,7 +701,7 @@ public final class VulkanLWJGLPhysicalDevice
   public Map<String, VulkanLayerProperties> layers()
     throws VulkanException
   {
-    try (var stack = this.stackInitial.push()) {
+    try (var stack = VulkanLWJGLMemoryStack.stack()) {
       final var count = new int[1];
 
       checkReturnCode(
@@ -780,7 +777,7 @@ public final class VulkanLWJGLPhysicalDevice
 
     this.checkNotClosed();
 
-    try (var stack = this.stackInitial.push()) {
+    try (var stack = VulkanLWJGLMemoryStack.stack()) {
       final var vk_properties = VkFormatProperties.calloc(stack);
       VK10.vkGetPhysicalDeviceFormatProperties(
         this.device,
@@ -810,7 +807,7 @@ public final class VulkanLWJGLPhysicalDevice
     Objects.requireNonNull(usage, "usage");
     Objects.requireNonNull(flags, "flags");
 
-    try (var stack = this.stackInitial.push()) {
+    try (var stack = VulkanLWJGLMemoryStack.stack()) {
       final var vk_properties = VkImageFormatProperties.calloc(stack);
 
       checkReturnCode(
@@ -877,7 +874,7 @@ public final class VulkanLWJGLPhysicalDevice
       enabledLayers.forEach(name -> LOG.debug("Enabling layer: {}", name));
     }
 
-    try (var stack = this.stackInitial.push()) {
+    try (var stack = VulkanLWJGLMemoryStack.stack()) {
       final var infos =
         info.queueCreateInfos();
       final var vkQueueBuffer =

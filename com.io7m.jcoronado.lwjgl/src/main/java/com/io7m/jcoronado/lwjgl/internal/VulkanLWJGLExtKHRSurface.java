@@ -33,7 +33,6 @@ import com.io7m.jcoronado.extensions.khr_swapchain.api.VulkanColorSpaceKHR;
 import com.io7m.jcoronado.extensions.khr_swapchain.api.VulkanCompositeAlphaFlagKHR;
 import com.io7m.jcoronado.extensions.khr_swapchain.api.VulkanPresentModeKHR;
 import org.lwjgl.glfw.GLFWVulkan;
-import org.lwjgl.system.MemoryStack;
 import org.lwjgl.vulkan.KHRSurface;
 import org.lwjgl.vulkan.VkExtent2D;
 import org.lwjgl.vulkan.VkSurfaceCapabilitiesKHR;
@@ -56,11 +55,9 @@ public final class VulkanLWJGLExtKHRSurface implements VulkanExtKHRSurfaceType
   private static final Logger LOG =
     LoggerFactory.getLogger(VulkanLWJGLExtKHRSurface.class);
 
-  private final MemoryStack stack_initial;
-
   VulkanLWJGLExtKHRSurface()
   {
-    this.stack_initial = MemoryStack.create();
+
   }
 
   private static Set<VulkanCompositeAlphaFlagKHR> parseCompositeAlpha(
@@ -237,7 +234,7 @@ public final class VulkanLWJGLExtKHRSurface implements VulkanExtKHRSurfaceType
     device.checkNotClosed();
 
     final List<VulkanSurfaceFormatKHR> results;
-    try (var stack = this.stack_initial.push()) {
+    try (var stack = VulkanLWJGLMemoryStack.stack()) {
       final var count = new int[1];
 
       VulkanChecks.checkReturnCode(
@@ -321,8 +318,7 @@ public final class VulkanLWJGLExtKHRSurface implements VulkanExtKHRSurfaceType
 
     device.checkNotClosed();
 
-    try (var stack = this.stack_initial.push()) {
-
+    try (var stack = VulkanLWJGLMemoryStack.stack()) {
       final var capabilities =
         VkSurfaceCapabilitiesKHR.calloc(stack);
 

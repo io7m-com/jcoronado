@@ -24,20 +24,23 @@ import com.io7m.jcoronado.api.VulkanLogicalDeviceQueueCreateInfo;
 import com.io7m.jcoronado.api.VulkanLogicalDeviceType;
 import com.io7m.jcoronado.api.VulkanPhysicalDeviceFeatures;
 import com.io7m.jcoronado.api.VulkanPhysicalDeviceFeatures12;
-import com.io7m.jcoronado.api.VulkanPhysicalDeviceFeatures13;
-import com.io7m.jcoronado.api.VulkanPhysicalDeviceFeatures14;
 import com.io7m.jcoronado.api.VulkanPhysicalDeviceType;
+import com.io7m.jcoronado.lwjgl.VMALWJGLAllocatorProvider;
 import com.io7m.jcoronado.lwjgl.VulkanLWJGLInstanceProvider;
 import com.io7m.jcoronado.tests.contracts.VulkanBufferContract;
 import com.io7m.jcoronado.tests.contracts.VulkanInstanceInfo;
+import com.io7m.jcoronado.tests.contracts.VulkanVMAContract;
+import com.io7m.jcoronado.vma.VMAAllocatorCreateInfo;
+import com.io7m.jcoronado.vma.VMAAllocatorType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Optional;
+import java.util.OptionalInt;
 
 import static com.io7m.jcoronado.api.VulkanQueueFamilyPropertyFlag.VK_QUEUE_TRANSFER_BIT;
 
-public final class VulkanLWJGLBufferTest extends VulkanBufferContract
+public final class VulkanLWJGLVMATest extends VulkanVMAContract
 {
   private VulkanInstanceProviderType provider;
   private VulkanInstanceType instance;
@@ -57,7 +60,7 @@ public final class VulkanLWJGLBufferTest extends VulkanBufferContract
   @Override
   protected Logger logger()
   {
-    return LoggerFactory.getLogger(VulkanLWJGLBufferTest.class);
+    return LoggerFactory.getLogger(VulkanLWJGLVMATest.class);
   }
 
   @Override
@@ -110,5 +113,22 @@ public final class VulkanLWJGLBufferTest extends VulkanBufferContract
         .addQueueCreateInfos(queue)
         .setFeatures(features)
         .build());
+  }
+
+  @Override
+  protected VMAAllocatorType createAllocator(
+    final VulkanLogicalDeviceType device)
+    throws VulkanException
+  {
+    final var vmaAllocators =
+      VMALWJGLAllocatorProvider.create();
+
+    final var vmaCreateInfo =
+      VMAAllocatorCreateInfo.builder()
+        .setFrameInUseCount(OptionalInt.empty())
+        .setLogicalDevice(device)
+        .build();
+
+    return vmaAllocators.createAllocator(vmaCreateInfo);
   }
 }

@@ -34,6 +34,27 @@ public final class VulkanDebugUtilsSLF4J
   implements VulkanDebugUtilsMessengerCallbackEXTType
 {
   private final Logger logger;
+  private final InfoBehavior infoBehavior;
+
+  /**
+   * The behaviour for "info" level messages. Some platforms will produce
+   * useless debug noise at "info" level.
+   */
+
+  public enum InfoBehavior
+  {
+    /**
+     * Log "info" messages at "debug" level. Reduces noise.
+     */
+
+    INFO_AS_DEBUG,
+
+    /**
+     * Log "info" messages at "info" level. Least surprising.
+     */
+
+    INFO_AS_INFO
+  }
 
   /**
    * Construct a callback.
@@ -44,7 +65,24 @@ public final class VulkanDebugUtilsSLF4J
   public VulkanDebugUtilsSLF4J(
     final Logger inLogger)
   {
-    this.logger = Objects.requireNonNull(inLogger, "logger");
+    this(inLogger, InfoBehavior.INFO_AS_DEBUG);
+  }
+
+  /**
+   * Construct a callback.
+   *
+   * @param inLogger       The logger
+   * @param inInfoBehavior The info behavior
+   */
+
+  public VulkanDebugUtilsSLF4J(
+    final Logger inLogger,
+    final InfoBehavior inInfoBehavior)
+  {
+    this.logger =
+      Objects.requireNonNull(inLogger, "logger");
+    this.infoBehavior =
+      Objects.requireNonNull(inInfoBehavior, "InfoBehavior");
   }
 
   @Override
@@ -59,25 +97,41 @@ public final class VulkanDebugUtilsSLF4J
         format,
         Integer.toUnsignedString(data.messageIdNumber(), 16),
         data.messageIdName(),
-        data.message());
+        data.message()
+      );
     } else if (severity.contains(VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT)) {
       this.logger.debug(
         format,
         Integer.toUnsignedString(data.messageIdNumber(), 16),
         data.messageIdName(),
-        data.message());
+        data.message()
+      );
     } else if (severity.contains(VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT)) {
-      this.logger.info(
-        format,
-        Integer.toUnsignedString(data.messageIdNumber(), 16),
-        data.messageIdName(),
-        data.message());
+      switch (this.infoBehavior) {
+        case INFO_AS_DEBUG -> {
+          this.logger.debug(
+            format,
+            Integer.toUnsignedString(data.messageIdNumber(), 16),
+            data.messageIdName(),
+            data.message()
+          );
+        }
+        case INFO_AS_INFO -> {
+          this.logger.info(
+            format,
+            Integer.toUnsignedString(data.messageIdNumber(), 16),
+            data.messageIdName(),
+            data.message()
+          );
+        }
+      }
     } else if (severity.contains(VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT)) {
       this.logger.warn(
         format,
         Integer.toUnsignedString(data.messageIdNumber(), 16),
         data.messageIdName(),
-        data.message());
+        data.message()
+      );
     }
     return false;
   }

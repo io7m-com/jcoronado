@@ -22,6 +22,7 @@ import org.immutables.value.Value;
 
 import java.util.OptionalInt;
 import java.util.OptionalLong;
+import java.util.Set;
 
 /**
  * Information required to create an allocator.
@@ -31,6 +32,12 @@ import java.util.OptionalLong;
 @Value.Immutable
 public interface VMAAllocatorCreateInfoType
 {
+  /**
+   * @return The allocator flags
+   */
+
+  Set<VMAAllocatorCreateFlag> flags();
+
   /**
    * @return The logical device used for allocations
    */

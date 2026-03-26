@@ -18,4 +18,7 @@
  * Type-safe Vulkan frontend (Documentation)
  */
 
+@Version("1.0.1")
 package com.io7m.jcoronado.documentation;
+
+import org.osgi.annotation.versioning.Version;

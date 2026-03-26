@@ -23,7 +23,6 @@ import com.io7m.jcoronado.api.VulkanQueueFamilyProperties;
 import com.io7m.jcoronado.api.VulkanQueueIndex;
 import com.io7m.jcoronado.api.VulkanQueueType;
 import com.io7m.jcoronado.api.VulkanSubmitInfo;
-import org.lwjgl.system.MemoryStack;
 import org.lwjgl.vulkan.VK10;
 import org.lwjgl.vulkan.VK13;
 import org.lwjgl.vulkan.VkQueue;
@@ -50,7 +49,6 @@ public final class VulkanLWJGLQueue
   private final VkQueue queue;
   private final VulkanQueueFamilyProperties properties;
   private final VulkanQueueIndex queueIndex;
-  private final MemoryStack stackInitial;
 
   VulkanLWJGLQueue(
     final VkQueue inQueue,
@@ -66,8 +64,6 @@ public final class VulkanLWJGLQueue
       Objects.requireNonNull(inProperties, "properties");
     this.queueIndex =
       inQueueIndex;
-    this.stackInitial =
-      MemoryStack.create();
   }
 
   /**
@@ -123,7 +119,7 @@ public final class VulkanLWJGLQueue
       cfence = VK10.VK_NULL_HANDLE;
     }
 
-    try (var stack = this.stackInitial.push()) {
+    try (var stack = VulkanLWJGLMemoryStack.stack()) {
       final var size =
         submissions.size();
       final var infos =

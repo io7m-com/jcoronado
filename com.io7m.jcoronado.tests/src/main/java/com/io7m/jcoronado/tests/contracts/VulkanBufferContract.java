@@ -22,6 +22,7 @@ import com.io7m.jcoronado.api.VulkanDeviceMemoryType;
 import com.io7m.jcoronado.api.VulkanException;
 import com.io7m.jcoronado.api.VulkanInstanceType;
 import com.io7m.jcoronado.api.VulkanLogicalDeviceType;
+import com.io7m.jcoronado.api.VulkanMemoryAllocateFlag;
 import com.io7m.jcoronado.api.VulkanMemoryAllocateInfo;
 import com.io7m.jcoronado.api.VulkanPhysicalDeviceType;
 import org.junit.jupiter.api.AfterEach;
@@ -32,8 +33,11 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Set;
 
+import static com.io7m.jcoronado.api.VulkanBufferUsageFlag.VK_BUFFER_USAGE_SHADER_DEVICE_ADDRESS_BIT;
 import static com.io7m.jcoronado.api.VulkanBufferUsageFlag.VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
+import static com.io7m.jcoronado.api.VulkanMemoryAllocateFlag.VK_MEMORY_ALLOCATE_DEVICE_ADDRESS_BIT;
 import static com.io7m.jcoronado.api.VulkanSharingMode.VK_SHARING_MODE_EXCLUSIVE;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 public abstract class VulkanBufferContract extends VulkanOnDeviceContract
 {
@@ -119,6 +123,68 @@ public abstract class VulkanBufferContract extends VulkanOnDeviceContract
 
         logger.debug("memory: {}", memory);
         this.device.bindBufferMemory(buffer, memory, 0L);
+      }
+    }
+
+    Assertions.assertTrue(escaped_buffer.isClosed(), "Buffer is destroyed");
+    Assertions.assertTrue(escaped_memory.isClosed(), "Memory is destroyed");
+  }
+
+  @Test
+  public final void testBufferDeviceAddress()
+    throws VulkanException
+  {
+    Assumptions.assumeTrue(this.shouldRun(), "Test should run");
+
+    final var logger = this.logger();
+
+    final var buffer_info =
+      VulkanBufferCreateInfo.builder()
+        .addQueueFamilyIndices(
+          this.device.queues()
+            .get(0)
+            .queueFamilyProperties()
+            .queueFamilyIndex())
+        .addUsageFlags(VK_BUFFER_USAGE_VERTEX_BUFFER_BIT)
+        .addUsageFlags(VK_BUFFER_USAGE_SHADER_DEVICE_ADDRESS_BIT)
+        .setSharingMode(VK_SHARING_MODE_EXCLUSIVE)
+        .setSize(100L)
+        .build();
+
+    final VulkanBufferType escaped_buffer;
+    final VulkanDeviceMemoryType escaped_memory;
+
+    try (var buffer = this.device.createBuffer(buffer_info)) {
+      Assertions.assertFalse(buffer.isClosed(), "Buffer is destroyed");
+      escaped_buffer = buffer;
+
+      logger.debug("buffer: {}", buffer);
+
+      final var requirements = this.device.getBufferMemoryRequirements(buffer);
+      logger.debug("buffer requirements: {}", requirements);
+
+      final var memory_type =
+        this.physical_device.memory().findSuitableMemoryType(
+          requirements,
+          Set.of());
+
+      final var memory_info =
+        VulkanMemoryAllocateInfo.builder()
+          .addFlags(VK_MEMORY_ALLOCATE_DEVICE_ADDRESS_BIT)
+          .setMemoryTypeIndex(memory_type.index())
+          .setSize(requirements.size())
+          .build();
+
+      try (var memory = this.device.allocateMemory(memory_info)) {
+        Assertions.assertFalse(memory.isClosed(), "Memory is destroyed");
+        escaped_memory = memory;
+
+        logger.debug("memory: {}", memory);
+        this.device.bindBufferMemory(buffer, memory, 0L);
+
+        final var address = this.device.getBufferDeviceAddress(buffer);
+        logger.debug("address: {}", address);
+        assertNotEquals(0L, address.value());
       }
     }
 

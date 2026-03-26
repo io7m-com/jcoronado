@@ -16,6 +16,7 @@
 
 package com.io7m.jcoronado.api;
 
+import java.nio.ByteBuffer;
 import java.util.List;
 import java.util.Set;
 
@@ -970,6 +971,26 @@ public interface VulkanCommandBufferType extends VulkanHandleDispatchableType
   @VulkanAPIFunctionType(vulkanFunction = "vkCmdEndRendering")
   @VulkanExternallySynchronizedType
   void endRendering()
+    throws VulkanException;
+
+  /**
+   * Update the values of push constants.
+   *
+   * @param layout     The pipeline layout
+   * @param stageFlags The stage flags
+   * @param offset     The offset
+   * @param data       The data
+   *
+   * @throws VulkanException On errors
+   */
+
+  @VulkanAPIFunctionType(vulkanFunction = "vkCmdPushConstants")
+  @VulkanExternallySynchronizedType
+  void pushConstants(
+    VulkanPipelineLayoutType layout,
+    Set<VulkanShaderStageFlag> stageFlags,
+    long offset,
+    ByteBuffer data)
     throws VulkanException;
 }
 

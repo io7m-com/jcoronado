@@ -1,5 +1,5 @@
 /*
- * Copyright © 2018 Mark Raynsford <code@io7m.com> http://io7m.com
+ * Copyright © 2026 Mark Raynsford <code@io7m.com> https://www.io7m.com
  *
  * Permission to use, copy, modify, and/or distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -14,30 +14,30 @@
  * IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-package com.io7m.jcoronado.vma;
+package com.io7m.jcoronado.lwjgl.internal;
 
-import com.io7m.immutables.styles.ImmutablesStyleType;
-import org.immutables.value.Value;
+import org.lwjgl.system.MemoryStack;
 
 /**
- * An allocation result.
- *
- * @param <T> The type of allocation result
+ * The per-thread memory stack.
  */
 
-@ImmutablesStyleType
-@Value.Immutable
-public interface VMAAllocationResultType<T>
+public final class VulkanLWJGLMemoryStack
 {
+  private static final ThreadLocal<MemoryStack> THREAD_STACK =
+    ThreadLocal.withInitial(MemoryStack::create);
+
+  private VulkanLWJGLMemoryStack()
+  {
+
+  }
+
   /**
-   * @return The allocation
+   * @return A memory stack for the current thread
    */
 
-  VMAAllocationType allocation();
-
-  /**
-   * @return The allocation result. Typically an image or a buffer.
-   */
-
-  T result();
+  public static MemoryStack stack()
+  {
+    return THREAD_STACK.get().push();
+  }
 }

@@ -17,16 +17,17 @@
 package com.io7m.jcoronado.lwjgl;
 
 import com.io7m.jcoronado.api.VulkanChecks;
+import com.io7m.jcoronado.api.VulkanEnumMaps;
 import com.io7m.jcoronado.api.VulkanException;
 import com.io7m.jcoronado.lwjgl.internal.VMALWJGLAllocator;
 import com.io7m.jcoronado.lwjgl.internal.VulkanLWJGLClassChecks;
 import com.io7m.jcoronado.lwjgl.internal.VulkanLWJGLInstance;
 import com.io7m.jcoronado.lwjgl.internal.VulkanLWJGLLogicalDevice;
+import com.io7m.jcoronado.lwjgl.internal.VulkanLWJGLMemoryStack;
 import com.io7m.jcoronado.lwjgl.internal.VulkanLWJGLPhysicalDevice;
 import com.io7m.jcoronado.vma.VMAAllocatorCreateInfo;
 import com.io7m.jcoronado.vma.VMAAllocatorProviderType;
 import com.io7m.jcoronado.vma.VMAAllocatorType;
-import org.lwjgl.system.MemoryStack;
 import org.lwjgl.util.vma.Vma;
 import org.lwjgl.util.vma.VmaAllocatorCreateInfo;
 import org.lwjgl.util.vma.VmaDeviceMemoryCallbacks;
@@ -43,12 +44,9 @@ import java.util.Objects;
 
 public final class VMALWJGLAllocatorProvider implements VMAAllocatorProviderType
 {
-  private final MemoryStack initial_stack;
-
-  private VMALWJGLAllocatorProvider(
-    final MemoryStack in_stack)
+  private VMALWJGLAllocatorProvider()
   {
-    this.initial_stack = Objects.requireNonNull(in_stack, "stack");
+
   }
 
   /**
@@ -57,7 +55,7 @@ public final class VMALWJGLAllocatorProvider implements VMAAllocatorProviderType
 
   public static VMAAllocatorProviderType create()
   {
-    return new VMALWJGLAllocatorProvider(MemoryStack.create());
+    return new VMALWJGLAllocatorProvider();
   }
 
   @Override
@@ -99,7 +97,7 @@ public final class VMALWJGLAllocatorProvider implements VMAAllocatorProviderType
         VulkanLWJGLInstance.class
       );
 
-    try (var stack = this.initial_stack.push()) {
+    try (var stack = VulkanLWJGLMemoryStack.stack()) {
       final var functions =
         VmaVulkanFunctions.calloc(stack);
       final var vkInstance =
@@ -129,7 +127,7 @@ public final class VMALWJGLAllocatorProvider implements VMAAllocatorProviderType
         null;
 
       cinfo.set(
-        0,
+        VulkanEnumMaps.packValues(info.flags()),
         physicalDevice.device(),
         vkDevice,
         info.preferredLargeHeapBlockSize()

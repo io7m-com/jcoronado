@@ -47,10 +47,12 @@ import com.io7m.jcoronado.api.VulkanQueryPoolType;
 import com.io7m.jcoronado.api.VulkanRectangle2D;
 import com.io7m.jcoronado.api.VulkanRenderPassBeginInfo;
 import com.io7m.jcoronado.api.VulkanRenderingInfo;
+import com.io7m.jcoronado.api.VulkanShaderStageFlag;
 import com.io7m.jcoronado.api.VulkanStencilFaceFlag;
 import com.io7m.jcoronado.api.VulkanSubpassContents;
 import com.io7m.jcoronado.api.VulkanViewport;
 
+import java.nio.ByteBuffer;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -441,6 +443,16 @@ public final class VFakeCommandBuffer implements VulkanCommandBufferType
 
   @Override
   public void endRendering()
+  {
+
+  }
+
+  @Override
+  public void pushConstants(
+    final VulkanPipelineLayoutType layout,
+    final Set<VulkanShaderStageFlag> stageFlags,
+    final long offset,
+    final ByteBuffer data)
   {
 
   }

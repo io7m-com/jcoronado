@@ -9,7 +9,7 @@
   <parent>
     <artifactId>com.io7m.jcoronado</artifactId>
     <groupId>com.io7m.jcoronado</groupId>
-    <version>1.0.0-beta0001</version>
+    <version>1.0.0-beta0002</version>
   </parent>
 
   <artifactId>com.io7m.jcoronado.documentation</artifactId>
@@ -21,6 +21,7 @@
 
   <properties>
     <mdep.analyze.skip>true</mdep.analyze.skip>
+    <bnd.baseline.skip>true</bnd.baseline.skip>
   </properties>
 
   <dependencies>

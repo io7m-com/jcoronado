@@ -34,8 +34,11 @@ public interface VMAAllocationInfoType
    * @return The memory type index that this allocation was allocated from.
    */
 
-  @Value.Parameter
-  long memoryType();
+  @Value.Default
+  default long memoryType()
+  {
+    return 0L;
+  }
 
   /**
    * @return A handle to the Vulkan memory object.
@@ -48,7 +51,6 @@ public interface VMAAllocationInfoType
    * If the allocation is lost, it is equal to `VK_NULL_HANDLE`.
    */
 
-  @Value.Parameter
   Optional<VulkanDeviceMemoryType> deviceMemory();
 
   /**
@@ -59,8 +61,11 @@ public interface VMAAllocationInfoType
    * allocation is lost.
    */
 
-  @Value.Parameter
-  long offset();
+  @Value.Default
+  default long offset()
+  {
+    return 0L;
+  }
 
   /**
    * @return The size of this allocation, in bytes.
@@ -68,6 +73,9 @@ public interface VMAAllocationInfoType
    * It never changes, unless allocation is lost.
    */
 
-  @Value.Parameter
-  long size();
+  @Value.Default
+  default long size()
+  {
+    return 0L;
+  }
 }
