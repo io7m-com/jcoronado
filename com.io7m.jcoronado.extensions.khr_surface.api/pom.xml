@@ -9,7 +9,7 @@
   <parent>
     <artifactId>com.io7m.jcoronado</artifactId>
     <groupId>com.io7m.jcoronado</groupId>
-    <version>1.0.0-beta0002</version>
+    <version>1.0.0-SNAPSHOT-SNAPSHOT</version>
   </parent>
 
   <artifactId>com.io7m.jcoronado.extensions.khr_surface.api</artifactId>
