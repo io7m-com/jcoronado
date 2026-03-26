@@ -878,6 +878,21 @@ public interface VulkanLogicalDeviceType extends VulkanHandleDispatchableType
     throws VulkanException;
 
   /**
+   * Retrieve the device address for the given buffer.
+   *
+   * @param buffer The buffer
+   *
+   * @return The address
+   *
+   * @throws VulkanException On errors
+   */
+
+  @VulkanAPIFunctionType(vulkanFunction = "vkGetBufferDeviceAddress")
+  VulkanDeviceAddress getBufferDeviceAddress(
+    VulkanBufferType buffer)
+    throws VulkanException;
+
+  /**
    * Allocate device memory.
    *
    * @param info The allocation info

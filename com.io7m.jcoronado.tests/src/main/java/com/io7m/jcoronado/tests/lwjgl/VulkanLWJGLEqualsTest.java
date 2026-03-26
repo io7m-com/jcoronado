@@ -82,7 +82,6 @@ public final class VulkanLWJGLEqualsTest
   {
     EqualsVerifier.forClass(VulkanLWJGLCommandBuffer.class)
       .withIgnoredFields(
-        "stackInitial",
         "buffer",
         "ownership",
         "closed",

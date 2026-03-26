@@ -19,6 +19,8 @@ package com.io7m.jcoronado.api;
 import com.io7m.immutables.styles.ImmutablesStyleType;
 import org.immutables.value.Value;
 
+import java.util.Set;
+
 /**
  * @see "VkMemoryAllocateInfo"
  */
@@ -37,6 +39,12 @@ public interface VulkanMemoryAllocateInfoType
   {
     return 0L;
   }
+
+  /**
+   * @return The memory allocation flags
+   */
+
+  Set<VulkanMemoryAllocateFlag> flags();
 
   /**
    * @return An index identifying a memory type from the memoryTypes array of the

@@ -37,6 +37,7 @@ import com.io7m.jcoronado.api.VulkanDescriptorSetAllocateInfo;
 import com.io7m.jcoronado.api.VulkanDescriptorSetLayoutCreateInfo;
 import com.io7m.jcoronado.api.VulkanDescriptorSetLayoutType;
 import com.io7m.jcoronado.api.VulkanDescriptorSetType;
+import com.io7m.jcoronado.api.VulkanDeviceAddress;
 import com.io7m.jcoronado.api.VulkanDeviceMemoryType;
 import com.io7m.jcoronado.api.VulkanEventCreateInfo;
 import com.io7m.jcoronado.api.VulkanEventType;
@@ -483,6 +484,14 @@ public final class VFakeLogicalDevice implements VulkanLogicalDeviceType
     throws VulkanException
   {
     throw errorNotImplemented("getBufferMemoryRequirements");
+  }
+
+  @Override
+  public VulkanDeviceAddress getBufferDeviceAddress(
+    final VulkanBufferType buffer)
+    throws VulkanException
+  {
+    throw errorNotImplemented("getBufferDeviceAddress");
   }
 
   @Override

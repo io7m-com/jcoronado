@@ -67,9 +67,10 @@ public final class VulkanLWJGLGraphicsPipelineCreateInfos
       VkGraphicsPipelineCreateInfo.calloc(pipeline_infos.size(), stack);
 
     for (var index = 0; index < pipeline_infos.size(); ++index) {
-      final var source = pipeline_infos.get(index);
-      final var target = VkGraphicsPipelineCreateInfo.create(buffer.address(
-        index));
+      final var source =
+        pipeline_infos.get(index);
+      final var target =
+        VkGraphicsPipelineCreateInfo.create(buffer.address(index));
       packInto(stack, source, target);
     }
 
@@ -106,36 +107,65 @@ public final class VulkanLWJGLGraphicsPipelineCreateInfos
     packIntoRenderPass(source, target);
 
     target.pColorBlendState(
-      VulkanLWJGLPipelineColorBlendStateCreateInfos.packOptional(
-        stack, source.colorBlendState()));
+      VulkanLWJGLPipelineColorBlendStateCreateInfos.pack(
+        stack,
+        source.colorBlendState()
+      )
+    );
     target.pDepthStencilState(
-      VulkanLWJGLPipelineDepthStencilStateCreateInfos.packOptional(
-        stack, source.depthStencilState()));
+      VulkanLWJGLPipelineDepthStencilStateCreateInfos.pack(
+        stack,
+        source.depthStencilState()
+      )
+    );
     target.pDynamicState(
-      VulkanLWJGLPipelineDynamicStateCreateInfos.packOptional(
-        stack, source.dynamicState()));
+      VulkanLWJGLPipelineDynamicStateCreateInfos.pack(
+        stack,
+        source.dynamicState()
+      )
+    );
     target.pInputAssemblyState(
       VulkanLWJGLPipelineInputAssemblyStateCreateInfos.pack(
-        stack, source.inputAssemblyState()));
+        stack,
+        source.inputAssemblyState()
+      )
+    );
     target.pMultisampleState(
-      VulkanLWJGLPipelineMultisampleStateCreateInfos.packOptional(
-        stack, source.multisampleState()));
+      VulkanLWJGLPipelineMultisampleStateCreateInfos.pack(
+        stack,
+        source.multisampleState()
+      )
+    );
     target.pRasterizationState(
       VulkanLWJGLPipelineRasterizationStateCreateInfos.pack(
-        stack, source.rasterizationState()));
+        stack,
+        source.rasterizationState()
+      )
+    );
     target.pTessellationState(
-      VulkanLWJGLPipelineTessellationStateCreateInfos.packOptional(
-        stack, source.tessellationState()));
+      VulkanLWJGLPipelineTessellationStateCreateInfos.pack(
+        stack,
+        source.tessellationState()
+      )
+    );
     target.pVertexInputState(
       VulkanLWJGLPipelineVertexInputStateCreateInfos.pack(
-        stack, source.vertexInputState()));
+        stack,
+        source.vertexInputState()
+      )
+    );
     target.pViewportState(
-      VulkanLWJGLPipelineViewportStateCreateInfos.packOptional(
-        stack, source.viewportState()));
+      VulkanLWJGLPipelineViewportStateCreateInfos.pack(
+        stack,
+        source.viewportState()
+      )
+    );
     target.pStages(
       VulkanLWJGLPipelineShaderStageCreateInfos.packAll(
         stack,
-        source.stages()));
+        source.stages()
+      )
+    );
   }
 
   private static void packIntoRenderingCreateInfo(

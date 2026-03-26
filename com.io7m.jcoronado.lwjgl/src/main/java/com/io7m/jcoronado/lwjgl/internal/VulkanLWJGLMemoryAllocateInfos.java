@@ -16,10 +16,13 @@
 
 package com.io7m.jcoronado.lwjgl.internal;
 
+import com.io7m.jcoronado.api.VulkanEnumMaps;
 import com.io7m.jcoronado.api.VulkanException;
 import com.io7m.jcoronado.api.VulkanMemoryAllocateInfo;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.vulkan.VK10;
+import org.lwjgl.vulkan.VK11;
+import org.lwjgl.vulkan.VkMemoryAllocateFlagsInfo;
 import org.lwjgl.vulkan.VkMemoryAllocateInfo;
 
 import java.util.List;
@@ -52,12 +55,13 @@ public final class VulkanLWJGLMemoryAllocateInfos
     Objects.requireNonNull(stack, "stack");
     Objects.requireNonNull(info, "info");
 
-    return packInto(info, VkMemoryAllocateInfo.calloc(stack));
+    return packInto(stack, info, VkMemoryAllocateInfo.calloc(stack));
   }
 
   /**
    * Pack a structure.
    *
+   * @param stack A stack
    * @param source The input structure
    * @param target The output structure
    *
@@ -65,17 +69,24 @@ public final class VulkanLWJGLMemoryAllocateInfos
    */
 
   public static VkMemoryAllocateInfo packInto(
+    final MemoryStack stack,
     final VulkanMemoryAllocateInfo source,
     final VkMemoryAllocateInfo target)
   {
+    Objects.requireNonNull(stack, "stack");
     Objects.requireNonNull(source, "source");
     Objects.requireNonNull(target, "target");
 
+    final var flagsInfo = VkMemoryAllocateFlagsInfo.calloc(stack);
+    flagsInfo.sType(VK11.VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_FLAGS_INFO);
+    flagsInfo.flags(VulkanEnumMaps.packValues(source.flags()));
+
     return target.set(
       VK10.VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO,
-      0L,
+      flagsInfo.address(),
       source.size(),
-      source.memoryTypeIndex().value());
+      source.memoryTypeIndex().value()
+    );
   }
 
   /**
@@ -99,7 +110,7 @@ public final class VulkanLWJGLMemoryAllocateInfos
 
     return VulkanLWJGLArrays.pack(
       infos,
-      (sstack, value, output) -> packInto(value, output),
+      VulkanLWJGLMemoryAllocateInfos::packInto,
       VkMemoryAllocateInfo::calloc,
       stack
     );
@@ -126,7 +137,7 @@ public final class VulkanLWJGLMemoryAllocateInfos
 
     return VulkanLWJGLArrays.packOrNull(
       infos,
-      (sstack, value, output) -> packInto(value, output),
+      VulkanLWJGLMemoryAllocateInfos::packInto,
       VkMemoryAllocateInfo::calloc,
       stack
     );

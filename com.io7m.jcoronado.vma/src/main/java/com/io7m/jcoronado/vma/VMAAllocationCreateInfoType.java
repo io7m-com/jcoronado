@@ -22,6 +22,8 @@ import org.immutables.value.Value;
 
 import java.util.Set;
 
+import static com.io7m.jcoronado.vma.VMAMemoryUsage.VMA_MEMORY_USAGE_UNKNOWN;
+
 /**
  * Information required to create an allocation.
  */
@@ -34,34 +36,37 @@ public interface VMAAllocationCreateInfoType
    * @return The creation flags
    */
 
-  @Value.Parameter
   Set<VMAAllocationCreateFlag> flags();
 
   /**
    * @return The intended usage of the memory allocation
    */
 
-  @Value.Parameter
-  VMAMemoryUsage usage();
+  @Value.Default
+  default VMAMemoryUsage usage()
+  {
+    return VMA_MEMORY_USAGE_UNKNOWN;
+  }
 
   /**
    * @return The flags that must be set in a memory type chosen for an allocation.
    */
 
-  @Value.Parameter
   Set<VulkanMemoryPropertyFlag> requiredFlags();
 
   /**
    * @return The flags that preferably should be set in a memory type chosen for an allocation.
    */
 
-  @Value.Parameter
   Set<VulkanMemoryPropertyFlag> preferredFlags();
 
   /**
    * @return A bitmask containing one bit set for every memory type acceptable for this allocation.
    */
 
-  @Value.Parameter
-  long memoryTypeBits();
+  @Value.Default
+  default long memoryTypeBits()
+  {
+    return 0L;
+  }
 }

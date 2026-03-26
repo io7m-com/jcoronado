@@ -37,6 +37,7 @@ import com.io7m.jcoronado.api.VulkanDescriptorSetLayoutCreateInfo;
 import com.io7m.jcoronado.api.VulkanDescriptorSetLayoutType;
 import com.io7m.jcoronado.api.VulkanDescriptorSetType;
 import com.io7m.jcoronado.api.VulkanDestroyedException;
+import com.io7m.jcoronado.api.VulkanDeviceAddress;
 import com.io7m.jcoronado.api.VulkanDeviceMemoryType;
 import com.io7m.jcoronado.api.VulkanEnumMaps;
 import com.io7m.jcoronado.api.VulkanEventCreateInfo;
@@ -87,10 +88,10 @@ import com.io7m.jcoronado.api.VulkanSubresourceLayout;
 import com.io7m.jcoronado.api.VulkanUncheckedException;
 import com.io7m.jcoronado.api.VulkanWriteDescriptorSet;
 import com.io7m.jcoronado.extensions.ext_debug_utils.api.VulkanDebugUtilsType;
-import org.lwjgl.PointerBuffer;
-import org.lwjgl.system.MemoryStack;
 import org.lwjgl.vulkan.VK10;
 import org.lwjgl.vulkan.VK13;
+import org.lwjgl.vulkan.VK14;
+import org.lwjgl.vulkan.VkBufferDeviceAddressInfo;
 import org.lwjgl.vulkan.VkCommandBuffer;
 import org.lwjgl.vulkan.VkDevice;
 import org.lwjgl.vulkan.VkMemoryRequirements;
@@ -141,12 +142,10 @@ public final class VulkanLWJGLLogicalDevice
 
   private final VulkanLWJGLPhysicalDevice physical_device;
   private final VkDevice device;
-  private final MemoryStack stack_initial;
   private final VulkanLogicalDeviceCreateInfo creation;
   private final List<VulkanLWJGLQueue> queues;
   private final List<VulkanQueueType> queues_read;
   private final Map<String, VulkanExtensionType> extensions_enabled_read_only;
-  private final PointerBuffer pointer_buffer;
   private final VulkanDebuggingType debugging;
 
   VulkanLWJGLLogicalDevice(
@@ -172,10 +171,6 @@ public final class VulkanLWJGLLogicalDevice
       new ArrayList<>(32);
     this.queues_read =
       Collections.unmodifiableList(this.queues);
-    this.stack_initial =
-      MemoryStack.create();
-    this.pointer_buffer =
-      this.stack_initial.mallocPointer(1);
 
     this.initializeQueues();
     this.debugging = this.initializeDebugging();
@@ -236,7 +231,7 @@ public final class VulkanLWJGLLogicalDevice
   private void initializeQueues()
     throws VulkanException
   {
-    try (var stack = this.stack_initial.push()) {
+    try (var stack = VulkanLWJGLMemoryStack.stack()) {
       final var queueRequests =
         this.creation.queueCreateInfos();
       final var families =
@@ -323,7 +318,7 @@ public final class VulkanLWJGLLogicalDevice
         Long.valueOf(create_info.size()));
     }
 
-    try (var stack = this.stack_initial.push()) {
+    try (var stack = VulkanLWJGLMemoryStack.stack()) {
       final var results = new long[1];
       final var proxy = this.hostAllocatorProxy();
 
@@ -359,7 +354,7 @@ public final class VulkanLWJGLLogicalDevice
 
     this.checkNotClosed();
 
-    try (var stack = this.stack_initial.push()) {
+    try (var stack = VulkanLWJGLMemoryStack.stack()) {
       final var handle = new long[1];
       final var proxy = this.hostAllocatorProxy();
       VulkanChecks.checkReturnCode(
@@ -392,7 +387,7 @@ public final class VulkanLWJGLLogicalDevice
 
     final var buffer = checkInstanceOf(info.buffer(), VulkanLWJGLBuffer.class);
 
-    try (var stack = this.stack_initial.push()) {
+    try (var stack = VulkanLWJGLMemoryStack.stack()) {
       final var handles = new long[1];
       final var proxy = this.hostAllocatorProxy();
       VulkanChecks.checkReturnCode(
@@ -430,7 +425,7 @@ public final class VulkanLWJGLLogicalDevice
 
     final var image = checkInstanceOf(info.image(), VulkanLWJGLImage.class);
 
-    try (var stack = this.stack_initial.push()) {
+    try (var stack = VulkanLWJGLMemoryStack.stack()) {
       final var view = new long[1];
       final var proxy = this.hostAllocatorProxy();
       VulkanChecks.checkReturnCode(
@@ -461,7 +456,7 @@ public final class VulkanLWJGLLogicalDevice
 
     this.checkNotClosed();
 
-    try (var stack = this.stack_initial.push()) {
+    try (var stack = VulkanLWJGLMemoryStack.stack()) {
       VulkanChecks.checkReturnCode(
         VK10.vkFlushMappedMemoryRanges(
           this.device,
@@ -479,7 +474,7 @@ public final class VulkanLWJGLLogicalDevice
 
     this.checkNotClosed();
 
-    try (var stack = this.stack_initial.push()) {
+    try (var stack = VulkanLWJGLMemoryStack.stack()) {
       final var proxy = this.hostAllocatorProxy();
       final var layout = new long[1];
       VulkanChecks.checkReturnCode(
@@ -514,7 +509,7 @@ public final class VulkanLWJGLLogicalDevice
 
     this.checkNotClosed();
 
-    try (var stack = this.stack_initial.push()) {
+    try (var stack = VulkanLWJGLMemoryStack.stack()) {
       final var proxy = this.hostAllocatorProxy();
       final var layout = new long[1];
       VulkanChecks.checkReturnCode(
@@ -550,7 +545,7 @@ public final class VulkanLWJGLLogicalDevice
 
     this.checkNotClosed();
 
-    try (var stack = this.stack_initial.push()) {
+    try (var stack = VulkanLWJGLMemoryStack.stack()) {
       final var layout = new long[1];
       final var proxy = this.hostAllocatorProxy();
       VulkanChecks.checkReturnCode(
@@ -587,7 +582,7 @@ public final class VulkanLWJGLLogicalDevice
 
     this.checkNotClosed();
 
-    try (var stack = this.stack_initial.push()) {
+    try (var stack = VulkanLWJGLMemoryStack.stack()) {
       final var count = info.setLayouts().size();
       final var handles = stack.mallocLong(count);
 
@@ -622,7 +617,7 @@ public final class VulkanLWJGLLogicalDevice
 
     this.checkNotClosed();
 
-    try (var stack = this.stack_initial.push()) {
+    try (var stack = VulkanLWJGLMemoryStack.stack()) {
       final var writes =
         VulkanLWJGLWriteDescriptorSets.packList(stack, descriptor_writes);
       final var copies =
@@ -641,7 +636,7 @@ public final class VulkanLWJGLLogicalDevice
 
     this.checkNotClosed();
 
-    try (var stack = this.stack_initial.push()) {
+    try (var stack = VulkanLWJGLMemoryStack.stack()) {
       final var pass = new long[1];
       final var proxy = this.hostAllocatorProxy();
       VulkanChecks.checkReturnCode(
@@ -680,7 +675,7 @@ public final class VulkanLWJGLLogicalDevice
 
     this.checkNotClosed();
 
-    try (var stack = this.stack_initial.push()) {
+    try (var stack = VulkanLWJGLMemoryStack.stack()) {
       final var handles = new long[1];
       final var proxy = this.hostAllocatorProxy();
       VulkanChecks.checkReturnCode(
@@ -711,7 +706,7 @@ public final class VulkanLWJGLLogicalDevice
 
     this.checkNotClosed();
 
-    try (var stack = this.stack_initial.push()) {
+    try (var stack = VulkanLWJGLMemoryStack.stack()) {
       final var ptr = stack.mallocPointer(1);
 
       VulkanChecks.checkReturnCode(
@@ -740,7 +735,7 @@ public final class VulkanLWJGLLogicalDevice
     final var cimage =
       checkInstanceOf(image, VulkanLWJGLImage.class);
 
-    try (var stack = this.stack_initial.push()) {
+    try (var stack = VulkanLWJGLMemoryStack.stack()) {
       final var info = VkMemoryRequirements.calloc(stack);
 
       VK10.vkGetImageMemoryRequirements(this.device, cimage.handle(), info);
@@ -764,7 +759,7 @@ public final class VulkanLWJGLLogicalDevice
 
     this.checkNotClosed();
 
-    try (var stack = this.stack_initial.push()) {
+    try (var stack = VulkanLWJGLMemoryStack.stack()) {
       final var ptr = stack.mallocPointer(1);
       ptr.put(0, Integer.toUnsignedLong(data.capacity()));
 
@@ -798,7 +793,7 @@ public final class VulkanLWJGLLogicalDevice
 
     this.checkNotClosed();
 
-    try (var stack = this.stack_initial.push()) {
+    try (var stack = VulkanLWJGLMemoryStack.stack()) {
       final var pipes = new long[pipeline_infos.size()];
       final var proxy = this.hostAllocatorProxy();
       VulkanChecks.checkReturnCode(
@@ -837,7 +832,7 @@ public final class VulkanLWJGLLogicalDevice
 
     this.checkNotClosed();
 
-    try (var stack = this.stack_initial.push()) {
+    try (var stack = VulkanLWJGLMemoryStack.stack()) {
       final var pool = new long[1];
       final var proxy = this.hostAllocatorProxy();
       VulkanChecks.checkReturnCode(
@@ -889,7 +884,7 @@ public final class VulkanLWJGLLogicalDevice
         create_info.renderPass(),
         VulkanLWJGLRenderPass.class);
 
-      try (var stack = this.stack_initial.push()) {
+      try (var stack = VulkanLWJGLMemoryStack.stack()) {
         final var framebuffers = new long[1];
         final var proxy = this.hostAllocatorProxy();
         VulkanChecks.checkReturnCode(
@@ -931,7 +926,7 @@ public final class VulkanLWJGLLogicalDevice
 
     this.checkNotClosed();
 
-    try (var stack = this.stack_initial.push()) {
+    try (var stack = VulkanLWJGLMemoryStack.stack()) {
       final var handles = new long[1];
       final var proxy = this.hostAllocatorProxy();
 
@@ -966,7 +961,7 @@ public final class VulkanLWJGLLogicalDevice
     final var cpool = checkInstanceOf(
       create_info.pool(),
       VulkanLWJGLCommandPool.class);
-    try (var stack = this.stack_initial.push()) {
+    try (var stack = VulkanLWJGLMemoryStack.stack()) {
       final var count = create_info.count();
       final var buffers = stack.mallocPointer(count);
 
@@ -1009,7 +1004,7 @@ public final class VulkanLWJGLLogicalDevice
 
     this.checkNotClosed();
 
-    try (var stack = this.stack_initial.push()) {
+    try (var stack = VulkanLWJGLMemoryStack.stack()) {
       final var createInfo =
         VkSemaphoreCreateInfo.calloc(stack);
 
@@ -1058,7 +1053,7 @@ public final class VulkanLWJGLLogicalDevice
 
     this.checkNotClosed();
 
-    try (var stack = this.stack_initial.push()) {
+    try (var stack = VulkanLWJGLMemoryStack.stack()) {
       final var timelineInfo =
         VkSemaphoreTypeCreateInfo.calloc(stack);
       final var createInfo =
@@ -1113,7 +1108,7 @@ public final class VulkanLWJGLLogicalDevice
 
     this.checkNotClosed();
 
-    try (var stack = this.stack_initial.push()) {
+    try (var stack = VulkanLWJGLMemoryStack.stack()) {
       final var fences = new long[1];
       final var proxy = this.hostAllocatorProxy();
       VulkanChecks.checkReturnCode(
@@ -1141,7 +1136,7 @@ public final class VulkanLWJGLLogicalDevice
 
     this.checkNotClosed();
 
-    try (var stack = this.stack_initial.push()) {
+    try (var stack = VulkanLWJGLMemoryStack.stack()) {
       final var handles = new long[1];
       final var proxy = this.hostAllocatorProxy();
       VulkanChecks.checkReturnCode(
@@ -1168,7 +1163,7 @@ public final class VulkanLWJGLLogicalDevice
 
     this.checkNotClosed();
 
-    try (var stack = this.stack_initial.push()) {
+    try (var stack = VulkanLWJGLMemoryStack.stack()) {
       final var array = stack.mallocLong(fences.size());
       for (var index = 0; index < fences.size(); ++index) {
         final var fence = checkInstanceOf(
@@ -1245,7 +1240,7 @@ public final class VulkanLWJGLLogicalDevice
 
     this.checkNotClosed();
 
-    try (var stack = this.stack_initial.push()) {
+    try (var stack = VulkanLWJGLMemoryStack.stack()) {
       final var result =
         VK10.vkWaitForFences(
           this.device,
@@ -1275,7 +1270,7 @@ public final class VulkanLWJGLLogicalDevice
 
     this.checkNotClosed();
 
-    try (var stack = this.stack_initial.push()) {
+    try (var stack = VulkanLWJGLMemoryStack.stack()) {
       final var info = VulkanLWJGLBufferCreateInfos.packInfo(
         stack,
         create_info);
@@ -1313,7 +1308,7 @@ public final class VulkanLWJGLLogicalDevice
 
     this.checkNotClosed();
 
-    try (var stack = this.stack_initial.push()) {
+    try (var stack = VulkanLWJGLMemoryStack.stack()) {
       final var handles = new long[1];
       final var proxy = this.hostAllocatorProxy();
       VulkanChecks.checkReturnCode(
@@ -1373,7 +1368,7 @@ public final class VulkanLWJGLLogicalDevice
 
     final var cbuffer = checkInstanceOf(buffer, VulkanLWJGLBuffer.class);
 
-    try (var stack = this.stack_initial.push()) {
+    try (var stack = VulkanLWJGLMemoryStack.stack()) {
       final var info = VkMemoryRequirements.calloc(stack);
 
       VK10.vkGetBufferMemoryRequirements(this.device, cbuffer.handle(), info);
@@ -1387,6 +1382,28 @@ public final class VulkanLWJGLLogicalDevice
   }
 
   @Override
+  public VulkanDeviceAddress getBufferDeviceAddress(
+    final VulkanBufferType buffer)
+    throws VulkanException
+  {
+    Objects.requireNonNull(buffer, "buffer");
+    this.checkNotClosed();
+
+    final var cbuffer =
+      checkInstanceOf(buffer, VulkanLWJGLBuffer.class);
+
+    try (var stack = VulkanLWJGLMemoryStack.stack()) {
+      final var info = VkBufferDeviceAddressInfo.calloc(stack);
+      info.sType(VK14.VK_STRUCTURE_TYPE_BUFFER_DEVICE_ADDRESS_INFO);
+      info.buffer(cbuffer.handle());
+
+      return new VulkanDeviceAddress(
+        VK14.vkGetBufferDeviceAddress(this.device, info)
+      );
+    }
+  }
+
+  @Override
   public VulkanDeviceMemoryType allocateMemory(
     final VulkanMemoryAllocateInfo info)
     throws VulkanException
@@ -1395,7 +1412,7 @@ public final class VulkanLWJGLLogicalDevice
 
     this.checkNotClosed();
 
-    try (var stack = this.stack_initial.push()) {
+    try (var stack = VulkanLWJGLMemoryStack.stack()) {
       final var handles = new long[1];
       final var proxy = this.hostAllocatorProxy();
       VulkanChecks.checkReturnCode(
@@ -1487,43 +1504,52 @@ public final class VulkanLWJGLLogicalDevice
 
     this.checkNotClosed();
 
-    final var cmemory = checkInstanceOf(memory, VulkanLWJGLDeviceMemory.class);
-    final var int_flags = VulkanEnumMaps.packValues(flags);
-    final var int_handle = cmemory.handle();
+    try (var stack = VulkanLWJGLMemoryStack.stack()) {
+      final var cmemory =
+        checkInstanceOf(memory, VulkanLWJGLDeviceMemory.class);
+      final var int_flags =
+        VulkanEnumMaps.packValues(flags);
+      final var int_handle =
+        cmemory.handle();
+      final var buffer =
+        stack.mallocPointer(1);
 
-    VulkanChecks.checkReturnCode(
-      VK10.vkMapMemory(
+      VulkanChecks.checkReturnCode(
+        VK10.vkMapMemory(
+          this.device,
+          int_handle,
+          offset,
+          size,
+          int_flags,
+          buffer
+        ),
+        "vkMapMemory");
+
+      final var address = buffer.get(0);
+      if (LOG.isTraceEnabled()) {
+        LOG.trace(
+          "Mapped memory: 0x{} -> 0x{}",
+          Long.toUnsignedString(int_handle, 16),
+          Long.toUnsignedString(address, 16));
+      }
+
+      final VulkanLWJGLFlushRangedFunctionType flush = (map_mem, map_off, map_size) ->
+        this.flushMappedMemoryRange(
+          VulkanMappedMemoryRange.builder()
+            .setMemory(map_mem)
+            .setOffset(map_off)
+            .setSize(map_size)
+            .build()
+        );
+
+      return new VulkanLWJGLMappedMemory(
         this.device,
-        int_handle,
-        offset,
-        size,
-        int_flags,
-        this.pointer_buffer),
-      "vkMapMemory");
-
-    final var address = this.pointer_buffer.get(0);
-    if (LOG.isTraceEnabled()) {
-      LOG.trace(
-        "Mapped memory: 0x{} -> 0x{}",
-        Long.toUnsignedString(int_handle, 16),
-        Long.toUnsignedString(address, 16));
-    }
-
-    final VulkanLWJGLFlushRangedFunctionType flush = (map_mem, map_off, map_size) ->
-      this.flushMappedMemoryRange(
-        VulkanMappedMemoryRange.builder()
-          .setMemory(map_mem)
-          .setOffset(map_off)
-          .setSize(map_size)
-          .build()
+        cmemory,
+        flush,
+        address,
+        size
       );
-
-    return new VulkanLWJGLMappedMemory(
-      this.device,
-      cmemory,
-      flush,
-      address,
-      size);
+    }
   }
 
   @Override
@@ -1537,7 +1563,7 @@ public final class VulkanLWJGLLogicalDevice
 
     this.checkNotClosed();
 
-    try (var stack = this.stack_initial.push()) {
+    try (var stack = VulkanLWJGLMemoryStack.stack()) {
       VulkanChecks.checkReturnCode(
         VK10.vkMergePipelineCaches(
           this.device,
@@ -1614,7 +1640,7 @@ public final class VulkanLWJGLLogicalDevice
     final var vkSemaphore =
       checkInstanceOf(semaphore, VulkanLWJGLSemaphoreTimeline.class);
 
-    try (var stack = this.stack_initial.push()) {
+    try (var stack = VulkanLWJGLMemoryStack.stack()) {
       final var data =
         stack.callocLong(1);
 
@@ -1670,7 +1696,7 @@ public final class VulkanLWJGLLogicalDevice
 
     this.checkNotClosed();
 
-    try (var stack = this.stack_initial.push()) {
+    try (var stack = VulkanLWJGLMemoryStack.stack()) {
       final var vk_layout = VkSubresourceLayout.calloc(stack);
 
       VK10.vkGetImageSubresourceLayout(
@@ -1698,7 +1724,7 @@ public final class VulkanLWJGLLogicalDevice
     Objects.requireNonNull(pipeline_cache, "pipeline_cache");
     Objects.requireNonNull(pipeline_infos, "pipeline_infos");
 
-    try (var stack = this.stack_initial.push()) {
+    try (var stack = VulkanLWJGLMemoryStack.stack()) {
       final var pipes = new long[pipeline_infos.size()];
       final var proxy = this.hostAllocatorProxy();
       VulkanChecks.checkReturnCode(
@@ -1740,7 +1766,7 @@ public final class VulkanLWJGLLogicalDevice
 
     this.checkNotClosed();
 
-    try (var stack = this.stack_initial.push()) {
+    try (var stack = VulkanLWJGLMemoryStack.stack()) {
       final var info =
         VkSemaphoreWaitInfo.calloc(stack);
 
@@ -1787,7 +1813,7 @@ public final class VulkanLWJGLLogicalDevice
 
     this.checkNotClosed();
 
-    try (var stack = this.stack_initial.push()) {
+    try (var stack = VulkanLWJGLMemoryStack.stack()) {
       final var info =
         VkSemaphoreSignalInfo.calloc(stack);
       info.sType(VK13.VK_STRUCTURE_TYPE_SEMAPHORE_SIGNAL_INFO);

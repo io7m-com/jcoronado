@@ -67,11 +67,10 @@ public final class VulkanLWJGLExtDebugUtils
   private static final Logger LOG =
     LoggerFactory.getLogger(VulkanLWJGLExtDebugUtils.class);
 
-  private final MemoryStack stackInitial;
 
   VulkanLWJGLExtDebugUtils()
   {
-    this.stackInitial = MemoryStack.create();
+
   }
 
   private static int transformCallbackData(
@@ -162,7 +161,7 @@ public final class VulkanLWJGLExtDebugUtils
     final var lwjglInstance =
       checkInstanceOf(instance, VulkanLWJGLInstance.class);
 
-    try (var stack = this.stackInitial.push()) {
+    try (var stack = VulkanLWJGLMemoryStack.stack()) {
       final var lwjglInfo =
         VkDebugUtilsMessengerCreateInfoEXT.calloc(stack);
 
@@ -224,7 +223,7 @@ public final class VulkanLWJGLExtDebugUtils
     final var lwjglCommandBuffer =
       checkInstanceOf(commandBuffer, VulkanLWJGLCommandBuffer.class);
 
-    try (var stack = this.stackInitial.push()) {
+    try (var stack = VulkanLWJGLMemoryStack.stack()) {
       final var lwjglInfo = VkDebugUtilsLabelEXT.calloc(stack);
       packLabel(stack, label, lwjglInfo);
       vkCmdBeginDebugUtilsLabelEXT(
@@ -245,7 +244,7 @@ public final class VulkanLWJGLExtDebugUtils
     final var lwjglCommandBuffer =
       checkInstanceOf(commandBuffer, VulkanLWJGLCommandBuffer.class);
 
-    try (var stack = this.stackInitial.push()) {
+    try (var stack = VulkanLWJGLMemoryStack.stack()) {
       final var lwjglInfo = VkDebugUtilsLabelEXT.calloc(stack);
       packLabel(stack, label, lwjglInfo);
       vkCmdInsertDebugUtilsLabelEXT(lwjglCommandBuffer.buffer(), lwjglInfo);
@@ -271,7 +270,7 @@ public final class VulkanLWJGLExtDebugUtils
         return;
       }
 
-      try (var stack = this.stackInitial.push()) {
+      try (var stack = VulkanLWJGLMemoryStack.stack()) {
         final var debugInfo =
           VkDebugUtilsObjectNameInfoEXT.calloc(stack)
             .sType(VK_STRUCTURE_TYPE_DEBUG_UTILS_OBJECT_NAME_INFO_EXT)

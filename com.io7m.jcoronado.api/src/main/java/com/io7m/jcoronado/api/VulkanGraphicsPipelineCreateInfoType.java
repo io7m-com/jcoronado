@@ -51,55 +51,100 @@ public interface VulkanGraphicsPipelineCreateInfoType
    * @return State for the vertex shading stage
    */
 
-  VulkanPipelineVertexInputStateCreateInfo vertexInputState();
+  @Value.Default
+  default VulkanPipelineVertexInputStateCreateInfo vertexInputState()
+  {
+    return VulkanPipelineVertexInputStateCreateInfo.builder()
+      .build();
+  }
 
   /**
    * @return State for the input assembly stage
    */
 
-  VulkanPipelineInputAssemblyStateCreateInfo inputAssemblyState();
+  @Value.Default
+  default VulkanPipelineInputAssemblyStateCreateInfo inputAssemblyState()
+  {
+    return VulkanPipelineInputAssemblyStateCreateInfo.builder()
+      .build();
+  }
 
   /**
    * @return State for the tesselation stage
    */
 
-  Optional<VulkanPipelineTessellationStateCreateInfo> tessellationState();
+  @Value.Default
+  default VulkanPipelineTessellationStateCreateInfo tessellationState()
+  {
+    return VulkanPipelineTessellationStateCreateInfo.builder()
+      .build();
+  }
 
   /**
    * @return State for the viewport
    */
 
-  Optional<VulkanPipelineViewportStateCreateInfo> viewportState();
+  @Value.Default
+  default VulkanPipelineViewportStateCreateInfo viewportState()
+  {
+    return VulkanPipelineViewportStateCreateInfo.builder()
+      .build();
+  }
 
   /**
    * @return State for the rasterization stage
    */
 
-  VulkanPipelineRasterizationStateCreateInfo rasterizationState();
+  @Value.Default
+  default VulkanPipelineRasterizationStateCreateInfo rasterizationState()
+  {
+    return VulkanPipelineRasterizationStateCreateInfo.builder()
+      .build();
+  }
 
   /**
    * @return State for multisampling
    */
 
-  Optional<VulkanPipelineMultisampleStateCreateInfo> multisampleState();
+  @Value.Default
+  default VulkanPipelineMultisampleStateCreateInfo multisampleState()
+  {
+    return VulkanPipelineMultisampleStateCreateInfo.builder()
+      .build();
+  }
 
   /**
    * @return State for the depth/stencil buffer
    */
 
-  Optional<VulkanPipelineDepthStencilStateCreateInfo> depthStencilState();
+  @Value.Default
+  default VulkanPipelineDepthStencilStateCreateInfo depthStencilState()
+  {
+    return VulkanPipelineDepthStencilStateCreateInfo.builder()
+      .build();
+  }
 
   /**
    * @return State for the color blending stage
    */
 
-  Optional<VulkanPipelineColorBlendStateCreateInfo> colorBlendState();
+  @Value.Default
+  default VulkanPipelineColorBlendStateCreateInfo colorBlendState()
+  {
+    return VulkanPipelineColorBlendStateCreateInfo.builder()
+      .build();
+  }
 
   /**
    * @return Dynamic state
    */
 
-  Optional<VulkanPipelineDynamicStateCreateInfo> dynamicState();
+  @Value.Default
+  default VulkanPipelineDynamicStateCreateInfo dynamicState()
+  {
+    return VulkanPipelineDynamicStateCreateInfo.builder()
+      .build();
+  }
 
   /**
    * @return The description of binding locations used by both the pipeline and descriptor sets used

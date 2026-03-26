@@ -75,11 +75,9 @@ public final class VulkanLWJGLExtKHRSwapChain
   private static final Logger LOG =
     LoggerFactory.getLogger(VulkanLWJGLExtKHRSwapChain.class);
 
-  private final MemoryStack stack_initial;
-
   VulkanLWJGLExtKHRSwapChain()
   {
-    this.stack_initial = MemoryStack.create();
+
   }
 
   private static IntBuffer packQueueIndices(
@@ -281,7 +279,7 @@ public final class VulkanLWJGLExtKHRSwapChain
     final var surface =
       checkInstanceOf(info.surface(), VulkanLWJGLExtKHRSurfaceValue.class);
 
-    try (var stack = this.stack_initial.push()) {
+    try (var stack = VulkanLWJGLMemoryStack.stack()) {
       final var vk_info =
         VkSwapchainCreateInfoKHR.calloc(stack)
           .sType(KHRSwapchain.VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR)
@@ -334,7 +332,7 @@ public final class VulkanLWJGLExtKHRSwapChain
 
     Objects.requireNonNull(presentInfo, "presentInfo");
 
-    try (var stack = this.stack_initial.push()) {
+    try (var stack = VulkanLWJGLMemoryStack.stack()) {
       final var bufferIndices =
         packImageIndices(stack, presentInfo.imageIndices());
 

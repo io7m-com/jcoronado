@@ -31,7 +31,6 @@ import com.io7m.jcoronado.vma.VMAAllocationResult;
 import com.io7m.jcoronado.vma.VMAAllocationType;
 import com.io7m.jcoronado.vma.VMAAllocatorType;
 import com.io7m.jcoronado.vma.VMAMappedMemoryType;
-import org.lwjgl.system.MemoryStack;
 import org.lwjgl.system.MemoryUtil;
 import org.lwjgl.util.vma.Vma;
 import org.lwjgl.util.vma.VmaAllocationCreateInfo;
@@ -60,7 +59,6 @@ public final class VMALWJGLAllocator
 
   private final VulkanLWJGLLogicalDevice device;
   private final long allocator_address;
-  private final MemoryStack stack_initial;
   private final VulkanLWJGLHostAllocatorProxy host_allocator_proxy;
 
   /**
@@ -87,7 +85,6 @@ public final class VMALWJGLAllocator
       );
 
     this.allocator_address = inAllocatorAddress;
-    this.stack_initial = MemoryStack.create();
   }
 
   @Override
@@ -116,7 +113,7 @@ public final class VMALWJGLAllocator
     Objects.requireNonNull(buffer_create_info, "buffer_create_info");
     this.checkNotClosed();
 
-    try (var stack = this.stack_initial.push()) {
+    try (var stack = VulkanLWJGLMemoryStack.stack()) {
       final var vk_buffer_create_info =
         VulkanLWJGLBufferCreateInfos.packInfo(stack, buffer_create_info);
 
@@ -185,7 +182,10 @@ public final class VMALWJGLAllocator
           info,
           AllocatedItemKind.BUFFER);
 
-      return VMAAllocationResult.of(allocation, buffer);
+      return VMAAllocationResult.<VulkanBufferType>builder()
+        .setAllocation(allocation)
+        .setResult(buffer)
+        .build();
     }
   }
 
@@ -199,7 +199,7 @@ public final class VMALWJGLAllocator
     Objects.requireNonNull(image_create_info, "image_create_info");
     this.checkNotClosed();
 
-    try (var stack = this.stack_initial.push()) {
+    try (var stack = VulkanLWJGLMemoryStack.stack()) {
       final var vk_image_create_info =
         VulkanLWJGLImageCreateInfos.pack(stack, image_create_info);
 
@@ -268,7 +268,10 @@ public final class VMALWJGLAllocator
           info,
           AllocatedItemKind.IMAGE);
 
-      return VMAAllocationResult.of(allocation, buffer);
+      return VMAAllocationResult.<VulkanImageType>builder()
+        .setAllocation(allocation)
+        .setResult(buffer)
+        .build();
     }
   }
 
@@ -319,7 +322,7 @@ public final class VMALWJGLAllocator
         allocation,
         VMALWJGLAllocation.class);
 
-    try (var stack = this.stack_initial.push()) {
+    try (var stack = VulkanLWJGLMemoryStack.stack()) {
       final var ptr = stack.mallocPointer(1);
 
       VulkanChecks.checkReturnCode(

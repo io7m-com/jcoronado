@@ -1,5 +1,5 @@
 /*
- * Copyright © 2018 Mark Raynsford <code@io7m.com> http://io7m.com
+ * Copyright © 2026 Mark Raynsford <code@io7m.com> https://www.io7m.com
  *
  * Permission to use, copy, modify, and/or distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -14,30 +14,27 @@
  * IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-package com.io7m.jcoronado.vma;
-
-import com.io7m.immutables.styles.ImmutablesStyleType;
-import org.immutables.value.Value;
+package com.io7m.jcoronado.api;
 
 /**
- * An allocation result.
+ * A Vulkan device address.
  *
- * @param <T> The type of allocation result
+ * @param value The address
  */
 
-@ImmutablesStyleType
-@Value.Immutable
-public interface VMAAllocationResultType<T>
+public record VulkanDeviceAddress(long value)
+  implements Comparable<VulkanDeviceAddress>
 {
-  /**
-   * @return The allocation
-   */
+  @Override
+  public String toString()
+  {
+    return "0x%s".formatted(Long.toUnsignedString(this.value, 16));
+  }
 
-  VMAAllocationType allocation();
-
-  /**
-   * @return The allocation result. Typically an image or a buffer.
-   */
-
-  T result();
+  @Override
+  public int compareTo(
+    final VulkanDeviceAddress other)
+  {
+    return Long.compareUnsigned(this.value, other.value);
+  }
 }
