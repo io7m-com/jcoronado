@@ -112,7 +112,7 @@ public final class HelloSwapChain implements ExampleType
   private static final Duration ONE_FRAME =
     Duration.of(16L, ChronoUnit.MILLIS);
 
-  private static final int FRAME_LIMIT = 20;
+  private static final int FRAME_LIMIT = Integer.MAX_VALUE;
 
   private static final VulkanClearValueColorFloatingPoint RED =
     VulkanClearValueColorFloatingPoint.builder()
