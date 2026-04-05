@@ -26,6 +26,7 @@ module com.io7m.jcoronado.vma
   requires static com.io7m.immutables.style;
 
   requires com.io7m.jcoronado.api;
+  requires com.io7m.jmulticlose.core;
 
   exports com.io7m.jcoronado.vma;
 }

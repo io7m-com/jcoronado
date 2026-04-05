@@ -25,6 +25,7 @@ module com.io7m.jcoronado.api
   requires static org.osgi.annotation.bundle;
   requires static org.osgi.annotation.versioning;
 
+  requires com.io7m.jmulticlose.core;
   requires com.io7m.seltzer.api;
 
   exports com.io7m.jcoronado.api;

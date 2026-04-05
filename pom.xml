@@ -12,7 +12,7 @@
 
   <groupId>com.io7m.jcoronado</groupId>
   <artifactId>com.io7m.jcoronado</artifactId>
-  <version>1.0.0-beta0002</version>
+  <version>1.0.0-beta0003</version>
 
   <packaging>pom</packaging>
   <name>com.io7m.jcoronado</name>
@@ -30,6 +30,8 @@
     <module>com.io7m.jcoronado.fake</module>
     <module>com.io7m.jcoronado.layers.khronos_validation.api</module>
     <module>com.io7m.jcoronado.layers.lunarg_api_dump.api</module>
+    <module>com.io7m.jcoronado.layers.lunarg_gfxreconstruct.api</module>
+    <module>com.io7m.jcoronado.layers.renderdoc.api</module>
     <module>com.io7m.jcoronado.lwjgl</module>
     <module>com.io7m.jcoronado.tests</module>
     <module>com.io7m.jcoronado.utility.allocation_tracker</module>
@@ -234,6 +236,11 @@
         <artifactId>lwjgl-vma</artifactId>
         <version>${org.lwjgl.version}</version>
         <classifier>natives-windows</classifier>
+      </dependency>
+      <dependency>
+        <groupId>org.lwjgl</groupId>
+        <artifactId>lwjgl-renderdoc</artifactId>
+        <version>${org.lwjgl.version}</version>
       </dependency>
 
       <dependency>

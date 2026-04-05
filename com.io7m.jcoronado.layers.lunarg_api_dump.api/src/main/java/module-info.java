@@ -14,6 +14,9 @@
  * IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+/**
+ * Type-safe Vulkan frontend (VK_LAYER_LUNARG_api_dump API)
+ */
 
 module com.io7m.jcoronado.layers.lunarg_api_dump.api
 {
@@ -21,6 +24,7 @@ module com.io7m.jcoronado.layers.lunarg_api_dump.api
   requires static org.osgi.annotation.versioning;
 
   requires com.io7m.jcoronado.extensions.ext_layer_settings.api;
+  requires com.io7m.jmulticlose.core;
 
   exports com.io7m.jcoronado.layers.lunarg_api_dump.api;
 }

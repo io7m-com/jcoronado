@@ -9,7 +9,7 @@
   <parent>
     <artifactId>com.io7m.jcoronado</artifactId>
     <groupId>com.io7m.jcoronado</groupId>
-    <version>1.0.0-beta0002</version>
+    <version>1.0.0-beta0003</version>
   </parent>
 
   <artifactId>com.io7m.jcoronado.api</artifactId>
@@ -23,6 +23,10 @@
     <dependency>
       <groupId>com.io7m.seltzer</groupId>
       <artifactId>com.io7m.seltzer.api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.io7m.jmulticlose</groupId>
+      <artifactId>com.io7m.jmulticlose.core</artifactId>
     </dependency>
 
     <dependency>

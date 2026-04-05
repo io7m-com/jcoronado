@@ -16,11 +16,14 @@
 
 package com.io7m.jcoronado.api;
 
+import com.io7m.jmulticlose.core.CloseableType;
+
 /**
  * The base type of Vulkan handles.
  */
 
-public interface VulkanHandleType extends AutoCloseable
+public interface VulkanHandleType
+  extends CloseableType
 {
   /**
    * Destroy the object.
@@ -32,12 +35,4 @@ public interface VulkanHandleType extends AutoCloseable
   @Override
   void close()
     throws VulkanException;
-
-  /**
-   * @return {@code true} iff the handle has been destroyed with {@link #close()}
-   *
-   * @see #close()
-   */
-
-  boolean isClosed();
 }

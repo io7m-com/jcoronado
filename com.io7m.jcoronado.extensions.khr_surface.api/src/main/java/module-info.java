@@ -26,6 +26,7 @@ module com.io7m.jcoronado.extensions.khr.surface.api
   requires static com.io7m.immutables.style;
 
   requires com.io7m.jcoronado.api;
+  requires com.io7m.jmulticlose.core;
 
   exports com.io7m.jcoronado.extensions.khr_surface.api;
   exports com.io7m.jcoronado.extensions.khr_swapchain.api;
