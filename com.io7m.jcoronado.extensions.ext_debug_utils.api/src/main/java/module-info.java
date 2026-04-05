@@ -26,6 +26,7 @@ module com.io7m.jcoronado.extensions.ext_debug_utils.api
   requires static org.osgi.annotation.versioning;
 
   requires transitive com.io7m.jcoronado.api;
+  requires com.io7m.jmulticlose.core;
 
   requires org.slf4j;
 

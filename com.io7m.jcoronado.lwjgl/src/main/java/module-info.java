@@ -31,14 +31,15 @@ module com.io7m.jcoronado.lwjgl
   requires com.io7m.jcoronado.layers.renderdoc.api;
   requires com.io7m.jcoronado.vma;
 
+  requires com.io7m.jmulticlose.core;
   requires com.io7m.junreachable.core;
   requires org.lwjgl.glfw;
   requires org.lwjgl.jemalloc;
+  requires org.lwjgl.renderdoc;
   requires org.lwjgl.vma;
   requires org.lwjgl.vulkan;
   requires org.lwjgl;
   requires org.slf4j;
-  requires org.lwjgl.renderdoc;
 
   exports com.io7m.jcoronado.lwjgl;
 

@@ -27,6 +27,7 @@ module com.io7m.jcoronado.fake
   requires com.io7m.jcoronado.extensions.khr.surface.api;
 
   requires com.io7m.junreachable.core;
+  requires com.io7m.jmulticlose.core;
 
   exports com.io7m.jcoronado.fake;
 }

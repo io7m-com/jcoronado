@@ -24,6 +24,7 @@ module com.io7m.jcoronado.extensions.ext_layer_settings.api
   requires static org.osgi.annotation.versioning;
 
   requires com.io7m.jcoronado.api;
+  requires com.io7m.jmulticlose.core;
 
   exports com.io7m.jcoronado.extensions.ext_layer_settings.api;
 }
