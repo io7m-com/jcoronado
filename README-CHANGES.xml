@@ -44,7 +44,10 @@
     <c:release date="2026-03-26T00:00:00+00:00" is-open="false" ticket-system="com.github.io7m.jcoronado" version="1.0.0-beta0002">
       <c:changes/>
     </c:release>
-    <c:release date="2026-04-05T12:53:26+00:00" is-open="false" ticket-system="com.github.io7m.jcoronado" version="1.0.0-beta0003">
+    <c:release date="2026-04-05T00:00:00+00:00" is-open="false" ticket-system="com.github.io7m.jcoronado" version="1.0.0-beta0003">
+      <c:changes/>
+    </c:release>
+    <c:release date="2026-04-17T20:06:09+00:00" is-open="false" ticket-system="com.github.io7m.jcoronado" version="1.0.0-beta0004">
       <c:changes/>
     </c:release>
   </c:releases>
