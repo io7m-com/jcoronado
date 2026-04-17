@@ -16,13 +16,16 @@
 
 package com.io7m.jcoronado.api;
 
+import com.io7m.jmulticlose.core.CloseableType;
+
 import java.nio.ByteBuffer;
 
 /**
  * A pointer to an area of mapped memory.
  */
 
-public interface VulkanMappedMemoryType extends AutoCloseable
+public interface VulkanMappedMemoryType
+  extends CloseableType
 {
   /**
    * @return {@code true} iff {@link #close()} has not been called

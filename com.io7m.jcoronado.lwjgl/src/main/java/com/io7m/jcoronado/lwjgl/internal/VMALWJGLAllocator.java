@@ -281,7 +281,7 @@ public final class VMALWJGLAllocator
   {
     if (LOG.isTraceEnabled()) {
       LOG.trace(
-        "Vma.vmaDestroyBuffer: 0x{} 0x{} 0x{}",
+        "Vma.vmaDestroyBuffer: Allocator 0x{} Buffer 0x{} Allocation 0x{}",
         Long.toUnsignedString(this.allocator_address, 16),
         Long.toUnsignedString(vk_buffer_handle, 16),
         Long.toUnsignedString(vk_allocation_handle, 16));
@@ -298,7 +298,7 @@ public final class VMALWJGLAllocator
   {
     if (LOG.isTraceEnabled()) {
       LOG.trace(
-        "Vma.vmaDestroyImage: 0x{} 0x{} 0x{}",
+        "Vma.vmaDestroyImage: Allocator 0x{} Image 0x{} Allocation 0x{}",
         Long.toUnsignedString(this.allocator_address, 16),
         Long.toUnsignedString(vk_image_handle, 16),
         Long.toUnsignedString(vk_allocation_handle, 16));

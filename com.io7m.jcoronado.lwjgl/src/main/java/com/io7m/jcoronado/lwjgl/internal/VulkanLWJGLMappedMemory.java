@@ -26,12 +26,14 @@ import org.slf4j.LoggerFactory;
 
 import java.nio.ByteBuffer;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * A section of mapped memory.
  */
 
-public final class VulkanLWJGLMappedMemory implements VulkanMappedMemoryType
+public final class VulkanLWJGLMappedMemory
+  implements VulkanMappedMemoryType
 {
   private static final Logger LOG =
     LoggerFactory.getLogger(VulkanLWJGLMappedMemory.class);
@@ -40,7 +42,7 @@ public final class VulkanLWJGLMappedMemory implements VulkanMappedMemoryType
   private final ByteBuffer buffer;
   private final VulkanLWJGLDeviceMemory memory;
   private final VulkanLWJGLFlushRangedFunctionType flush;
-  private boolean mapped;
+  private AtomicBoolean mapped;
 
   VulkanLWJGLMappedMemory(
     final VkDevice in_device,
@@ -52,7 +54,7 @@ public final class VulkanLWJGLMappedMemory implements VulkanMappedMemoryType
     this.device = Objects.requireNonNull(in_device, "device");
     this.memory = Objects.requireNonNull(in_cmemory, "memory");
     this.flush = Objects.requireNonNull(flush_callback, "flush_callback");
-    this.mapped = true;
+    this.mapped = new AtomicBoolean(true);
     this.buffer = MemoryUtil.memByteBuffer(
       in_address,
       Math.toIntExact(in_size));
@@ -61,7 +63,7 @@ public final class VulkanLWJGLMappedMemory implements VulkanMappedMemoryType
   @Override
   public boolean isMapped()
   {
-    return this.mapped;
+    return this.mapped.get();
   }
 
   @Override
@@ -70,7 +72,7 @@ public final class VulkanLWJGLMappedMemory implements VulkanMappedMemoryType
     final long size)
     throws VulkanException
   {
-    if (this.mapped) {
+    if (this.mapped.get()) {
       this.flush.flushRange(this.memory, offset, size);
     }
   }
@@ -79,7 +81,7 @@ public final class VulkanLWJGLMappedMemory implements VulkanMappedMemoryType
   public void flush()
     throws VulkanException
   {
-    if (this.mapped) {
+    if (this.mapped.get()) {
       this.flush.flushRange(this.memory, 0L, VK10.VK_WHOLE_SIZE);
     }
   }
@@ -87,18 +89,14 @@ public final class VulkanLWJGLMappedMemory implements VulkanMappedMemoryType
   @Override
   public void close()
   {
-    if (this.mapped) {
-      try {
-        final var address = this.memory.handle();
-        if (LOG.isTraceEnabled()) {
-          LOG.trace(
-            "Unmapping memory: 0x{}",
-            Long.toUnsignedString(address, 16));
-        }
-        VK10.vkUnmapMemory(this.device, address);
-      } finally {
-        this.mapped = false;
+    if (this.mapped.compareAndSet(true, false)) {
+      final var address = this.memory.handle();
+      if (LOG.isTraceEnabled()) {
+        LOG.trace(
+          "Unmapping memory: 0x{}",
+          Long.toUnsignedString(address, 16));
       }
+      VK10.vkUnmapMemory(this.device, address);
     }
   }
 
@@ -106,5 +104,11 @@ public final class VulkanLWJGLMappedMemory implements VulkanMappedMemoryType
   public ByteBuffer asByteBuffer()
   {
     return this.buffer;
+  }
+
+  @Override
+  public boolean isClosed()
+  {
+    return !this.mapped.get();
   }
 }

@@ -367,9 +367,8 @@ public final class VFakeLogicalDevice implements VulkanLogicalDeviceType
   @Override
   public VulkanSemaphoreTimelineType createTimelineSemaphore(
     final VulkanSemaphoreTimelineCreateInfo info)
-    throws VulkanException
   {
-    throw errorNotImplemented("createTimelineSemaphore");
+    return new VFakeTimelineSemaphore();
   }
 
   @Override
