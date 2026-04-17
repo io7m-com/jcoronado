@@ -12,7 +12,7 @@
 
   <groupId>com.io7m.jcoronado</groupId>
   <artifactId>com.io7m.jcoronado</artifactId>
-  <version>1.0.0-beta0004</version>
+  <version>1.0.0-SNAPSHOT</version>
 
   <packaging>pom</packaging>
   <name>com.io7m.jcoronado</name>
