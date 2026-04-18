@@ -19,6 +19,9 @@ package com.io7m.jcoronado.api;
 import com.io7m.immutables.styles.ImmutablesStyleType;
 import org.immutables.value.Value;
 
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+
 /**
  * Union specifying a clear value.
  *
@@ -67,7 +70,30 @@ public sealed interface VulkanClearValueType
   sealed interface VulkanClearValueColorType
     extends VulkanClearValueType
   {
+    /**
+     * Pack the color value as an integer value suitable for passing to
+     * {@link VulkanCommandBufferType#fillBuffer(VulkanBufferType, long, long, int)}.
+     *
+     * @param order The target byte order
+     *
+     * @return The packed color value
+     */
 
+    int asFillBufferInteger(ByteOrder order);
+
+    /**
+     * Pack the color value as an integer value suitable for passing to
+     * {@link VulkanCommandBufferType#fillBuffer(VulkanBufferType, long, long, int)}.
+     *
+     * The value is packed based on the host byte order.
+     *
+     * @return The packed color value
+     */
+
+    default int asFillBufferInteger()
+    {
+      return this.asFillBufferInteger(ByteOrder.nativeOrder());
+    }
   }
 
   /**
@@ -80,6 +106,19 @@ public sealed interface VulkanClearValueType
   non-sealed interface VulkanClearValueColorIntegerSignedType
     extends VulkanClearValueColorType
   {
+    @Override
+    default int asFillBufferInteger(
+      final ByteOrder order)
+    {
+      final var buffer = ByteBuffer.allocate(4);
+      buffer.order(order);
+      buffer.put(0, (byte) this.red());
+      buffer.put(1, (byte) this.green());
+      buffer.put(2, (byte) this.blue());
+      buffer.put(3, (byte) this.alpha());
+      return buffer.getInt(0);
+    }
+
     /**
      * @return The red channel
      */
@@ -131,6 +170,19 @@ public sealed interface VulkanClearValueType
   non-sealed interface VulkanClearValueColorIntegerUnsignedType
     extends VulkanClearValueColorType
   {
+    @Override
+    default int asFillBufferInteger(
+      final ByteOrder order)
+    {
+      final var buffer = ByteBuffer.allocate(4);
+      buffer.order(order);
+      buffer.put(0, (byte) (this.red() & 0xff));
+      buffer.put(1, (byte) (this.green() & 0xff));
+      buffer.put(2, (byte) (this.blue() & 0xff));
+      buffer.put(3, (byte) (this.alpha() & 0xff));
+      return buffer.getInt(0);
+    }
+
     /**
      * @return The red channel
      */
@@ -182,6 +234,19 @@ public sealed interface VulkanClearValueType
   non-sealed interface VulkanClearValueColorFloatingPointType
     extends VulkanClearValueColorType
   {
+    @Override
+    default int asFillBufferInteger(
+      final ByteOrder order)
+    {
+      final var buffer = ByteBuffer.allocate(4);
+      buffer.order(order);
+      buffer.put(0, (byte) (this.red() * 255.0f));
+      buffer.put(1, (byte) (this.green() * 255.0f));
+      buffer.put(2, (byte) (this.blue() * 255.0f));
+      buffer.put(3, (byte) (this.alpha() * 255.0f));
+      return buffer.getInt(0);
+    }
+
     /**
      * @return The red channel
      */
