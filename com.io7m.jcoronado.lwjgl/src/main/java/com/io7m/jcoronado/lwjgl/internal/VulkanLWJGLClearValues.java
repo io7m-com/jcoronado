@@ -16,12 +16,12 @@
 
 package com.io7m.jcoronado.lwjgl.internal;
 
-import com.io7m.jcoronado.api.VulkanClearValueColorFloatingPoint;
-import com.io7m.jcoronado.api.VulkanClearValueColorIntegerSigned;
-import com.io7m.jcoronado.api.VulkanClearValueColorIntegerUnsigned;
 import com.io7m.jcoronado.api.VulkanClearValueDepthStencil;
 import com.io7m.jcoronado.api.VulkanClearValueType;
-import com.io7m.junreachable.UnreachableCodeException;
+import com.io7m.jcoronado.api.VulkanClearValueType.VulkanClearValueColorFloatingPointType;
+import com.io7m.jcoronado.api.VulkanClearValueType.VulkanClearValueColorIntegerSignedType;
+import com.io7m.jcoronado.api.VulkanClearValueType.VulkanClearValueColorIntegerUnsignedType;
+import com.io7m.jcoronado.api.VulkanClearValueType.VulkanClearValueDepthStencilType;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.vulkan.VkClearColorValue;
 import org.lwjgl.vulkan.VkClearDepthStencilValue;
@@ -104,23 +104,20 @@ public final class VulkanLWJGLClearValues
     Objects.requireNonNull(source, "source");
     Objects.requireNonNull(target, "target");
 
-    switch (source.type()) {
-      case DEPTH_STENCIL: {
-        final var depth_stencil = (VulkanClearValueDepthStencil) source;
-        packToDepthStencil(depth_stencil, target.depthStencil());
-        break;
+    switch (source) {
+      case final VulkanClearValueColorType color -> {
+        packToColor(color, target.color());
       }
-
-      case COLOR: {
-        packToColor((VulkanClearValueColorType) source, target.color());
-        break;
+      case final VulkanClearValueDepthStencilType depthStencil -> {
+        packToDepthStencil(depthStencil, target.depthStencil());
       }
     }
+
     return target;
   }
 
   private static VkClearDepthStencilValue packToDepthStencil(
-    final VulkanClearValueDepthStencil source,
+    final VulkanClearValueDepthStencilType source,
     final VkClearDepthStencilValue target)
   {
     target.set(source.depth(), source.stencil());
@@ -131,29 +128,8 @@ public final class VulkanLWJGLClearValues
     final VulkanClearValueColorType source,
     final VkClearColorValue target)
   {
-    switch (source.colorType()) {
-      case COLOR_INTEGER_SIGNED: {
-        final var color = (VulkanClearValueColorIntegerSigned) source;
-        final var ib = target.int32();
-        ib.put(0, color.red());
-        ib.put(1, color.green());
-        ib.put(2, color.blue());
-        ib.put(3, color.alpha());
-        return target;
-      }
-
-      case COLOR_INTEGER_UNSIGNED: {
-        final var color = (VulkanClearValueColorIntegerUnsigned) source;
-        final var ib = target.uint32();
-        ib.put(0, color.red());
-        ib.put(1, color.green());
-        ib.put(2, color.blue());
-        ib.put(3, color.alpha());
-        return target;
-      }
-
-      case COLOR_FLOATING_POINT: {
-        final var color = (VulkanClearValueColorFloatingPoint) source;
+    switch (source) {
+      case final VulkanClearValueColorFloatingPointType color -> {
         final var ib = target.float32();
         ib.put(0, color.red());
         ib.put(1, color.green());
@@ -161,9 +137,23 @@ public final class VulkanLWJGLClearValues
         ib.put(3, color.alpha());
         return target;
       }
+      case final VulkanClearValueColorIntegerSignedType color -> {
+        final var ib = target.int32();
+        ib.put(0, color.red());
+        ib.put(1, color.green());
+        ib.put(2, color.blue());
+        ib.put(3, color.alpha());
+        return target;
+      }
+      case final VulkanClearValueColorIntegerUnsignedType color -> {
+        final var ib = target.uint32();
+        ib.put(0, color.red());
+        ib.put(1, color.green());
+        ib.put(2, color.blue());
+        ib.put(3, color.alpha());
+        return target;
+      }
     }
-
-    throw new UnreachableCodeException();
   }
 
   /**

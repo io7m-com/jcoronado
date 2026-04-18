@@ -19,12 +19,6 @@ package com.io7m.jcoronado.api;
 import com.io7m.immutables.styles.ImmutablesStyleType;
 import org.immutables.value.Value;
 
-import static com.io7m.jcoronado.api.VulkanClearValueType.Type.COLOR;
-import static com.io7m.jcoronado.api.VulkanClearValueType.Type.DEPTH_STENCIL;
-import static com.io7m.jcoronado.api.VulkanClearValueType.VulkanClearValueColorType.ColorType.COLOR_FLOATING_POINT;
-import static com.io7m.jcoronado.api.VulkanClearValueType.VulkanClearValueColorType.ColorType.COLOR_INTEGER_SIGNED;
-import static com.io7m.jcoronado.api.VulkanClearValueType.VulkanClearValueColorType.ColorType.COLOR_INTEGER_UNSIGNED;
-
 /**
  * Union specifying a clear value.
  *
@@ -32,33 +26,8 @@ import static com.io7m.jcoronado.api.VulkanClearValueType.VulkanClearValueColorT
  */
 
 @VulkanAPIStructType(vulkanStruct = "VkClearValue")
-public interface VulkanClearValueType
+public sealed interface VulkanClearValueType
 {
-  /**
-   * @return The type of value
-   */
-
-  Type type();
-
-  /**
-   * The actual type of clea value.
-   */
-
-  enum Type
-  {
-    /**
-     * A depth/stencil value.
-     */
-
-    DEPTH_STENCIL,
-
-    /**
-     * A color value.
-     */
-
-    COLOR,
-  }
-
   /**
    * A depth/stencil value.
    */
@@ -66,14 +35,9 @@ public interface VulkanClearValueType
   @VulkanAPIStructType(vulkanStruct = "VkClearValue")
   @ImmutablesStyleType
   @Value.Immutable
-  interface VulkanClearValueDepthStencilType extends VulkanClearValueType
+  non-sealed interface VulkanClearValueDepthStencilType
+    extends VulkanClearValueType
   {
-    @Override
-    default Type type()
-    {
-      return DEPTH_STENCIL;
-    }
-
     /**
      * @return The depth value
      */
@@ -100,44 +64,10 @@ public interface VulkanClearValueType
    */
 
   @VulkanAPIStructType(vulkanStruct = "VkClearValue")
-  interface VulkanClearValueColorType extends VulkanClearValueType
+  sealed interface VulkanClearValueColorType
+    extends VulkanClearValueType
   {
-    @Override
-    default Type type()
-    {
-      return COLOR;
-    }
 
-    /**
-     * @return The type of value
-     */
-
-    ColorType colorType();
-
-    /**
-     * The actual type of clea value.
-     */
-
-    enum ColorType
-    {
-      /**
-       * A color consisting of signed integer components.
-       */
-
-      COLOR_INTEGER_SIGNED,
-
-      /**
-       * A color consisting of unsigned integer components.
-       */
-
-      COLOR_INTEGER_UNSIGNED,
-
-      /**
-       * A color consisting of floating-point components.
-       */
-
-      COLOR_FLOATING_POINT
-    }
   }
 
   /**
@@ -147,15 +77,9 @@ public interface VulkanClearValueType
   @VulkanAPIStructType(vulkanStruct = "VkClearValue")
   @ImmutablesStyleType
   @Value.Immutable
-  interface VulkanClearValueColorIntegerSignedType extends
-    VulkanClearValueColorType
+  non-sealed interface VulkanClearValueColorIntegerSignedType
+    extends VulkanClearValueColorType
   {
-    @Override
-    default ColorType colorType()
-    {
-      return COLOR_INTEGER_SIGNED;
-    }
-
     /**
      * @return The red channel
      */
@@ -204,15 +128,9 @@ public interface VulkanClearValueType
   @VulkanAPIStructType(vulkanStruct = "VkClearValue")
   @ImmutablesStyleType
   @Value.Immutable
-  interface VulkanClearValueColorIntegerUnsignedType extends
-    VulkanClearValueColorType
+  non-sealed interface VulkanClearValueColorIntegerUnsignedType
+    extends VulkanClearValueColorType
   {
-    @Override
-    default ColorType colorType()
-    {
-      return COLOR_INTEGER_UNSIGNED;
-    }
-
     /**
      * @return The red channel
      */
@@ -261,15 +179,9 @@ public interface VulkanClearValueType
   @VulkanAPIStructType(vulkanStruct = "VkClearValue")
   @ImmutablesStyleType
   @Value.Immutable
-  interface VulkanClearValueColorFloatingPointType extends
-    VulkanClearValueColorType
+  non-sealed interface VulkanClearValueColorFloatingPointType
+    extends VulkanClearValueColorType
   {
-    @Override
-    default ColorType colorType()
-    {
-      return COLOR_FLOATING_POINT;
-    }
-
     /**
      * @return The red channel
      */
