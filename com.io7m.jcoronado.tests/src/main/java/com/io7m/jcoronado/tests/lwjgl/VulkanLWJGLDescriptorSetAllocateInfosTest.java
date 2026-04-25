@@ -25,6 +25,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.lwjgl.system.MemoryStack;
+import org.lwjgl.vulkan.VkDescriptorSetVariableDescriptorCountAllocateInfo;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -71,6 +72,54 @@ public final class VulkanLWJGLDescriptorSetAllocateInfosTest
       VulkanLWJGLDescriptorSetAllocateInfos.pack(this.stack, info);
 
     Assertions.assertAll(
+      () -> {
+        Assertions.assertEquals(100L, packed.descriptorPool());
+      },
+      () -> {
+        Assertions.assertEquals(23L, packed.pSetLayouts().get(0));
+      },
+      () -> {
+        Assertions.assertEquals(64L, packed.pSetLayouts().get(1));
+      }
+    );
+  }
+
+  @Test
+  public void testInfoCounts(
+    final @Mock VulkanLWJGLDescriptorPool pool,
+    final @Mock VulkanLWJGLDescriptorSetLayout layout_0,
+    final @Mock VulkanLWJGLDescriptorSetLayout layout_1)
+    throws Exception
+  {
+    Mockito.when(pool.handle())
+      .thenReturn(100L);
+    Mockito.when(layout_0.handle())
+      .thenReturn(23L);
+    Mockito.when(layout_1.handle())
+      .thenReturn(64L);
+
+    final var info =
+      VulkanDescriptorSetAllocateInfo.builder()
+        .setDescriptorPool(pool)
+        .addSetLayouts(layout_0)
+        .addSetLayouts(layout_1)
+        .addDescriptorCounts(3L)
+        .addDescriptorCounts(10L)
+        .build();
+
+    final var packed =
+      VulkanLWJGLDescriptorSetAllocateInfos.pack(this.stack, info);
+
+    final var next =
+      VkDescriptorSetVariableDescriptorCountAllocateInfo.create(packed.pNext());
+
+    Assertions.assertAll(
+      () -> {
+        Assertions.assertEquals(3, next.pDescriptorCounts().get(0));
+      },
+      () -> {
+        Assertions.assertEquals(10, next.pDescriptorCounts().get(1));
+      },
       () -> {
         Assertions.assertEquals(100L, packed.descriptorPool());
       },

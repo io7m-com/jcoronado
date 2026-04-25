@@ -24,10 +24,13 @@ import com.io7m.jcoronado.api.VulkanIncompatibleClassException;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.vulkan.VK10;
 import org.lwjgl.vulkan.VkDescriptorSetAllocateInfo;
+import org.lwjgl.vulkan.VkDescriptorSetVariableDescriptorCountAllocateInfo;
 
 import java.nio.LongBuffer;
 import java.util.List;
 import java.util.Objects;
+
+import static org.lwjgl.vulkan.VK12.VK_STRUCTURE_TYPE_DESCRIPTOR_SET_VARIABLE_DESCRIPTOR_COUNT_ALLOCATE_INFO;
 
 /**
  * Functions to pack descriptor set allocation info.
@@ -86,9 +89,30 @@ public final class VulkanLWJGLDescriptorSetAllocateInfos
     Objects.requireNonNull(info, "info");
     Objects.requireNonNull(buffer, "buffer");
 
+    final long next;
+    final var countsList = info.descriptorCounts();
+    if (!countsList.isEmpty()) {
+      final var counts =
+        VkDescriptorSetVariableDescriptorCountAllocateInfo.calloc(stack);
+
+      final var countsArray =
+        stack.mallocInt(countsList.size());
+
+      for (var index = 0; index < countsList.size(); ++index) {
+        countsArray.put(index, (int) (countsList.get(index) & 0xffffffffL));
+      }
+
+      counts.sType(VK_STRUCTURE_TYPE_DESCRIPTOR_SET_VARIABLE_DESCRIPTOR_COUNT_ALLOCATE_INFO);
+      counts.pNext(0L);
+      counts.pDescriptorCounts(countsArray);
+      next = counts.address();
+    } else {
+      next = 0L;
+    }
+
     return buffer
       .sType(VK10.VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO)
-      .pNext(0L)
+      .pNext(next)
       .descriptorPool(packDescriptorPool(info.descriptorPool()))
       .pSetLayouts(packLayouts(stack, info.setLayouts()));
   }

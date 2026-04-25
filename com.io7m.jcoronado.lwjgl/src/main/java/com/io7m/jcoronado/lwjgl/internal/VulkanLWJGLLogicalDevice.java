@@ -1209,7 +1209,7 @@ public final class VulkanLWJGLLogicalDevice
 
     this.checkNotClosed();
 
-    final var cpool = checkInstanceOf(pool, VulkanLWJGLCommandPool.class);
+    final var cpool = checkInstanceOf(pool, VulkanLWJGLDescriptorPool.class);
     VulkanChecks.checkReturnCode(
       VK10.vkResetDescriptorPool(
         this.device,

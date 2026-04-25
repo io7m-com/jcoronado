@@ -42,4 +42,39 @@ public interface VulkanDescriptorSetAllocateInfoType
    */
 
   List<VulkanDescriptorSetLayoutType> setLayouts();
+
+  /**
+   * If {@link VulkanDescriptorBindingFlag#VK_DESCRIPTOR_BINDING_VARIABLE_DESCRIPTOR_COUNT} is used,
+   * each element in this list specifies the descriptor count for the corresponding layout
+   * in {@link #setLayouts()}.
+   *
+   * @return The list of descriptor counts
+   *
+   * @see "VkDescriptorSetVariableDescriptorCountAllocateInfo"
+   */
+
+  List<Long> descriptorCounts();
+
+  /**
+   * Check preconditions for the type.
+   */
+
+  @Value.Check
+  default void checkPreconditions()
+  {
+    final var sl = this.setLayouts();
+    final var dc = this.descriptorCounts();
+
+    if (!dc.isEmpty()) {
+      if (sl.size() != dc.size()) {
+        throw new IllegalArgumentException(
+          "Descriptor counts list length (%d) must equal layouts list length (%d)."
+            .formatted(
+              Integer.valueOf(dc.size()),
+              Integer.valueOf(sl.size())
+            )
+        );
+      }
+    }
+  }
 }
