@@ -23,10 +23,13 @@ import com.io7m.jcoronado.api.VulkanException;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.vulkan.VK10;
 import org.lwjgl.vulkan.VkDescriptorSetLayoutBinding;
+import org.lwjgl.vulkan.VkDescriptorSetLayoutBindingFlagsCreateInfo;
 import org.lwjgl.vulkan.VkDescriptorSetLayoutCreateInfo;
 
 import java.util.List;
 import java.util.Objects;
+
+import static org.lwjgl.vulkan.VK12.VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_BINDING_FLAGS_CREATE_INFO;
 
 /**
  * Functions to pack descriptor set layouts.
@@ -69,12 +72,31 @@ public final class VulkanLWJGLDescriptorSetLayouts
     final VkDescriptorSetLayoutCreateInfo buffer)
     throws VulkanException
   {
-    final var packed_bindings = packBindings(stack, info.bindings());
+    final var packedBindings =
+      packBindings(stack, info.bindings());
+
+    final var packedFlags =
+      VkDescriptorSetLayoutBindingFlagsCreateInfo.calloc(stack);
+    final var bindingsFlags =
+      info.bindingsFlags();
+    final var packedFlagsList =
+      stack.mallocInt(bindingsFlags.size());
+
+    for (int index = 0; index < bindingsFlags.size(); ++index) {
+      final int packedFlagBitmask =
+        VulkanEnumMaps.packValues(bindingsFlags.get(index));
+      packedFlagsList.put(index, packedFlagBitmask);
+    }
+
+    packedFlags.sType(
+      VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_BINDING_FLAGS_CREATE_INFO);
+    packedFlags.pNext(0L);
+    packedFlags.pBindingFlags(packedFlagsList);
 
     return buffer
       .sType(VK10.VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO)
-      .pNext(0L)
-      .pBindings(packed_bindings)
+      .pNext(packedFlags.address())
+      .pBindings(packedBindings)
       .flags(VulkanEnumMaps.packValues(info.flags()));
   }
 

@@ -19,11 +19,8 @@ package com.io7m.jcoronado.api;
 import com.io7m.immutables.styles.ImmutablesStyleType;
 import org.immutables.value.Value;
 
-import static com.io7m.jcoronado.api.VulkanClearValueType.Type.COLOR;
-import static com.io7m.jcoronado.api.VulkanClearValueType.Type.DEPTH_STENCIL;
-import static com.io7m.jcoronado.api.VulkanClearValueType.VulkanClearValueColorType.ColorType.COLOR_FLOATING_POINT;
-import static com.io7m.jcoronado.api.VulkanClearValueType.VulkanClearValueColorType.ColorType.COLOR_INTEGER_SIGNED;
-import static com.io7m.jcoronado.api.VulkanClearValueType.VulkanClearValueColorType.ColorType.COLOR_INTEGER_UNSIGNED;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 
 /**
  * Union specifying a clear value.
@@ -32,33 +29,8 @@ import static com.io7m.jcoronado.api.VulkanClearValueType.VulkanClearValueColorT
  */
 
 @VulkanAPIStructType(vulkanStruct = "VkClearValue")
-public interface VulkanClearValueType
+public sealed interface VulkanClearValueType
 {
-  /**
-   * @return The type of value
-   */
-
-  Type type();
-
-  /**
-   * The actual type of clea value.
-   */
-
-  enum Type
-  {
-    /**
-     * A depth/stencil value.
-     */
-
-    DEPTH_STENCIL,
-
-    /**
-     * A color value.
-     */
-
-    COLOR,
-  }
-
   /**
    * A depth/stencil value.
    */
@@ -66,14 +38,9 @@ public interface VulkanClearValueType
   @VulkanAPIStructType(vulkanStruct = "VkClearValue")
   @ImmutablesStyleType
   @Value.Immutable
-  interface VulkanClearValueDepthStencilType extends VulkanClearValueType
+  non-sealed interface VulkanClearValueDepthStencilType
+    extends VulkanClearValueType
   {
-    @Override
-    default Type type()
-    {
-      return DEPTH_STENCIL;
-    }
-
     /**
      * @return The depth value
      */
@@ -100,43 +67,32 @@ public interface VulkanClearValueType
    */
 
   @VulkanAPIStructType(vulkanStruct = "VkClearValue")
-  interface VulkanClearValueColorType extends VulkanClearValueType
+  sealed interface VulkanClearValueColorType
+    extends VulkanClearValueType
   {
-    @Override
-    default Type type()
-    {
-      return COLOR;
-    }
-
     /**
-     * @return The type of value
+     * Pack the color value as an integer value suitable for passing to
+     * {@link VulkanCommandBufferType#fillBuffer(VulkanBufferType, long, long, int)}.
+     *
+     * @param order The target byte order
+     *
+     * @return The packed color value
      */
 
-    ColorType colorType();
+    int asFillBufferInteger(ByteOrder order);
 
     /**
-     * The actual type of clea value.
+     * Pack the color value as an integer value suitable for passing to
+     * {@link VulkanCommandBufferType#fillBuffer(VulkanBufferType, long, long, int)}.
+     *
+     * The value is packed based on the host byte order.
+     *
+     * @return The packed color value
      */
 
-    enum ColorType
+    default int asFillBufferInteger()
     {
-      /**
-       * A color consisting of signed integer components.
-       */
-
-      COLOR_INTEGER_SIGNED,
-
-      /**
-       * A color consisting of unsigned integer components.
-       */
-
-      COLOR_INTEGER_UNSIGNED,
-
-      /**
-       * A color consisting of floating-point components.
-       */
-
-      COLOR_FLOATING_POINT
+      return this.asFillBufferInteger(ByteOrder.nativeOrder());
     }
   }
 
@@ -147,13 +103,20 @@ public interface VulkanClearValueType
   @VulkanAPIStructType(vulkanStruct = "VkClearValue")
   @ImmutablesStyleType
   @Value.Immutable
-  interface VulkanClearValueColorIntegerSignedType extends
-    VulkanClearValueColorType
+  non-sealed interface VulkanClearValueColorIntegerSignedType
+    extends VulkanClearValueColorType
   {
     @Override
-    default ColorType colorType()
+    default int asFillBufferInteger(
+      final ByteOrder order)
     {
-      return COLOR_INTEGER_SIGNED;
+      final var buffer = ByteBuffer.allocate(4);
+      buffer.order(order);
+      buffer.put(0, (byte) this.red());
+      buffer.put(1, (byte) this.green());
+      buffer.put(2, (byte) this.blue());
+      buffer.put(3, (byte) this.alpha());
+      return buffer.getInt(0);
     }
 
     /**
@@ -204,13 +167,20 @@ public interface VulkanClearValueType
   @VulkanAPIStructType(vulkanStruct = "VkClearValue")
   @ImmutablesStyleType
   @Value.Immutable
-  interface VulkanClearValueColorIntegerUnsignedType extends
-    VulkanClearValueColorType
+  non-sealed interface VulkanClearValueColorIntegerUnsignedType
+    extends VulkanClearValueColorType
   {
     @Override
-    default ColorType colorType()
+    default int asFillBufferInteger(
+      final ByteOrder order)
     {
-      return COLOR_INTEGER_UNSIGNED;
+      final var buffer = ByteBuffer.allocate(4);
+      buffer.order(order);
+      buffer.put(0, (byte) (this.red() & 0xff));
+      buffer.put(1, (byte) (this.green() & 0xff));
+      buffer.put(2, (byte) (this.blue() & 0xff));
+      buffer.put(3, (byte) (this.alpha() & 0xff));
+      return buffer.getInt(0);
     }
 
     /**
@@ -261,13 +231,20 @@ public interface VulkanClearValueType
   @VulkanAPIStructType(vulkanStruct = "VkClearValue")
   @ImmutablesStyleType
   @Value.Immutable
-  interface VulkanClearValueColorFloatingPointType extends
-    VulkanClearValueColorType
+  non-sealed interface VulkanClearValueColorFloatingPointType
+    extends VulkanClearValueColorType
   {
     @Override
-    default ColorType colorType()
+    default int asFillBufferInteger(
+      final ByteOrder order)
     {
-      return COLOR_FLOATING_POINT;
+      final var buffer = ByteBuffer.allocate(4);
+      buffer.order(order);
+      buffer.put(0, (byte) (this.red() * 255.0f));
+      buffer.put(1, (byte) (this.green() * 255.0f));
+      buffer.put(2, (byte) (this.blue() * 255.0f));
+      buffer.put(3, (byte) (this.alpha() * 255.0f));
+      return buffer.getInt(0);
     }
 
     /**

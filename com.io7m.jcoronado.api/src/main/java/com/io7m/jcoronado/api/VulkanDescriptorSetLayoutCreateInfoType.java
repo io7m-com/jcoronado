@@ -24,6 +24,7 @@ import java.util.Set;
 
 /**
  * @see "VkDescriptorSetLayoutCreateInfo"
+ * @see "VkDescriptorSetLayoutBindingFlagsCreateInfo"
  */
 
 @VulkanAPIStructType(vulkanStruct = "VkDescriptorSetLayoutCreateInfo")
@@ -43,4 +44,37 @@ public interface VulkanDescriptorSetLayoutCreateInfoType
    */
 
   List<VulkanDescriptorSetLayoutBinding> bindings();
+
+  /**
+   * @return The flags for each binding
+   *
+   * @see "VkDescriptorSetLayoutBindingFlagsCreateInfo"
+   */
+
+  List<Set<VulkanDescriptorBindingFlag>> bindingsFlags();
+
+  /**
+   * Check preconditions for the type.
+   */
+
+  @Value.Check
+  default void checkPreconditions()
+  {
+    final var bf =
+      this.bindingsFlags();
+    final var bl =
+      this.bindings();
+
+    if (!bf.isEmpty()) {
+      if (bf.size() != bl.size()) {
+        throw new IllegalArgumentException(
+          "Bindings flag list length (%d) must equal bindings list length (%d)."
+            .formatted(
+              Integer.valueOf(bf.size()),
+              Integer.valueOf(bl.size())
+            )
+        );
+      }
+    }
+  }
 }
